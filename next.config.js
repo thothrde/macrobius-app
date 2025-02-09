@@ -1,12 +1,11 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  reactStrictMode: true,
-  basePath: '/macrobius-app',
-  assetPrefix: '/macrobius-app/',
+  output: 'export',
+  basePath: process.env.NODE_ENV === 'production' ? '/macrobius-app' : '',
   images: {
     unoptimized: true
   },
-  output: 'export',
+  reactStrictMode: true,
   trailingSlash: true
 }
 
