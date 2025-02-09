@@ -1,1 +1,1 @@
-// main chunk content
+/* Main JS content */
