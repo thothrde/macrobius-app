@@ -1,1 +1,1 @@
-/* Index chunk content */
+/* Index JS */

@@ -1,1 +1,1 @@
-/* App chunk content */
+/* App JS */

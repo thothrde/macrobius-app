@@ -1,1 +1,1 @@
-/* Framework chunk content */
+/* Framework JS */
