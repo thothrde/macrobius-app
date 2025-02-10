@@ -1,1 +1,1 @@
-/* App JS content */
+/* App content */

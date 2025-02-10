@@ -1,1 +1,1 @@
-/* Webpack chunk */
+/* Webpack content */
