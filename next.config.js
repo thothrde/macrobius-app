@@ -3,14 +3,15 @@ const nextConfig = {
   output: 'export',
   basePath: '/macrobius-app',
   assetPrefix: '/macrobius-app/',
-  trailingSlash: true,
   images: {
     unoptimized: true
   },
-  webpack: (config) => {
-    config.resolve.fallback = { fs: false };
-    return config;
-  },
+  trailingSlash: true,
+  experimental: {
+    images: {
+      unoptimized: true
+    }
+  }
 }
 
 module.exports = nextConfig
