@@ -1,17 +1,18 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   output: 'export',
+  images: { unoptimized: true },
+  assetPrefix: '/macrobius-app',
   basePath: '/macrobius-app',
-  assetPrefix: '/macrobius-app/',
-  images: {
-    unoptimized: true
-  },
   trailingSlash: true,
-  experimental: {
-    images: {
-      unoptimized: true
-    }
-  }
+  webpack: (config) => {
+    config.resolve.fallback = {
+      fs: false,
+      path: false,
+      process: false
+    };
+    return config;
+  },
 }
 
 module.exports = nextConfig
