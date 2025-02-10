@@ -1,1 +1,1 @@
-/* Main code */
+function loadJSFile(){...}

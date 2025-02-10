@@ -1,1 +1,1 @@
-/* Webpack JS */
+webpack config
