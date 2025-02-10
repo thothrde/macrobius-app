@@ -1,18 +1,17 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   output: 'export',
-  images: { unoptimized: true },
-  assetPrefix: '/macrobius-app',
-  basePath: '/macrobius-app',
-  trailingSlash: true,
-  webpack: (config) => {
-    config.resolve.fallback = {
-      fs: false,
-      path: false,
-      process: false
-    };
-    return config;
+  basePath: process.env.NEXT_PUBLIC_BASE_PATH || '/macrobius-app',
+  assetPrefix: process.env.NEXT_PUBLIC_BASE_PATH || '/macrobius-app',
+  images: {
+    unoptimized: true,
+    loader: 'custom',
+    loaderFile: './image-loader.js'
   },
+  trailingSlash: true,
+  experimental: {
+    appDir: false
+  }
 }
 
 module.exports = nextConfig
