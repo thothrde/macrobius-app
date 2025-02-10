@@ -1,1 +1,1 @@
-self.__BUILD_MANIFEST={...}
+/* Build manifest */

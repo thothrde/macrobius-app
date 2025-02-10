@@ -1,1 +1,1 @@
-webpack config
+/* Webpack chunk */
