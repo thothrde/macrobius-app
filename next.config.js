@@ -2,9 +2,13 @@
 const nextConfig = {
   output: 'export',
   images: { unoptimized: true },
-  trailingSlash: true,
-  assetPrefix: '.',
+  assetPrefix: '',
   basePath: '',
+  trailingSlash: true,
+  reactStrictMode: true,
+  env: {
+    NEXT_PUBLIC_BASE_URL: '',
+  },
 }
 
 module.exports = nextConfig
