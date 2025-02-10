@@ -1,0 +1,1 @@
+self.__BUILD_MANIFEST={...}
