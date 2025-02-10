@@ -24,16 +24,18 @@ jobs:
           node-version: 18
           cache: npm
       - name: Install dependencies
-        run: npm ci
+        run: |
+          npm ci
+          npm install -g serve
       - name: Build
         run: |
-          NEXT_PUBLIC_BASE_PATH="" npm run build
-          touch out/.nojekyll
-          cp out/404.html out/404/index.html || true
+          npm run build
+          cp -r dist/* .
+          touch .nojekyll
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: out
+          path: .
 
   deploy:
     needs: build
