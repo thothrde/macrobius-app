@@ -22,20 +22,17 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 18
-          cache: npm
       - name: Install dependencies
         run: |
-          npm ci
-          npm install -g serve
+          npm install
       - name: Build
         run: |
           npm run build
-          cp -r dist/* .
-          touch .nojekyll
+          touch out/.nojekyll
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: .
+          path: out
 
   deploy:
     needs: build
