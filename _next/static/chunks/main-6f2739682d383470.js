@@ -1,1 +1,1 @@
-/* Main JS content */
+/* Main code */

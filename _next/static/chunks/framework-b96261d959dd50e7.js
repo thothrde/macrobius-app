@@ -1,1 +1,1 @@
-// framework chunk content
+/* Framework code */
