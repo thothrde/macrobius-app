@@ -1,15 +1,18 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   output: 'export',
-  distDir: 'dist',
+  basePath: '',
   images: { unoptimized: true },
-  assetPrefix: '.',
   trailingSlash: true,
   experimental: {
     appDir: false
   },
   webpack: (config) => {
-    return config
+    config.resolve.fallback = {
+      fs: false,
+      path: false
+    };
+    return config;
   }
 }
 
