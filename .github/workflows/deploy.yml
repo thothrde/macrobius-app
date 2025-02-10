@@ -17,8 +17,6 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
-    env:
-      NEXT_PUBLIC_BASE_PATH: /macrobius-app
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -26,15 +24,12 @@ jobs:
           node-version: 18
           cache: npm
       - name: Install dependencies
-        run: |
-          npm ci
-          npm install -g next
+        run: npm ci
       - name: Build
         run: |
-          npm run build
+          NEXT_PUBLIC_BASE_PATH="" npm run build
           touch out/.nojekyll
-      - name: Configure Pages
-        uses: actions/configure-pages@v4
+          cp out/404.html out/404/index.html || true
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
