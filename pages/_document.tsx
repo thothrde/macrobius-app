@@ -1,8 +1,6 @@
 import { Html, Head, Main, NextScript } from 'next/document';
 
 export default function Document() {
-  const prefix = './';
-  
   return (
     <Html>
       <Head>
@@ -12,7 +10,21 @@ export default function Document() {
         <title>Macrobius Interactive</title>
         <script
           dangerouslySetInnerHTML={{
-            __html: `window.__NEXT_PREFIX__ = '${prefix}';`,
+            __html: `
+              (function() {
+                var originalGetElementById = document.getElementById;
+                document.getElementById = function() {
+                  var element = originalGetElementById.apply(this, arguments);
+                  if (element && element.tagName === 'SCRIPT') {
+                    var src = element.getAttribute('src');
+                    if (src && src.startsWith('/')) {
+                      element.setAttribute('src', '.' + src);
+                    }
+                  }
+                  return element;
+                };
+              })();
+            `,
           }}
         />
       </Head>
