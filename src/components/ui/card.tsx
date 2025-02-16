@@ -1,1 +1,0 @@
-// Gleicher Card-Code wie im privaten Repository

@@ -1,1 +1,0 @@
-// Der gleiche aktualisierte React-Code wie im privaten Repository
