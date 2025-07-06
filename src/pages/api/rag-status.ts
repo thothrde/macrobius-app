@@ -14,7 +14,7 @@ export default async function handler(
 
   const ORACLE_CLOUD_IP = '152.70.184.232';
   const RAG_PORT = '8081';
-  const RAG_STATUS_URL = `http://${ORACLE_CLOUD_IP}:${RAG_PORT}/api/rag-status`;
+  const RAG_STATUS_URL = `http://${ORACLE_CLOUD_IP}:${RAG_PORT}/api/health`;
 
   try {
     console.log(`🔍 Checking RAG status at: ${RAG_STATUS_URL}`);
