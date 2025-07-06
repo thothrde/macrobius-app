@@ -13,7 +13,7 @@ export default async function handler(
   }
 
   const ORACLE_CLOUD_IP = '152.70.184.232';
-  const RAG_PORT = '8080';
+  const RAG_PORT = '8081';
   const RAG_STATUS_URL = `http://${ORACLE_CLOUD_IP}:${RAG_PORT}/api/rag-status`;
 
   try {
@@ -58,7 +58,7 @@ export default async function handler(
         likely_causes: [
           'Oracle Cloud RAG system not running (python3 free_macrobius_rag.py)',
           'Missing dependencies (pysqlite3, chromadb, ollama)',
-          'Port 8080 not accessible',
+          'Port 8081 not accessible',
           'Firewall blocking connection'
         ],
         proxy_info: {

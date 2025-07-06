@@ -29,7 +29,7 @@ export default async function handler(
   }
 
   const ORACLE_CLOUD_IP = '152.70.184.232';
-  const RAG_PORT = '8080';
+  const RAG_PORT = '8081';
   const RAG_CHAT_URL = `http://${ORACLE_CLOUD_IP}:${RAG_PORT}/api/chat`;
 
   try {
@@ -88,14 +88,14 @@ export default async function handler(
           'Missing pysqlite3 dependency causing startup failure',
           'Ollama LLM not responding',
           'Vector database (Chroma) not initialized',
-          'Port 8080 connection timeout'
+          'Port 8081 connection timeout'
         ],
         troubleshooting: [
           'SSH to Oracle Cloud: ssh -i ~/.ssh/ssh-key-2025-02-17.key opc@152.70.184.232',
           'Install dependencies: pip3 install --user pysqlite3-binary',
           'Start RAG system: cd /home/opc/macrobius_rag && python3 free_macrobius_rag.py &',
           'Check process: ps aux | grep python',
-          'Test locally: curl http://localhost:8080/api/rag-status'
+          'Test locally: curl http://localhost:8081/api/rag-status'
         ],
         alternative_features: [
           'KI-Kulturanalyse - Advanced cultural analysis',
