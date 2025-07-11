@@ -2,107 +2,174 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Custom Azure Background */
-.bg-azure {
-  background: #007BC7;
-  background: linear-gradient(135deg, #007BC7 0%, #005A9C 100%);
+/* Custom CSS for Macrobius Digital Platform */
+
+:root {
+  --color-primary: #8B5CF6;
+  --color-secondary: #06B6D4;
+  --color-accent: #10B981;
+  --color-background: #0F172A;
+  --color-surface: #1E293B;
 }
 
-/* Wine and Gold Color Classes */
-.text-gold {
-  color: #FFD700 !important;
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
 }
 
-.text-wine {
-  color: #722F37 !important;
+html,
+body {
+  max-width: 100vw;
+  overflow-x: hidden;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  background: linear-gradient(135deg, #0F172A 0%, #1E293B 50%, #0F172A 100%);
+  color: white;
+  scroll-behavior: smooth;
 }
 
-.bg-wine {
-  background-color: #722F37 !important;
+body {
+  min-height: 100vh;
+  background-attachment: fixed;
 }
 
-.bg-gold {
-  background-color: #FFD700 !important;
+a {
+  color: inherit;
+  text-decoration: none;
 }
 
-/* Wine Button Styles */
-.btn-wine {
-  @apply px-6 py-3 rounded-lg font-medium;
-  @apply hover:scale-105 active:scale-95;
-  @apply transition-all duration-500;
-  @apply shadow-lg hover:shadow-xl;
-  background-color: #722F37;
-  color: #FFD700;
-  border: 2px solid #FFD700;
-}
-
-.btn-wine:hover {
-  background-color: #8B3A42;
-  transform: scale(1.05);
-  box-shadow: 0 10px 25px rgba(114, 47, 55, 0.4);
-}
-
-.btn-wine-large {
-  @apply px-8 py-4 rounded-lg font-medium text-lg;
-  @apply hover:scale-105 active:scale-95;
-  @apply transition-all duration-500;
-  @apply shadow-lg hover:shadow-xl;
-  @apply flex items-center justify-center;
-  background-color: #722F37;
-  color: #FFD700;
-  border: 2px solid #FFD700;
-}
-
-.btn-wine-large:hover {
-  background-color: #8B3A42;
-  transform: scale(1.05);
-  box-shadow: 0 15px 35px rgba(114, 47, 55, 0.5);
-}
-
-/* OPTIMIZED: Static Twinkling Stars Animation */
-@keyframes twinkle {
-  0%, 100% { 
-    opacity: 0.3; 
-    transform: scale(0.8); 
-  }
-  50% { 
-    opacity: 1; 
-    transform: scale(1.2); 
-  }
-}
-
-/* Custom Scrollbar */
+/* Custom scrollbar */
 ::-webkit-scrollbar {
   width: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: rgba(0, 123, 199, 0.1);
+  background: rgba(15, 23, 42, 0.5);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #722F37;
+  background: rgba(139, 92, 246, 0.5);
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #8B3A42;
+  background: rgba(139, 92, 246, 0.7);
 }
 
-/* Focus Styles for Accessibility */
-.btn-wine:focus,
-.btn-wine-large:focus {
-  outline: 3px solid #FFD700;
-  outline-offset: 2px;
+/* Loading animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-/* Text Selection */
-::selection {
-  background: #FFD700;
-  color: #722F37;
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 
-::-moz-selection {
-  background: #FFD700;
-  color: #722F37;
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Utility classes */
+.animate-fade-in {
+  animation: fadeIn 0.6s ease-out;
+}
+
+.animate-slide-in-left {
+  animation: slideInLeft 0.6s ease-out;
+}
+
+.animate-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+/* Glass morphism effects */
+.glass {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Button styles */
+.btn-primary {
+  @apply px-6 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-all duration-200 font-medium;
+}
+
+.btn-secondary {
+  @apply px-6 py-3 bg-white/10 text-white border border-white/20 rounded-lg hover:bg-white/20 transition-all duration-200 font-medium;
+}
+
+/* Input styles */
+.input-primary {
+  @apply w-full px-4 py-3 bg-white/20 border border-white/30 rounded-lg text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-transparent transition-all duration-200;
+}
+
+/* Card styles */
+.card {
+  @apply bg-white/10 backdrop-blur-md rounded-xl border border-white/20 p-6;
+}
+
+/* Text styles */
+.text-gradient {
+  @apply text-transparent bg-clip-text bg-gradient-to-r from-purple-200 via-blue-200 to-purple-200;
+}
+
+/* Layout styles */
+.container-main {
+  @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .section-padding {
+    @apply py-12 px-4;
+  }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  html {
+    color-scheme: dark;
+  }
+}
+
+/* Accessibility */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
