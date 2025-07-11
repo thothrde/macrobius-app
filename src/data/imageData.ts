@@ -1,70 +1,77 @@
-/**
- * Comprehensive Image Database
- * Contains all clickable images with rich cultural background information
- */
-
 export interface ImageInfo {
   id: string;
   src: string;
   title: string;
   subtitle?: string;
   description: string;
-  culturalContext: string;
-  historicalPeriod: string;
-  macrobiusConnection?: string;
-  tychoConnection?: string;
-  modernRelevance?: string;
-  latinQuote?: string;
-  translation?: string;
-  tags?: string[];
-  relatedImages?: string[];
-  section: string;
+  category: 'historical' | 'cultural' | 'astronomical' | 'literary';
+  period?: string;
+  source?: string;
+  culturalContext?: string;
 }
 
-export const imageDatabase: Record<string, ImageInfo> = {
-  // INTRO SECTION IMAGES
-  'macrobius-bottle': {
+export const imageDatabase: ImageInfo[] = [
+  {
     id: 'macrobius-bottle',
     src: '/MacrobiusBottle.jpg',
-    title: 'Macrobius\' Flaschenpost',
-    subtitle: 'Eine Botschaft durch die Jahrhunderte',
-    description: 'Diese symbolische Darstellung zeigt Macrobius\' Werke als "Flaschenpost" an die Zukunft - eine Metapher für die Übertragung antiker Weisheit durch die dunklen Jahrhunderte des Mittelalters bis zur Renaissance.',
-    culturalContext: 'Die Flaschenpost symbolisiert Macrobius\' bewusste Anstrengung, das kulturelle Erbe der spätantiken Welt für zukünftige Generationen zu bewahren. Seine Werke dienten als Brücke zwischen der klassischen Antike und der mittelalterlichen Gelehrsamkeit.',
-    historicalPeriod: '5. Jahrhundert n. Chr. (Symbolische Darstellung)',
-    macrobiusConnection: 'Macrobius verstand seine Rolle als Kulturbewahrer in einer Zeit des Umbruchs. Er sammelte und kommentierte antikes Wissen mit dem ausdrücklichen Ziel, es für die Nachwelt zu erhalten.',
-    tychoConnection: 'Tycho Brahe erkannte in Macrobius\' Werken die Brücke zwischen antiker astronomischer Weisheit und moderner Beobachtung. Pontanus\' Edition von 1597 machte diese "Flaschenpost" für die Renaissance-Wissenschaft zugänglich.',
-    modernRelevance: 'Heute verstehen wir Macrobius als frühen "Wissensmanger", der systematisch kulturelles Erbe digitalisierte und übertrug - ein Vordenker moderner Kulturerhaltung.',
-    latinQuote: 'Tradenda posteris antiquorum sapientia',
-    translation: 'Die Weisheit der Alten muss an die Nachwelt übertragen werden',
-    tags: ['Kulturerhaltung', 'Wissensvermittlung', 'Spätantike', 'Renaissance'],
-    relatedImages: ['tycho-assistant', 'macrobius-portrait'],
-    section: 'intro'
+    title: 'Macrobius Ambrosius Theodosius',
+    subtitle: 'Kultureller Bewahrer der spätantiken Welt',
+    description: 'Macrobius (ca. 385-430 n. Chr.) war ein römischer Gelehrter und Staatsmann, der durch seine Werke "Saturnalia" und "Commentarii in Somnium Scipionis" das kulturelle Erbe der Antike für die Nachwelt bewahrte.',
+    category: 'historical',
+    period: 'Spätantike (4.-5. Jahrhundert n. Chr.)',
+    source: 'Mittelalterliche Handschrift',
+    culturalContext: 'Bewahrung klassischer Bildung in der Zeit des Untergangs des Weströmischen Reiches'
+  },
+  {
+    id: 'rome-under',
+    src: '/Rome-under.jpg',
+    title: 'Das untergehende Römische Reich',
+    subtitle: 'Kultureller Niedergang und die Mission der Gelehrten',
+    description: 'Das 5. Jahrhundert markierte das Ende des Weströmischen Reiches. In dieser Zeit der Ungewissheit arbeiteten Gelehrte wie Macrobius daran, das kulturelle Erbe zu bewahren.',
+    category: 'historical',
+    period: '5. Jahrhundert n. Chr.',
+    source: 'Historische Darstellung',
+    culturalContext: 'Transformation der antiken Welt und Übergang zum Mittelalter'
+  },
+  {
+    id: 'tycho-assistant',
+    src: '/TychoAssistent.jpg',
+    title: 'Johannes Isaac Pontanus & Tycho Brahe',
+    subtitle: 'Astronomische Renaissance und die Wiederentdeckung',
+    description: 'Die Renaissance brachte eine Wiederentdeckung antiker Texte. Astronomen wie Tycho Brahe studierten Macrobius\' astronomische Kommentare und erkannten deren wissenschaftlichen Wert.',
+    category: 'astronomical',
+    period: 'Renaissance (16.-17. Jahrhundert)',
+    source: 'Historisches Porträt',
+    culturalContext: 'Wissenschaftliche Revolution und Wiederentdeckung antiker Wissenschaft'
+  },
+  {
+    id: 'astrolabe',
+    src: '/Astrolab.jpg',
+    title: 'Historisches Astrolabium',
+    subtitle: 'Instrument antiker Astronomie',
+    description: 'Das Astrolabium war ein zentrales Instrument der antiken und mittelalterlichen Astronomie. Macrobius beschrieb in seinen Werken die Verwendung solcher Instrumente zur Himmelsbeobachtung.',
+    category: 'astronomical',
+    period: 'Antike bis Mittelalter',
+    source: 'Historisches Instrument',
+    culturalContext: 'Astronomische Praxis und Himmelsbeobachtung in der Antike'
   }
-};
+];
 
-// Helper functions for image integration
-export const getImagesBySection = (section: string): ImageInfo[] => {
-  return Object.values(imageDatabase).filter(image => image.section === section);
-};
+export function getImagesBySection(section: string): ImageInfo[] {
+  switch (section) {
+    case 'historical':
+      return imageDatabase.filter(img => img.category === 'historical');
+    case 'cultural':
+      return imageDatabase.filter(img => img.category === 'cultural');
+    case 'astronomical':
+      return imageDatabase.filter(img => img.category === 'astronomical');
+    case 'literary':
+      return imageDatabase.filter(img => img.category === 'literary');
+    default:
+      return imageDatabase;
+  }
+}
 
-export const getImageById = (id: string): ImageInfo | undefined => {
-  return imageDatabase[id];
-};
-
-export const getRelatedImages = (imageId: string): ImageInfo[] => {
-  const image = imageDatabase[imageId];
-  if (!image || !image.relatedImages) return [];
-  
-  return image.relatedImages
-    .map(id => imageDatabase[id])
-    .filter(img => img !== undefined);
-};
-
-export const searchImages = (query: string): ImageInfo[] => {
-  const lowerQuery = query.toLowerCase();
-  return Object.values(imageDatabase).filter(image => 
-    image.title.toLowerCase().includes(lowerQuery) ||
-    image.description.toLowerCase().includes(lowerQuery) ||
-    image.tags?.some(tag => tag.toLowerCase().includes(lowerQuery))
-  );
-};
+export function getImageById(id: string): ImageInfo | undefined {
+  return imageDatabase.find(img => img.id === id);
+}
