@@ -1,18 +1,43 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  reactStrictMode: true,
+  swcMinify: true,
   experimental: {
-    optimizeCss: true
+    appDir: false
   },
-  // Ignore mobile directory and TypeScript errors during build
-  typescript: {
-    ignoreBuildErrors: true
+  env: {
+    ORACLE_BACKEND_URL: 'http://152.70.184.232:8080',
+    MACROBIUS_VERSION: '2.0.0'
   },
-  eslint: {
-    ignoreDuringBuilds: true
+  async redirects() {
+    return [
+      {
+        source: '/health',
+        destination: '/api/status',
+        permanent: true,
+      },
+    ]
   },
-  images: {
-    domains: ['localhost'],
-    unoptimized: true
+  async headers() {
+    return [
+      {
+        source: '/api/:path*',
+        headers: [
+          {
+            key: 'Access-Control-Allow-Origin',
+            value: '*'
+          },
+          {
+            key: 'Access-Control-Allow-Methods',
+            value: 'GET, POST, PUT, DELETE, OPTIONS'
+          },
+          {
+            key: 'Access-Control-Allow-Headers',
+            value: 'Content-Type, Authorization'
+          }
+        ]
+      }
+    ]
   }
 };
 
