@@ -1,0 +1,108 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom Azure Background */
+.bg-azure {
+  background: #007BC7;
+  background: linear-gradient(135deg, #007BC7 0%, #005A9C 100%);
+}
+
+/* Wine and Gold Color Classes */
+.text-gold {
+  color: #FFD700 !important;
+}
+
+.text-wine {
+  color: #722F37 !important;
+}
+
+.bg-wine {
+  background-color: #722F37 !important;
+}
+
+.bg-gold {
+  background-color: #FFD700 !important;
+}
+
+/* Wine Button Styles */
+.btn-wine {
+  @apply px-6 py-3 rounded-lg font-medium;
+  @apply hover:scale-105 active:scale-95;
+  @apply transition-all duration-500;
+  @apply shadow-lg hover:shadow-xl;
+  background-color: #722F37;
+  color: #FFD700;
+  border: 2px solid #FFD700;
+}
+
+.btn-wine:hover {
+  background-color: #8B3A42;
+  transform: scale(1.05);
+  box-shadow: 0 10px 25px rgba(114, 47, 55, 0.4);
+}
+
+.btn-wine-large {
+  @apply px-8 py-4 rounded-lg font-medium text-lg;
+  @apply hover:scale-105 active:scale-95;
+  @apply transition-all duration-500;
+  @apply shadow-lg hover:shadow-xl;
+  @apply flex items-center justify-center;
+  background-color: #722F37;
+  color: #FFD700;
+  border: 2px solid #FFD700;
+}
+
+.btn-wine-large:hover {
+  background-color: #8B3A42;
+  transform: scale(1.05);
+  box-shadow: 0 15px 35px rgba(114, 47, 55, 0.5);
+}
+
+/* OPTIMIZED: Static Twinkling Stars Animation */
+@keyframes twinkle {
+  0%, 100% { 
+    opacity: 0.3; 
+    transform: scale(0.8); 
+  }
+  50% { 
+    opacity: 1; 
+    transform: scale(1.2); 
+  }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(0, 123, 199, 0.1);
+}
+
+::-webkit-scrollbar-thumb {
+  background: #722F37;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #8B3A42;
+}
+
+/* Focus Styles for Accessibility */
+.btn-wine:focus,
+.btn-wine-large:focus {
+  outline: 3px solid #FFD700;
+  outline-offset: 2px;
+}
+
+/* Text Selection */
+::selection {
+  background: #FFD700;
+  color: #722F37;
+}
+
+::-moz-selection {
+  background: #FFD700;
+  color: #722F37;
+}

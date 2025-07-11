@@ -1,11 +1,17 @@
-import type { AppProps } from 'next/app';
-import { LanguageProvider } from '../contexts/LanguageContext';
-import '../styles/globals.css';
+// Main App component for Macrobius Educational Platform
+import '@/styles/globals.css'
+import type { AppProps } from 'next/app'
+import Analytics from '@/components/Analytics'
+import { ErrorBoundary } from '@/components/ErrorBoundary'
+import { LanguageProvider } from '@/contexts/LanguageContext'
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
-    <LanguageProvider>
-      <Component {...pageProps} />
-    </LanguageProvider>
-  );
+    <ErrorBoundary>
+      <LanguageProvider>
+        <Component {...pageProps} />
+        <Analytics />
+      </LanguageProvider>
+    </ErrorBoundary>
+  )
 }
