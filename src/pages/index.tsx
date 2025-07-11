@@ -1,5 +1,5 @@
 /**
- * 🏦 MACROBIUS - HYBRID TIER-COMPLETE VERSION
+ * 🏛️ MACROBIUS - HYBRID TIER-COMPLETE VERSION
  * ✅ ADVANCED: TIER-COMPLETE components (40-70KB)
  * ✅ WORKING: Preserved all translation fixes and functionality
  * ✅ COMPLETE: Language switching + Banquet content + Oracle Cloud
@@ -292,7 +292,7 @@ export default function MacrobiusCulturalApp() {
             <div className="flex flex-col space-y-2">
               {/* Core Sections */}
               {[
-                { id: 'hero', text: safeT('nav.intro'), icon: '🏦' },
+                { id: 'hero', text: safeT('nav.intro'), icon: '🏛️' },
                 { id: 'quiz', text: safeT('nav.quiz'), icon: '📝' },
                 { id: 'worldmap', text: safeT('nav.worldmap'), icon: '🗺️' },
                 { id: 'cosmos', text: safeT('nav.cosmos'), icon: '🌌' },
@@ -640,7 +640,7 @@ export default function MacrobiusCulturalApp() {
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                     <div>
                       <h3 className="text-2xl font-semibold text-yellow-400 mb-4">
-                        🏦 Biographie & Kontext
+                        🏛️ Biographie & Kontext
                       </h3>
                       <p className="text-white/90 leading-relaxed text-justify">
                         Macrobius Ambrosius Theodosius war eine der faszinierendsten Gestalten der späten Antike - ein Mann, der an der Schwelle zwischen zwei Welten stand. Als hoher Verwaltungsbeamter des untergehenden Weströmischen Reiches und gleichzeitig als leidenschaftlicher Gelehrter verkörperte er die dramatische Spannung seiner Zeit: den Versuch, die klassische Kultur vor dem Untergang zu bewahren.
