@@ -1,206 +1,102 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
-
-export type Language = 'DE' | 'EN' | 'LA';
+import React, { createContext, useContext, useState, ReactNode } from 'react';
 
 interface LanguageContextType {
-  language: Language;
-  setLanguage: (language: Language) => void;
+  language: string;
+  setLanguage: (lang: string) => void;
   t: (key: string) => string;
-  isHydrated: boolean;
 }
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
-// 🔧 COMPLETE TRANSLATION OBJECT - SSG COMPATIBLE
-const translations = {
-  DE: {
-    // Navigation translations
-    'nav.home': 'Home',
-    'nav.intro': 'Einführung',
-    'nav.quiz': 'Quiz',
-    'nav.worldmap': 'Weltkarte',
-    'nav.cosmos': 'Kosmos',
-    'nav.banquet': 'Gastmahl',
-    'nav.textsearch': 'Textsuche',
-    'nav.learning': 'Lernen',
-    'nav.visualizations': 'Visualisierungen',
-    'nav.ai_systems': 'KI-SYSTEME',
-    'nav.ai_cultural': 'KI-Kulturanalyse',
-    'nav.ai_learning': 'Lernpfade',
-    'nav.ai_tutoring': 'KI-Tutor',
-    'nav.ai_modules': 'Kulturmodule',
-    'nav.oracle_status': '1.401 Kulturelle Texte',
-    
-    // Hero section translations
-    'hero.badge': 'Kulturschätze der Antike',
-    'hero.title.line1': 'Macrobius',
-    'hero.title.line2': 'Digital',
-    'hero.description': 'Entdecken Sie die Kulturschätze der Antike',
-    
-    // UI elements
-    'loading': 'Wird geladen...',
-    'error': 'Ein Fehler ist aufgetreten',
-    'back': 'Zurück',
-    'next': 'Weiter',
-    'submit': 'Senden',
-    'close': 'Schließen',
-  },
-  EN: {
-    // Navigation translations
-    'nav.home': 'Home',
-    'nav.intro': 'Introduction',
-    'nav.quiz': 'Quiz',
-    'nav.worldmap': 'World Map',
-    'nav.cosmos': 'Cosmos',
-    'nav.banquet': 'Banquet',
-    'nav.textsearch': 'Text Search',
-    'nav.learning': 'Learning',
-    'nav.visualizations': 'Visualizations',
-    'nav.ai_systems': 'AI SYSTEMS',
-    'nav.ai_cultural': 'AI Cultural Analysis',
-    'nav.ai_learning': 'Learning Paths',
-    'nav.ai_tutoring': 'AI Tutor',
-    'nav.ai_modules': 'Cultural Modules',
-    'nav.oracle_status': '1,401 Cultural Texts',
-    
-    // Hero section translations
-    'hero.badge': 'Cultural Treasures of Antiquity',
-    'hero.title.line1': 'Macrobius',
-    'hero.title.line2': 'Digital',
-    'hero.description': 'Discover the Cultural Treasures of Antiquity',
-    
-    // UI elements
-    'loading': 'Loading...',
-    'error': 'An error occurred',
-    'back': 'Back',
-    'next': 'Next',
-    'submit': 'Submit',
-    'close': 'Close',
-  },
-  LA: {
-    // Navigation translations
-    'nav.home': 'Domus',
-    'nav.intro': 'Introductio',
-    'nav.quiz': 'Quaestiones',
-    'nav.worldmap': 'Mappa Mundi',
-    'nav.cosmos': 'Cosmos',
-    'nav.banquet': 'Convivium',
-    'nav.textsearch': 'Quaestio Textuum',
-    'nav.learning': 'Discere',
-    'nav.visualizations': 'Visualizationes',
-    'nav.ai_systems': 'SYSTEMATA AI',
-    'nav.ai_cultural': 'AI Analysis Culturalis',
-    'nav.ai_learning': 'Semitae Discendi',
-    'nav.ai_tutoring': 'AI Praeceptor',
-    'nav.ai_modules': 'Moduli Culturales',
-    'nav.oracle_status': '1.401 Textus Culturales',
-    
-    // Hero section translations
-    'hero.badge': 'Thesauri Culturales Antiquitatis',
-    'hero.title.line1': 'Macrobius',
-    'hero.title.line2': 'Digitalis',
-    'hero.description': 'Thesauros Culturales Antiquitatis Invenite',
-    
-    // UI elements
-    'loading': 'Oneratur...',
-    'error': 'Error accidit',
-    'back': 'Redire',
-    'next': 'Sequens',
-    'submit': 'Mittere',
-    'close': 'Claudere',
-  }
-} as const;
-
-// 🔧 SSG-COMPATIBLE TRANSLATION FUNCTION - Works during build and runtime
-function getTranslation(key: string, language: Language = 'DE'): string {
-  try {
-    // Handle nested keys (like 'nav.intro')
-    const keys = key.split('.');
-    let value: any = translations[language];
-    
-    for (const k of keys) {
-      if (value && typeof value === 'object' && k in value) {
-        value = value[k];
-      } else {
-        // Translation not found - try German as fallback, then English
-        if (language !== 'DE') {
-          return getTranslation(key, 'DE');
-        } else if (language !== 'EN') {
-          return getTranslation(key, 'EN');
-        }
-        // Don't log warnings during build to avoid console spam
-        if (typeof window !== 'undefined') {
-          console.warn(`Translation missing: ${key} (${language})`);
-        }
-        return key;
-      }
-    }
-    
-    return typeof value === 'string' ? value : key;
-  } catch (error) {
-    if (typeof window !== 'undefined') {
-      console.error('Translation error:', error);
-    }
-    return key;
-  }
+interface LanguageProviderProps {
+  children: ReactNode;
 }
 
-export function LanguageProvider({ children }: { children: React.ReactNode }) {
-  const [language, setLanguage] = useState<Language>('DE');
-  const [isHydrated, setIsHydrated] = useState(false);
+const translations = {
+  en: {
+    'hero.title': 'Macrobius Digital Humanities Platform',
+    'hero.subtitle': 'Explore Roman Culture Through AI-Enhanced Classical Texts',
+    'nav.home': 'Home',
+    'nav.search': 'Search',
+    'nav.learn': 'Learn',
+    'nav.about': 'About',
+    'ai.tutor.title': 'AI Tutoring System',
+    'ai.tutor.subtitle': 'Intelligent Learning Assistant',
+    'ai.tutor.description': 'Advanced AI system providing context-aware guidance and personalized cultural explanations.',
+    'search.title': 'Semantic Text Search',
+    'search.subtitle': 'AI-Powered Search Through 1,401 Passages',
+    'vocabulary.title': 'Vocabulary Trainer',
+    'vocabulary.subtitle': 'Spaced Repetition System with Cultural Context',
+    'grammar.title': 'Grammar Explainer',
+    'grammar.subtitle': 'Interactive Grammar Learning with Examples',
+    'quiz.title': 'Cultural Quiz System',
+    'quiz.subtitle': 'Test Your Knowledge of Roman Culture',
+    'learning.title': 'Personalized Learning Paths',
+    'learning.subtitle': 'AI-Adaptive Learning Experience'
+  },
+  de: {
+    'hero.title': 'Macrobius Digital Humanities Plattform',
+    'hero.subtitle': 'Erkunde die römische Kultur durch KI-erweiterte klassische Texte',
+    'nav.home': 'Startseite',
+    'nav.search': 'Suchen',
+    'nav.learn': 'Lernen',
+    'nav.about': 'Über',
+    'ai.tutor.title': 'KI-Tutorsystem',
+    'ai.tutor.subtitle': 'Intelligenter Lernassistent',
+    'ai.tutor.description': 'Fortschrittliches KI-System mit kontextbewusster Anleitung und personalisierten kulturellen Erklärungen.',
+    'search.title': 'Semantische Textsuche',
+    'search.subtitle': 'KI-gestützte Suche durch 1.401 Textstellen',
+    'vocabulary.title': 'Vokabeltrainer',
+    'vocabulary.subtitle': 'Spaced Repetition System mit kulturellem Kontext',
+    'grammar.title': 'Grammatikerklärer',
+    'grammar.subtitle': 'Interaktives Grammatiklernen mit Beispielen',
+    'quiz.title': 'Kulturelles Quizsystem',
+    'quiz.subtitle': 'Teste dein Wissen über die römische Kultur',
+    'learning.title': 'Personalisierte Lernpfade',
+    'learning.subtitle': 'KI-adaptive Lernerfahrung'
+  },
+  la: {
+    'hero.title': 'Macrobius Humanitatum Digitalium Suggestus',
+    'hero.subtitle': 'Explora Culturam Romanam per Textus Classicos AI-Auctos',
+    'nav.home': 'Domus',
+    'nav.search': 'Quaerere',
+    'nav.learn': 'Discere',
+    'nav.about': 'De',
+    'ai.tutor.title': 'Systema Tutoris AI',
+    'ai.tutor.subtitle': 'Auxilium Intelligens Discendi',
+    'ai.tutor.description': 'Systema AI provectum praebens directionem contextualem et explicationes culturales personalizatas.',
+    'search.title': 'Quaestio Semantica Textuum',
+    'search.subtitle': 'Quaestio AI per 1.401 Loca',
+    'vocabulary.title': 'Exercitator Vocabulorum',
+    'vocabulary.subtitle': 'Systema Repetitionis Spatiosae cum Contextu Culturali',
+    'grammar.title': 'Explicator Grammaticae',
+    'grammar.subtitle': 'Discere Grammaticam Interactive cum Exemplis',
+    'quiz.title': 'Systema Quiz Culturalis',
+    'quiz.subtitle': 'Proba Scientiam Tuam Culturae Romanae',
+    'learning.title': 'Itinera Discendi Personalizata',
+    'learning.subtitle': 'Experientia Discendi AI-Adaptiva'
+  }
+};
 
-  // Load language from localStorage on mount - HYDRATION SAFE
-  useEffect(() => {
-    try {
-      const savedLanguage = localStorage.getItem('macrobius-language') as Language;
-      if (savedLanguage && ['DE', 'EN', 'LA'].includes(savedLanguage)) {
-        setLanguage(savedLanguage);
-      }
-    } catch (error) {
-      console.warn('Error loading language preference:', error);
-    }
-    setIsHydrated(true);
-  }, []);
+export function LanguageProvider({ children }: LanguageProviderProps) {
+  const [language, setLanguage] = useState('en');
 
-  // Save language to localStorage when changed
-  useEffect(() => {
-    if (isHydrated) {
-      try {
-        localStorage.setItem('macrobius-language', language);
-      } catch (error) {
-        console.warn('Error saving language preference:', error);
-      }
-    }
-  }, [language, isHydrated]);
-
-  // Translation function - SSG compatible with hydration safety
   const t = (key: string): string => {
-    return getTranslation(key, language);
+    const lang = translations[language as keyof typeof translations] || translations.en;
+    return lang[key as keyof typeof lang] || key;
   };
 
   return (
-    <LanguageContext.Provider value={{ language, setLanguage, t, isHydrated }}>
+    <LanguageContext.Provider value={{ language, setLanguage, t }}>
       {children}
     </LanguageContext.Provider>
   );
 }
 
-export function useLanguage(): LanguageContextType {
+export function useLanguage() {
   const context = useContext(LanguageContext);
-  
-  // During SSG, context might not be available, so provide fallback
   if (context === undefined) {
-    // Return a fallback context for SSG
-    return {
-      language: 'DE' as Language,
-      setLanguage: () => {},
-      t: (key: string) => getTranslation(key, 'DE'),
-      isHydrated: false
-    };
+    throw new Error('useLanguage must be used within a LanguageProvider');
   }
-  
   return context;
 }
-
-// Export the standalone translation function for direct use
-export { getTranslation };
