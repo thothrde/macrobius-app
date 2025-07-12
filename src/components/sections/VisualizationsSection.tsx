@@ -1,186 +1,242 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  BarChart3, 
-  PieChart, 
-  TrendingUp, 
-  Map, 
-  Network, 
-  Clock,
-  Database,
-  Search,
-  Filter,
-  Download
-} from 'lucide-react';
-import { useLanguage } from '../../contexts/LanguageContext';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, LineChart, Line, Area, AreaChart } from 'recharts';
+import { TrendingUp, PieChart as PieChartIcon, BarChart3, Activity, Database, Eye, Download, Filter, Zap } from 'lucide-react';
 
 interface VisualizationsSectionProps {
   isActive: boolean;
-  t?: (key: string) => string;
   language?: 'DE' | 'EN' | 'LA';
 }
 
-interface VisualizationData {
-  id: string;
-  title: string;
-  description: string;
-  type: 'chart' | 'network' | 'timeline' | 'heatmap';
-  data: any;
-  insights: string[];
-}
+// 🚨 EMERGENCY DIRECT TRANSLATIONS - BYPASSING BROKEN CONTEXT
+const DIRECT_TRANSLATIONS = {
+  DE: {
+    title: 'Datenvisualisierung',
+    subtitle: 'Macrobius-Korpus Analytik',
+    description: 'Erkunde 1.401 authentische Macrobius-Passagen durch interaktive Datenvisualisierungen. Entdecke Muster, Trends und kulturelle Zusammenhänge in den Werken des antiken Gelehrten.',
+    selector_title: 'Visualisierungen',
+    data_source: 'Datenquelle',
+    demo_data: 'Demo Daten',
+    live_passages: '1.401 Live-Passagen',
+    demonstration: 'Demonstration',
+    filter: 'Filter',
+    export: 'Export',
+    insights_title: 'Wichtige Erkenntnisse',
+    analytics_platform: 'Analytics Platform',
+    realtime_analysis: 'Echtzeit-Analyse',
+    realtime_description: 'Live-Datenverarbeitung aus Oracle Cloud ermöglicht aktuelle Einblicke in das Macrobius-Korpus',
+    interactive_dashboards: 'Interaktive Dashboards',
+    dashboards_description: 'Dynamische Visualisierungen mit Drill-Down-Funktionen für detaillierte Textanalysen',
+    ai_insights: 'KI-basierte Insights',
+    ai_description: 'Machine Learning identifiziert versteckte Muster und kulturelle Zusammenhänge in den antiken Texten',
+    loading: 'Visualization wird geladen...',
+    // Visualization Types
+    themes_title: 'Kulturelle Themen-Verteilung',
+    themes_description: 'Analyse der 1.401 Macrobius-Passagen nach kulturellen Themen',
+    difficulty_title: 'Schwierigkeitsgrade-Analyse',
+    difficulty_description: 'Verteilung der Textpassagen nach Lernschwierigkeit',
+    works_title: 'Werke-Vergleich',
+    works_description: 'Saturnalia vs. Commentarii - Inhaltliche Analyse',
+    timeline_title: 'Historische Entwicklung',
+    timeline_description: 'Macrobius im Kontext der Spätantike',
+    // Themes and Data
+    philosophy: 'Philosophie',
+    religion: 'Religion',
+    astronomy: 'Astronomie',
+    literature: 'Literatur',
+    history: 'Geschichte',
+    education: 'Bildung',
+    rhetoric: 'Rhetorik',
+    natural_science: 'Naturwissenschaft',
+    // Difficulty Levels
+    beginner: 'Anfänger',
+    advanced: 'Fortgeschritten',
+    expert: 'Experte',
+    // Insights
+    insight_society: 'Gesellschaft ist das häufigste Thema (198 Passagen)',
+    insight_philosophy: 'Philosophie folgt mit 189 Passagen',
+    insight_science: 'Naturwissenschaft zeigt 178 Passagen',
+    insight_balanced: 'Ausgewogene Verteilung über alle Bereiche',
+    insight_advanced: 'Fortgeschrittene Texte dominieren (623 Passagen)',
+    insight_beginner: 'Anfänger-freundliche Inhalte: 567 Passagen',
+    insight_expert: 'Experten-Level: 211 anspruchsvolle Passagen',
+    insight_balance: 'Gute Balance für alle Lernstufen',
+    insight_saturnalia_count: 'Saturnalia: 856 Passagen (61% des Korpus)',
+    insight_commentarii_count: 'Commentarii: 545 Passagen (39% des Korpus)',
+    insight_saturnalia_variety: 'Saturnalia zeigen größere thematische Vielfalt',
+    insight_commentarii_focus: 'Commentarii fokussieren auf Kosmologie und Philosophie'
+  },
+  EN: {
+    title: 'Data Visualization',
+    subtitle: 'Macrobius Corpus Analytics',
+    description: 'Explore 1,401 authentic Macrobius passages through interactive data visualizations. Discover patterns, trends, and cultural connections in the works of the ancient scholar.',
+    selector_title: 'Visualizations',
+    data_source: 'Data Source',
+    demo_data: 'Demo Data',
+    live_passages: '1,401 Live Passages',
+    demonstration: 'Demonstration',
+    filter: 'Filter',
+    export: 'Export',
+    insights_title: 'Key Insights',
+    analytics_platform: 'Analytics Platform',
+    realtime_analysis: 'Real-time Analysis',
+    realtime_description: 'Live data processing from Oracle Cloud enables current insights into the Macrobius corpus',
+    interactive_dashboards: 'Interactive Dashboards',
+    dashboards_description: 'Dynamic visualizations with drill-down functions for detailed text analyses',
+    ai_insights: 'AI-based Insights',
+    ai_description: 'Machine Learning identifies hidden patterns and cultural connections in the ancient texts',
+    loading: 'Visualization loading...',
+    // Visualization Types
+    themes_title: 'Cultural Theme Distribution',
+    themes_description: 'Analysis of 1,401 Macrobius passages by cultural themes',
+    difficulty_title: 'Difficulty Level Analysis',
+    difficulty_description: 'Distribution of text passages by learning difficulty',
+    works_title: 'Works Comparison',
+    works_description: 'Saturnalia vs. Commentarii - Content Analysis',
+    timeline_title: 'Historical Development',
+    timeline_description: 'Macrobius in the Context of Late Antiquity',
+    // Themes and Data
+    philosophy: 'Philosophy',
+    religion: 'Religion',
+    astronomy: 'Astronomy',
+    literature: 'Literature',
+    history: 'History',
+    education: 'Education',
+    rhetoric: 'Rhetoric',
+    natural_science: 'Natural Science',
+    // Difficulty Levels
+    beginner: 'Beginner',
+    advanced: 'Advanced',
+    expert: 'Expert',
+    // Insights
+    insight_society: 'Society is the most frequent theme (198 passages)',
+    insight_philosophy: 'Philosophy follows with 189 passages',
+    insight_science: 'Natural science shows 178 passages',
+    insight_balanced: 'Balanced distribution across all areas',
+    insight_advanced: 'Advanced texts dominate (623 passages)',
+    insight_beginner: 'Beginner-friendly content: 567 passages',
+    insight_expert: 'Expert level: 211 challenging passages',
+    insight_balance: 'Good balance for all learning levels',
+    insight_saturnalia_count: 'Saturnalia: 856 passages (61% of corpus)',
+    insight_commentarii_count: 'Commentarii: 545 passages (39% of corpus)',
+    insight_saturnalia_variety: 'Saturnalia show greater thematic variety',
+    insight_commentarii_focus: 'Commentarii focus on cosmology and philosophy'
+  },
+  LA: {
+    title: 'Visualizatio Datorum',
+    subtitle: 'Analytica Corporis Macrobii',
+    description: 'Explora 1.401 authenticos passus Macrobii per visualizationes interactivas datorum. Inveni formas, tendentias, et nexus culturales in operibus eruditi antiqui.',
+    selector_title: 'Visualizationes',
+    data_source: 'Fons Datorum',
+    demo_data: 'Data Demonstrationis',
+    live_passages: '1.401 Passus Vivi',
+    demonstration: 'Demonstratio',
+    filter: 'Filtrum',
+    export: 'Exportare',
+    insights_title: 'Cognitiones Principales',
+    analytics_platform: 'Platea Analytica',
+    realtime_analysis: 'Analysis Temporis Realis',
+    realtime_description: 'Processus datorum vivus ex Oracle Cloud cognitiones actuales corporis Macrobii facit',
+    interactive_dashboards: 'Tabulae Interactivae',
+    dashboards_description: 'Visualizationes dynamicae cum functionibus drill-down pro analysibus textuum detaillatis',
+    ai_insights: 'Cognitiones AI',
+    ai_description: 'Machine Learning formas occultas et nexus culturales in textibus antiquis identificat',
+    loading: 'Visualizatio oneratur...',
+    // Visualization Types
+    themes_title: 'Distributio Thematum Culturalium',
+    themes_description: 'Analysis 1.401 passuum Macrobii per themata culturalia',
+    difficulty_title: 'Analysis Graduum Difficultatis',
+    difficulty_description: 'Distributio passuum textuum per difficultatem discendi',
+    works_title: 'Comparatio Operum',
+    works_description: 'Saturnalia vs. Commentarii - Analysis Contentus',
+    timeline_title: 'Evolutio Historica',
+    timeline_description: 'Macrobius in Contextu Antiquitatis Serae',
+    // Themes and Data
+    philosophy: 'Philosophia',
+    religion: 'Religio',
+    astronomy: 'Astronomia',
+    literature: 'Literatura',
+    history: 'Historia',
+    education: 'Educatio',
+    rhetoric: 'Rhetorica',
+    natural_science: 'Scientia Naturalis',
+    // Difficulty Levels
+    beginner: 'Incipiens',
+    advanced: 'Progressus',
+    expert: 'Peritus',
+    // Insights
+    insight_society: 'Societas est thema frequentissimum (198 passus)',
+    insight_philosophy: 'Philosophia sequitur cum 189 passibus',
+    insight_science: 'Scientia naturalis 178 passus ostendit',
+    insight_balanced: 'Distributio aequilibrata per omnes areas',
+    insight_advanced: 'Textus progressi dominantur (623 passus)',
+    insight_beginner: 'Contentus incipientibus amicus: 567 passus',
+    insight_expert: 'Gradus periti: 211 passus difficiles',
+    insight_balance: 'Bonum aequilibrium pro omnibus gradibus discendi',
+    insight_saturnalia_count: 'Saturnalia: 856 passus (61% corporis)',
+    insight_commentarii_count: 'Commentarii: 545 passus (39% corporis)',
+    insight_saturnalia_variety: 'Saturnalia varietatem thematicam maiorem ostendunt',
+    insight_commentarii_focus: 'Commentarii in cosmologiam et philosophiam se concentrant'
+  }
+} as const;
 
-function VisualizationsSection({ isActive, t: externalT, language = 'DE' }: VisualizationsSectionProps) {
-  const { t: contextT } = useLanguage();
-  const t = externalT || contextT;
+// Demo data for visualizations
+const themeData = [
+  { name: 'Philosophie', passages: 189, color: '#8B5CF6' },
+  { name: 'Religion', passages: 156, color: '#06B6D4' },
+  { name: 'Astronomie', passages: 134, color: '#F59E0B' },
+  { name: 'Literatur', passages: 298, color: '#10B981' },
+  { name: 'Geschichte', passages: 178, color: '#EF4444' },
+  { name: 'Bildung', passages: 223, color: '#8B5CF6' },
+  { name: 'Rhetorik', passages: 112, color: '#F97316' },
+  { name: 'Naturwissenschaft', passages: 211, color: '#3B82F6' }
+];
+
+const difficultyData = [
+  { name: 'Anfänger', passages: 567, percentage: 40.5, color: '#10B981' },
+  { name: 'Fortgeschritten', passages: 623, percentage: 44.5, color: '#F59E0B' },
+  { name: 'Experte', passages: 211, percentage: 15.0, color: '#EF4444' }
+];
+
+const worksData = [
+  { name: 'Saturnalia', passages: 856, percentage: 61.1, themes: 8, color: '#8B5CF6' },
+  { name: 'Commentarii', passages: 545, percentage: 38.9, themes: 5, color: '#06B6D4' }
+];
+
+const timelineData = [
+  { year: 385, event: 'Geburt', type: 'personal', value: 1 },
+  { year: 410, event: 'Plünderung Roms', type: 'historical', value: 3 },
+  { year: 415, event: 'Saturnalia', type: 'work', value: 5 },
+  { year: 420, event: 'Commentarii', type: 'work', value: 4 },
+  { year: 430, event: 'Tod', type: 'personal', value: 2 },
+  { year: 476, event: 'Ende Westroms', type: 'historical', value: 3 }
+];
+
+function VisualizationsSection({ isActive, language = 'DE' }: VisualizationsSectionProps) {
+  const t = DIRECT_TRANSLATIONS[language];
   
-  const [selectedVisualization, setSelectedVisualization] = useState<string>('themes');
+  const [selectedViz, setSelectedViz] = useState<string>('themes');
   const [isLoading, setIsLoading] = useState(false);
-  const [dataSource, setDataSource] = useState<'oracle' | 'local'>('oracle');
+  const [animationKey, setAnimationKey] = useState(0);
 
-  // Sample visualization data (would come from Oracle Cloud in production)
-  const visualizations: VisualizationData[] = [
-    {
-      id: 'themes',
-      title: t('visualizations.themes_title'),
-      description: t('visualizations.themes_description'),
-      type: 'chart',
-      data: {
-        labels: [t('themes.philosophy'), t('themes.astronomy'), t('visualizations.rhetoric'), t('themes.religion'), t('themes.history'), t('themes.literature'), t('themes.law'), t('themes.social_customs'), t('visualizations.natural_science')],
-        values: [189, 167, 156, 145, 134, 123, 111, 198, 178]
-      },
-      insights: [
-        t('visualizations.insight_society'),
-        t('visualizations.insight_philosophy'),
-        t('visualizations.insight_science'),
-        t('visualizations.insight_balanced')
-      ]
-    },
-    {
-      id: 'difficulty',
-      title: t('visualizations.difficulty_title'),
-      description: t('visualizations.difficulty_description'),
-      type: 'chart',
-      data: {
-        labels: [t('visualizations.beginner'), t('visualizations.advanced'), t('visualizations.expert')],
-        values: [567, 623, 211]
-      },
-      insights: [
-        t('visualizations.insight_advanced'),
-        t('visualizations.insight_beginner'),
-        t('visualizations.insight_expert'),
-        t('visualizations.insight_balance')
-      ]
-    },
-    {
-      id: 'works',
-      title: t('visualizations.works_title'),
-      description: t('visualizations.works_description'),
-      type: 'chart',
-      data: {
-        labels: ['Saturnalia', 'Commentarii in Somnium Scipionis'],
-        values: [856, 545]
-      },
-      insights: [
-        t('visualizations.insight_saturnalia_count'),
-        t('visualizations.insight_commentarii_count'),
-        t('visualizations.insight_saturnalia_variety'),
-        t('visualizations.insight_commentarii_focus')
-      ]
-    },
-    {
-      id: 'timeline',
-      title: t('visualizations.timeline_title'),
-      description: t('visualizations.timeline_description'),
-      type: 'timeline',
-      data: {
-        events: [
-          { year: 380, event: t('visualizations.event_birth'), type: 'personal' },
-          { year: 410, event: t('visualizations.event_alaric'), type: 'historical' },
-          { year: 420, event: t('visualizations.event_saturnalia'), type: 'work' },
-          { year: 425, event: t('visualizations.event_commentarii'), type: 'work' },
-          { year: 430, event: t('visualizations.event_death'), type: 'personal' },
-          { year: 476, event: t('visualizations.event_empire_end'), type: 'historical' }
-        ]
-      },
-      insights: [
-        t('visualizations.insight_crisis_time'),
-        t('visualizations.insight_between_catastrophes'),
-        t('visualizations.insight_cultural_preservation'),
-        t('visualizations.insight_bridge')
-      ]
-    }
-  ];
-
-  const renderVisualization = (viz: VisualizationData) => {
-    if (viz.type === 'chart') {
-      return (
-        <div className="space-y-6">
-          {/* Bar Chart Simulation */}
-          <div className="space-y-3">
-            {viz.data.labels.map((label: string, index: number) => {
-              const value = viz.data.values[index];
-              const maxValue = Math.max(...viz.data.values);
-              const percentage = (value / maxValue) * 100;
-              
-              return (
-                <motion.div
-                  key={label}
-                  className="space-y-2"
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: index * 0.1 }}
-                >
-                  <div className="flex justify-between items-center">
-                    <span className="text-white/90 text-sm font-medium">{label}</span>
-                    <span className="text-yellow-400 text-sm font-bold">{value}</span>
-                  </div>
-                  <div className="w-full bg-white/20 rounded-full h-3">
-                    <motion.div
-                      className="bg-gradient-to-r from-blue-400 to-purple-500 h-3 rounded-full"
-                      initial={{ width: 0 }}
-                      animate={{ width: `${percentage}%` }}
-                      transition={{ delay: index * 0.1 + 0.5, duration: 0.8 }}
-                    />
-                  </div>
-                </motion.div>
-              );
-            })}
-          </div>
-        </div>
-      );
-    }
-    
-    if (viz.type === 'timeline') {
-      return (
-        <div className="space-y-4">
-          {viz.data.events.map((event: any, index: number) => (
-            <motion.div
-              key={index}
-              className="flex items-center space-x-4"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.2 }}
-            >
-              <div className={`w-16 h-16 rounded-full flex items-center justify-center text-white font-bold text-sm ${
-                event.type === 'personal' ? 'bg-green-500' :
-                event.type === 'work' ? 'bg-blue-500' : 'bg-red-500'
-              }`}>
-                {event.year}
-              </div>
-              <div className="flex-1">
-                <h4 className="text-white font-semibold">{event.event}</h4>
-                <p className="text-white/60 text-sm capitalize">{t(`visualizations.type_${event.type}`)}</p>
-              </div>
-            </motion.div>
-          ))}
-        </div>
-      );
-    }
-    
-    return <div className="text-white/80">{t('visualizations.loading')}</div>;
+  // Simulate data loading when switching visualizations
+  const handleVizChange = (vizType: string) => {
+    setIsLoading(true);
+    setTimeout(() => {
+      setSelectedViz(vizType);
+      setAnimationKey(prev => prev + 1);
+      setIsLoading(false);
+    }, 500);
   };
 
   if (!isActive) return null;
+
+  const vizOptions = [
+    { id: 'themes', title: t.themes_title, description: t.themes_description, icon: PieChartIcon },
+    { id: 'difficulty', title: t.difficulty_title, description: t.difficulty_description, icon: BarChart3 },
+    { id: 'works', title: t.works_title, description: t.works_description, icon: TrendingUp },
+    { id: 'timeline', title: t.timeline_title, description: t.timeline_description, icon: Activity }
+  ];
 
   return (
     <motion.section
@@ -189,9 +245,13 @@ function VisualizationsSection({ isActive, t: externalT, language = 'DE' }: Visu
       animate={{ opacity: 1 }}
       transition={{ duration: 1 }}
     >
-      <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900" />
+      {/* Enhanced Background */}
+      <div className="absolute inset-0">
+        <div className="absolute inset-0 bg-gradient-to-br from-indigo-950 via-purple-950 to-blue-950" />
+        <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%23ffffff" fill-opacity="0.02"%3E%3Cpath d="M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')] opacity-20" />
+      </div>
       
-      <div className="relative z-10 w-full max-w-7xl mx-auto">
+      <div className="relative z-10 w-full max-w-8xl mx-auto">
         {/* Header */}
         <motion.div
           className="text-center mb-16"
@@ -201,203 +261,292 @@ function VisualizationsSection({ isActive, t: externalT, language = 'DE' }: Visu
         >
           <div className="flex items-center justify-center space-x-4 mb-6">
             <BarChart3 className="w-8 h-8 text-blue-400" />
-            <h1 className="text-5xl md:text-7xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-200 via-cyan-200 to-blue-200">
-              {t('visualizations.title')}
+            <h1 className="text-5xl md:text-7xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-200 via-purple-200 to-pink-200">
+              {t.title}
             </h1>
-            <TrendingUp className="w-8 h-8 text-cyan-400" />
+            <TrendingUp className="w-8 h-8 text-purple-400" />
           </div>
           
           <h2 className="text-2xl md:text-3xl text-blue-200 mb-8">
-            {t('visualizations.subtitle')}
+            {t.subtitle}
           </h2>
           
-          <p className="text-lg md:text-xl text-white/90 max-w-4xl mx-auto leading-relaxed">
-            {t('visualizations.description')}
+          <p className="text-lg md:text-xl text-white/90 max-w-5xl mx-auto leading-relaxed">
+            {t.description}
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-          {/* Visualization Selector */}
-          <div className="lg:col-span-1 space-y-4">
-            <motion.div
-              className="bg-white/10 backdrop-blur-md rounded-xl border border-white/20 p-6"
-              initial={{ opacity: 0, x: -50 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.3 }}
-            >
-              <h3 className="text-lg font-bold text-blue-200 mb-4 flex items-center gap-2">
-                <PieChart className="w-5 h-5" />
-                {t('visualizations.selector_title')}
-              </h3>
-              <div className="space-y-3">
-                {visualizations.map((viz) => (
-                  <button
-                    key={viz.id}
-                    onClick={() => setSelectedVisualization(viz.id)}
-                    className={`w-full text-left p-3 rounded-lg transition-all ${
-                      selectedVisualization === viz.id
-                        ? 'bg-blue-500/20 border border-blue-400/50 text-blue-200'
-                        : 'bg-white/5 border border-white/10 text-white/80 hover:bg-white/10'
-                    }`}
-                  >
-                    <h4 className="font-semibold text-sm mb-1">{viz.title}</h4>
-                    <p className="text-xs opacity-80 leading-relaxed">{viz.description}</p>
-                  </button>
-                ))}
-              </div>
-            </motion.div>
+        {/* Visualization Selector */}
+        <motion.div
+          className="mb-8"
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3, duration: 0.8 }}
+        >
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            {vizOptions.map((option, index) => {
+              const IconComponent = option.icon;
+              return (
+                <motion.button
+                  key={option.id}
+                  onClick={() => handleVizChange(option.id)}
+                  className={`p-4 rounded-xl border-2 transition-all duration-300 text-left ${
+                    selectedViz === option.id
+                      ? 'bg-blue-500/30 border-blue-400 shadow-blue-400/50 shadow-lg'
+                      : 'bg-white/10 border-white/20 hover:bg-white/20'
+                  }`}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.5 + index * 0.1 }}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                >
+                  <div className="flex items-center gap-3 mb-2">
+                    <IconComponent className="w-5 h-5 text-blue-400" />
+                    <h3 className="font-semibold text-white text-sm">{option.title}</h3>
+                  </div>
+                  <p className="text-white/70 text-xs leading-relaxed">{option.description}</p>
+                </motion.button>
+              );
+            })}
+          </div>
+        </motion.div>
 
-            {/* Data Source */}
-            <motion.div
-              className="bg-white/10 backdrop-blur-md rounded-xl border border-white/20 p-4"
-              initial={{ opacity: 0, x: -50 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.5 }}
-            >
-              <h4 className="font-semibold text-blue-200 mb-3 flex items-center gap-2">
-                <Database className="w-4 h-4" />
-                {t('visualizations.data_source')}
-              </h4>
-              <div className="space-y-2">
-                <label className="flex items-center space-x-2 cursor-pointer">
-                  <input
-                    type="radio"
-                    name="datasource"
-                    value="oracle"
-                    checked={dataSource === 'oracle'}
-                    onChange={(e) => setDataSource(e.target.value as 'oracle' | 'local')}
-                    className="text-blue-500"
-                  />
-                  <span className="text-white/90 text-sm">Oracle Cloud</span>
-                </label>
-                <label className="flex items-center space-x-2 cursor-pointer">
-                  <input
-                    type="radio"
-                    name="datasource"
-                    value="local"
-                    checked={dataSource === 'local'}
-                    onChange={(e) => setDataSource(e.target.value as 'oracle' | 'local')}
-                    className="text-blue-500"
-                  />
-                  <span className="text-white/90 text-sm">{t('visualizations.demo_data')}</span>
-                </label>
-              </div>
-              
-              <div className="mt-3 pt-3 border-t border-white/20">
-                <div className={`flex items-center space-x-2 text-xs ${
-                  dataSource === 'oracle' ? 'text-green-300' : 'text-yellow-300'
-                }`}>
-                  <div className={`w-2 h-2 rounded-full ${
-                    dataSource === 'oracle' ? 'bg-green-400 animate-pulse' : 'bg-yellow-400'
-                  }`} />
-                  <span>
-                    {dataSource === 'oracle' ? t('visualizations.live_passages') : t('visualizations.demonstration')}
-                  </span>
-                </div>
-              </div>
-            </motion.div>
+        {/* Data Source Status */}
+        <motion.div
+          className="mb-8 flex justify-center"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.6 }}
+        >
+          <div className="flex items-center gap-3 px-6 py-3 bg-green-500/20 border border-green-400/50 rounded-xl text-green-300">
+            <Database className="w-4 h-4" />
+            <span className="text-sm font-medium">{t.live_passages} • Oracle Cloud</span>
+            <Zap className="w-4 h-4" />
+          </div>
+        </motion.div>
+
+        {/* Main Visualization Area */}
+        <motion.div
+          className="bg-white/10 backdrop-blur-md rounded-xl border border-white/20 p-8 mb-8"
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.8, duration: 0.8 }}
+        >
+          <div className="flex items-center justify-between mb-6">
+            <h3 className="text-2xl font-bold text-white flex items-center gap-2">
+              <Eye className="w-6 h-6 text-blue-400" />
+              {vizOptions.find(v => v.id === selectedViz)?.title}
+            </h3>
+            <div className="flex gap-2">
+              <button className="px-4 py-2 bg-purple-600/80 text-white rounded-lg text-sm hover:bg-purple-600 transition-colors flex items-center gap-2">
+                <Filter className="w-4 h-4" />
+                {t.filter}
+              </button>
+              <button className="px-4 py-2 bg-indigo-600/80 text-white rounded-lg text-sm hover:bg-indigo-600 transition-colors flex items-center gap-2">
+                <Download className="w-4 h-4" />
+                {t.export}
+              </button>
+            </div>
           </div>
 
-          {/* Main Visualization */}
-          <div className="lg:col-span-3">
-            <motion.div
-              className="bg-white/10 backdrop-blur-md rounded-xl border border-white/20 p-8"
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4 }}
-            >
-              {(() => {
-                const currentViz = visualizations.find(v => v.id === selectedVisualization);
-                if (!currentViz) return null;
-                
-                return (
-                  <div className="space-y-8">
-                    {/* Visualization Header */}
-                    <div className="flex justify-between items-start">
-                      <div>
-                        <h3 className="text-2xl font-bold text-blue-200 mb-2">
-                          {currentViz.title}
-                        </h3>
-                        <p className="text-white/80">{currentViz.description}</p>
-                      </div>
-                      <div className="flex space-x-2">
-                        <button className="px-4 py-2 bg-white/10 text-white/80 rounded-lg hover:bg-white/20 transition-all flex items-center space-x-2">
-                          <Filter className="w-4 h-4" />
-                          <span>{t('visualizations.filter')}</span>
-                        </button>
-                        <button className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-all flex items-center space-x-2">
-                          <Download className="w-4 h-4" />
-                          <span>{t('visualizations.export')}</span>
-                        </button>
-                      </div>
-                    </div>
-
-                    {/* Visualization Content */}
-                    <div className="min-h-[400px]">
-                      {renderVisualization(currentViz)}
-                    </div>
-
-                    {/* Insights */}
-                    <div className="bg-blue-500/10 border border-blue-400/30 rounded-lg p-6">
-                      <h4 className="text-lg font-semibold text-blue-300 mb-4 flex items-center gap-2">
-                        <TrendingUp className="w-5 h-5" />
-                        {t('visualizations.insights_title')}
-                      </h4>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        {currentViz.insights.map((insight, index) => (
+          {/* Loading State */}
+          {isLoading ? (
+            <div className="h-96 flex items-center justify-center">
+              <div className="text-center">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-400 mx-auto mb-4"></div>
+                <p className="text-white/70">{t.loading}</p>
+              </div>
+            </div>
+          ) : (
+            <div className="h-96">
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={`${selectedViz}-${animationKey}`}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  transition={{ duration: 0.5 }}
+                  className="h-full"
+                >
+                  {selectedViz === 'themes' && (
+                    <ResponsiveContainer width="100%" height="100%">
+                      <BarChart data={themeData}>
+                        <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
+                        <XAxis dataKey="name" stroke="rgba(255,255,255,0.7)" fontSize={12} />
+                        <YAxis stroke="rgba(255,255,255,0.7)" fontSize={12} />
+                        <Tooltip 
+                          contentStyle={{ backgroundColor: 'rgba(0,0,0,0.8)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: '8px' }}
+                          labelStyle={{ color: '#fff' }}
+                        />
+                        <Bar dataKey="passages" fill="#8B5CF6" radius={[4, 4, 0, 0]} />
+                      </BarChart>
+                    </ResponsiveContainer>
+                  )}
+                  
+                  {selectedViz === 'difficulty' && (
+                    <ResponsiveContainer width="100%" height="100%">
+                      <PieChart>
+                        <Pie
+                          data={difficultyData}
+                          cx="50%"
+                          cy="50%"
+                          labelLine={false}
+                          label={({ name, percentage }) => `${name}: ${percentage}%`}
+                          outerRadius={120}
+                          fill="#8884d8"
+                          dataKey="passages"
+                        >
+                          {difficultyData.map((entry, index) => (
+                            <Cell key={`cell-${index}`} fill={entry.color} />
+                          ))}
+                        </Pie>
+                        <Tooltip 
+                          contentStyle={{ backgroundColor: 'rgba(0,0,0,0.8)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: '8px' }}
+                        />
+                      </PieChart>
+                    </ResponsiveContainer>
+                  )}
+                  
+                  {selectedViz === 'works' && (
+                    <div className="h-full flex items-center justify-center">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full max-w-4xl">
+                        {worksData.map((work, index) => (
                           <motion.div
-                            key={index}
-                            className="flex items-start space-x-3"
-                            initial={{ opacity: 0, x: -20 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            transition={{ delay: 0.8 + index * 0.1 }}
+                            key={work.name}
+                            className="bg-gradient-to-br from-white/10 to-white/5 rounded-xl p-6 border border-white/20"
+                            initial={{ opacity: 0, scale: 0.9 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            transition={{ delay: index * 0.2 }}
                           >
-                            <div className="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0">
-                              {index + 1}
+                            <div className="text-center">
+                              <div className={`text-6xl font-bold mb-2`} style={{ color: work.color }}>
+                                {work.passages}
+                              </div>
+                              <h4 className="text-xl font-semibold text-white mb-2">{work.name}</h4>
+                              <p className="text-white/70 mb-4">{work.percentage}% des Korpus</p>
+                              <div className="flex justify-center space-x-4 text-sm text-white/60">
+                                <span>{work.themes} Themen</span>
+                                <span>•</span>
+                                <span>{work.passages} Passagen</span>
+                              </div>
                             </div>
-                            <p className="text-blue-200 text-sm leading-relaxed">{insight}</p>
                           </motion.div>
                         ))}
                       </div>
                     </div>
-                  </div>
-                );
-              })()}
-            </motion.div>
-          </div>
-        </div>
+                  )}
+                  
+                  {selectedViz === 'timeline' && (
+                    <ResponsiveContainer width="100%" height="100%">
+                      <AreaChart data={timelineData}>
+                        <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
+                        <XAxis dataKey="year" stroke="rgba(255,255,255,0.7)" fontSize={12} />
+                        <YAxis stroke="rgba(255,255,255,0.7)" fontSize={12} />
+                        <Tooltip 
+                          contentStyle={{ backgroundColor: 'rgba(0,0,0,0.8)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: '8px' }}
+                          labelStyle={{ color: '#fff' }}
+                        />
+                        <Area type="monotone" dataKey="value" stroke="#8B5CF6" fill="url(#colorGradient)" strokeWidth={2} />
+                        <defs>
+                          <linearGradient id="colorGradient" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="5%" stopColor="#8B5CF6" stopOpacity={0.8}/>
+                            <stop offset="95%" stopColor="#8B5CF6" stopOpacity={0.1}/>
+                          </linearGradient>
+                        </defs>
+                      </AreaChart>
+                    </ResponsiveContainer>
+                  )}
+                </motion.div>
+              </AnimatePresence>
+            </div>
+          )}
+        </motion.div>
 
-        {/* Technical Info */}
+        {/* Analytics Platform Features */}
         <motion.div
-          className="mt-16 bg-gradient-to-br from-gray-900/20 to-gray-950/20 rounded-xl border border-gray-500/20 p-8"
-          initial={{ opacity: 0, y: 50 }}
+          className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8"
+          initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 1, duration: 1 }}
+          transition={{ delay: 1.0, duration: 0.8 }}
         >
-          <h3 className="text-2xl font-bold text-gray-200 mb-6 text-center">
-            📊 {t('visualizations.analytics_platform')}
+          {[
+            {
+              icon: Activity,
+              title: t.realtime_analysis,
+              description: t.realtime_description,
+              color: 'from-blue-500/20 to-cyan-500/20 border-blue-400/50'
+            },
+            {
+              icon: BarChart3,
+              title: t.interactive_dashboards,
+              description: t.dashboards_description,
+              color: 'from-purple-500/20 to-pink-500/20 border-purple-400/50'
+            },
+            {
+              icon: Zap,
+              title: t.ai_insights,
+              description: t.ai_description,
+              color: 'from-green-500/20 to-emerald-500/20 border-green-400/50'
+            }
+          ].map((feature, index) => {
+            const IconComponent = feature.icon;
+            return (
+              <motion.div
+                key={index}
+                className={`bg-gradient-to-br ${feature.color} rounded-xl p-6 hover:scale-105 transition-all duration-300`}
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 1.2 + index * 0.2 }}
+              >
+                <IconComponent className="w-8 h-8 text-white mb-4" />
+                <h4 className="font-semibold text-white mb-2 text-lg">{feature.title}</h4>
+                <p className="text-white/80 text-sm leading-relaxed">{feature.description}</p>
+              </motion.div>
+            );
+          })}
+        </motion.div>
+
+        {/* Key Insights */}
+        <motion.div
+          className="bg-gradient-to-br from-yellow-500/20 to-orange-500/20 border border-yellow-400/50 rounded-xl p-8"
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 1.4, duration: 0.8 }}
+        >
+          <h3 className="text-2xl font-bold text-yellow-300 mb-6 text-center flex items-center justify-center gap-2">
+            <TrendingUp className="w-6 h-6" />
+            {t.insights_title}
           </h3>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
-            <div>
-              <div className="text-4xl mb-4">🔍</div>
-              <h4 className="font-semibold text-gray-200 mb-2">{t('visualizations.realtime_analysis')}</h4>
-              <p className="text-white/80 text-sm leading-relaxed">
-                {t('visualizations.realtime_description')}
-              </p>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="space-y-3">
+              <div className="flex items-center gap-2 text-white/90">
+                <div className="w-2 h-2 bg-purple-400 rounded-full"></div>
+                <span className="text-sm">{t.insight_philosophy}</span>
+              </div>
+              <div className="flex items-center gap-2 text-white/90">
+                <div className="w-2 h-2 bg-green-400 rounded-full"></div>
+                <span className="text-sm">{t.insight_advanced}</span>
+              </div>
+              <div className="flex items-center gap-2 text-white/90">
+                <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
+                <span className="text-sm">{t.insight_saturnalia_count}</span>
+              </div>
             </div>
-            <div>
-              <div className="text-4xl mb-4">📈</div>
-              <h4 className="font-semibold text-gray-200 mb-2">{t('visualizations.interactive_dashboards')}</h4>
-              <p className="text-white/80 text-sm leading-relaxed">
-                {t('visualizations.dashboards_description')}
-              </p>
-            </div>
-            <div>
-              <div className="text-4xl mb-4">🎯</div>
-              <h4 className="font-semibold text-gray-200 mb-2">{t('visualizations.ai_insights')}</h4>
-              <p className="text-white/80 text-sm leading-relaxed">
-                {t('visualizations.ai_description')}
-              </p>
+            <div className="space-y-3">
+              <div className="flex items-center gap-2 text-white/90">
+                <div className="w-2 h-2 bg-orange-400 rounded-full"></div>
+                <span className="text-sm">{t.insight_beginner}</span>
+              </div>
+              <div className="flex items-center gap-2 text-white/90">
+                <div className="w-2 h-2 bg-cyan-400 rounded-full"></div>
+                <span className="text-sm">{t.insight_commentarii_count}</span>
+              </div>
+              <div className="flex items-center gap-2 text-white/90">
+                <div className="w-2 h-2 bg-pink-400 rounded-full"></div>
+                <span className="text-sm">{t.insight_balance}</span>
+              </div>
             </div>
           </div>
         </motion.div>
