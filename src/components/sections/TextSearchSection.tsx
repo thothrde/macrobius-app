@@ -1,14 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, BookOpen, Loader2, Database, CheckCircle, AlertCircle, Filter } from 'lucide-react';
+import { useLanguage } from '../../contexts/LanguageContext';
 
 interface TextSearchSectionProps {
   isActive: boolean;
-  t: (key: string) => string;
+  t?: (key: string) => string;
   language?: 'DE' | 'EN' | 'LA';
 }
 
-function TextSearchSection({ isActive, t, language = 'DE' }: TextSearchSectionProps) {
+function TextSearchSection({ isActive, t: externalT, language = 'DE' }: TextSearchSectionProps) {
+  const { t: contextT } = useLanguage();
+  const t = externalT || contextT;
+  
   const [searchQuery, setSearchQuery] = useState('');
   const [isSearching, setIsSearching] = useState(false);
   const [searchResults, setSearchResults] = useState<any[]>([]);
@@ -36,17 +40,14 @@ function TextSearchSection({ isActive, t, language = 'DE' }: TextSearchSectionPr
       } catch (error) {
         console.error('Oracle Cloud connection failed:', error);
         setIsConnected(false);
-        setConnectionError(
-          'Oracle Cloud Backend ist nicht erreichbar. '
-          + 'Bitte überprüfen Sie Firewall-Einstellungen für Port 8080.'
-        );
+        setConnectionError(t('oracle.connection_failed'));
       }
     };
 
     if (isActive) {
       testConnection();
     }
-  }, [isActive]);
+  }, [isActive, t]);
 
   const handleSearch = async (query: string) => {
     if (!query.trim()) return;
@@ -70,7 +71,7 @@ function TextSearchSection({ isActive, t, language = 'DE' }: TextSearchSectionPr
       }
     } catch (error) {
       console.error('Search failed:', error);
-      setConnectionError('Suche fehlgeschlagen. Oracle Cloud Backend nicht verfügbar.');
+      setConnectionError(t('search.error'));
       setSearchResults([]);
     } finally {
       setIsSearching(false);
@@ -96,12 +97,12 @@ function TextSearchSection({ isActive, t, language = 'DE' }: TextSearchSectionPr
           >
             <div className="flex items-center justify-center space-x-3 mb-4">
               <Search className="w-8 h-8 text-yellow-400" />
-              <h2 className="text-4xl font-bold text-yellow-400">Textsuche</h2>
+              <h2 className="text-4xl font-bold text-yellow-400">{t('search.title')}</h2>
               <BookOpen className="w-8 h-8 text-yellow-400" />
             </div>
             
             <p className="text-xl text-white/90 mb-6">
-              Durchsuche 1.401 authentische Macrobius-Passagen mit Oracle Cloud
+              {t('search.description')}
             </p>
             
             {/* Connection Status */}
@@ -117,15 +118,13 @@ function TextSearchSection({ isActive, t, language = 'DE' }: TextSearchSectionPr
               {isConnected ? (
                 <>
                   <CheckCircle className="w-4 h-4 text-green-400" />
-                  <span className="text-green-300 text-sm">✅ Oracle Cloud verbunden (152.70.184.232:8080)</span>
+                  <span className="text-green-300 text-sm">{t('oracle.connected')}</span>
                   <Database className="w-4 h-4 text-green-400" />
                 </>
               ) : (
                 <>
                   <AlertCircle className="w-4 h-4 text-red-400" />
-                  <span className="text-red-300 text-sm">
-                    ❌ Oracle Cloud Verbindung fehlgeschlagen - Port 8080 prüfen
-                  </span>
+                  <span className="text-red-300 text-sm">{t('oracle.disconnected')}</span>
                 </>
               )}
             </motion.div>
@@ -145,7 +144,7 @@ function TextSearchSection({ isActive, t, language = 'DE' }: TextSearchSectionPr
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   onKeyPress={(e) => e.key === 'Enter' && handleSearch(searchQuery)}
-                  placeholder="Suche in authentischen Macrobius-Passagen... (z.B. 'convivium', 'stella', 'virtus')"
+                  placeholder={t('search.placeholder')}
                   className="w-full px-6 py-4 bg-white/20 border border-white/30 rounded-xl text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent text-lg"
                   disabled={isSearching}
                 />
@@ -157,12 +156,12 @@ function TextSearchSection({ isActive, t, language = 'DE' }: TextSearchSectionPr
                   {isSearching ? (
                     <>
                       <Loader2 className="w-4 h-4 animate-spin" />
-                      <span>Suche...</span>
+                      <span>{t('search.searching')}</span>
                     </>
                   ) : (
                     <>
                       <Search className="w-4 h-4" />
-                      <span>Suchen</span>
+                      <span>{t('search.button')}</span>
                     </>
                   )}
                 </button>
@@ -176,7 +175,7 @@ function TextSearchSection({ isActive, t, language = 'DE' }: TextSearchSectionPr
                   className="space-y-4"
                 >
                   <h3 className="text-2xl font-bold text-yellow-400">
-                    📚 {searchResults.length} Ergebnisse aus Oracle Cloud
+                    📚 {searchResults.length} {t('search.results_title')}
                   </h3>
                   {searchResults.map((result, index) => (
                     <div
@@ -184,11 +183,11 @@ function TextSearchSection({ isActive, t, language = 'DE' }: TextSearchSectionPr
                       className="bg-white/10 backdrop-blur-md rounded-lg border border-white/20 p-6"
                     >
                       <div className="mb-4">
-                        <h4 className="text-white/80 text-sm font-semibold mb-2">📜 Lateinischer Text:</h4>
+                        <h4 className="text-white/80 text-sm font-semibold mb-2">📜 {t('search.latin_text')}:</h4>
                         <p className="text-white/90 italic">{result.latin_text || 'Lorem ipsum dolor sit amet...'}</p>
                       </div>
                       <div className="text-white/60 text-sm">
-                        {result.work_type || 'Saturnalia'} - {result.cultural_theme || 'Philosophie'}
+                        {result.work_type || 'Saturnalia'} - {result.cultural_theme || t('themes.philosophy')}
                       </div>
                     </div>
                   ))}
@@ -203,18 +202,18 @@ function TextSearchSection({ isActive, t, language = 'DE' }: TextSearchSectionPr
             >
               <AlertCircle className="w-12 h-12 text-red-400 mx-auto mb-4" />
               <h3 className="text-lg font-semibold text-red-300 mb-2">
-                Oracle Cloud Backend nicht verfügbar
+                {t('oracle.unavailable_title')}
               </h3>
               <p className="text-red-200 mb-4">
-                Die Verbindung zu Oracle Cloud (152.70.184.232:8080) konnte nicht hergestellt werden.
+                {t('oracle.unavailable_message')}
               </p>
               <div className="bg-red-500/10 rounded-lg p-4 text-left">
-                <h4 className="font-semibold text-red-300 mb-2">Lösungsschritte:</h4>
+                <h4 className="font-semibold text-red-300 mb-2">{t('oracle.troubleshooting_title')}:</h4>
                 <ul className="text-red-200 text-sm space-y-1">
-                  <li>• Firewall-Port 8080 für externe Verbindungen öffnen</li>
-                  <li>• Oracle Cloud Security Rules prüfen</li>
-                  <li>• Backend-Service-Status überprüfen</li>
-                  <li>• Netzwerkverbindung testen</li>
+                  <li>• {t('oracle.troubleshoot_firewall')}</li>
+                  <li>• {t('oracle.troubleshoot_security')}</li>
+                  <li>• {t('oracle.troubleshoot_service')}</li>
+                  <li>• {t('oracle.troubleshoot_network')}</li>
                 </ul>
               </div>
             </motion.div>
@@ -229,7 +228,7 @@ function TextSearchSection({ isActive, t, language = 'DE' }: TextSearchSectionPr
             >
               <div className="flex items-center space-x-2">
                 <AlertCircle className="w-5 h-5 text-red-400" />
-                <span className="text-red-300 font-semibold">Verbindungsfehler:</span>
+                <span className="text-red-300 font-semibold">{t('oracle.connection_error')}:</span>
               </div>
               <p className="text-red-200 mt-2">{connectionError}</p>
             </motion.div>
@@ -244,18 +243,18 @@ function TextSearchSection({ isActive, t, language = 'DE' }: TextSearchSectionPr
           >
             <h4 className="text-lg font-semibold text-blue-300 mb-3 flex items-center space-x-2">
               <Database className="w-5 h-5" />
-              <span>🌐 Oracle Cloud Integration</span>
+              <span>🌐 {t('oracle.integration_title')}</span>
             </h4>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-white/90">
               <div>
-                <p><strong>Backend:</strong> Oracle Cloud Free Tier</p>
-                <p><strong>Endpunkt:</strong> 152.70.184.232:8080</p>
-                <p><strong>Status:</strong> {isConnected ? '✅ Operational' : '❌ Verbindung erforderlich'}</p>
+                <p><strong>{t('oracle.backend')}:</strong> {t('oracle.backend_value')}</p>
+                <p><strong>{t('oracle.endpoint')}:</strong> 152.70.184.232:8080</p>
+                <p><strong>{t('oracle.status')}:</strong> {isConnected ? t('oracle.status_operational') : t('oracle.status_connection_required')}</p>
               </div>
               <div>
-                <p><strong>Korpus:</strong> 1.401 authentische Passagen</p>
-                <p><strong>Themen:</strong> 9 kulturelle Kategorien</p>
-                <p><strong>Features:</strong> Volltext-Suche, Filter, Kontext</p>
+                <p><strong>{t('oracle.corpus')}:</strong> {t('oracle.corpus_value')}</p>
+                <p><strong>{t('oracle.themes')}:</strong> {t('oracle.themes_value')}</p>
+                <p><strong>{t('oracle.features')}:</strong> {t('oracle.features_value')}</p>
               </div>
             </div>
           </motion.div>
