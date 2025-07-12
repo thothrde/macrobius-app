@@ -1,60 +1,64 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Map, Globe, Compass, Mountain } from 'lucide-react';
+import { useLanguage } from '../../contexts/LanguageContext';
 
 interface WorldMapSectionProps {
   isActive: boolean;
-  t: (key: string) => string;
+  t?: (key: string) => string;
   language?: 'DE' | 'EN' | 'LA';
 }
 
-function WorldMapSection({ isActive, t, language = 'DE' }: WorldMapSectionProps) {
+function WorldMapSection({ isActive, t: externalT, language = 'DE' }: WorldMapSectionProps) {
+  const { t: contextT } = useLanguage();
+  const t = externalT || contextT;
+  
   const [selectedZone, setSelectedZone] = useState<number | null>(null);
 
   const climateZones = [
     {
       id: 1,
-      name: 'Arktische Zone',
-      latinName: 'Zona Frigida Septentrionalis',
-      description: 'Die nördliche Eiszone - unbewohnbar aufgrund extremer Kälte',
-      characteristics: 'Ewiges Eis, keine Vegetation, unbewohnbar',
-      macrobiusQuote: 'Zona frigida et inhabitabilis propter nimium frigus',
+      name: t('worldmap.zone1_name'),
+      latinName: t('worldmap.zone1_latin'),
+      description: t('worldmap.zone1_description'),
+      characteristics: t('worldmap.zone1_characteristics'),
+      macrobiusQuote: t('worldmap.zone1_quote'),
       color: '#E0F2FE'
     },
     {
       id: 2,
-      name: 'Nördliche gemäßigte Zone',
-      latinName: 'Zona Temperata Septentrionalis', 
-      description: 'Die bewohnbare Zone der nördlichen Hemisphäre',
-      characteristics: 'Vier Jahreszeiten, fruchtbare Länder, dichte Besiedlung',
-      macrobiusQuote: 'Zona temperata et habitabilis, ubi nos vivimus',
+      name: t('worldmap.zone2_name'),
+      latinName: t('worldmap.zone2_latin'), 
+      description: t('worldmap.zone2_description'),
+      characteristics: t('worldmap.zone2_characteristics'),
+      macrobiusQuote: t('worldmap.zone2_quote'),
       color: '#86EFAC'
     },
     {
       id: 3,
-      name: 'Heiße Äquatorzone',
-      latinName: 'Zona Torrida',
-      description: 'Die brennende Zone am Äquator - zu heiß für menschliches Leben',
-      characteristics: 'Extreme Hitze, Wüsten, schwer überwindbar',
-      macrobiusQuote: 'Zona torrida et inhabitabilis propter nimium calorem',
+      name: t('worldmap.zone3_name'),
+      latinName: t('worldmap.zone3_latin'),
+      description: t('worldmap.zone3_description'),
+      characteristics: t('worldmap.zone3_characteristics'),
+      macrobiusQuote: t('worldmap.zone3_quote'),
       color: '#FDE047'
     },
     {
       id: 4,
-      name: 'Südliche gemäßigte Zone',
-      latinName: 'Zona Temperata Australis',
-      description: 'Die hypothetische Antipoden-Zone der südlichen Hemisphäre',
-      characteristics: 'Spiegel unserer Welt, aber unzugänglich',
-      macrobiusQuote: 'Zona temperata sed nobis incognita',
+      name: t('worldmap.zone4_name'),
+      latinName: t('worldmap.zone4_latin'),
+      description: t('worldmap.zone4_description'),
+      characteristics: t('worldmap.zone4_characteristics'),
+      macrobiusQuote: t('worldmap.zone4_quote'),
       color: '#A7F3D0'
     },
     {
       id: 5,
-      name: 'Südliche Eiszone',
-      latinName: 'Zona Frigida Australis',
-      description: 'Die südliche Eiszone - Spiegelbild der nördlichen Kälte',
-      characteristics: 'Ewiges Eis, symmetrisch zur nördlichen Zone',
-      macrobiusQuote: 'Zona frigida australis, similis septentrionali',
+      name: t('worldmap.zone5_name'),
+      latinName: t('worldmap.zone5_latin'),
+      description: t('worldmap.zone5_description'),
+      characteristics: t('worldmap.zone5_characteristics'),
+      macrobiusQuote: t('worldmap.zone5_quote'),
       color: '#E0F2FE'
     }
   ];
@@ -80,20 +84,17 @@ function WorldMapSection({ isActive, t, language = 'DE' }: WorldMapSectionProps)
           <div className="flex items-center justify-center space-x-4 mb-6">
             <Map className="w-8 h-8 text-blue-400" />
             <h1 className="text-5xl md:text-7xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-200 via-green-200 to-blue-200">
-              Macrobius' Weltkarte
+              {t('worldmap.title')}
             </h1>
             <Globe className="w-8 h-8 text-green-400" />
           </div>
           
           <h2 className="text-2xl md:text-3xl text-blue-200 mb-8">
-            Die Fünf Klimazonen der Erde
+            {t('worldmap.subtitle')}
           </h2>
           
           <p className="text-lg md:text-xl text-white/90 max-w-4xl mx-auto leading-relaxed">
-            Macrobius' geographische Weltanschauung teilte die Erde in fünf konzentrische 
-            Klimazonen - eine bemerkenswert genaue wissenschaftliche Beschreibung für das 
-            5. Jahrhundert. Diese Theorie beeinflusste die mittelalterliche Geographie 
-            über 1000 Jahre lang.
+            {t('worldmap.description')}
           </p>
         </motion.div>
 
@@ -107,7 +108,7 @@ function WorldMapSection({ isActive, t, language = 'DE' }: WorldMapSectionProps)
           >
             <h3 className="text-2xl font-bold text-blue-200 mb-6 flex items-center gap-2">
               <Compass className="w-6 h-6" />
-              Die Erdkugel nach Macrobius
+              {t('worldmap.earth_title')}
             </h3>
             
             {/* Simplified Earth Zones */}
@@ -158,7 +159,7 @@ function WorldMapSection({ isActive, t, language = 'DE' }: WorldMapSectionProps)
             
             <div className="mt-6 text-center">
               <p className="text-white/80 text-sm">
-                🔍 Klicken Sie auf die Zonen für Details
+                🔍 {t('worldmap.click_zones')}
               </p>
             </div>
           </motion.div>
@@ -172,7 +173,7 @@ function WorldMapSection({ isActive, t, language = 'DE' }: WorldMapSectionProps)
           >
             <h3 className="text-2xl font-bold text-green-200 mb-6 flex items-center gap-2">
               <Mountain className="w-6 h-6" />
-              Klimazonen-Details
+              {t('worldmap.zones_details_title')}
             </h3>
             
             <div className="space-y-4">
@@ -213,16 +214,16 @@ function WorldMapSection({ isActive, t, language = 'DE' }: WorldMapSectionProps)
                       >
                         <div className="space-y-3">
                           <div>
-                            <h5 className="font-semibold text-yellow-300 mb-1">Beschreibung:</h5>
+                            <h5 className="font-semibold text-yellow-300 mb-1">{t('worldmap.description_label')}:</h5>
                             <p className="text-white/80 text-sm">{zone.description}</p>
                           </div>
                           <div>
-                            <h5 className="font-semibold text-green-300 mb-1">Eigenschaften:</h5>
+                            <h5 className="font-semibold text-green-300 mb-1">{t('worldmap.characteristics_label')}:</h5>
                             <p className="text-white/80 text-sm">{zone.characteristics}</p>
                           </div>
                           <div className="bg-blue-500/10 border border-blue-500/20 rounded p-3">
-                            <h5 className="font-semibold text-blue-300 mb-1">Macrobius' Originaltext:</h5>
-                            <p className="text-blue-200 text-sm italic'>{zone.macrobiusQuote}'</p>
+                            <h5 className="font-semibold text-blue-300 mb-1">{t('worldmap.macrobius_quote_label')}:</h5>
+                            <p className="text-blue-200 text-sm italic'>'{zone.macrobiusQuote}'</p>
                           </div>
                         </div>
                       </motion.div>
@@ -242,31 +243,28 @@ function WorldMapSection({ isActive, t, language = 'DE' }: WorldMapSectionProps)
           transition={{ delay: 1.2, duration: 1 }}
         >
           <h3 className="text-2xl font-bold text-purple-200 mb-6 text-center">
-            🌍 Wissenschaftliches Erbe
+            🌍 {t('worldmap.scientific_legacy_title')}
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
             <div>
               <div className="text-4xl mb-4">🧭</div>
-              <h4 className="font-semibold text-purple-200 mb-2">Klimawissenschaft</h4>
+              <h4 className="font-semibold text-purple-200 mb-2">{t('worldmap.climate_science_title')}</h4>
               <p className="text-white/80 text-sm leading-relaxed">
-                Macrobius' Klimazonen-Theorie war wissenschaftlich bemerkenswert genau 
-                und beeinflusste die Geographie bis zur Renaissance
+                {t('worldmap.climate_science_description')}
               </p>
             </div>
             <div>
               <div className="text-4xl mb-4">🗺️</div>
-              <h4 className="font-semibold text-purple-200 mb-2">Kartographie</h4>
+              <h4 className="font-semibold text-purple-200 mb-2">{t('worldmap.cartography_title')}</h4>
               <p className="text-white/80 text-sm leading-relaxed">
-                Seine Beschreibungen prägten mittelalterliche Weltkarten und 
-                förderten das Verständnis der Erdkugel
+                {t('worldmap.cartography_description')}
               </p>
             </div>
             <div>
               <div className="text-4xl mb-4">🌡️</div>
-              <h4 className="font-semibold text-purple-200 mb-2">Moderne Bestätigung</h4>
+              <h4 className="font-semibold text-purple-200 mb-2">{t('worldmap.modern_confirmation_title')}</h4>
               <p className="text-white/80 text-sm leading-relaxed">
-                Die Köppen-Klimaklassifikation bestätigt heute Macrobius' 
-                grundlegende Einteilung der Klimazonen
+                {t('worldmap.modern_confirmation_description')}
               </p>
             </div>
           </div>
