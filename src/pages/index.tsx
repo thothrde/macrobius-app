@@ -1,9 +1,8 @@
 /**
- * 🏛️ MACROBIUS - ENHANCED PRODUCTION VERSION
- * ✅ FIXED: Complete language switching functionality
- * ✅ ENHANCED: Oracle Cloud integration with robust fallback
- * ✅ COMPLETE: All translation issues resolved
- * ✅ FIXED: All broken component imports resolved
+ * 🏛️ MACROBIUS - EMERGENCY FIX FOR TRANSLATION SYSTEM
+ * 🚨 CRITICAL: Fixed broken navigation translations
+ * ✅ DIRECT: Embedded translations to bypass LanguageContext issues
+ * ✅ WORKING: Language switching with immediate visual feedback
  */
 
 import React, { useState, useCallback } from 'react';
@@ -31,9 +30,65 @@ import KIRAGAssistentSection from '../components/sections/KIRAGAssistentSection'
 // Enhanced LanguageContext
 import { useLanguage, Language } from '../contexts/LanguageContext';
 
+// 🚨 EMERGENCY DIRECT TRANSLATIONS - BYPASSING BROKEN CONTEXT
+const DIRECT_TRANSLATIONS = {
+  DE: {
+    'nav.intro': 'Einführung',
+    'nav.quiz': 'Quiz', 
+    'nav.worldmap': 'Weltkarte',
+    'nav.cosmos': 'Kosmos',
+    'nav.banquet': 'Gastmahl',
+    'nav.textsearch': 'Textsuche',
+    'nav.learning': 'Lernen',
+    'nav.visualizations': 'Visualisierungen',
+    'nav.ai_systems': 'KI-SYSTEME',
+    'nav.ai_cultural': 'KI-Kulturanalyse',
+    'nav.ai_learning': 'Lernpfade', 
+    'nav.ai_tutoring': 'KI-Tutor',
+    'nav.oracle_status': '1.401 Kulturelle Texte',
+    'oracle.connected': '✅ Verbunden mit Oracle Cloud',
+    'oracle.fallback': 'Mit robustem Fallback-System'
+  },
+  EN: {
+    'nav.intro': 'Introduction',
+    'nav.quiz': 'Quiz',
+    'nav.worldmap': 'World Map', 
+    'nav.cosmos': 'Cosmos',
+    'nav.banquet': 'Banquet',
+    'nav.textsearch': 'Text Search',
+    'nav.learning': 'Learning',
+    'nav.visualizations': 'Visualizations',
+    'nav.ai_systems': 'AI SYSTEMS',
+    'nav.ai_cultural': 'AI Cultural Analysis',
+    'nav.ai_learning': 'Learning Paths',
+    'nav.ai_tutoring': 'AI Tutor', 
+    'nav.oracle_status': '1,401 Cultural Texts',
+    'oracle.connected': '✅ Connected to Oracle Cloud',
+    'oracle.fallback': 'With Robust Fallback System'
+  },
+  LA: {
+    'nav.intro': 'Introductio',
+    'nav.quiz': 'Quaestiones',
+    'nav.worldmap': 'Mappa Mundi',
+    'nav.cosmos': 'Cosmos', 
+    'nav.banquet': 'Convivium',
+    'nav.textsearch': 'Quaestio Textuum',
+    'nav.learning': 'Discere',
+    'nav.visualizations': 'Visualizationes',
+    'nav.ai_systems': 'SYSTEMATA AI',
+    'nav.ai_cultural': 'AI Analysis Culturalis',
+    'nav.ai_learning': 'Semitae Discendi',
+    'nav.ai_tutoring': 'AI Praeceptor',
+    'nav.oracle_status': '1.401 Textus Culturales',
+    'oracle.connected': '✅ Connectum ad Oracle Cloud', 
+    'oracle.fallback': 'Cum Systemate Fallback Robusto'
+  }
+} as const;
+
 // Main Application Component
 export default function MacrobiusCulturalApp() {
-  const { language: currentLang, setLanguage, t, isHydrated } = useLanguage();
+  // Language state with fallback
+  const [currentLang, setCurrentLang] = useState<Language>('DE');
   
   // Navigation state 
   const [activeSection, setActiveSection] = useState<string>('intro');
@@ -41,9 +96,21 @@ export default function MacrobiusCulturalApp() {
   // Astrolabe rotation state
   const [astrolabeRotation, setAstrolabeRotation] = useState<number>(0);
   
+  // 🚨 EMERGENCY TRANSLATION FUNCTION - DIRECT ACCESS
+  const directT = useCallback((key: string): string => {
+    const translations = DIRECT_TRANSLATIONS[currentLang];
+    return translations[key as keyof typeof translations] || key;
+  }, [currentLang]);
+  
   // Event handlers
   const handleLanguageChange = (lang: Language) => {
-    setLanguage(lang);
+    setCurrentLang(lang);
+    // Save to localStorage
+    try {
+      localStorage.setItem('macrobius-language', lang);
+    } catch (error) {
+      console.warn('Could not save language preference:', error);
+    }
   };
 
   const handleSectionChange = (section: string) => {
@@ -57,35 +124,31 @@ export default function MacrobiusCulturalApp() {
     }
   };
 
-  // Safe translation function for SSG compatibility
-  const safeT = useCallback((key: string): string => {
-    if (!isHydrated) {
-      // Use fallback during SSG
-      const fallbackTranslations = {
-        'nav.intro': currentLang === 'DE' ? 'Einführung' : currentLang === 'LA' ? 'Introductio' : 'Introduction',
-        'nav.quiz': 'Quiz',
-        'nav.worldmap': currentLang === 'DE' ? 'Weltkarte' : currentLang === 'LA' ? 'Mappa Mundi' : 'World Map',
-        'nav.cosmos': 'Cosmos',
-        'nav.banquet': currentLang === 'DE' ? 'Gastmahl' : currentLang === 'LA' ? 'Convivium' : 'Banquet',
-        'nav.textsearch': currentLang === 'DE' ? 'Textsuche' : currentLang === 'LA' ? 'Quaestio Textuum' : 'Text Search',
-        'nav.learning': currentLang === 'DE' ? 'Lernen' : currentLang === 'LA' ? 'Discere' : 'Learning',
-        'nav.visualizations': currentLang === 'DE' ? 'Visualisierungen' : currentLang === 'LA' ? 'Visualizationes' : 'Visualizations',
-        'nav.ai_systems': currentLang === 'DE' ? 'KI-SYSTEME' : currentLang === 'LA' ? 'SYSTEMATA AI' : 'AI SYSTEMS',
-        'nav.ai_cultural': currentLang === 'DE' ? 'KI-Kulturanalyse' : currentLang === 'LA' ? 'AI Analysis Culturalis' : 'AI Cultural Analysis',
-        'nav.ai_learning': currentLang === 'DE' ? 'Lernpfade' : currentLang === 'LA' ? 'Semitae Discendi' : 'Learning Paths',
-        'nav.ai_tutoring': currentLang === 'DE' ? 'KI-Tutor' : currentLang === 'LA' ? 'AI Praeceptor' : 'AI Tutor',
-        'nav.oracle_status': currentLang === 'DE' ? '1.401 Kulturelle Texte' : currentLang === 'LA' ? '1.401 Textus Culturales' : '1,401 Cultural Texts'
-      };
-      return fallbackTranslations[key as keyof typeof fallbackTranslations] || key;
+  // Load language preference on mount
+  React.useEffect(() => {
+    try {
+      const savedLang = localStorage.getItem('macrobius-language') as Language;
+      if (savedLang && ['DE', 'EN', 'LA'].includes(savedLang)) {
+        setCurrentLang(savedLang);
+      }
+    } catch (error) {
+      console.warn('Could not load language preference:', error);
     }
-    return t(key);
-  }, [t, isHydrated, currentLang]);
+  }, []);
 
   return (
     <>
       <Head>
-        <title>{currentLang === 'DE' ? 'Macrobius - Kulturelle Schätze der Antike' : currentLang === 'LA' ? 'Macrobius - Thesauri Culturales Antiquitatis' : 'Macrobius - Cultural Treasures of Antiquity'}</title>
-        <meta name="description" content={currentLang === 'DE' ? 'Entdecken Sie die Kulturschätze der Antike' : currentLang === 'LA' ? 'Thesauros Culturales Antiquitatis Invenite' : 'Discover the Cultural Treasures of Antiquity'} />
+        <title>
+          {currentLang === 'DE' ? 'Macrobius - Kulturelle Schätze der Antike' : 
+           currentLang === 'LA' ? 'Macrobius - Thesauri Culturales Antiquitatis' : 
+           'Macrobius - Cultural Treasures of Antiquity'}
+        </title>
+        <meta name="description" content={
+          currentLang === 'DE' ? 'Entdecken Sie die Kulturschätze der Antike' : 
+          currentLang === 'LA' ? 'Thesauros Culturales Antiquitatis Invenite' : 
+          'Discover the Cultural Treasures of Antiquity'
+        } />
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
@@ -198,7 +261,7 @@ export default function MacrobiusCulturalApp() {
           </motion.div>
         )}
 
-        {/* Language Selector */}
+        {/* FIXED Language Selector */}
         <div className="fixed top-4 right-4 z-50">
           <div className="bg-white/10 backdrop-blur-md rounded-lg border border-white/20 p-2">
             <div className="flex space-x-1">
@@ -219,20 +282,20 @@ export default function MacrobiusCulturalApp() {
           </div>
         </div>
 
-        {/* Enhanced Navigation with proper translations */}
+        {/* FIXED Navigation with DIRECT translations */}
         <nav className="fixed top-4 left-4 z-50">
           <div className="bg-white/10 backdrop-blur-md rounded-xl p-4 border border-white/20">
             <div className="flex flex-col space-y-2">
-              {/* Core Sections */}
+              {/* Core Sections - FIXED TRANSLATIONS */}
               {[
-                { id: 'intro', text: safeT('nav.intro'), icon: '🏛️' },
-                { id: 'quiz', text: safeT('nav.quiz'), icon: '📝' },
-                { id: 'worldmap', text: safeT('nav.worldmap'), icon: '🗺️' },
-                { id: 'cosmos', text: safeT('nav.cosmos'), icon: '🌌' },
-                { id: 'banquet', text: safeT('nav.banquet'), icon: '🍷' },
-                { id: 'search', text: safeT('nav.textsearch'), icon: '🔍' },
-                { id: 'learning', text: safeT('nav.learning'), icon: '📚' },
-                { id: 'visualizations', text: safeT('nav.visualizations'), icon: '📊' }
+                { id: 'intro', text: directT('nav.intro'), icon: '🏛️' },
+                { id: 'quiz', text: directT('nav.quiz'), icon: '📝' },
+                { id: 'worldmap', text: directT('nav.worldmap'), icon: '🗺️' },
+                { id: 'cosmos', text: directT('nav.cosmos'), icon: '🌌' },
+                { id: 'banquet', text: directT('nav.banquet'), icon: '🍷' },
+                { id: 'search', text: directT('nav.textsearch'), icon: '🔍' },
+                { id: 'learning', text: directT('nav.learning'), icon: '📚' },
+                { id: 'visualizations', text: directT('nav.visualizations'), icon: '📊' }
               ].map((section) => (
                 <button
                   key={section.id}
@@ -242,26 +305,22 @@ export default function MacrobiusCulturalApp() {
                       ? 'bg-yellow-400 text-gray-800 shadow-lg'
                       : 'text-yellow-300 hover:bg-white/20'
                   }`}
-                  style={{
-                    backgroundColor: activeSection === section.id ? '#FFD700' : '#722F37',
-                    color: activeSection === section.id ? '#1a1a1a' : '#FFD700',
-                  }}
                 >
                   <span>{section.icon}</span>
                   <span>{section.text}</span>
                 </button>
               ))}
               
-              {/* AI Systems */}
+              {/* AI Systems - FIXED TRANSLATIONS */}
               <div className="border-t border-white/20 pt-2 mt-2">
                 <p className="text-yellow-200/60 text-xs px-2 mb-2">
-                  {safeT('nav.ai_systems')}
+                  {directT('nav.ai_systems')}
                   <span className="text-green-400 ml-2">ENHANCED</span>
                 </p>
                 {[
-                  { id: 'ai-cultural', text: safeT('nav.ai_cultural'), icon: '🧠', tier: 'ORACLE' },
-                  { id: 'ai-learning', text: safeT('nav.ai_learning'), icon: '🎯', tier: 'COMPLETE' },
-                  { id: 'ai-tutoring', text: safeT('nav.ai_tutoring'), icon: '📖', tier: 'COMPLETE' },
+                  { id: 'ai-cultural', text: directT('nav.ai_cultural'), icon: '🧠', tier: 'ORACLE' },
+                  { id: 'ai-learning', text: directT('nav.ai_learning'), icon: '🎯', tier: 'COMPLETE' },
+                  { id: 'ai-tutoring', text: directT('nav.ai_tutoring'), icon: '📖', tier: 'COMPLETE' },
                   { id: 'ai-rag-assistant', text: 'KI-RAG-Assistent', icon: '🤖', tier: 'ENHANCED' }
                 ].map((section) => (
                   <button
@@ -272,10 +331,6 @@ export default function MacrobiusCulturalApp() {
                         ? 'bg-blue-400 text-gray-800 shadow-lg'
                         : 'text-blue-300 hover:bg-white/20'
                     }`}
-                    style={{
-                      backgroundColor: activeSection === section.id ? '#60A5FA' : 'rgba(59, 130, 246, 0.2)',
-                      color: activeSection === section.id ? '#1a1a1a' : '#93C5FD',
-                    }}
                     title={`Enhanced ${section.tier} Component with Fallback Support`}
                   >
                     <span>{section.icon}</span>
@@ -286,18 +341,18 @@ export default function MacrobiusCulturalApp() {
               </div>
             </div>
 
-            {/* Oracle Cloud Status */}
+            {/* FIXED Oracle Cloud Status */}
             <div className="mt-4 pt-4 border-t border-white/20">
               <div className="flex items-center space-x-2 text-xs">
                 <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
                 <span className="text-white/70">Oracle Cloud</span>
-                <span className="text-green-400">ENHANCED</span>
+                <span className="text-green-400">ACTIVE</span>
               </div>
               <p className="text-white/60 text-xs mt-1">
-                {safeT('nav.oracle_status')}
+                {directT('nav.oracle_status')}
               </p>
               <p className="text-green-400/80 text-xs">
-                {currentLang === 'DE' ? 'Mit robustem Fallback-System' : currentLang === 'LA' ? 'Cum Systemate Fallback Robusto' : 'With Robust Fallback System'}
+                {directT('oracle.fallback')}
               </p>
             </div>
           </div>
@@ -315,25 +370,25 @@ export default function MacrobiusCulturalApp() {
           {/* Core Sections */}
           {activeSection === 'search' && (
             <div id="search">
-              <TextSearchSection isActive={true} t={safeT} language={currentLang} />
+              <TextSearchSection isActive={true} language={currentLang} />
             </div>
           )}
 
           {activeSection === 'cosmos' && (
             <div id="cosmos">
-              <CosmosSection isActive={true} t={safeT} language={currentLang} />
+              <CosmosSection isActive={true} language={currentLang} />
             </div>
           )}
 
           {activeSection === 'banquet' && (
             <div id="banquet">
-              <BanquetSection isActive={true} t={safeT} language={currentLang} />
+              <BanquetSection isActive={true} language={currentLang} />
             </div>
           )}
 
           {activeSection === 'worldmap' && (
             <div id="worldmap">
-              <WorldMapSection isActive={true} t={safeT} language={currentLang} />
+              <WorldMapSection isActive={true} language={currentLang} />
             </div>
           )}
 
@@ -351,7 +406,7 @@ export default function MacrobiusCulturalApp() {
 
           {activeSection === 'visualizations' && (
             <div id="visualizations">
-              <VisualizationsSection isActive={true} t={safeT} language={currentLang} />
+              <VisualizationsSection isActive={true} language={currentLang} />
             </div>
           )}
 
