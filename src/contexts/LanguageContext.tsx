@@ -11,7 +11,7 @@ interface LanguageContextType {
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
-// 🔧 COMPLETE TRANSLATION OBJECT - SSG COMPATIBLE WITH 270+ KEYS
+// 🔧 COMPLETE TRANSLATION OBJECT - SSG COMPATIBLE WITH 320+ KEYS
 const translations = {
   DE: {
     // Navigation translations
@@ -37,7 +37,7 @@ const translations = {
     'hero.title.line2': 'Digital',
     'hero.description': 'Entdecken Sie die Kulturschätze der Antike',
     
-    // 🔍 SEARCH SECTION TRANSLATIONS (New - 15+ keys)
+    // 🔍 SEARCH SECTION TRANSLATIONS (15+ keys)
     'search.title': 'Textsuche',
     'search.description': 'Durchsuche 1.401 authentische Macrobius-Passagen mit Oracle Cloud',
     'search.placeholder': 'Suche in authentischen Macrobius-Passagen... (z.B. "convivium", "stella", "virtus")',
@@ -54,7 +54,58 @@ const translations = {
     'search.chronological': 'Chronologisch',
     'search.clear_results': 'Ergebnisse löschen',
     
-    // 🏛️ THEMES TRANSLATIONS (New - 10+ keys)
+    // 🗺️ WORLDMAP SECTION TRANSLATIONS (New - 40+ keys)
+    'worldmap.title': 'Macrobius\' Weltkarte',
+    'worldmap.subtitle': 'Die Fünf Klimazonen der Erde',
+    'worldmap.description': 'Macrobius\' geographische Weltanschauung teilte die Erde in fünf konzentrische Klimazonen - eine bemerkenswert genaue wissenschaftliche Beschreibung für das 5. Jahrhundert. Diese Theorie beeinflusste die mittelalterliche Geographie über 1000 Jahre lang.',
+    'worldmap.earth_title': 'Die Erdkugel nach Macrobius',
+    'worldmap.click_zones': 'Klicken Sie auf die Zonen für Details',
+    'worldmap.zones_details_title': 'Klimazonen-Details',
+    'worldmap.description_label': 'Beschreibung',
+    'worldmap.characteristics_label': 'Eigenschaften',
+    'worldmap.macrobius_quote_label': 'Macrobius\' Originaltext',
+    
+    // Climate Zones (5 zones x 5 properties = 25 keys)
+    'worldmap.zone1_name': 'Arktische Zone',
+    'worldmap.zone1_latin': 'Zona Frigida Septentrionalis',
+    'worldmap.zone1_description': 'Die nördliche Eiszone - unbewohnbar aufgrund extremer Kälte',
+    'worldmap.zone1_characteristics': 'Ewiges Eis, keine Vegetation, unbewohnbar',
+    'worldmap.zone1_quote': 'Zona frigida et inhabitabilis propter nimium frigus',
+    
+    'worldmap.zone2_name': 'Nördliche gemäßigte Zone',
+    'worldmap.zone2_latin': 'Zona Temperata Septentrionalis',
+    'worldmap.zone2_description': 'Die bewohnbare Zone der nördlichen Hemisphäre',
+    'worldmap.zone2_characteristics': 'Vier Jahreszeiten, fruchtbare Länder, dichte Besiedlung',
+    'worldmap.zone2_quote': 'Zona temperata et habitabilis, ubi nos vivimus',
+    
+    'worldmap.zone3_name': 'Heiße Äquatorzone',
+    'worldmap.zone3_latin': 'Zona Torrida',
+    'worldmap.zone3_description': 'Die brennende Zone am Äquator - zu heiß für menschliches Leben',
+    'worldmap.zone3_characteristics': 'Extreme Hitze, Wüsten, schwer überwindbar',
+    'worldmap.zone3_quote': 'Zona torrida et inhabitabilis propter nimium calorem',
+    
+    'worldmap.zone4_name': 'Südliche gemäßigte Zone',
+    'worldmap.zone4_latin': 'Zona Temperata Australis',
+    'worldmap.zone4_description': 'Die hypothetische Antipoden-Zone der südlichen Hemisphäre',
+    'worldmap.zone4_characteristics': 'Spiegel unserer Welt, aber unzugänglich',
+    'worldmap.zone4_quote': 'Zona temperata sed nobis incognita',
+    
+    'worldmap.zone5_name': 'Südliche Eiszone',
+    'worldmap.zone5_latin': 'Zona Frigida Australis',
+    'worldmap.zone5_description': 'Die südliche Eiszone - Spiegelbild der nördlichen Kälte',
+    'worldmap.zone5_characteristics': 'Ewiges Eis, symmetrisch zur nördlichen Zone',
+    'worldmap.zone5_quote': 'Zona frigida australis, similis septentrionali',
+    
+    // Scientific Legacy (6 keys)
+    'worldmap.scientific_legacy_title': 'Wissenschaftliches Erbe',
+    'worldmap.climate_science_title': 'Klimawissenschaft',
+    'worldmap.climate_science_description': 'Macrobius\' Klimazonen-Theorie war wissenschaftlich bemerkenswert genau und beeinflusste die Geographie bis zur Renaissance',
+    'worldmap.cartography_title': 'Kartographie',
+    'worldmap.cartography_description': 'Seine Beschreibungen prägten mittelalterliche Weltkarten und förderten das Verständnis der Erdkugel',
+    'worldmap.modern_confirmation_title': 'Moderne Bestätigung',
+    'worldmap.modern_confirmation_description': 'Die Köppen-Klimaklassifikation bestätigt heute Macrobius\' grundlegende Einteilung der Klimazonen',
+    
+    // 🏛️ THEMES TRANSLATIONS (10+ keys)
     'themes.philosophy': 'Philosophie',
     'themes.religion': 'Religion',
     'themes.astronomy': 'Astronomie',
@@ -279,6 +330,57 @@ const translations = {
     'search.relevance': 'Relevance',
     'search.chronological': 'Chronological',
     'search.clear_results': 'Clear results',
+    
+    // 🗺️ WORLDMAP SECTION TRANSLATIONS
+    'worldmap.title': 'Macrobius\' World Map',
+    'worldmap.subtitle': 'The Five Climate Zones of Earth',
+    'worldmap.description': 'Macrobius\' geographical worldview divided the Earth into five concentric climate zones - a remarkably accurate scientific description for the 5th century. This theory influenced medieval geography for over 1000 years.',
+    'worldmap.earth_title': 'The Earth Globe according to Macrobius',
+    'worldmap.click_zones': 'Click on zones for details',
+    'worldmap.zones_details_title': 'Climate Zone Details',
+    'worldmap.description_label': 'Description',
+    'worldmap.characteristics_label': 'Characteristics',
+    'worldmap.macrobius_quote_label': 'Macrobius\' Original Text',
+    
+    // Climate Zones
+    'worldmap.zone1_name': 'Arctic Zone',
+    'worldmap.zone1_latin': 'Zona Frigida Septentrionalis',
+    'worldmap.zone1_description': 'The northern ice zone - uninhabitable due to extreme cold',
+    'worldmap.zone1_characteristics': 'Eternal ice, no vegetation, uninhabitable',
+    'worldmap.zone1_quote': 'Zona frigida et inhabitabilis propter nimium frigus',
+    
+    'worldmap.zone2_name': 'Northern Temperate Zone',
+    'worldmap.zone2_latin': 'Zona Temperata Septentrionalis',
+    'worldmap.zone2_description': 'The habitable zone of the northern hemisphere',
+    'worldmap.zone2_characteristics': 'Four seasons, fertile lands, dense settlement',
+    'worldmap.zone2_quote': 'Zona temperata et habitabilis, ubi nos vivimus',
+    
+    'worldmap.zone3_name': 'Hot Equatorial Zone',
+    'worldmap.zone3_latin': 'Zona Torrida',
+    'worldmap.zone3_description': 'The burning zone at the equator - too hot for human life',
+    'worldmap.zone3_characteristics': 'Extreme heat, deserts, difficult to cross',
+    'worldmap.zone3_quote': 'Zona torrida et inhabitabilis propter nimium calorem',
+    
+    'worldmap.zone4_name': 'Southern Temperate Zone',
+    'worldmap.zone4_latin': 'Zona Temperata Australis',
+    'worldmap.zone4_description': 'The hypothetical antipodean zone of the southern hemisphere',
+    'worldmap.zone4_characteristics': 'Mirror of our world, but inaccessible',
+    'worldmap.zone4_quote': 'Zona temperata sed nobis incognita',
+    
+    'worldmap.zone5_name': 'Southern Ice Zone',
+    'worldmap.zone5_latin': 'Zona Frigida Australis',
+    'worldmap.zone5_description': 'The southern ice zone - mirror image of northern cold',
+    'worldmap.zone5_characteristics': 'Eternal ice, symmetrical to the northern zone',
+    'worldmap.zone5_quote': 'Zona frigida australis, similis septentrionali',
+    
+    // Scientific Legacy
+    'worldmap.scientific_legacy_title': 'Scientific Legacy',
+    'worldmap.climate_science_title': 'Climate Science',
+    'worldmap.climate_science_description': 'Macrobius\' climate zone theory was scientifically remarkably accurate and influenced geography until the Renaissance',
+    'worldmap.cartography_title': 'Cartography',
+    'worldmap.cartography_description': 'His descriptions shaped medieval world maps and promoted understanding of the Earth globe',
+    'worldmap.modern_confirmation_title': 'Modern Confirmation',
+    'worldmap.modern_confirmation_description': 'The Köppen climate classification today confirms Macrobius\' fundamental division of climate zones',
     
     // 🏛️ THEMES TRANSLATIONS
     'themes.philosophy': 'Philosophy',
@@ -505,6 +607,57 @@ const translations = {
     'search.relevance': 'Relevantia',
     'search.chronological': 'Chronologicus',
     'search.clear_results': 'Resultata delete',
+    
+    // 🗺️ WORLDMAP SECTION TRANSLATIONS
+    'worldmap.title': 'Mappa Mundi Macrobii',
+    'worldmap.subtitle': 'Quinque Zonae Climaticae Terrae',
+    'worldmap.description': 'Visio geographica Macrobii Terram in quinque zonas climaticas concentricas dividebat - descriptio scientifica notabiliter accurata pro saeculo quinto. Haec theoria geographiam medievalem per plus quam 1000 annos influebat.',
+    'worldmap.earth_title': 'Globus Terrae secundum Macrobium',
+    'worldmap.click_zones': 'Zonas preme pro detaliis',
+    'worldmap.zones_details_title': 'Detalia Zonarum Climaticarum',
+    'worldmap.description_label': 'Descriptio',
+    'worldmap.characteristics_label': 'Proprietates',
+    'worldmap.macrobius_quote_label': 'Textus Originalis Macrobii',
+    
+    // Climate Zones
+    'worldmap.zone1_name': 'Zona Arctica',
+    'worldmap.zone1_latin': 'Zona Frigida Septentrionalis',
+    'worldmap.zone1_description': 'Zona glacialis septentrionalis - inhabitabilis propter frigus extremum',
+    'worldmap.zone1_characteristics': 'Glacies aeterna, nulla vegetatio, inhabitabilis',
+    'worldmap.zone1_quote': 'Zona frigida et inhabitabilis propter nimium frigus',
+    
+    'worldmap.zone2_name': 'Zona Temperata Septentrionalis',
+    'worldmap.zone2_latin': 'Zona Temperata Septentrionalis',
+    'worldmap.zone2_description': 'Zona habitabilis hemisphaerii septentrionalis',
+    'worldmap.zone2_characteristics': 'Quattuor tempora anni, terrae fertiles, habitatio densa',
+    'worldmap.zone2_quote': 'Zona temperata et habitabilis, ubi nos vivimus',
+    
+    'worldmap.zone3_name': 'Zona Torrida Aequatorialis',
+    'worldmap.zone3_latin': 'Zona Torrida',
+    'worldmap.zone3_description': 'Zona ardens ad aequatorem - nimis calida vitae humanae',
+    'worldmap.zone3_characteristics': 'Calor extremus, deserta, difficilis transitus',
+    'worldmap.zone3_quote': 'Zona torrida et inhabitabilis propter nimium calorem',
+    
+    'worldmap.zone4_name': 'Zona Temperata Australis',
+    'worldmap.zone4_latin': 'Zona Temperata Australis',
+    'worldmap.zone4_description': 'Zona hypothetica antipodum hemisphaerii australis',
+    'worldmap.zone4_characteristics': 'Speculum mundi nostri, sed inaccessibilis',
+    'worldmap.zone4_quote': 'Zona temperata sed nobis incognita',
+    
+    'worldmap.zone5_name': 'Zona Glacialis Australis',
+    'worldmap.zone5_latin': 'Zona Frigida Australis',
+    'worldmap.zone5_description': 'Zona glacialis australis - imago specularis frigoris septentrionalis',
+    'worldmap.zone5_characteristics': 'Glacies aeterna, symmetrica zonae septentrionali',
+    'worldmap.zone5_quote': 'Zona frigida australis, similis septentrionali',
+    
+    // Scientific Legacy
+    'worldmap.scientific_legacy_title': 'Hereditas Scientifica',
+    'worldmap.climate_science_title': 'Scientia Climatica',
+    'worldmap.climate_science_description': 'Theoria zonarum climaticarum Macrobii scientifice notabiliter accurata erat et geographiam usque ad Renascentiam influebat',
+    'worldmap.cartography_title': 'Cartographia',
+    'worldmap.cartography_description': 'Eius descriptiones mappas mundi medievales formaverunt et intellegentiam globi terrestris promoverunt',
+    'worldmap.modern_confirmation_title': 'Confirmatio Moderna',
+    'worldmap.modern_confirmation_description': 'Classificatio climatica Köppen hodie fundamentalem divisionem zonarum climaticarum Macrobii confirmat',
     
     // 🏛️ THEMES TRANSLATIONS
     'themes.philosophy': 'Philosophia',
