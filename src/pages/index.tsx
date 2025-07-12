@@ -3,6 +3,7 @@
  * ✅ FIXED: Complete language switching functionality
  * ✅ ENHANCED: Oracle Cloud integration with robust fallback
  * ✅ COMPLETE: All translation issues resolved
+ * ✅ FIXED: All broken component imports resolved
  */
 
 import React, { useState, useCallback } from 'react';
@@ -21,11 +22,10 @@ import WorldMapSection from '../components/sections/WorldMapSection';
 import LearningSection from '../components/sections/LearningSection-enhanced-complete';
 import QuizSection from '../components/sections/QuizSection';
 
-// AI Systems Components
-import RealAICulturalAnalysisSection from '../components/sections/AICulturalAnalysisSection-REAL-ORACLE-WORKING';
+// AI Systems Components (FIXED IMPORTS)
+import AICulturalAnalysisSection from '../components/sections/AICulturalAnalysisSection';
 import PersonalizedLearningPathsComplete from '../components/sections/PersonalizedLearningPaths-COMPLETE';
 import AITutoringSystemComplete from '../components/sections/AITutoringSystemSection-COMPLETE';
-import AdvancedCulturalModulesFixed from '../components/sections/AdvancedCulturalModulesSection-FIXED';
 import KIRAGAssistentSection from '../components/sections/KIRAGAssistentSection';
 
 // Enhanced LanguageContext
@@ -74,7 +74,6 @@ export default function MacrobiusCulturalApp() {
         'nav.ai_cultural': currentLang === 'DE' ? 'KI-Kulturanalyse' : currentLang === 'LA' ? 'AI Analysis Culturalis' : 'AI Cultural Analysis',
         'nav.ai_learning': currentLang === 'DE' ? 'Lernpfade' : currentLang === 'LA' ? 'Semitae Discendi' : 'Learning Paths',
         'nav.ai_tutoring': currentLang === 'DE' ? 'KI-Tutor' : currentLang === 'LA' ? 'AI Praeceptor' : 'AI Tutor',
-        'nav.ai_modules': currentLang === 'DE' ? 'Kulturmodule' : currentLang === 'LA' ? 'Moduli Culturales' : 'Cultural Modules',
         'nav.oracle_status': currentLang === 'DE' ? '1.401 Kulturelle Texte' : currentLang === 'LA' ? '1.401 Textus Culturales' : '1,401 Cultural Texts'
       };
       return fallbackTranslations[key as keyof typeof fallbackTranslations] || key;
@@ -263,7 +262,6 @@ export default function MacrobiusCulturalApp() {
                   { id: 'ai-cultural', text: safeT('nav.ai_cultural'), icon: '🧠', tier: 'ORACLE' },
                   { id: 'ai-learning', text: safeT('nav.ai_learning'), icon: '🎯', tier: 'COMPLETE' },
                   { id: 'ai-tutoring', text: safeT('nav.ai_tutoring'), icon: '📖', tier: 'COMPLETE' },
-                  { id: 'ai-modules', text: safeT('nav.ai_modules'), icon: '✨', tier: 'FIXED' },
                   { id: 'ai-rag-assistant', text: 'KI-RAG-Assistent', icon: '🤖', tier: 'ENHANCED' }
                 ].map((section) => (
                   <button
@@ -360,7 +358,7 @@ export default function MacrobiusCulturalApp() {
           {/* Enhanced AI Systems */}
           {activeSection === 'ai-cultural' && (
             <div id="ai-cultural">
-              <RealAICulturalAnalysisSection />
+              <AICulturalAnalysisSection />
             </div>
           )}
 
@@ -373,12 +371,6 @@ export default function MacrobiusCulturalApp() {
           {activeSection === 'ai-tutoring' && (
             <div id="ai-tutoring">
               <AITutoringSystemComplete language={currentLang} />
-            </div>
-          )}
-
-          {activeSection === 'ai-modules' && (
-            <div id="ai-modules">
-              <AdvancedCulturalModulesFixed language={currentLang} />
             </div>
           )}
 
