@@ -12,10 +12,11 @@ import {
   Filter,
   Download
 } from 'lucide-react';
+import { useLanguage } from '../../contexts/LanguageContext';
 
 interface VisualizationsSectionProps {
   isActive: boolean;
-  t: (key: string) => string;
+  t?: (key: string) => string;
   language?: 'DE' | 'EN' | 'LA';
 }
 
@@ -28,7 +29,10 @@ interface VisualizationData {
   insights: string[];
 }
 
-function VisualizationsSection({ isActive, t, language = 'DE' }: VisualizationsSectionProps) {
+function VisualizationsSection({ isActive, t: externalT, language = 'DE' }: VisualizationsSectionProps) {
+  const { t: contextT } = useLanguage();
+  const t = externalT || contextT;
+  
   const [selectedVisualization, setSelectedVisualization] = useState<string>('themes');
   const [isLoading, setIsLoading] = useState(false);
   const [dataSource, setDataSource] = useState<'oracle' | 'local'>('oracle');
@@ -37,72 +41,72 @@ function VisualizationsSection({ isActive, t, language = 'DE' }: VisualizationsS
   const visualizations: VisualizationData[] = [
     {
       id: 'themes',
-      title: 'Kulturelle Themen-Verteilung',
-      description: 'Analyse der 1.401 Macrobius-Passagen nach kulturellen Themen',
+      title: t('visualizations.themes_title'),
+      description: t('visualizations.themes_description'),
       type: 'chart',
       data: {
-        labels: ['Philosophie', 'Astronomie', 'Rhetorik', 'Religion', 'Geschichte', 'Literatur', 'Recht', 'Gesellschaft', 'Naturwissenschaft'],
+        labels: [t('themes.philosophy'), t('themes.astronomy'), t('visualizations.rhetoric'), t('themes.religion'), t('themes.history'), t('themes.literature'), t('themes.law'), t('themes.social_customs'), t('visualizations.natural_science')],
         values: [189, 167, 156, 145, 134, 123, 111, 198, 178]
       },
       insights: [
-        'Gesellschaft ist das häufigste Thema (198 Passagen)',
-        'Philosophie folgt mit 189 Passagen',
-        'Naturwissenschaft zeigt 178 Passagen',
-        'Ausgewogene Verteilung über alle Bereiche'
+        t('visualizations.insight_society'),
+        t('visualizations.insight_philosophy'),
+        t('visualizations.insight_science'),
+        t('visualizations.insight_balanced')
       ]
     },
     {
       id: 'difficulty',
-      title: 'Schwierigkeitsgrade-Analyse',
-      description: 'Verteilung der Textpassagen nach Lernschwierigkeit',
+      title: t('visualizations.difficulty_title'),
+      description: t('visualizations.difficulty_description'),
       type: 'chart',
       data: {
-        labels: ['Anfänger', 'Fortgeschritten', 'Experte'],
+        labels: [t('visualizations.beginner'), t('visualizations.advanced'), t('visualizations.expert')],
         values: [567, 623, 211]
       },
       insights: [
-        'Fortgeschrittene Texte dominieren (623 Passagen)',
-        'Anfänger-freundliche Inhalte: 567 Passagen',
-        'Experten-Level: 211 anspruchsvolle Passagen',
-        'Gute Balance für alle Lernstufen'
+        t('visualizations.insight_advanced'),
+        t('visualizations.insight_beginner'),
+        t('visualizations.insight_expert'),
+        t('visualizations.insight_balance')
       ]
     },
     {
       id: 'works',
-      title: 'Werke-Vergleich',
-      description: 'Saturnalia vs. Commentarii - Inhaltliche Analyse',
+      title: t('visualizations.works_title'),
+      description: t('visualizations.works_description'),
       type: 'chart',
       data: {
         labels: ['Saturnalia', 'Commentarii in Somnium Scipionis'],
         values: [856, 545]
       },
       insights: [
-        'Saturnalia: 856 Passagen (61% des Korpus)',
-        'Commentarii: 545 Passagen (39% des Korpus)',
-        'Saturnalia zeigen größere thematische Vielfalt',
-        'Commentarii fokussieren auf Kosmologie und Philosophie'
+        t('visualizations.insight_saturnalia_count'),
+        t('visualizations.insight_commentarii_count'),
+        t('visualizations.insight_saturnalia_variety'),
+        t('visualizations.insight_commentarii_focus')
       ]
     },
     {
       id: 'timeline',
-      title: 'Historische Entwicklung',
-      description: 'Macrobius im Kontext der Spätantike',
+      title: t('visualizations.timeline_title'),
+      description: t('visualizations.timeline_description'),
       type: 'timeline',
       data: {
         events: [
-          { year: 380, event: 'Macrobius geboren', type: 'personal' },
-          { year: 410, event: 'Plünderung Roms durch Alarich', type: 'historical' },
-          { year: 420, event: 'Saturnalia verfasst', type: 'work' },
-          { year: 425, event: 'Commentarii in Somnium Scipionis', type: 'work' },
-          { year: 430, event: 'Macrobius gestorben', type: 'personal' },
-          { year: 476, event: 'Ende des Weströmischen Reiches', type: 'historical' }
+          { year: 380, event: t('visualizations.event_birth'), type: 'personal' },
+          { year: 410, event: t('visualizations.event_alaric'), type: 'historical' },
+          { year: 420, event: t('visualizations.event_saturnalia'), type: 'work' },
+          { year: 425, event: t('visualizations.event_commentarii'), type: 'work' },
+          { year: 430, event: t('visualizations.event_death'), type: 'personal' },
+          { year: 476, event: t('visualizations.event_empire_end'), type: 'historical' }
         ]
       },
       insights: [
-        'Macrobius lebte in der Krisenzeit des Imperiums',
-        'Seine Werke entstanden zwischen den Katastrophen',
-        'Kulturbewahrung in politisch instabiler Zeit',
-        'Brücke zwischen Antike und Mittelalter'
+        t('visualizations.insight_crisis_time'),
+        t('visualizations.insight_between_catastrophes'),
+        t('visualizations.insight_cultural_preservation'),
+        t('visualizations.insight_bridge')
       ]
     }
   ];
@@ -165,7 +169,7 @@ function VisualizationsSection({ isActive, t, language = 'DE' }: VisualizationsS
               </div>
               <div className="flex-1">
                 <h4 className="text-white font-semibold">{event.event}</h4>
-                <p className="text-white/60 text-sm capitalize">{event.type}</p>
+                <p className="text-white/60 text-sm capitalize">{t(`visualizations.type_${event.type}`)}</p>
               </div>
             </motion.div>
           ))}
@@ -173,7 +177,7 @@ function VisualizationsSection({ isActive, t, language = 'DE' }: VisualizationsS
       );
     }
     
-    return <div className="text-white/80">Visualization wird geladen...</div>;
+    return <div className="text-white/80">{t('visualizations.loading')}</div>;
   };
 
   if (!isActive) return null;
@@ -198,18 +202,17 @@ function VisualizationsSection({ isActive, t, language = 'DE' }: VisualizationsS
           <div className="flex items-center justify-center space-x-4 mb-6">
             <BarChart3 className="w-8 h-8 text-blue-400" />
             <h1 className="text-5xl md:text-7xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-200 via-cyan-200 to-blue-200">
-              Datenvisualisierung
+              {t('visualizations.title')}
             </h1>
             <TrendingUp className="w-8 h-8 text-cyan-400" />
           </div>
           
           <h2 className="text-2xl md:text-3xl text-blue-200 mb-8">
-            Macrobius-Korpus Analytik
+            {t('visualizations.subtitle')}
           </h2>
           
           <p className="text-lg md:text-xl text-white/90 max-w-4xl mx-auto leading-relaxed">
-            Erkunde 1.401 authentische Macrobius-Passagen durch interaktive Datenvisualisierungen. 
-            Entdecke Muster, Trends und kulturelle Zusammenhänge in den Werken des antiken Gelehrten.
+            {t('visualizations.description')}
           </p>
         </motion.div>
 
@@ -224,7 +227,7 @@ function VisualizationsSection({ isActive, t, language = 'DE' }: VisualizationsS
             >
               <h3 className="text-lg font-bold text-blue-200 mb-4 flex items-center gap-2">
                 <PieChart className="w-5 h-5" />
-                Visualisierungen
+                {t('visualizations.selector_title')}
               </h3>
               <div className="space-y-3">
                 {visualizations.map((viz) => (
@@ -253,7 +256,7 @@ function VisualizationsSection({ isActive, t, language = 'DE' }: VisualizationsS
             >
               <h4 className="font-semibold text-blue-200 mb-3 flex items-center gap-2">
                 <Database className="w-4 h-4" />
-                Datenquelle
+                {t('visualizations.data_source')}
               </h4>
               <div className="space-y-2">
                 <label className="flex items-center space-x-2 cursor-pointer">
@@ -276,7 +279,7 @@ function VisualizationsSection({ isActive, t, language = 'DE' }: VisualizationsS
                     onChange={(e) => setDataSource(e.target.value as 'oracle' | 'local')}
                     className="text-blue-500"
                   />
-                  <span className="text-white/90 text-sm">Demo Daten</span>
+                  <span className="text-white/90 text-sm">{t('visualizations.demo_data')}</span>
                 </label>
               </div>
               
@@ -288,7 +291,7 @@ function VisualizationsSection({ isActive, t, language = 'DE' }: VisualizationsS
                     dataSource === 'oracle' ? 'bg-green-400 animate-pulse' : 'bg-yellow-400'
                   }`} />
                   <span>
-                    {dataSource === 'oracle' ? '1.401 Live-Passagen' : 'Demonstration'}
+                    {dataSource === 'oracle' ? t('visualizations.live_passages') : t('visualizations.demonstration')}
                   </span>
                 </div>
               </div>
@@ -320,11 +323,11 @@ function VisualizationsSection({ isActive, t, language = 'DE' }: VisualizationsS
                       <div className="flex space-x-2">
                         <button className="px-4 py-2 bg-white/10 text-white/80 rounded-lg hover:bg-white/20 transition-all flex items-center space-x-2">
                           <Filter className="w-4 h-4" />
-                          <span>Filter</span>
+                          <span>{t('visualizations.filter')}</span>
                         </button>
                         <button className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-all flex items-center space-x-2">
                           <Download className="w-4 h-4" />
-                          <span>Export</span>
+                          <span>{t('visualizations.export')}</span>
                         </button>
                       </div>
                     </div>
@@ -338,7 +341,7 @@ function VisualizationsSection({ isActive, t, language = 'DE' }: VisualizationsS
                     <div className="bg-blue-500/10 border border-blue-400/30 rounded-lg p-6">
                       <h4 className="text-lg font-semibold text-blue-300 mb-4 flex items-center gap-2">
                         <TrendingUp className="w-5 h-5" />
-                        Wichtige Erkenntnisse
+                        {t('visualizations.insights_title')}
                       </h4>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         {currentViz.insights.map((insight, index) => (
@@ -372,31 +375,28 @@ function VisualizationsSection({ isActive, t, language = 'DE' }: VisualizationsS
           transition={{ delay: 1, duration: 1 }}
         >
           <h3 className="text-2xl font-bold text-gray-200 mb-6 text-center">
-            📊 Analytics Platform
+            📊 {t('visualizations.analytics_platform')}
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
             <div>
               <div className="text-4xl mb-4">🔍</div>
-              <h4 className="font-semibold text-gray-200 mb-2">Echtzeit-Analyse</h4>
+              <h4 className="font-semibold text-gray-200 mb-2">{t('visualizations.realtime_analysis')}</h4>
               <p className="text-white/80 text-sm leading-relaxed">
-                Live-Datenverarbeitung aus Oracle Cloud ermöglicht aktuelle 
-                Einblicke in das Macrobius-Korpus
+                {t('visualizations.realtime_description')}
               </p>
             </div>
             <div>
               <div className="text-4xl mb-4">📈</div>
-              <h4 className="font-semibold text-gray-200 mb-2">Interaktive Dashboards</h4>
+              <h4 className="font-semibold text-gray-200 mb-2">{t('visualizations.interactive_dashboards')}</h4>
               <p className="text-white/80 text-sm leading-relaxed">
-                Dynamische Visualisierungen mit Drill-Down-Funktionen 
-                für detaillierte Textanalysen
+                {t('visualizations.dashboards_description')}
               </p>
             </div>
             <div>
               <div className="text-4xl mb-4">🎯</div>
-              <h4 className="font-semibent text-gray-200 mb-2">KI-basierte Insights</h4>
+              <h4 className="font-semibold text-gray-200 mb-2">{t('visualizations.ai_insights')}</h4>
               <p className="text-white/80 text-sm leading-relaxed">
-                Machine Learning identifiziert versteckte Muster und 
-                kulturelle Zusammenhänge in den antiken Texten
+                {t('visualizations.ai_description')}
               </p>
             </div>
           </div>
