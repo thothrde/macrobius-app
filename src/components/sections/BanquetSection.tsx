@@ -1,14 +1,18 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Wine, Users, BookOpen, Clock } from 'lucide-react';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface BanquetSectionProps {
   isActive: boolean;
-  t: (key: string) => string;
+  t?: (key: string) => string; // Optional for backward compatibility
   language?: 'DE' | 'EN' | 'LA';
 }
 
-function BanquetSection({ isActive, t, language = 'DE' }: BanquetSectionProps) {
+function BanquetSection({ isActive, t: propT, language = 'DE' }: BanquetSectionProps) {
+  const { t: contextT } = useLanguage();
+  const t = propT || contextT; // Use prop t if provided, otherwise context t
+  
   const [selectedParticipant, setSelectedParticipant] = useState<number | null>(null);
 
   if (!isActive) return null;
@@ -32,20 +36,17 @@ function BanquetSection({ isActive, t, language = 'DE' }: BanquetSectionProps) {
           <div className="flex items-center justify-center space-x-4 mb-6">
             <Wine className="w-8 h-8 text-gold" />
             <h1 className="text-5xl md:text-7xl font-bold text-gold">
-              Saturnalia
+              {t('banquet.title')}
             </h1>
             <Users className="w-8 h-8 text-gold" />
           </div>
           
           <h2 className="text-2xl md:text-3xl text-gold-200 mb-8">
-            Das Gelehrte Gastmahl
+            {t('banquet.subtitle')}
           </h2>
           
           <p className="text-lg md:text-xl text-white/90 max-w-4xl mx-auto leading-relaxed">
-            In Macrobius' Saturnalia treffen sich die gebildetsten Männer Roms zu einem 
-            dreitägigen Festmahl. Zwischen Wein und Speisen entspinnen sich gelehrte Gespräche 
-            über Literatur, Philosophie, Religion und Naturwissenschaften - ein Spiegel 
-            der spätrömischen Bildungskultur.
+            {t('banquet.description')}
           </p>
         </motion.div>
 
@@ -59,29 +60,27 @@ function BanquetSection({ isActive, t, language = 'DE' }: BanquetSectionProps) {
           >
             <h3 className="text-2xl font-bold text-gold mb-6 flex items-center gap-2">
               <Wine className="w-6 h-6" />
-              Das Gastmahl
+              {t('banquet.scene_title')}
             </h3>
             
             <div className="space-y-4">
               <div className="text-6xl text-center mb-6">🍷</div>
               
               <div className="bg-gradient-to-br from-gold/20 to-wine/20 rounded-lg p-6">
-                <h4 className="font-semibold text-gold mb-3">Die Teilnehmer</h4>
+                <h4 className="font-semibold text-gold mb-3">{t('banquet.participants_title')}</h4>
                 <div className="space-y-2 text-white/90">
-                  <p>• <strong>Vettius Agorius Praetextatus</strong> - Stadtpräfekt und Philosoph</p>
-                  <p>• <strong>Virius Nicomachus Flavianus</strong> - Historiker und Staatsmann</p>
-                  <p>• <strong>Quintus Aurelius Symmachus</strong> - Redner und Senator</p>
-                  <p>• <strong>Servius</strong> - Grammatiker und Vergil-Kommentator</p>
-                  <p>• <strong>Caecina Albinus</strong> - Gelehrter und Politiker</p>
+                  <p>• <strong>{t('banquet.participant1_name')}</strong> - {t('banquet.participant1_role')}</p>
+                  <p>• <strong>{t('banquet.participant2_name')}</strong> - {t('banquet.participant2_role')}</p>
+                  <p>• <strong>{t('banquet.participant3_name')}</strong> - {t('banquet.participant3_role')}</p>
+                  <p>• <strong>{t('banquet.participant4_name')}</strong> - {t('banquet.participant4_role')}</p>
+                  <p>• <strong>{t('banquet.participant5_name')}</strong> - {t('banquet.participant5_role')}</p>
                 </div>
               </div>
               
               <div className="bg-wine/20 rounded-lg p-4">
-                <h4 className="font-semibold text-gold mb-2">Kultureller Kontext</h4>
+                <h4 className="font-semibold text-gold mb-2">{t('banquet.context_title')}</h4>
                 <p className="text-white/80 text-sm leading-relaxed">
-                  Diese Männer repräsentierten die letzte Generation der klassischen römischen 
-                  Bildungselite. Ihre Gespräche konservierten jahrtausendealtes Wissen für 
-                  die Nachwelt.
+                  {t('banquet.context_description')}
                 </p>
               </div>
             </div>
@@ -96,24 +95,36 @@ function BanquetSection({ isActive, t, language = 'DE' }: BanquetSectionProps) {
           >
             <h3 className="text-2xl font-bold text-gold mb-6 flex items-center gap-2">
               <BookOpen className="w-6 h-6" />
-              Gesprächsthemen
+              {t('banquet.topics_title')}
             </h3>
             
             <div className="space-y-4">
               {[
                 {
-                  day: 'Tag 1',
-                  topics: ['Vergils Dichtkunst', 'Antike Grammatik', 'Sprachgeschichte'],
+                  day: t('banquet.day1'),
+                  topics: [
+                    t('banquet.day1_topic1'),
+                    t('banquet.day1_topic2'),
+                    t('banquet.day1_topic3')
+                  ],
                   icon: '📜'
                 },
                 {
-                  day: 'Tag 2', 
-                  topics: ['Philosophie und Religion', 'Astronomie', 'Naturwissenschaften'],
+                  day: t('banquet.day2'), 
+                  topics: [
+                    t('banquet.day2_topic1'),
+                    t('banquet.day2_topic2'),
+                    t('banquet.day2_topic3')
+                  ],
                   icon: '🌌'
                 },
                 {
-                  day: 'Tag 3',
-                  topics: ['Recht und Gesellschaft', 'Geschichte Roms', 'Kulturelle Traditionen'],
+                  day: t('banquet.day3'),
+                  topics: [
+                    t('banquet.day3_topic1'),
+                    t('banquet.day3_topic2'),
+                    t('banquet.day3_topic3')
+                  ],
                   icon: '⚖️'
                 }
               ].map((day, index) => (
@@ -154,10 +165,9 @@ function BanquetSection({ isActive, t, language = 'DE' }: BanquetSectionProps) {
                         className="mt-4 pt-4 border-t border-white/20"
                       >
                         <p className="text-white/80 text-sm italic">
-                          „In solchen Gesprächen zeigt sich die wahre Bildung - nicht als totes Wissen, 
-                          sondern als lebendige Kultur, die von Generation zu Generation weitergegeben wird.“
+                          {t('banquet.quote')}
                         </p>
-                        <p className="text-gold/80 text-xs mt-2">- Macrobius über die Saturnalien</p>
+                        <p className="text-gold/80 text-xs mt-2">- {t('banquet.quote_attribution')}</p>
                       </motion.div>
                     )}
                   </AnimatePresence>
@@ -175,31 +185,28 @@ function BanquetSection({ isActive, t, language = 'DE' }: BanquetSectionProps) {
           transition={{ delay: 1.2, duration: 1 }}
         >
           <h3 className="text-2xl font-bold text-gold mb-6 text-center">
-            🏛️ Kulturelles Erbe
+            🏛️ {t('banquet.legacy_title')}
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
             <div>
               <div className="text-4xl mb-4">📜</div>
-              <h4 className="font-semibold text-gold mb-2">Textbewahrung</h4>
+              <h4 className="font-semibold text-gold mb-2">{t('banquet.legacy1_title')}</h4>
               <p className="text-white/80 text-sm leading-relaxed">
-                Die Saturnalien konservierten hunderte antiker Zitate und Fragmente, 
-                die sonst verloren gegangen wären
+                {t('banquet.legacy1_description')}
               </p>
             </div>
             <div>
               <div className="text-4xl mb-4">🎭</div>
-              <h4 className="font-semibold text-gold mb-2">Bildungsideal</h4>
+              <h4 className="font-semibold text-gold mb-2">{t('banquet.legacy2_title')}</h4>
               <p className="text-white/80 text-sm leading-relaxed">
-                Das Modell des gelehrten Gesprächs prägte mittelalterliche und 
-                Renaissance-Bildung nachhaltig
+                {t('banquet.legacy2_description')}
               </p>
             </div>
             <div>
               <div className="text-4xl mb-4">🌍</div>
-              <h4 className="font-semibold text-gold mb-2">Kulturvermittlung</h4>
+              <h4 className="font-semibold text-gold mb-2">{t('banquet.legacy3_title')}</h4>
               <p className="text-white/80 text-sm leading-relaxed">
-                Die Verbindung von Unterhaltung und Gelehrsamkeit wurde zum 
-                Vorbild humanistischer Kultur
+                {t('banquet.legacy3_description')}
               </p>
             </div>
           </div>
