@@ -1,0 +1,14 @@
+# FORCE VERCEL DEPLOYMENT
+
+Timestamp: 2025-07-12 23:53:00 UTC
+Issue: Translation fixes not deploying despite promotion
+Action: Force new build with cache clear
+
+Expected Result:
+- Navigation shows: Einführung, Quiz, Weltkarte
+- No more raw translation keys (nav.intro, nav.quiz)
+- BULLETPROOF_TRANSLATIONS system working
+
+Verification:
+Visit https://macrobius-app.vercel.app
+Check navigation for proper German translations
