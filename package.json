@@ -1,6 +1,6 @@
 {
   "name": "macrobius-app",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "private": true,
   "description": "Revolutionary AI-powered Latin education platform combining ancient Macrobius wisdom with modern technology. Complete with Oracle Cloud integration, 1,416 authentic passages, and advanced educational components.",
   "scripts": {
