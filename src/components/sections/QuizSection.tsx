@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Brain, CheckCircle, XCircle, RotateCcw, Trophy } from 'lucide-react';
+import { useLanguage } from '../../contexts/LanguageContext';
 
 interface QuizSectionProps {
   isActive: boolean;
@@ -18,6 +19,7 @@ interface QuizQuestion {
 }
 
 function QuizSection({ isActive, language = 'DE' }: QuizSectionProps) {
+  const { t } = useLanguage();
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
   const [showResult, setShowResult] = useState(false);
@@ -27,63 +29,73 @@ function QuizSection({ isActive, language = 'DE' }: QuizSectionProps) {
   const questions: QuizQuestion[] = [
     {
       id: 1,
-      question: "Welche zwei Hauptwerke schrieb Macrobius?",
+      question: t('quiz.question1'),
       options: [
-        "Saturnalia und Commentarii in Somnium Scipionis",
-        "De Re Publica und De Officiis",
-        "Metamorphosen und Ars Amatoria",
-        "Confessiones und De Civitate Dei"
+        t('quiz.question1_option1'),
+        t('quiz.question1_option2'),
+        t('quiz.question1_option3'),
+        t('quiz.question1_option4')
       ],
       correct: 0,
-      explanation: "Macrobius' zwei Hauptwerke sind die 'Saturnalia' (Gespräche während der Saturnalien) und die 'Commentarii in Somnium Scipionis' (Kommentar zu Scipios Traum).",
+      explanation: t('quiz.question1_explanation'),
       difficulty: 'easy',
-      category: 'Werke'
+      category: t('quiz.category_works')
     },
     {
       id: 2,
-      question: "Wie viele Klimazonen beschrieb Macrobius?",
-      options: ["Drei", "Fünf", "Sieben", "Neun"],
+      question: t('quiz.question2'),
+      options: [
+        t('quiz.question2_option1'),
+        t('quiz.question2_option2'), 
+        t('quiz.question2_option3'),
+        t('quiz.question2_option4')
+      ],
       correct: 1,
-      explanation: "Macrobius teilte die Erde in fünf Klimazonen: zwei kalte Polarzonen, zwei gemäßigte Zonen und eine heiße Äquatorzone.",
+      explanation: t('quiz.question2_explanation'),
       difficulty: 'medium',
-      category: 'Geographie'
+      category: t('quiz.category_geography')
     },
     {
       id: 3,
-      question: "Was bedeutet 'Sphärenharmonie' in Macrobius' Kosmologie?",
+      question: t('quiz.question3'),
       options: [
-        "Die Planeten bewegen sich zufällig",
-        "Die Himmelskörper erzeugen durch ihre Bewegung Musik",
-        "Die Sterne sind stumm",
-        "Nur die Sonne macht Geräusche"
+        t('quiz.question3_option1'),
+        t('quiz.question3_option2'),
+        t('quiz.question3_option3'),
+        t('quiz.question3_option4')
       ],
       correct: 1,
-      explanation: "Nach Macrobius erzeugen die Planetenbewegungen eine kosmische Musik - die Sphärenharmonie -, die nur reine Seelen hören können.",
+      explanation: t('quiz.question3_explanation'),
       difficulty: 'hard',
-      category: 'Kosmologie'
+      category: t('quiz.category_cosmology')
     },
     {
       id: 4,
-      question: "Wer gab 1597 die erste kritische Gesamtausgabe von Macrobius heraus?",
+      question: t('quiz.question4'),
       options: [
-        "Tycho Brahe",
-        "Johannes Kepler", 
-        "Johannes Isaac Pontanus",
-        "Galileo Galilei"
+        t('quiz.question4_option1'),
+        t('quiz.question4_option2'),
+        t('quiz.question4_option3'),
+        t('quiz.question4_option4')
       ],
       correct: 2,
-      explanation: "Johannes Isaac Pontanus, Assistent von Tycho Brahe, erstellte 1597 die erste kritische Gesamtausgabe von Macrobius' Werken.",
+      explanation: t('quiz.question4_explanation'),
       difficulty: 'medium',
-      category: 'Renaissance'
+      category: t('quiz.category_renaissance')
     },
     {
       id: 5,
-      question: "In welchem Jahrhundert lebte Macrobius?",
-      options: ["3. Jahrhundert", "4. Jahrhundert", "5. Jahrhundert", "6. Jahrhundert"],
+      question: t('quiz.question5'),
+      options: [
+        t('quiz.question5_option1'),
+        t('quiz.question5_option2'),
+        t('quiz.question5_option3'),
+        t('quiz.question5_option4')
+      ],
       correct: 2,
-      explanation: "Macrobius Ambrosius Theodosius lebte im 5. Jahrhundert n. Chr. (ca. 385-430), zur Zeit des untergehenden Weströmischen Reiches.",
+      explanation: t('quiz.question5_explanation'),
       difficulty: 'easy',
-      category: 'Biographie'
+      category: t('quiz.category_biography')
     }
   ];
 
@@ -117,10 +129,19 @@ function QuizSection({ isActive, language = 'DE' }: QuizSectionProps) {
 
   const getScoreMessage = () => {
     const percentage = (score / questions.length) * 100;
-    if (percentage >= 80) return "🎆 Ausgezeichnet! Sie sind ein Macrobius-Experte!";
-    if (percentage >= 60) return "😊 Sehr gut! Sie kennen sich gut mit Macrobius aus.";
-    if (percentage >= 40) return "📚 Nicht schlecht! Es lohnt sich, mehr über Macrobius zu lernen.";
-    return "📜 Noch Raum für Verbesserung. Entdecken Sie mehr über Macrobius!";
+    if (percentage >= 80) return t('quiz.score_excellent');
+    if (percentage >= 60) return t('quiz.score_good');
+    if (percentage >= 40) return t('quiz.score_ok');
+    return t('quiz.score_improve');
+  };
+
+  const getDifficultyLabel = (difficulty: string) => {
+    switch (difficulty) {
+      case 'easy': return t('quiz.difficulty_easy');
+      case 'medium': return t('quiz.difficulty_medium');
+      case 'hard': return t('quiz.difficulty_hard');
+      default: return difficulty;
+    }
   };
 
   if (!isActive) return null;
@@ -144,13 +165,13 @@ function QuizSection({ isActive, language = 'DE' }: QuizSectionProps) {
           <div className="flex items-center justify-center space-x-4 mb-6">
             <Brain className="w-8 h-8 text-purple-400" />
             <h1 className="text-5xl md:text-7xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-200 via-purple-100 to-purple-200">
-              Macrobius Quiz
+              {t('quiz.title')}
             </h1>
             <Trophy className="w-8 h-8 text-yellow-400" />
           </div>
           
           <h2 className="text-2xl md:text-3xl text-purple-200 mb-8">
-            Testen Sie Ihr Wissen über den antiken Gelehrten
+            {t('quiz.subtitle')}
           </h2>
         </motion.div>
 
@@ -166,10 +187,10 @@ function QuizSection({ isActive, language = 'DE' }: QuizSectionProps) {
               <div className="mb-8">
                 <div className="flex justify-between items-center mb-4">
                   <span className="text-purple-300">
-                    Frage {currentQuestion + 1} von {questions.length}
+                    {t('quiz.question_progress').replace('{current}', (currentQuestion + 1).toString()).replace('{total}', questions.length.toString())}
                   </span>
                   <span className="text-purple-300">
-                    Score: {score}/{questions.length}
+                    {t('quiz.score_display').replace('{score}', score.toString()).replace('{total}', questions.length.toString())}
                   </span>
                 </div>
                 <div className="w-full bg-white/20 rounded-full h-2">
@@ -196,8 +217,7 @@ function QuizSection({ isActive, language = 'DE' }: QuizSectionProps) {
                     questions[currentQuestion].difficulty === 'medium' ? 'bg-yellow-500/20 text-yellow-300' :
                     'bg-red-500/20 text-red-300'
                   }`}>
-                    {questions[currentQuestion].difficulty === 'easy' ? 'Einfach' :
-                     questions[currentQuestion].difficulty === 'medium' ? 'Mittel' : 'Schwer'}
+                    {getDifficultyLabel(questions[currentQuestion].difficulty)}
                   </span>
                   <span className="px-3 py-1 bg-purple-500/20 text-purple-300 rounded-full text-sm font-medium">
                     {questions[currentQuestion].category}
@@ -265,7 +285,7 @@ function QuizSection({ isActive, language = 'DE' }: QuizSectionProps) {
                     exit={{ opacity: 0, height: 0 }}
                   >
                     <h4 className="font-semibold text-blue-300 mb-3">
-                      {selectedAnswer === questions[currentQuestion].correct ? '✓ Richtig!' : '✗ Falsch!'}
+                      {selectedAnswer === questions[currentQuestion].correct ? t('quiz.answer_correct') : t('quiz.answer_incorrect')}
                     </h4>
                     <p className="text-blue-200 leading-relaxed">
                       {questions[currentQuestion].explanation}
@@ -286,7 +306,7 @@ function QuizSection({ isActive, language = 'DE' }: QuizSectionProps) {
                     onClick={nextQuestion}
                     className="px-8 py-3 bg-purple-500 text-white rounded-lg hover:bg-purple-600 transition-all font-semibold"
                   >
-                    {currentQuestion < questions.length - 1 ? 'Nächste Frage' : 'Quiz beenden'}
+                    {currentQuestion < questions.length - 1 ? t('quiz.next_question') : t('quiz.finish_quiz')}
                   </button>
                 </motion.div>
               )}
@@ -301,7 +321,7 @@ function QuizSection({ isActive, language = 'DE' }: QuizSectionProps) {
             >
               <div className="text-6xl mb-6">🎆</div>
               <h3 className="text-3xl font-bold text-yellow-400 mb-4">
-                Quiz abgeschlossen!
+                {t('quiz.complete_title')}
               </h3>
               <div className="text-6xl font-bold text-white mb-4">
                 {score}/{questions.length}
@@ -315,15 +335,15 @@ function QuizSection({ isActive, language = 'DE' }: QuizSectionProps) {
                   <div className="text-2xl font-bold text-green-400">
                     {Math.round((score / questions.length) * 100)}%
                   </div>
-                  <div className="text-white/80">Erfolgsquote</div>
+                  <div className="text-white/80">{t('quiz.success_rate')}</div>
                 </div>
                 <div className="bg-white/10 rounded-lg p-4">
                   <div className="text-2xl font-bold text-blue-400">{score}</div>
-                  <div className="text-white/80">Richtige Antworten</div>
+                  <div className="text-white/80">{t('quiz.correct_answers')}</div>
                 </div>
                 <div className="bg-white/10 rounded-lg p-4">
                   <div className="text-2xl font-bold text-purple-400">{questions.length}</div>
-                  <div className="text-white/80">Gesamtfragen</div>
+                  <div className="text-white/80">{t('quiz.total_questions')}</div>
                 </div>
               </div>
               
@@ -332,7 +352,7 @@ function QuizSection({ isActive, language = 'DE' }: QuizSectionProps) {
                 className="px-8 py-3 bg-purple-500 text-white rounded-lg hover:bg-purple-600 transition-all font-semibold flex items-center gap-2 mx-auto"
               >
                 <RotateCcw className="w-5 h-5" />
-                Quiz wiederholen
+                {t('quiz.repeat_quiz')}
               </button>
             </motion.div>
           )}
