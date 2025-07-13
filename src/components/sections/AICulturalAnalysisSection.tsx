@@ -1,5 +1,5 @@
 /**
- * 🏦 AI CULTURAL ANALYSIS SECTION - FIXED ASYNC HANDLING
+ * 🏦 AI CULTURAL ANALYSIS SECTION - FIXED INTERFACE COMPLIANCE
  * Revolutionary interface for AI-powered cultural theme detection and analysis
  * Processes authentic Macrobius content with intelligent pattern recognition
  */
@@ -185,7 +185,7 @@ export default function AICulturalAnalysisSectionFixed({ className = '', languag
   const [statistics, setStatistics] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  // FIXED: Proper async handling in useEffect
+  // FIXED: Proper async handling in useEffect with complete interface compliance
   useEffect(() => {
     const loadThemesAndStatistics = async () => {
       try {
@@ -201,7 +201,7 @@ export default function AICulturalAnalysisSectionFixed({ className = '', languag
       } catch (error) {
         console.error('Failed to load themes and statistics:', error);
         
-        // Fallback: Set default themes if API fails
+        // FIXED: Fallback themes with ALL required properties including keywords
         const defaultThemes: CulturalTheme[] = [
           {
             id: 'religious_practices',
@@ -210,7 +210,8 @@ export default function AICulturalAnalysisSectionFixed({ className = '', languag
             color: '#3B82F6',
             passages: 145,
             prevalence: 0.12,
-            modernRelevance: 'Comparative religious studies and cultural anthropology'
+            modernRelevance: 'Comparative religious studies and cultural anthropology',
+            keywords: ['religio', 'sacer', 'divinus', 'cultus', 'ritus', 'ceremoniae', 'templum', 'sacrificium']
           },
           {
             id: 'social_customs',
@@ -219,7 +220,8 @@ export default function AICulturalAnalysisSectionFixed({ className = '', languag
             color: '#10B981',
             passages: 189,
             prevalence: 0.15,
-            modernRelevance: 'Modern social interactions and cultural norms'
+            modernRelevance: 'Modern social interactions and cultural norms',
+            keywords: ['mos', 'consuetudo', 'societas', 'civitas', 'familia', 'amicitia', 'convivium', 'hospitalitas']
           },
           {
             id: 'philosophy',
@@ -228,7 +230,68 @@ export default function AICulturalAnalysisSectionFixed({ className = '', languag
             color: '#8B5CF6',
             passages: 167,
             prevalence: 0.14,
-            modernRelevance: 'Contemporary philosophical debates and ethics'
+            modernRelevance: 'Contemporary philosophical debates and ethics',
+            keywords: ['philosophia', 'sapientia', 'virtus', 'veritas', 'ratio', 'mens', 'animus', 'prudentia']
+          },
+          {
+            id: 'education',
+            name: 'Education',
+            description: 'Learning methods and knowledge transmission',
+            color: '#F59E0B',
+            passages: 134,
+            prevalence: 0.11,
+            modernRelevance: 'Modern pedagogical approaches and educational theory',
+            keywords: ['disciplina', 'doctrina', 'magister', 'discipulus', 'studium', 'eruditio', 'literatura', 'schola']
+          },
+          {
+            id: 'roman_history',
+            name: 'Roman History',
+            description: 'Historical events and cultural memory',
+            color: '#EF4444',
+            passages: 156,
+            prevalence: 0.13,
+            modernRelevance: 'Historical methodology and cultural memory studies',
+            keywords: ['historia', 'memoria', 'imperium', 'populus', 'senatus', 'consul', 'caesar', 'res']
+          },
+          {
+            id: 'literature',
+            name: 'Literature',
+            description: 'Literary analysis and textual interpretation',
+            color: '#6366F1',
+            passages: 198,
+            prevalence: 0.16,
+            modernRelevance: 'Literary criticism and hermeneutics',
+            keywords: ['poeta', 'carmen', 'versus', 'fabula', 'narratio', 'eloquentia', 'rhetorica', 'stylus']
+          },
+          {
+            id: 'astronomy',
+            name: 'Astronomy',
+            description: 'Celestial observations and cosmic understanding',
+            color: '#7C3AED',
+            passages: 123,
+            prevalence: 0.09,
+            modernRelevance: 'Modern astronomy and scientific methodology',
+            keywords: ['stella', 'caelum', 'sol', 'luna', 'planeta', 'orbis', 'astronomia', 'astrologia']
+          },
+          {
+            id: 'law',
+            name: 'Law',
+            description: 'Legal principles and jurisprudence',
+            color: '#DC2626',
+            passages: 89,
+            prevalence: 0.07,
+            modernRelevance: 'Legal studies and constitutional theory',
+            keywords: ['lex', 'ius', 'iudex', 'iustitia', 'crimen', 'poena', 'tribunal', 'advocatus']
+          },
+          {
+            id: 'general',
+            name: 'General',
+            description: 'Miscellaneous cultural content',
+            color: '#6B7280',
+            passages: 200,
+            prevalence: 0.16,
+            modernRelevance: 'General cultural and historical understanding',
+            keywords: ['vita', 'homo', 'natura', 'tempus', 'locus', 'opus', 'verbum', 'causa']
           }
         ];
         setCulturalThemes(defaultThemes);
@@ -274,7 +337,6 @@ export default function AICulturalAnalysisSectionFixed({ className = '', languag
       console.error('Analysis failed:', error);
       // Provide fallback analysis result
       const fallbackResult: CulturalAnalysisResult = {
-        passage: analysisText,
         confidence: 0.75,
         themes: [
           {
@@ -284,7 +346,11 @@ export default function AICulturalAnalysisSectionFixed({ className = '', languag
             color: '#8B5CF6',
             passages: 167,
             prevalence: 0.14,
-            modernRelevance: 'Contemporary philosophical debates'
+            modernRelevance: 'Contemporary philosophical debates',
+            keywords: ['philosophia', 'sapientia', 'virtus'],
+            confidence: 0.8,
+            textEvidence: ['Philosophical vocabulary detected'],
+            contextualRelevance: 0.75
           }
         ],
         modernConnections: [
@@ -293,17 +359,35 @@ export default function AICulturalAnalysisSectionFixed({ className = '', languag
             ancientConcept: 'Classical Education',
             modernApplication: 'Modern Liberal Arts Education',
             explanation: 'Connection between ancient and modern educational approaches',
-            confidence: 0.8
+            confidence: 0.8,
+            category: 'Education',
+            evidenceStrength: 0.7,
+            interdisciplinaryLinks: ['Education', 'Philosophy']
           }
         ],
         insights: [
-          'This passage demonstrates classical Latin philosophical discourse',
-          'Cultural themes reflect timeless human concerns'
+          {
+            type: 'philosophical',
+            insight: 'This passage demonstrates classical Latin philosophical discourse',
+            evidence: ['Philosophical terminology', 'Structured argumentation'],
+            significance: 0.7,
+            modernRelevance: 'Relevant to contemporary philosophical methodology'
+          }
         ],
         recommendations: [
           'Study similar passages for deeper cultural understanding',
           'Compare with modern philosophical texts'
-        ]
+        ],
+        relatedPassages: [],
+        linguisticFeatures: {
+          wordCount: analysisText.split(' ').length,
+          complexityScore: 0.6,
+          rhetoricalDevices: ['Periodic sentences'],
+          syntacticPatterns: ['Subordinate clauses'],
+          vocabularyLevel: 'Classical',
+          literaryStyle: 'Philosophical'
+        },
+        semanticSimilarity: 0.75
       };
       setAnalysisResult(fallbackResult);
     } finally {
@@ -571,7 +655,7 @@ export default function AICulturalAnalysisSectionFixed({ className = '', languag
                         {analysisResult.insights.map((insight, index) => (
                           <li key={index} className="flex items-start">
                             <Sparkles className="h-4 w-4 text-blue-500 mr-2 mt-0.5 flex-shrink-0" />
-                            <span className="text-sm text-gray-700">{insight}</span>
+                            <span className="text-sm text-gray-700">{insight.insight}</span>
                           </li>
                         ))}
                       </ul>
