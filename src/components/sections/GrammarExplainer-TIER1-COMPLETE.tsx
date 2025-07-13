@@ -14,7 +14,7 @@ import { Badge } from '../ui/badge';
 import { Progress } from '../ui/progress';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs';
 import { MacrobiusAPI } from '../../lib/enhanced-api-client';
-import { analyzeLatinSentence, generateGrammarExercises, RealGrammarEngine } from '../../lib/real-grammar-analysis-engine';
+import { analyzeLatinSentence, generateGrammarExercises, realGrammarAnalysisEngine } from '../../lib/real-grammar-analysis-engine';
 import {
   BookOpen,
   Brain,
@@ -529,25 +529,12 @@ export default function GrammarExplainerRealAI({ language }: GrammarExplainerPro
       }
       
       // Step 2: Generate real AI exercises using grammar analysis engine
-      const realExercises = await generateGrammarExercises({
-        user_id: realUserProfile.user_id,
-        config: {
-          pattern_focus: config.pattern_focus,
-          target_difficulty: config.target_difficulty,
-          exercise_types: config.exercise_types,
-          count: config.count,
-          cultural_context: config.include_cultural_context,
-          personalization: config.ai_personalization
-        },
-        corpus_passages: corpusPassages,
-        user_profile: {
-          grammar_progress: realUserProfile.grammar_progress,
-          known_vocabulary: realUserProfile.srs_integration.known_words,
-          weak_areas: realUserProfile.grammar_progress.weak_areas,
-          learning_preferences: realUserProfile.learning_preferences
-        },
-        ai_optimization: true
-      });
+      const realExercises = await generateGrammarExercises(
+        realUserProfile.user_id,
+        config.pattern_focus.join(','),
+        config.count,
+        config.target_difficulty === 'beginner' ? 0.3 : config.target_difficulty === 'intermediate' ? 0.6 : 0.9
+      );
       
       if (!realExercises || realExercises.length === 0) {
         throw new Error('Failed to generate real AI exercises');
