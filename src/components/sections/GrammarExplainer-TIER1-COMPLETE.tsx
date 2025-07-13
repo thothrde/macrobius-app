@@ -332,7 +332,7 @@ export default function GrammarExplainerRealAI({ language }: GrammarExplainerPro
       
       try {
         // Step 1: Connect to real Oracle Cloud backend
-        const healthResponse = await MacrobiusAPI.system.healthCheck();
+        const healthResponse = await MacrobiusAPI.health();
         if (healthResponse.status !== 'success') {
           throw new Error('Oracle Cloud backend not available');
         }
