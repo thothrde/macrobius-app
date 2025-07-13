@@ -30,7 +30,7 @@
     "tailwind-merge": "^1.14.0",
     "tailwindcss-animate": "^1.0.7",
     "three": "^0.176.0",
-    "three-mesh-bvh": "^0.8.3"
+    "three-mesh-bvh": "^0.8.0"
   },
   "devDependencies": {
     "@next/bundle-analyzer": "^13.4.19",
