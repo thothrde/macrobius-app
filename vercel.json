@@ -1,15 +1,9 @@
 {
   "version": 2,
   "name": "macrobius-app",
-  "builds": [
-    {
-      "src": "package.json",
-      "use": "@vercel/next"
-    }
-  ],
   "env": {
     "ORACLE_BACKEND_URL": "http://152.70.184.232:8080",
-    "MACROBIUS_VERSION": "2.0.0",
+    "MACROBIUS_VERSION": "2.0.1",
     "NODE_ENV": "production"
   },
   "build": {
