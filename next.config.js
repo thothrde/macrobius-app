@@ -1,13 +1,12 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  swcMinify: true,
-  experimental: {
-    appDir: false
-  },
+  // Removed deprecated options for Next.js 15 compatibility:
+  // - swcMinify: true (now default)
+  // - experimental.appDir (deprecated)
   env: {
     ORACLE_BACKEND_URL: 'http://152.70.184.232:8080',
-    MACROBIUS_VERSION: '2.0.0'
+    MACROBIUS_VERSION: '2.0.1'
   },
   async redirects() {
     return [
@@ -38,7 +37,14 @@ const nextConfig = {
         ]
       }
     ]
-  }
+  },
+  // Optimize bundle for production
+  compiler: {
+    removeConsole: process.env.NODE_ENV === 'production'
+  },
+  // Performance optimizations
+  poweredByHeader: false,
+  compress: true
 };
 
 module.exports = nextConfig;
