@@ -62,8 +62,6 @@ import {
   Calendar,
   User,
   GraduationCap,
-  Telescope,
-  Microscope,
   Grid,
   List,
   PieChart,
