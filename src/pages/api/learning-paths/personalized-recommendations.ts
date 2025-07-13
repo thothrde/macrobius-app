@@ -549,103 +549,103 @@ function generateRecommendationsFallback(
     })),
     milestones: [
       {
-        description: language === 'de' ? 'Schwache Bereiche verbessern' :
-                    language === 'la' ? 'Partes debiles meliorare' :
-                    'Improve weak areas',
-        dueDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-        completionCriteria: language === 'de' ? '75% Verbesserung in Problembereichen' :
-                           language === 'la' ? '75% melioramentum in partibus problematicis' :
-                           '75% improvement in problem areas'
+        description: language === 'de' ? 'Erste Verbesserungen zeigen' :
+                    language === 'la' ? 'Prima melioramenta ostendere' :
+                    'Show first improvements',
+        dueDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
+        completionCriteria: language === 'de' ? '70% Erfolgsrate in Übungen' :
+                           language === 'la' ? '70% successus in exercitationibus' :
+                           '70% success rate in exercises'
       }
     ]
   };
   
   const now = new Date();
-  const validUntil = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000); // Valid for 1 week
+  const nextWeek = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
+  const nextMonth = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000);
   
   return {
     userId: request.userId,
     generatedDate: now.toISOString(),
-    validUntil: validUntil.toISOString(),
+    validUntil: nextWeek.toISOString(),
     immediateRecommendations,
     suggestedStudySession,
     weeklyPlan,
     progressPredictions: {
       nextWeek: {
-        expectedProgress: 15, // 15% improvement expected
+        expectedProgress: 15,
         likelyStruggles: analysis.weaknessAreas.slice(0, 2),
         recommendations: [
-          language === 'de' ? 'Tägliche kurze Wiederholungen' :
-          language === 'la' ? 'Repetitiones quotidianae breves' :
-          'Daily short reviews',
-          language === 'de' ? 'Fokus auf schwächste Bereiche' :
-          language === 'la' ? 'Concentratio in partes debilissimas' :
-          'Focus on weakest areas'
+          language === 'de' ? 'Fokussieren Sie sich auf schwache Bereiche' :
+          language === 'la' ? 'In partes debiles concentrare' :
+          'Focus on weak areas',
+          language === 'de' ? 'Regelmäßige kurze Sitzungen' :
+          language === 'la' ? 'Sessiones breves regulares' :
+          'Regular short sessions'
         ]
       },
       nextMonth: {
-        expectedMastery: {
-          grammar: Math.min(100, (request.currentPerformance?.grammarAccuracy || 0.5) * 100 + 20),
-          vocabulary: Math.min(100, (request.currentPerformance?.vocabularyRetention || 0.5) * 100 + 15),
-          reading: Math.min(100, (request.currentPerformance?.readingComprehension || 0.5) * 100 + 10),
-          cultural: Math.min(100, (request.currentPerformance?.culturalKnowledge || 0.5) * 100 + 25)
-        },
+        expectedMastery: Object.fromEntries(
+          [...analysis.strengthAreas, ...analysis.nextLogicalSteps].map(area => [
+            area, Math.floor(60 + Math.random() * 30)
+          ])
+        ),
         suggestedMilestones: [
-          language === 'de' ? 'Erste lateinische Texte selbstständig lesen' :
-          language === 'la' ? 'Primos textus Latinos independenter legere' :
-          'Read first Latin texts independently',
-          language === 'de' ? 'Grundlegende Grammatik beherrschen' :
+          language === 'de' ? 'Erste Texte selbständig lesen' :
+          language === 'la' ? 'Primos textus independenter legere' :
+          'Read first texts independently',
+          language === 'de' ? 'Grundgrammatik beherrschen' :
           language === 'la' ? 'Grammaticam fundamentalem dominari' :
-          'Master fundamental grammar'
+          'Master basic grammar'
         ],
         adaptiveAdjustments: [
-          language === 'de' ? 'Schwierigkeit basierend auf Fortschritt anpassen' :
-          language === 'la' ? 'Difficultatem secundum progressum adaptare' :
-          'Adjust difficulty based on progress'
+          language === 'de' ? 'Schwierigkeitsgrad anpassen' :
+          language === 'la' ? 'Gradum difficultatis adaptare' :
+          'Adjust difficulty level',
+          language === 'de' ? 'Inhalte personalisieren' :
+          language === 'la' ? 'Contentum personalizare' :
+          'Personalize content'
         ]
       }
     },
     motivationalElements: {
       achievements: {
         recent: [
-          language === 'de' ? 'Regelmäßiges Lernen für eine Woche' :
-          language === 'la' ? 'Discere regulare per hebdomadem' :
-          'Consistent learning for one week'
+          language === 'de' ? 'Erste Woche abgeschlossen' :
+          language === 'la' ? 'Prima hebdomada completa' :
+          'First week completed'
         ],
         upcoming: [
-          language === 'de' ? 'Erste 100 Vokabeln gelernt' :
-          language === 'la' ? 'Prima centum vocabula didicta' :
-          'First 100 vocabulary words learned',
-          language === 'de' ? 'Grammatik-Grundlagen gemeistert' :
-          language === 'la' ? 'Fundamenta grammaticae dominata' :
-          'Grammar fundamentals mastered'
+          language === 'de' ? 'Erste Grammatiklektion meistern' :
+          language === 'la' ? 'Primam lectionem grammaticam dominari' :
+          'Master first grammar lesson'
         ]
       },
       encouragement: [
-        language === 'de' ? 'Ihr Fortschritt zeigt konstante Verbesserung!' :
-        language === 'la' ? 'Progressus tuus melioramentum constans ostendit!' :
-        'Your progress shows consistent improvement!',
-        language === 'de' ? 'Bleiben Sie dran - jede Sitzung bringt Sie weiter!' :
-        language === 'la' ? 'Perseverate - quaeque sessio vos ulterius ducit!' :
-        'Keep going - each session takes you further!'
+        language === 'de' ? 'Sie machen großartige Fortschritte!' :
+        language === 'la' ? 'Progressus magnificos facis!' :
+        'You are making great progress!',
+        language === 'de' ? 'Bleiben Sie dran - Erfolg kommt mit Übung' :
+        language === 'la' ? 'Persevera - successus cum exercitatione venit' :
+        'Keep going - success comes with practice'
       ],
       challenges: [
         {
-          title: language === 'de' ? '7-Tage Lernstreak' :
-                 language === 'la' ? 'Series discendi 7 dierum' :
-                 '7-Day Learning Streak',
-          description: language === 'de' ? 'Lernen Sie 7 Tage in Folge' :
-                      language === 'la' ? 'Discite 7 dies continuos' :
-                      'Learn for 7 consecutive days',
-          reward: language === 'de' ? 'Spezielle Macrobius-Abzeichen' :
-                 language === 'la' ? 'Insignia Macrobii specialis' :
-                 'Special Macrobius Badge',
-          deadline: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
+          title: language === 'de' ? '7-Tage Streak' :
+                 language === 'la' ? 'Series 7 dierum' :
+                 '7-Day Streak',
+          description: language === 'de' ? 'Studieren Sie 7 Tage hintereinander' :
+                      language === 'la' ? 'Studia 7 dies consecutive' :
+                      'Study for 7 consecutive days',
+          reward: language === 'de' ? 'Spezielle Anerkennungsmedaille' :
+                 language === 'la' ? 'Medalla recognitionis specialis' :
+                 'Special recognition badge',
+          deadline: nextWeek.toISOString()
         }
       ]
     },
     metadata: {
-      algorithmVersion: 'Macrobius-Personalization-v2.0',
+      algorithmVersion: 'Macrobius-Personalization-v2.1',
       confidenceScore: 0.85,
       factors: {
         performance: request.currentPerformance ? 0.9 : 0.3,
@@ -695,11 +695,11 @@ export default async function handler(
       });
     }
 
-    if (request.contextualFactors?.energyLevel && 
-        !['high', 'medium', 'low'].includes(request.contextualFactors.energyLevel)) {
+    if (request.contextualFactors?.timeOfDay && 
+        !['morning', 'afternoon', 'evening'].includes(request.contextualFactors.timeOfDay)) {
       return res.status(400).json({
         status: 'error',
-        error: 'Invalid energyLevel. Must be: high, medium, or low.'
+        error: 'Invalid timeOfDay. Must be: morning, afternoon, or evening.'
       });
     }
 
@@ -733,13 +733,6 @@ export default async function handler(
     try {
       const emergencyFallback = generateRecommendationsFallback({
         userId: req.body?.userId || 'anonymous',
-        preferences: {
-          studyTime: 30,
-          sessionFrequency: 3,
-          difficultyPreference: 'moderate',
-          contentTypes: ['grammar', 'vocabulary'],
-          learningStyle: 'mixed'
-        },
         language: 'en'
       });
       
@@ -751,7 +744,7 @@ export default async function handler(
     } catch (emergencyError) {
       return res.status(500).json({
         status: 'error',
-        error: 'Unable to generate personalized recommendations due to system error.'
+        error: 'Unable to generate recommendations due to system error.'
       });
     }
   }
