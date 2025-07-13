@@ -14,7 +14,7 @@ import { Badge } from '../ui/badge';
 import { Progress } from '../ui/progress';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs';
 import { MacrobiusAPI } from '../../lib/enhanced-api-client';
-import { analyzeLatinSentence, generateGrammarExercises, realGrammarAnalysisEngine } from '../../lib/real-grammar-analysis-engine';
+import { analyzeLatinSentence, generateGrammarExercises, realGrammarAnalysisEngine, GrammarExercise } from '../../lib/real-grammar-analysis-engine';
 import {
   BookOpen,
   Brain,
@@ -215,6 +215,55 @@ interface RealUserProfile {
     optimal_study_session_length: number;
     preferred_learning_style: 'visual' | 'analytical' | 'practical' | 'comprehensive';
     ai_coaching_insights: string[];
+  };
+}
+
+// 🔄 **CONVERSION FUNCTION: GrammarExercise -> RealGrammarExercise**
+function convertToRealGrammarExercise(exercise: GrammarExercise, passageData?: any): RealGrammarExercise {
+  // Convert exercise.type to our expected format
+  let convertedType: 'fill_blank' | 'identify' | 'transform' | 'multiple_choice' | 'pattern_recognition';
+  switch (exercise.type) {
+    case 'completion':
+      convertedType = 'fill_blank';
+      break;
+    case 'identification':
+      convertedType = 'identify';
+      break;
+    case 'transformation':
+      convertedType = 'transform';
+      break;
+    case 'analysis':
+      convertedType = 'pattern_recognition';
+      break;
+    default:
+      convertedType = 'multiple_choice';
+  }
+
+  // Generate multiple choice answers if not provided
+  const answers = exercise.content.blanks?.[0]?.options || [
+    exercise.solution.answer,
+    ...(exercise.solution.alternativeAnswers || ['Option B', 'Option C', 'Option D'])
+  ].slice(0, 4);
+
+  return {
+    id: exercise.id,
+    type: convertedType,
+    passage_source: exercise.source?.citation || 'Unknown',
+    original_text: exercise.content.text,
+    blanked_text: exercise.content.blanks ? exercise.content.text : undefined,
+    question: exercise.instruction || `Analyze this ${exercise.type} exercise`,
+    answers: answers,
+    correct_answer: 0, // First answer is typically correct
+    explanation: exercise.solution.explanation,
+    difficulty: exercise.difficulty > 0.7 ? 'advanced' : exercise.difficulty > 0.4 ? 'intermediate' : 'beginner',
+    cultural_context: `Cultural theme: ${exercise.source?.culturalTheme || 'Classical Literature'}`,
+    ai_generated_from: {
+      pattern_id: exercise.relatedConcepts?.[0] || 'general',
+      corpus_passage_id: exercise.source?.passageId || exercise.id,
+      ai_confidence: 0.85,
+      cultural_theme: exercise.source?.culturalTheme || 'General',
+      real_analysis_data: passageData || exercise
+    }
   };
 }
 
@@ -544,16 +593,19 @@ export default function GrammarExplainerRealAI({ language }: GrammarExplainerPro
       }
       
       // Step 2: Generate real AI exercises using grammar analysis engine
-      const realExercises = await generateGrammarExercises(
+      const rawExercises = await generateGrammarExercises(
         realUserProfile.user_id,
         config.pattern_focus.join(','),
         config.count,
         config.target_difficulty === 'beginner' ? 0.3 : config.target_difficulty === 'intermediate' ? 0.6 : 0.9
       );
       
-      if (!realExercises || realExercises.length === 0) {
+      // Step 3: Convert GrammarExercise[] to RealGrammarExercise[]
+      let convertedExercises: RealGrammarExercise[];
+      
+      if (!rawExercises || rawExercises.length === 0) {
         // Fallback: Create exercises from corpus passages
-        const fallbackExercises: RealGrammarExercise[] = corpusPassages.data.slice(0, config.count).map((passage, index) => ({
+        convertedExercises = corpusPassages.data.slice(0, config.count).map((passage, index) => ({
           id: `exercise_${Date.now()}_${index}`,
           type: 'multiple_choice' as const,
           passage_source: passage.source || 'Unknown',
@@ -577,16 +629,19 @@ export default function GrammarExplainerRealAI({ language }: GrammarExplainerPro
             real_analysis_data: passage
           }
         }));
-        
-        setRealGeneratedExercises(fallbackExercises);
       } else {
-        setRealGeneratedExercises(realExercises.slice(0, config.count));
+        // Convert real exercises to the expected format
+        convertedExercises = rawExercises.slice(0, config.count).map((exercise, index) => 
+          convertToRealGrammarExercise(exercise, corpusPassages.data[index])
+        );
       }
       
-      // Step 3: Create real exercise session
+      setRealGeneratedExercises(convertedExercises);
+      
+      // Step 4: Create real exercise session
       const realSession: RealExerciseSession = {
         session_id: `real_grammar_${Date.now()}`,
-        exercises: realExercises?.slice(0, config.count) || [],
+        exercises: convertedExercises,
         current_index: 0,
         score: 0,
         time_started: new Date(),
