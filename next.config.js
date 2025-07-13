@@ -6,7 +6,7 @@ const nextConfig = {
   // - experimental.appDir (deprecated)
   env: {
     ORACLE_BACKEND_URL: 'http://152.70.184.232:8080',
-    MACROBIUS_VERSION: '2.0.1'
+    MACROBIUS_VERSION: '2.0.2'
   },
   async redirects() {
     return [
