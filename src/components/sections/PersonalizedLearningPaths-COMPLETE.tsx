@@ -60,7 +60,6 @@ import {
   PlusCircle,
   Minus,
   RefreshCw,
-  Bulb,
   Crown,
   Compass,
   Map,
