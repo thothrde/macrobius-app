@@ -238,7 +238,7 @@ const KIRAGAssistentSection: React.FC = () => {
       setLoadingStage('analyzing');
       const contextAnalysis = await processRAGQuery(
         userMessage.content,
-        language,
+        language.toLowerCase() as 'de' | 'en' | 'la', // 🔧 Fixed: Convert uppercase to lowercase
         undefined, // context
         'user-session' // userId
       );
