@@ -533,7 +533,7 @@ export default function MacrobiusTextProcessorTIER2Complete({ language }: TextSe
         // 🚀 ATTEMPT TO LOAD REAL DATA FROM AVAILABLE SYSTEMS
         const [srsResponse, learningPathsResponse] = await Promise.allSettled([
           MacrobiusAPI.vocabulary.getVocabularyStatistics(),
-          MacrobiusAPI.learningPaths?.getPersonalizedRecommendations?.('user123') || Promise.reject('Learning Paths API not available')
+          MacrobiusAPI.learningPaths?.personalizedRecommendations?.('user123') || Promise.reject('Learning Paths API not available')
         ]);
         
         // Build real profile from available data
