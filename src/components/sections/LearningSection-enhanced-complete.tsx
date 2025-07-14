@@ -248,7 +248,7 @@ const LearningSection: React.FC = () => {
               </h1>
               <p className="text-gray-600">{activeTool.description}</p>
             </div>
-            <ActiveComponent />
+            <ActiveComponent language={language} />
           </div>
         </div>
       );
