@@ -587,3 +587,119 @@ export async function performSemanticSearch(
     }
   }, userId);
 }
+
+/**
+ * Generate embedding for text using real AI
+ */
+export async function generateEmbedding(text: string, language: 'de' | 'en' | 'la' = 'la'): Promise<number[]> {
+  try {
+    const response = await enhancedApiClient.post('/api/search/embedding', {
+      text,
+      language,
+      modelType: 'macrobius-specialized'
+    });
+    return response.data.embedding || [];
+  } catch (error) {
+    console.error('Failed to generate embedding:', error);
+    return [];
+  }
+}
+
+/**
+ * Analyze query semantics using real NLP
+ */
+export async function analyzeQuerySemantics(params: {
+  query: string;
+  language: string;
+  userProfile?: any;
+  includeExpansion?: boolean;
+}): Promise<any> {
+  try {
+    const response = await enhancedApiClient.post('/api/search/analyze-query', {
+      query: params.query,
+      language: params.language,
+      userProfile: params.userProfile,
+      includeExpansion: params.includeExpansion
+    });
+    return {
+      concepts: response.data.concepts || [],
+      intent: response.data.intent || 'search',
+      confidence: response.data.confidence || 0.8,
+      suggestions: response.data.suggestions || []
+    };
+  } catch (error) {
+    console.error('Failed to analyze query semantics:', error);
+    return {
+      concepts: [],
+      intent: 'search',
+      confidence: 0.5,
+      suggestions: []
+    };
+  }
+}
+
+/**
+ * Expand query using real AI
+ */
+export async function expandQuery(params: {
+  originalQuery: string;
+  detectedConcepts?: string[];
+  userProfile?: any;
+  expansionTypes?: string[];
+}): Promise<any> {
+  try {
+    const response = await enhancedApiClient.post('/api/search/expand-query', {
+      text: params.originalQuery,
+      concepts: params.detectedConcepts,
+      userProfile: params.userProfile,
+      expansionTypes: params.expansionTypes
+    });
+    return {
+      synonyms: response.data.synonyms || [],
+      culturalTerms: response.data.cultural_terms || [],
+      grammarPatterns: response.data.grammar_patterns || [],
+      vocabularyTerms: response.data.vocabulary_terms || [],
+      confidence: response.data.confidence || 0.8
+    };
+  } catch (error) {
+    console.error('Failed to expand query:', error);
+    return {
+      synonyms: [],
+      culturalTerms: [],
+      grammarPatterns: [],
+      vocabularyTerms: [],
+      confidence: 0.5
+    };
+  }
+}
+
+/**
+ * Filter results using real AI
+ */
+export async function filterResults(params: {
+  results: any[];
+  userProfile?: any;
+  filterTypes?: string[];
+  prioritizePersonalization?: boolean;
+}): Promise<any> {
+  try {
+    const response = await enhancedApiClient.post('/api/search/filter-results', {
+      results: params.results,
+      userProfile: params.userProfile,
+      filterTypes: params.filterTypes,
+      prioritizePersonalization: params.prioritizePersonalization
+    });
+    return {
+      filteredResults: response.data.filtered_results || params.results,
+      filtersApplied: response.data.filters_applied || [],
+      confidence: response.data.confidence || 0.8
+    };
+  } catch (error) {
+    console.error('Failed to filter results:', error);
+    return {
+      filteredResults: params.results,
+      filtersApplied: [],
+      confidence: 0.5
+    };
+  }
+}
