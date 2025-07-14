@@ -19,7 +19,7 @@ import {
 } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { MacrobiusAPI, RAGQueryResult } from '@/lib/enhanced-api-client-with-fallback';
-import { processRAGQuery, generateRAGResponse } from '@/lib/real-rag-system-engine';
+import { processRAGQuery } from '@/lib/real-rag-system-engine';
 
 interface ChatMessage {
   id: string;
@@ -236,13 +236,12 @@ const KIRAGAssistentSection: React.FC = () => {
 
       // Stage 2: Analyze cultural context using real RAG engine
       setLoadingStage('analyzing');
-      const contextAnalysis = await processRAGQuery({
-        query: userMessage.content,
-        language: language,
-        maxResults: 5,
-        includeContext: true,
-        culturalThemes: true
-      });
+      const contextAnalysis = await processRAGQuery(
+        userMessage.content,
+        language,
+        undefined, // context
+        'user-session' // userId
+      );
 
       // Stage 3: Generate response using real AI
       setLoadingStage('generating');
