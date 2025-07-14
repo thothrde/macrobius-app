@@ -25,6 +25,9 @@ import {
   Zap
 } from 'lucide-react';
 
+// Define the expected language type for components
+type ComponentLanguage = 'DE' | 'EN' | 'LA';
+
 interface LearningToolProps {
   title: string;
   description: string;
@@ -248,7 +251,7 @@ const LearningSection: React.FC = () => {
               </h1>
               <p className="text-gray-600">{activeTool.description}</p>
             </div>
-            <ActiveComponent language={language} />
+            <ActiveComponent language={language as ComponentLanguage} />
           </div>
         </div>
       );
@@ -278,21 +281,21 @@ const LearningSection: React.FC = () => {
               isActive={activeComponent === tool.id}
               onClick={() => handleToolClick(tool.id)}
             />
-          ))}}
+          ))}
         </div>
 
         <div className="bg-white rounded-lg shadow-lg p-8 text-center">
           <div className="mb-6">
             <GraduationCap className="w-16 h-16 text-blue-500 mx-auto mb-4" />
             <h2 className="text-2xl font-bold text-gray-800 mb-2">
-              {language === 'de' ? 'Intelligente Lernumgebung' : 
-               language === 'en' ? 'Intelligent Learning Environment' : 
+              {language === 'DE' ? 'Intelligente Lernumgebung' : 
+               language === 'EN' ? 'Intelligent Learning Environment' : 
                'Ambitus Discendi Intelligens'}
             </h2>
             <p className="text-gray-600 max-w-2xl mx-auto">
-              {language === 'de' ? 
+              {language === 'DE' ? 
                 'Nutze modernste KI-Technologie, um die Welt des Macrobius zu erschließen. Unsere Lernwerkzeuge passen sich an deine Fortschritte an und bieten personalisierte Lernerfahrungen.' :
-               language === 'en' ? 
+               language === 'EN' ? 
                 'Use cutting-edge AI technology to unlock the world of Macrobius. Our learning tools adapt to your progress and offer personalized learning experiences.' :
                 'Technologia IA recentissima utere ad mundum Macrobii reserandum. Instrumenta nostra discendi progressui tuo se accommodant et experientia discendi personales offerunt.'
               }
