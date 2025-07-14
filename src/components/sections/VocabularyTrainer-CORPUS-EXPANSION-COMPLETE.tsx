@@ -52,10 +52,8 @@ import {
   Users
 } from 'lucide-react';
 
-interface Language {
-  code: string;
-  name: string;
-}
+// ✅ Use consistent Language type from context
+type ComponentLanguage = 'DE' | 'EN' | 'LA';
 
 // 🎯 **REAL SRS INTERFACES - NO MORE MOCK DATA**
 interface RealSRSData {
@@ -161,7 +159,7 @@ interface RealPersonalizedVocabularySet {
 }
 
 interface VocabularyTrainerSectionProps {
-  language: Language;
+  language: ComponentLanguage;
 }
 
 // 🎖️ **REWARD MILESTONES - ENHANCED FOR REAL AI**
@@ -285,9 +283,9 @@ const VocabularyTrainerSection: React.FC<VocabularyTrainerSectionProps> = ({ lan
   const [error, setError] = useState<string | null>(null);
   const [showRewardModal, setShowRewardModal] = useState<{show: boolean, reward?: any}>({show: false});
 
-  // Enhanced Translations
+  // ✅ Enhanced Translations - Fixed language access
   const translations = {
-    de: {
+    DE: {
       title: 'Macrobius Vokabeltrainer - Real AI SRS',
       subtitle: 'Echte KI-gestützte Corpus-Analyse mit authentischen SRS-Algorithmen',
       modes: {
@@ -315,7 +313,7 @@ const VocabularyTrainerSection: React.FC<VocabularyTrainerSectionProps> = ({ lan
         optimizeAI: 'KI optimieren'
       }
     },
-    en: {
+    EN: {
       title: 'Macrobius Vocabulary Trainer - Real AI SRS',
       subtitle: 'Authentic AI-Powered Corpus Analysis with Real SRS Algorithms',
       modes: {
@@ -343,7 +341,7 @@ const VocabularyTrainerSection: React.FC<VocabularyTrainerSectionProps> = ({ lan
         optimizeAI: 'Optimize AI'
       }
     },
-    la: {
+    LA: {
       title: 'Exercitator Vocabulorum Macrobii - Vera AI SRS',
       subtitle: 'Analytica Corporis Vera AI cum Algorithmis SRS Authenticis',
       modes: {
@@ -373,7 +371,7 @@ const VocabularyTrainerSection: React.FC<VocabularyTrainerSectionProps> = ({ lan
     }
   };
 
-  const t = translations[language.code as keyof typeof translations] || translations.en;
+  const t = translations[language] || translations.EN;
 
   // 🚀 **REAL AI CORPUS ANALYSIS - NO MORE MOCK SYSTEMS**
   const analyzeRealCorpus = useCallback(async () => {
