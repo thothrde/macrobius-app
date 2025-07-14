@@ -13,6 +13,7 @@ import { Button } from '../ui/button';
 import { Badge } from '../ui/badge';
 import { Progress } from '../ui/progress';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs';
+import { useLanguage } from '../../contexts/LanguageContext';
 import { MacrobiusAPI, MacrobiusPassage, SearchFilters, SemanticSearchResult } from '../../lib/enhanced-api-client-with-fallback';
 import { 
   performSemanticSearch,
@@ -270,140 +271,10 @@ interface UserProfile {
   };
 }
 
-const translations = {
-  en: {
-    title: 'Real AI Semantic Search',
-    subtitle: 'Authentic Vector Search + NLP Analysis + Oracle Cloud Integration (1,401 Passages)',
-    searchPlaceholder: 'Search through complete Macrobius corpus...',
-    naturalSearchPlaceholder: 'Ask questions like: "What does Macrobius say about Roman dinner customs?"',
-    searchButton: 'Search with Real AI',
-    semanticSearch: 'Vector Similarity Search',
-    naturalLanguageSearch: 'Natural Language Query',
-    advancedSearch: 'AI-Powered Filters',
-    readingMode: 'Intelligent Reading Assistant',
-    conceptClusters: 'Semantic Clusters',
-    personalizedSearch: 'Personalized AI Search',
-    results: 'AI Search Results',
-    noResults: 'No passages found',
-    filters: 'Semantic Filters',
-    all: 'All',
-    complexity: 'Difficulty',
-    themes: 'Cultural Themes',
-    work: 'Work Type',
-    book: 'Book',
-    chapter: 'Chapter',
-    section: 'Section',
-    showContext: 'Show AI Analysis',
-    hideContext: 'Hide Analysis',
-    analysis: 'Semantic Analysis',
-    metadata: 'Passage Metadata',
-    bookmark: 'Bookmark',
-    copy: 'Copy Text',
-    download: 'Download Results',
-    loading: 'AI processing semantic search...',
-    corpusStats: 'Corpus Statistics',
-    backendStatus: 'AI Backend Status',
-    connected: 'Connected to Oracle Cloud AI',
-    totalPassages: 'Total Passages',
-    totalCharacters: 'Total Characters',
-    culturalThemes: 'Cultural Themes',
-    workDistribution: 'Work Distribution',
-    userProfile: 'Your Learning Profile',
-    srsIntegration: 'Real SRS Integration',
-    grammarIntegration: 'Real Grammar Integration',
-    learningPathsIntegration: 'Real AI Learning Paths',
-    crossComponentAnalysis: 'Cross-Component AI Analysis',
-    personalizedDifficulty: 'AI-Calculated Difficulty',
-    recommendationScore: 'AI Recommendation Score',
-    queryExpansion: 'AI Query Expansion',
-    latinSynonyms: 'Latin Synonyms (AI)',
-    culturalExpansion: 'Cultural Context (AI)',
-    grammarExpansion: 'Grammar Patterns (AI)',
-    vocabularyCorrelation: 'Vocabulary Correlation (AI)',
-    advancedFiltering: 'AI Advanced Filtering',
-    srsFiltering: 'Real SRS Difficulty Matching',
-    grammarFiltering: 'Real Grammar Pattern Filtering',
-    learningGapPrioritization: 'AI Learning Gap Analysis',
-    socialFiltering: 'Real Social Collaborative Filtering',
-    analyticsOptimization: 'AI Analytics Optimization',
-    expandedQuery: 'AI-Expanded Query',
-    originalTerms: 'Original Terms',
-    synonymsAdded: 'AI-Generated Synonyms',
-    culturalContextAdded: 'AI Cultural Context',
-    filteringApplied: 'AI Filtering Applied',
-    resultsPersonalized: 'AI-Personalized Results',
-    socialInsights: 'Real Social Insights',
-    peerRecommendations: 'AI Peer Recommendations',
-    studyGroupSuggestions: 'AI Study Group Suggestions',
-    collaborativeDiscussions: 'Real Collaborative Discussions',
-    queryAnalysis: 'AI Query Analysis',
-    detectedConcepts: 'AI-Detected Concepts',
-    suggestedSearches: 'AI-Suggested Searches',
-    semanticMatches: 'Vector Similarity Matches',
-    conceptualSimilarity: 'AI Conceptual Similarity',
-    thematicRelevance: 'AI Thematic Relevance',
-    userRelevance: 'AI Personal Relevance',
-    difficultyMatch: 'AI Difficulty Match',
-    readingAssistance: 'AI Reading Assistance',
-    vocabularyHelp: 'AI Vocabulary Help',
-    keyVocabulary: 'AI-Identified Key Vocabulary',
-    srsStatus: 'Real SRS Status',
-    nextReview: 'Next Review',
-    knownWord: 'Known (SRS)',
-    difficultWord: 'Difficult (SRS)',
-    newWord: 'New (AI Detected)',
-    grammaticalFeatures: 'AI Grammar Analysis',
-    grammarMastery: 'Your Real Grammar Mastery',
-    culturalContext: 'AI Cultural Analysis',
-    modernConnections: 'AI Modern Connections',
-    discussionPrompts: 'AI Discussion Questions',
-    personalizedRecommendations: 'AI Personalized Recommendations',
-    readingProgress: 'Real Reading Progress',
-    estimatedTime: 'AI-Estimated Reading Time',
-    difficultyLevel: 'AI-Calculated Difficulty',
-    comprehensionAids: 'AI Comprehension Aids',
-    guidedReading: 'AI-Guided Reading',
-    independentReading: 'AI-Assisted Reading',
-    advancedAnalysis: 'Advanced AI Analysis',
-    clusterAnalysis: 'AI Concept Clustering',
-    relatedConcepts: 'AI-Related Concepts',
-    thematicGroups: 'AI Thematic Groups',
-    educationalValue: 'AI Educational Value',
-    conceptNetwork: 'AI Concept Network',
-    similarPassages: 'AI-Similar Passages',
-    profileLoading: 'Loading real learning profile...',
-    profileLoaded: 'Real profile loaded successfully',
-    noProfileData: 'No real learning data found - building AI profile from usage',
-    srsWordsFound: 'Real SRS words identified',
-    grammarPatternsFound: 'Real grammar patterns detected',
-    personalizedResults: 'Results personalized by AI',
-    adaptiveDifficulty: 'AI-adapted difficulty',
-    aiProcessing: 'AI processing query...',
-    vectorSearch: 'Vector similarity search...',
-    semanticAnalysis: 'Semantic analysis in progress...',
-    queryExpansionActive: 'AI Query Expansion Active',
-    advancedFilteringActive: 'AI Advanced Filtering Active',
-    realAISearch: 'Real AI Search System',
-    zeroMockSystems: 'Zero Mock Systems',
-    authenticAI: 'Authentic AI Integration'
-  },
-  de: {
-    title: 'Echte KI-Semantische Suche',
-    subtitle: 'Authentische Vector-Suche + NLP-Analyse + Oracle Cloud Integration (1.401 Textstellen)',
-    realAISearch: 'Echtes KI-Suchsystem',
-    zeroMockSystems: 'Keine Mock-Systeme',
-    authenticAI: 'Authentische KI-Integration'
-  },
-  la: {
-    title: 'Quaestio Semantica AI Vera',
-    subtitle: 'Quaestio Vector Authentica + Analysis NLP + Integratio Oracle Cloud (1.401 Loci)',
-    realAISearch: 'Systema Quaestionis AI Verum',
-    zeroMockSystems: 'Nulla Systemata Simulata',
-    authenticAI: 'Integratio AI Authentica'
-  }
-};
-
 export default function MacrobiusTextProcessorTIER2Complete({ language }: TextSearchSectionProps) {
+  // Get translation function from LanguageContext
+  const { t } = useLanguage();
+  
   // Basic State
   const [searchTerm, setSearchTerm] = useState('');
   const [naturalQuery, setNaturalQuery] = useState('');
@@ -521,8 +392,6 @@ export default function MacrobiusTextProcessorTIER2Complete({ language }: TextSe
     limit: 20,
     offset: 0
   });
-
-  const t = translations[language as keyof typeof translations] || translations.en;
 
   // 🔗 **REAL CROSS-COMPONENT DATA LOADING**
   useEffect(() => {
@@ -825,18 +694,19 @@ export default function MacrobiusTextProcessorTIER2Complete({ language }: TextSe
     setLoading(false);
   }, [userProfile, queryExpansionActive, advancedFilteringActive, language]);
 
+  // Fixed getLoadingMessage function using existing translation keys
   const getLoadingMessage = () => {
     switch (loadingStage) {
       case 'analyzing':
-        return t.queryAnalysis;
+        return t('search.searching') || 'Analyzing query...';
       case 'searching':
-        return t.vectorSearch;
+        return t('search.searching') || 'Searching vectors...';
       case 'filtering':
-        return t.advancedFiltering;
+        return t('search.searching') || 'Filtering results...';
       case 'personalizing':
-        return t.personalizedResults;
+        return t('search.searching') || 'Personalizing results...';
       default:
-        return t.aiProcessing;
+        return t('search.searching') || 'Processing...';
     }
   };
 
@@ -851,30 +721,30 @@ export default function MacrobiusTextProcessorTIER2Complete({ language }: TextSe
           className="text-center mb-16"
         >
           <h2 className="text-4xl md:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-gold via-yellow-400 to-gold mb-4">
-            {t.title}
+            {t('search.title') || 'Real AI Semantic Search'}
           </h2>
           <p className="text-xl text-white/90 max-w-4xl mx-auto mb-4">
-            {t.subtitle}
+            {t('search.description') || 'Search through 1,401 authentic Macrobius passages with Oracle Cloud'}
           </p>
           <div className="flex items-center justify-center space-x-4 text-sm">
             <div className="flex items-center space-x-2 text-green-400">
               <Database className="w-4 h-4" />
-              <span className="font-medium">{t.connected}</span>
+              <span className="font-medium">{t('oracle.connected') || 'Connected to Oracle Cloud'}</span>
             </div>
             <div className="text-white/70">•</div>
             <div className="flex items-center space-x-2 text-blue-400">
               <Cpu className="w-4 h-4" />
-              <span className="font-medium">{t.realAISearch}</span>
+              <span className="font-medium">Real AI Search</span>
             </div>
             <div className="text-white/70">•</div>
             <div className="flex items-center space-x-2 text-purple-400">
               <Sparkles className="w-4 h-4" />
-              <span className="font-medium">{t.zeroMockSystems}</span>
+              <span className="font-medium">Zero Mock Systems</span>
             </div>
             <div className="text-white/70">•</div>
             <div className="flex items-center space-x-2 text-orange-400">
               <Brain className="w-4 h-4" />
-              <span className="font-medium">{t.authenticAI}</span>
+              <span className="font-medium">Authentic AI</span>
             </div>
             {crossComponentReady && (
               <>
@@ -894,7 +764,7 @@ export default function MacrobiusTextProcessorTIER2Complete({ language }: TextSe
             <CardContent className="p-4 text-center">
               <div className="flex items-center justify-center space-x-2 text-white/70">
                 <Database className="w-4 h-4 animate-pulse" />
-                <span className="text-sm">{t.profileLoading}</span>
+                <span className="text-sm">{t('loading') || 'Loading...'}</span>
               </div>
             </CardContent>
           </Card>
@@ -903,7 +773,7 @@ export default function MacrobiusTextProcessorTIER2Complete({ language }: TextSe
             <CardContent className="p-4 text-center">
               <div className="flex items-center justify-center space-x-2 text-orange-400">
                 <AlertTriangle className="w-4 h-4" />
-                <span className="text-sm">{t.noProfileData}</span>
+                <span className="text-sm">No real learning data found</span>
               </div>
             </CardContent>
           </Card>
@@ -912,7 +782,7 @@ export default function MacrobiusTextProcessorTIER2Complete({ language }: TextSe
             <CardHeader>
               <CardTitle className="text-purple-300 flex items-center text-sm">
                 <User className="w-4 h-4 mr-2" />
-                {t.userProfile}
+                User Learning Profile
                 <Badge variant="outline" className="ml-2 text-xs border-green-400 text-green-400">
                   {realDataAvailable ? 'REAL DATA' : 'BUILDING PROFILE'}
                 </Badge>
@@ -924,7 +794,7 @@ export default function MacrobiusTextProcessorTIER2Complete({ language }: TextSe
                 <div className="bg-black/20 p-3 rounded">
                   <div className="flex items-center space-x-2 mb-2">
                     <Users className="w-3 h-3 text-purple-400" />
-                    <span className="font-medium text-purple-300">{t.srsIntegration}</span>
+                    <span className="font-medium text-purple-300">SRS Integration</span>
                     <Badge variant="outline" className={`text-xs ${userProfile.srs_data.profileSource === 'realSRS' ? 'border-green-400 text-green-400' : 'border-yellow-400 text-yellow-400'}`}>
                       {userProfile.srs_data.profileSource === 'realSRS' ? 'REAL' : 'FALLBACK'}
                     </Badge>
@@ -941,7 +811,7 @@ export default function MacrobiusTextProcessorTIER2Complete({ language }: TextSe
                 <div className="bg-black/20 p-3 rounded">
                   <div className="flex items-center space-x-2 mb-2">
                     <BookOpen className="w-3 h-3 text-blue-400" />
-                    <span className="font-medium text-blue-300">{t.grammarIntegration}</span>
+                    <span className="font-medium text-blue-300">Grammar Integration</span>
                     <Badge variant="outline" className={`text-xs ${userProfile.grammar_progress.profileSource === 'realGrammar' ? 'border-green-400 text-green-400' : 'border-yellow-400 text-yellow-400'}`}>
                       {userProfile.grammar_progress.profileSource === 'realGrammar' ? 'REAL' : 'FALLBACK'}
                     </Badge>
@@ -958,7 +828,7 @@ export default function MacrobiusTextProcessorTIER2Complete({ language }: TextSe
                 <div className="bg-black/20 p-3 rounded">
                   <div className="flex items-center space-x-2 mb-2">
                     <Brain className="w-3 h-3 text-green-400" />
-                    <span className="font-medium text-green-300">{t.learningPathsIntegration}</span>
+                    <span className="font-medium text-green-300">Learning Paths</span>
                     <Badge variant="outline" className={`text-xs ${userProfile.learning_paths.profileSource === 'realLearningPaths' ? 'border-green-400 text-green-400' : 'border-yellow-400 text-yellow-400'}`}>
                       {userProfile.learning_paths.profileSource === 'realLearningPaths' ? 'REAL' : 'FALLBACK'}
                     </Badge>
@@ -1034,7 +904,7 @@ export default function MacrobiusTextProcessorTIER2Complete({ language }: TextSe
               {/* Natural Language Search */}
               <div>
                 <label className="block text-sm font-medium text-white/90 mb-2">
-                  {t.naturalLanguageSearch}
+                  Natural Language Search
                   <Badge variant="outline" className="ml-2 text-xs border-green-400 text-green-400">
                     REAL AI POWERED
                   </Badge>
@@ -1046,7 +916,7 @@ export default function MacrobiusTextProcessorTIER2Complete({ language }: TextSe
                     value={naturalQuery}
                     onChange={(e) => setNaturalQuery(e.target.value)}
                     onKeyPress={(e) => e.key === 'Enter' && performRealSemanticSearch(naturalQuery)}
-                    placeholder={t.naturalSearchPlaceholder}
+                    placeholder={t('search.placeholder') || 'Search authentic Macrobius passages...'}
                     className="w-full pl-10 pr-4 py-2 bg-black/20 border border-gold/30 rounded-lg text-white placeholder-white/50 focus:ring-2 focus:ring-gold/50 focus:border-transparent"
                   />
                 </div>
@@ -1067,7 +937,7 @@ export default function MacrobiusTextProcessorTIER2Complete({ language }: TextSe
                   ) : (
                     <div className="flex items-center space-x-2">
                       <Search className="w-4 h-4" />
-                      <span>{t.searchButton}</span>
+                      <span>{t('search.button') || 'Search'}</span>
                     </div>
                   )}
                 </Button>
@@ -1082,7 +952,7 @@ export default function MacrobiusTextProcessorTIER2Complete({ language }: TextSe
             <CardHeader>
               <CardTitle className="text-purple-300 flex items-center text-sm">
                 <Sparkles className="w-4 h-4 mr-2" />
-                {t.expandedQuery}
+                AI-Expanded Query
                 <Badge variant="outline" className="ml-2 text-xs border-green-400 text-green-400">
                   AI CONFIDENCE: {Math.round(expandedQuery.confidence * 100)}%
                 </Badge>
@@ -1091,7 +961,7 @@ export default function MacrobiusTextProcessorTIER2Complete({ language }: TextSe
             <CardContent className="p-4">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
                 <div>
-                  <div className="text-white/70 mb-1">{t.originalTerms}:</div>
+                  <div className="text-white/70 mb-1">Original Terms:</div>
                   <div className="flex flex-wrap gap-1">
                     {expandedQuery.original_terms.map((term, index) => (
                       <Badge key={index} variant="outline" className="text-xs border-blue-400 text-blue-400">
@@ -1101,7 +971,7 @@ export default function MacrobiusTextProcessorTIER2Complete({ language }: TextSe
                   </div>
                 </div>
                 <div>
-                  <div className="text-white/70 mb-1">{t.synonymsAdded}:</div>
+                  <div className="text-white/70 mb-1">AI Synonyms:</div>
                   <div className="flex flex-wrap gap-1">
                     {expandedQuery.ai_synonyms.map((term, index) => (
                       <Badge key={index} variant="outline" className="text-xs border-purple-400 text-purple-400">
@@ -1111,7 +981,7 @@ export default function MacrobiusTextProcessorTIER2Complete({ language }: TextSe
                   </div>
                 </div>
                 <div>
-                  <div className="text-white/70 mb-1">{t.culturalContextAdded}:</div>
+                  <div className="text-white/70 mb-1">Cultural Context:</div>
                   <div className="flex flex-wrap gap-1">
                     {expandedQuery.cultural_expansions.map((term, index) => (
                       <Badge key={index} variant="outline" className="text-xs border-green-400 text-green-400">
@@ -1131,7 +1001,7 @@ export default function MacrobiusTextProcessorTIER2Complete({ language }: TextSe
             <CardHeader>
               <CardTitle className="text-orange-300 flex items-center text-sm">
                 <Filter className="w-4 h-4 mr-2" />
-                {t.filteringApplied}
+                AI Filtering Applied
                 <Badge variant="outline" className="ml-2 text-xs border-green-400 text-green-400">
                   AI CONFIDENCE: {Math.round(filteringApplied.confidence * 100)}%
                 </Badge>
@@ -1173,7 +1043,7 @@ export default function MacrobiusTextProcessorTIER2Complete({ language }: TextSe
           <div className="space-y-6">
             <div className="flex items-center justify-between">
               <h3 className="text-xl font-semibold text-white">
-                {t.results} ({totalResults})
+                {t('search.results_title') || 'Search Results'} ({totalResults})
               </h3>
               <div className="flex items-center space-x-2 text-sm text-white/70">
                 <Badge variant="outline" className="border-green-400 text-green-400">
@@ -1341,7 +1211,7 @@ export default function MacrobiusTextProcessorTIER2Complete({ language }: TextSe
           <Card className="bg-white/10 backdrop-blur-sm border border-gold/30">
             <CardContent className="p-8 text-center">
               <Search className="w-12 h-12 text-white/50 mx-auto mb-4" />
-              <h3 className="text-xl font-semibold text-white mb-2">{t.noResults}</h3>
+              <h3 className="text-xl font-semibold text-white mb-2">{t('search.no_results') || 'No results found'}</h3>
               <p className="text-white/70">Try adjusting your search terms or explore the AI-suggested queries above.</p>
               <div className="mt-4">
                 <Badge variant="outline" className="border-purple-400 text-purple-400">
