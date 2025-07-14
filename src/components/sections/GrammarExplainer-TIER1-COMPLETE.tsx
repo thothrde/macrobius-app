@@ -600,7 +600,7 @@ export default function GrammarExplainerRealAI({ language }: GrammarExplainerPro
         config.target_difficulty === 'beginner' ? 0.3 : config.target_difficulty === 'intermediate' ? 0.6 : 0.9
       );
       
-      // Step 3: Convert GrammarExercise[] to RealGrammarExercise[]
+      // Step 3: Convert GrammarExercise[] to RealGrammarExercise[] with null safety
       let convertedExercises: RealGrammarExercise[];
       
       if (!rawExercises || rawExercises.length === 0) {
@@ -630,10 +630,12 @@ export default function GrammarExplainerRealAI({ language }: GrammarExplainerPro
           }
         }));
       } else {
-        // Convert real exercises to the expected format
-        convertedExercises = rawExercises.slice(0, config.count).map((exercise, index) => 
-          convertToRealGrammarExercise(exercise, corpusPassages.data[index])
-        );
+        // Convert real exercises to the expected format with null safety
+        convertedExercises = rawExercises.slice(0, config.count).map((exercise, index) => {
+          // Safe access to corpusPassages.data with fallback
+          const passageData = corpusPassages.data && index < corpusPassages.data.length ? corpusPassages.data[index] : undefined;
+          return convertToRealGrammarExercise(exercise, passageData);
+        });
       }
       
       setRealGeneratedExercises(convertedExercises);
