@@ -530,10 +530,9 @@ export default function MacrobiusTextProcessorTIER2Complete({ language }: TextSe
       setProfileLoading(true);
       
       try {
-        // 🚀 ATTEMPT TO LOAD REAL DATA FROM ALL SYSTEMS
-        const [srsResponse, grammarResponse, learningPathsResponse] = await Promise.allSettled([
+        // 🚀 ATTEMPT TO LOAD REAL DATA FROM AVAILABLE SYSTEMS
+        const [srsResponse, learningPathsResponse] = await Promise.allSettled([
           MacrobiusAPI.vocabulary.getVocabularyStatistics(),
-          MacrobiusAPI.grammar?.analyzeUserProgress?.() || Promise.reject('Grammar API not available'),
           MacrobiusAPI.learningPaths?.getPersonalizedRecommendations?.('user123') || Promise.reject('Learning Paths API not available')
         ]);
         
@@ -553,7 +552,7 @@ export default function MacrobiusTextProcessorTIER2Complete({ language }: TextSe
             average_score: 0,
             pattern_familiarity: {},
             exercise_performance: {},
-            profileSource: grammarResponse.status === 'fulfilled' ? 'realGrammar' : 'fallback'
+            profileSource: 'fallback' // Grammar API analyzeUserProgress method not available
           },
           learning_paths: {
             preferred_difficulty: 'intermediate',
