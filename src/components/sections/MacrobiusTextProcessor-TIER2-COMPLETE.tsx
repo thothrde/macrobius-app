@@ -53,7 +53,6 @@ import {
   HelpCircle,
   BookOpenCheck,
   GraduationCap,
-  Telescope,
   Network,
   Tag,
   Cpu,
