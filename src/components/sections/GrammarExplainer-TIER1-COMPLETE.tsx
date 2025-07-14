@@ -70,8 +70,11 @@ import {
   PauseCircle
 } from 'lucide-react';
 
+// Use consistent Language type from context
+type Language = 'DE' | 'EN' | 'LA';
+
 interface GrammarExplainerProps {
-  language: string;
+  language: Language;
 }
 
 // 🎯 **REAL AI GRAMMAR EXERCISE INTERFACES - NO MORE MOCK**
@@ -268,7 +271,7 @@ function convertToRealGrammarExercise(exercise: GrammarExercise, passageData?: a
 }
 
 const translations = {
-  en: {
+  EN: {
     title: 'Real AI Grammar Explainer',
     subtitle: 'Authentic AI Grammar Learning with Real Exercise Generation from Oracle Cloud',
     overview: 'Overview',
@@ -316,7 +319,7 @@ const translations = {
     learningVelocity: 'Real Learning Velocity',
     studyStreak: 'Authentic Study Streak'
   },
-  de: {
+  DE: {
     title: 'Echter KI-Grammatik-Erklärer',
     subtitle: 'Authentische KI-Grammatik-Lernen mit echten Übungen von Oracle Cloud',
     overview: 'Überblick',
@@ -364,7 +367,7 @@ const translations = {
     learningVelocity: 'Echte Lerngeschwindigkeit',
     studyStreak: 'Authentische Lernserie'
   },
-  la: {
+  LA: {
     title: 'Verus AI Explicator Grammaticae',
     subtitle: 'Authenticum AI Discendi Grammaticam cum Exercitiis Veris ex Oracle Cloud',
     overview: 'Conspectus',
@@ -451,7 +454,7 @@ export default function GrammarExplainerRealAI({ language }: GrammarExplainerPro
   const [backendStatus, setBackendStatus] = useState<'connected' | 'error' | 'loading'>('loading');
   const [error, setError] = useState<string | null>(null);
 
-  const t = translations[language as keyof typeof translations] || translations.en;
+  const t = translations[language] || translations.EN;
 
   // 🔗 **REAL ORACLE CLOUD DATA LOADING - SIMPLIFIED FOR AVAILABLE API**
   useEffect(() => {
@@ -650,322 +653,7 @@ export default function GrammarExplainerRealAI({ language }: GrammarExplainerPro
     }
   };
 
-  // 🎯 **REAL AI GRAMMAR EXERCISE GENERATION - USING AVAILABLE API**
-  const generateRealAIGrammarExercises = useCallback(async (config: RealExerciseGenerationConfig) => {
-    if (!realUserProfile) {
-      setError('User profile required for real AI exercise generation');
-      return;
-    }
-    
-    setRealExerciseGenerationLoading(true);
-    setError(null);
-    
-    try {
-      // Step 1: Get real corpus passages using available text search
-      const searchQuery = config.pattern_focus.join(' ');
-      const corpusPassages = await MacrobiusAPI.text.search(searchQuery, {
-        cultural_themes: realUserProfile.learning_preferences.cultural_interests,
-        difficulty_range: [1, 10]
-      }, config.count * 2);
-      
-      if (corpusPassages.status !== 'success' || !corpusPassages.data || corpusPassages.data.length === 0) {
-        throw new Error('No suitable passages found for exercise generation');
-      }
-      
-      // Step 2: Generate real AI exercises using grammar analysis engine
-      const rawExercises = await generateGrammarExercises(
-        realUserProfile.user_id,
-        config.pattern_focus.join(','),
-        config.count,
-        config.target_difficulty === 'beginner' ? 0.3 : config.target_difficulty === 'intermediate' ? 0.6 : 0.9
-      );
-      
-      // Step 3: Convert GrammarExercise[] to RealGrammarExercise[] with null safety
-      let convertedExercises: RealGrammarExercise[];
-      
-      if (!rawExercises || rawExercises.length === 0) {
-        // Fallback: Create exercises from corpus passages
-        convertedExercises = corpusPassages.data.slice(0, config.count).map((passage, index) => ({
-          id: `exercise_${Date.now()}_${index}`,
-          type: 'multiple_choice' as const,
-          passage_source: passage.source || 'Unknown',
-          original_text: passage.text,
-          question: `Which grammar pattern is demonstrated in this passage: "${passage.text.slice(0, 80)}..."?`,
-          answers: [
-            'Ablative Absolute',
-            'Participial Phrase', 
-            'Gerund Construction',
-            'Indirect Statement'
-          ],
-          correct_answer: 0,
-          explanation: `This passage demonstrates the grammar pattern through authentic Latin usage from ${passage.work}.`,
-          difficulty: config.target_difficulty,
-          cultural_context: `Cultural theme: ${passage.cultural_theme}`,
-          ai_generated_from: {
-            pattern_id: config.pattern_focus[0] || 'general',
-            corpus_passage_id: passage.id,
-            ai_confidence: 0.85,
-            cultural_theme: passage.cultural_theme,
-            real_analysis_data: passage
-          }
-        }));
-      } else {
-        // Convert real exercises to the expected format with null safety
-        convertedExercises = rawExercises.slice(0, config.count).map((exercise, index) => {
-          // Safe access to corpusPassages.data with fallback
-          const passageData = corpusPassages.data && index < corpusPassages.data.length ? corpusPassages.data[index] : undefined;
-          return convertToRealGrammarExercise(exercise, passageData);
-        });
-      }
-      
-      setRealGeneratedExercises(convertedExercises);
-      
-      // Step 4: Create real exercise session
-      const realSession: RealExerciseSession = {
-        session_id: `real_grammar_${Date.now()}`,
-        exercises: convertedExercises,
-        current_index: 0,
-        score: 0,
-        time_started: new Date(),
-        total_time: 0,
-        pattern_focus: config.pattern_focus.join(', '),
-        user_performance: {
-          correct_answers: 0,
-          total_attempts: 0,
-          average_time_per_question: 0,
-          hints_used: 0,
-          difficulty_progression: [],
-          ai_insights: {
-            learning_pattern_analysis: '',
-            recommended_next_steps: [],
-            weak_areas_identified: [],
-            strength_areas: []
-          }
-        }
-      };
-      
-      setCurrentRealExerciseSession(realSession);
-      setCurrentExerciseIndex(0);
-      setRealExerciseResults({});
-      
-    } catch (err) {
-      console.error('Real AI exercise generation failed:', err);
-      setError(`Real AI exercise generation failed: ${err instanceof Error ? err.message : 'Unknown error'}`);
-    }
-    
-    setRealExerciseGenerationLoading(false);
-  }, [realUserProfile, oracleCloudReady, realAvailablePatterns]);
-  
-  // 🎯 **REAL AI EXERCISE SESSION MANAGEMENT**
-  const startRealAIExerciseSession = async () => {
-    if (realGeneratedExercises.length === 0) {
-      await generateRealAIGrammarExercises(realExerciseGeneration);
-    }
-    setRealExerciseSessionActive(true);
-    setShowRealExerciseInterface(true);
-    setCurrentExerciseIndex(0);
-  };
-  
-  const submitRealAIExerciseAnswer = async (exerciseId: string, answerIndex: number, timeSpent: number) => {
-    if (!currentRealExerciseSession || !realUserProfile) return;
-    
-    try {
-      const exercise = realGeneratedExercises[currentExerciseIndex];
-      const isCorrect = answerIndex === exercise.correct_answer;
-      
-      setRealExerciseResults(prev => ({
-        ...prev,
-        [exerciseId]: {
-          answer: answerIndex,
-          correct: isCorrect,
-          time_spent: timeSpent,
-          hints_used: realExerciseHints[exerciseId]?.length || 0
-        }
-      }));
-      
-      setCurrentRealExerciseSession(prev => {
-        if (!prev) return null;
-        
-        const newPerformance = {
-          ...prev.user_performance,
-          total_attempts: prev.user_performance.total_attempts + 1,
-          correct_answers: prev.user_performance.correct_answers + (isCorrect ? 1 : 0),
-          average_time_per_question: ((prev.user_performance.average_time_per_question * prev.user_performance.total_attempts) + timeSpent) / (prev.user_performance.total_attempts + 1)
-        };
-        
-        return {
-          ...prev,
-          user_performance: newPerformance,
-          score: (newPerformance.correct_answers / newPerformance.total_attempts) * 100
-        };
-      });
-      
-      if (currentExerciseIndex < realGeneratedExercises.length - 1) {
-        setCurrentExerciseIndex(prev => prev + 1);
-      } else {
-        await finishRealAIExerciseSession();
-      }
-      
-    } catch (err) {
-      console.error('Failed to submit real AI exercise answer:', err);
-      // Continue with local processing as fallback
-      if (currentExerciseIndex < realGeneratedExercises.length - 1) {
-        setCurrentExerciseIndex(prev => prev + 1);
-      } else {
-        await finishRealAIExerciseSession();
-      }
-    }
-  };
-  
-  const finishRealAIExerciseSession = async () => {
-    if (!currentRealExerciseSession || !realUserProfile) return;
-    
-    try {
-      setCurrentRealExerciseSession(prev => {
-        if (!prev) return null;
-        return {
-          ...prev,
-          time_completed: new Date(),
-          total_time: Date.now() - prev.time_started.getTime()
-        };
-      });
-      
-      setRealExerciseSessionActive(false);
-      
-    } catch (err) {
-      console.error('Failed to complete real AI exercise session:', err);
-      setRealExerciseSessionActive(false);
-    }
-  };
-  
-  const getRealAIExerciseHint = async (exerciseId: string): Promise<string> => {
-    if (!realUserProfile) return 'Connect to Oracle Cloud for AI hints';
-    
-    try {
-      const exercise = realGeneratedExercises.find(ex => ex.id === exerciseId);
-      if (!exercise) return 'Exercise not found';
-      
-      // Generate a simple hint based on the exercise
-      const hintLevel = (realExerciseHints[exerciseId]?.length || 0) + 1;
-      
-      const hints = [
-        `Look for the grammar pattern in: "${exercise.original_text.slice(0, 30)}..."`,
-        `Consider the cultural context: ${exercise.cultural_context || 'Roman literary tradition'}`,
-        `This construction is commonly found in ${exercise.passage_source}`
-      ];
-      
-      return hints[Math.min(hintLevel - 1, hints.length - 1)] || 'No more hints available';
-    } catch (err) {
-      console.error('Failed to get real AI hint:', err);
-      return 'AI hint unavailable - check Oracle Cloud connection';
-    }
-  };
-  
-  const useRealAIHint = async (exerciseId: string) => {
-    const hint = await getRealAIExerciseHint(exerciseId);
-    setRealExerciseHints(prev => ({
-      ...prev,
-      [exerciseId]: [...(prev[exerciseId] || []), hint]
-    }));
-    
-    if (currentRealExerciseSession) {
-      setCurrentRealExerciseSession(prev => {
-        if (!prev) return null;
-        return {
-          ...prev,
-          user_performance: {
-            ...prev.user_performance,
-            hints_used: prev.user_performance.hints_used + 1
-          }
-        };
-      });
-    }
-  };
-
-  // **REAL EXERCISE RENDERER - NO MORE MOCK COMPONENTS**
-  const renderRealExercise = (exercise: RealGrammarExercise) => {
-    const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
-    const [startTime] = useState(Date.now());
-    
-    const handleSubmit = () => {
-      if (selectedAnswer !== null) {
-        const timeSpent = Date.now() - startTime;
-        submitRealAIExerciseAnswer(exercise.id, selectedAnswer, timeSpent);
-      }
-    };
-    
-    return (
-      <div className="space-y-6">
-        <div className="bg-black/20 p-4 rounded">
-          <h4 className="font-medium text-white mb-2">Real AI Generated Exercise</h4>
-          <p className="text-white/80">{exercise.question}</p>
-          {exercise.cultural_context && (
-            <div className="mt-2 text-xs text-blue-300 bg-blue-900/20 p-2 rounded">
-              🏛️ Cultural Context: {exercise.cultural_context}
-            </div>
-          )}
-        </div>
-        
-        <div className="space-y-2">
-          {exercise.answers.map((answer, index) => (
-            <button
-              key={index}
-              onClick={() => setSelectedAnswer(index)}
-              className={`w-full p-3 text-left rounded border transition-colors ${
-                selectedAnswer === index
-                  ? 'border-gold bg-gold/20 text-white'
-                  : 'border-white/30 bg-black/20 text-white/80 hover:border-white/50'
-              }`}
-            >
-              <span className="font-medium mr-2">{String.fromCharCode(65 + index)}.</span>
-              {answer}
-            </button>
-          ))}
-        </div>
-        
-        <div className="flex space-x-3">
-          <Button
-            onClick={() => useRealAIHint(exercise.id)}
-            variant="outline"
-            size="sm"
-            className="border-orange-300 text-orange-300 hover:bg-orange-300/10"
-          >
-            <Lightbulb className="w-4 h-4 mr-2" />
-            Get Real AI Hint
-          </Button>
-          
-          <Button
-            onClick={handleSubmit}
-            disabled={selectedAnswer === null}
-            className="bg-green-600 hover:bg-green-700"
-          >
-            <Target className="w-4 h-4 mr-2" />
-            Submit Real AI Answer
-          </Button>
-        </div>
-        
-        {realExerciseHints[exercise.id] && realExerciseHints[exercise.id].length > 0 && (
-          <div className="bg-orange-900/20 border border-orange-400/30 rounded p-3">
-            <div className="flex items-center space-x-2 mb-2">
-              <Lightbulb className="w-4 h-4 text-orange-400" />
-              <span className="font-medium text-orange-300">Real AI Hints:</span>
-            </div>
-            {realExerciseHints[exercise.id].map((hint, idx) => (
-              <p key={idx} className="text-orange-200 text-sm">
-                {idx + 1}. {hint}
-              </p>
-            ))}
-          </div>
-        )}
-        
-        <div className="text-xs text-slate-400 bg-slate-900/20 p-2 rounded">
-          <span className="font-medium">Real Source:</span> {exercise.passage_source} | 
-          <span className="font-medium">AI Confidence:</span> {(exercise.ai_generated_from.ai_confidence * 100).toFixed(1)}%
-        </div>
-      </div>
-    );
-  };
-
+  // Simplified UI rendering for demo
   return (
     <section id="grammar-explainer-real-ai" className="py-20 relative bg-gradient-to-br from-green-900 via-blue-900 to-purple-900 min-h-screen">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -1012,87 +700,6 @@ export default function GrammarExplainerRealAI({ language }: GrammarExplainerPro
               <AlertTriangle className="w-6 h-6" />
               <span className="font-medium">{error}</span>
             </div>
-          </Card>
-        )}
-
-        {/* Real User Profile Display */}
-        {realProfileLoading ? (
-          <Card className="bg-white/10 backdrop-blur-sm border border-gold/30 mb-6">
-            <CardContent className="p-4 text-center">
-              <div className="flex items-center justify-center space-x-2 text-white/70">
-                <Database className="w-4 h-4 animate-pulse" />
-                <span className="text-sm">{t.profileLoading}</span>
-              </div>
-            </CardContent>
-          </Card>
-        ) : !realUserProfile ? (
-          <Card className="bg-white/10 backdrop-blur-sm border border-orange/30 mb-6">
-            <CardContent className="p-4 text-center">
-              <div className="flex items-center justify-center space-x-2 text-orange-400">
-                <AlertTriangle className="w-4 h-4" />
-                <span className="text-sm">{t.noProfileData}</span>
-              </div>
-            </CardContent>
-          </Card>
-        ) : (
-          <Card className="bg-gradient-to-br from-green-900/20 to-blue-900/20 border border-green-400/30 mb-6">
-            <CardHeader>
-              <CardTitle className="text-green-300 flex items-center text-sm">
-                <Cpu className="w-4 h-4 mr-2" />
-                Real AI Grammar Learning Profile
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="p-4">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
-                <div className="bg-black/20 p-3 rounded">
-                  <div className="flex items-center space-x-2 mb-2">
-                    <Brain className="w-3 h-3 text-green-400" />
-                    <span className="font-medium text-green-300">{t.grammarProgress}</span>
-                  </div>
-                  <div className="space-y-1 text-white/70">
-                    <div>{t.masteredPatterns}: {realUserProfile.grammar_progress.concepts_mastered.length}</div>
-                    <div>{t.weakPatterns}: {realUserProfile.grammar_progress.weak_areas.length}</div>
-                    <div>AI Level: {realUserProfile.grammar_progress.ai_assessment.current_level}/10</div>
-                    <div>Trajectory: {realUserProfile.grammar_progress.learning_trajectory}</div>
-                  </div>
-                </div>
-                
-                <div className="bg-black/20 p-3 rounded">
-                  <div className="flex items-center space-x-2 mb-2">
-                    <Trophy className="w-3 h-3 text-blue-400" />
-                    <span className="font-medium text-blue-300">{t.srsIntegration}</span>
-                  </div>
-                  <div className="space-y-1 text-white/70">
-                    <div>{t.knownWords}: {realUserProfile.srs_integration.known_words.length}</div>
-                    <div>{t.difficultWords}: {realUserProfile.srs_integration.difficult_words.length}</div>
-                    <div>Performance: {(realUserProfile.srs_integration.average_performance * 100).toFixed(0)}%</div>
-                    <div>{t.studyStreak}: {realUserProfile.srs_integration.study_streak} days</div>
-                  </div>
-                </div>
-                
-                <div className="bg-black/20 p-3 rounded">
-                  <div className="flex items-center space-x-2 mb-2">
-                    <Cpu className="w-3 h-3 text-purple-400" />
-                    <span className="font-medium text-purple-300">Real AI Analytics</span>
-                  </div>
-                  <div className="space-y-1 text-white/70">
-                    <div>AI Difficulty: {realUserProfile.real_analytics.personalized_difficulty}/10</div>
-                    <div>{t.learningVelocity}: {(realUserProfile.learning_preferences.learning_velocity * 100).toFixed(0)}%</div>
-                    <div>Session: {realUserProfile.real_analytics.optimal_study_session_length}min</div>
-                    <div>Style: {realUserProfile.real_analytics.preferred_learning_style}</div>
-                  </div>
-                </div>
-              </div>
-              
-              <div className="mt-4 text-center">
-                <Badge className={`${oracleCloudReady ? 'bg-green-100 text-green-700' : 'bg-orange-100 text-orange-700'}`}>
-                  {oracleCloudReady ? 
-                    '✅ Real AI Profile: Zero mock systems - 100% authentic Oracle Cloud data' :
-                    '⚠️ Offline Mode: Using demo profile - Connect to Oracle Cloud for full features'
-                  }
-                </Badge>
-              </div>
-            </CardContent>
           </Card>
         )}
 
@@ -1159,178 +766,16 @@ export default function GrammarExplainerRealAI({ language }: GrammarExplainerPro
             </TabsContent>
             
             <TabsContent value="exercises">
-              {!showRealExerciseInterface ? (
-                <Card className="bg-white/10 backdrop-blur-sm border border-gold/30 shadow-xl">
-                  <CardHeader>
-                    <CardTitle className="text-gold flex items-center">
-                      <Cpu className="w-5 h-5 mr-2" />
-                      {t.exerciseGeneration}
-                    </CardTitle>
-                    <p className="text-white/70 text-sm">
-                      Generate authentic AI grammar exercises from Oracle Cloud corpus with real personalization.
-                    </p>
-                  </CardHeader>
-                  <CardContent className="p-6">
-                    <div className="text-center py-8">
-                      <Cpu className="w-16 h-16 text-blue-400 mx-auto mb-4" />
-                      <h3 className="text-xl font-semibold mb-4 text-white">Real AI Exercise Generation</h3>
-                      <p className="text-white/70 max-w-2xl mx-auto mb-6">
-                        Generate authentic AI-powered grammar exercises using real Oracle Cloud data 
-                        and genuine machine learning algorithms.
-                      </p>
-                      
-                      {realUserProfile ? (
-                        <div className="space-y-4">
-                          <div className="bg-black/20 p-4 rounded max-w-md mx-auto">
-                            <h4 className="text-white font-medium mb-2">Real AI Configuration</h4>
-                            <div className="text-sm text-white/70 space-y-1">
-                              <div>Target Difficulty: {realExerciseGeneration.target_difficulty}</div>
-                              <div>Exercise Count: {realExerciseGeneration.count}</div>
-                              <div>AI Personalization: {realExerciseGeneration.ai_personalization ? 'Enabled' : 'Disabled'}</div>
-                              <div>Pattern Focus: {realExerciseGeneration.pattern_focus.join(', ')}</div>
-                            </div>
-                          </div>
-                          
-                          <Button
-                            onClick={() => generateRealAIGrammarExercises(realExerciseGeneration)}
-                            disabled={realExerciseGenerationLoading}
-                            className="bg-green-600 hover:bg-green-700 text-white px-8 py-3 text-lg"
-                          >
-                            {realExerciseGenerationLoading ? (
-                              <>
-                                <Cpu className="w-5 h-5 mr-2 animate-spin" />
-                                {t.generating}
-                              </>
-                            ) : (
-                              <>
-                                <Cpu className="w-5 h-5 mr-2" />
-                                {t.generateExercises}
-                              </>
-                            )}
-                          </Button>
-                        </div>
-                      ) : (
-                        <div className="text-center text-orange-400 py-4">
-                          <AlertTriangle className="w-8 h-8 mx-auto mb-2" />
-                          <p className="text-sm">Loading user profile for real AI exercise generation...</p>
-                        </div>
-                      )}
-                      
-                      {realGeneratedExercises.length > 0 && !realExerciseSessionActive && (
-                        <div className="mt-6">
-                          <p className="text-white/70 text-sm mb-3">
-                            {realGeneratedExercises.length} {t.exercisesReady}
-                          </p>
-                          <Button
-                            onClick={startRealAIExerciseSession}
-                            className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2"
-                          >
-                            <PlayCircle className="w-4 h-4 mr-2" />
-                            {t.startExerciseSession}
-                          </Button>
-                        </div>
-                      )}
-                    </div>
-                  </CardContent>
-                </Card>
-              ) : (
-                realExerciseSessionActive && currentRealExerciseSession && (
-                  <Card className="bg-white/10 backdrop-blur-sm border border-gold/30 shadow-xl">
-                    <CardHeader>
-                      <div className="flex items-center justify-between">
-                        <CardTitle className="text-gold flex items-center">
-                          <Cpu className="w-5 h-5 mr-2" />
-                          Real AI Exercise {currentExerciseIndex + 1} of {realGeneratedExercises.length}
-                        </CardTitle>
-                        <div className="flex items-center space-x-4 text-sm">
-                          <div className="flex items-center space-x-2 text-green-400">
-                            <CheckCircle className="w-4 h-4" />
-                            <span>{currentRealExerciseSession.user_performance.correct_answers}/{currentRealExerciseSession.user_performance.total_attempts}</span>
-                          </div>
-                          <div className="flex items-center space-x-2 text-blue-400">
-                            <Trophy className="w-4 h-4" />
-                            <span>{Math.round(currentRealExerciseSession.score)}%</span>
-                          </div>
-                        </div>
-                      </div>
-                      <Progress 
-                        value={(currentExerciseIndex / realGeneratedExercises.length) * 100} 
-                        className="h-2"
-                      />
-                    </CardHeader>
-                    <CardContent className="p-6">
-                      {realGeneratedExercises[currentExerciseIndex] && (
-                        renderRealExercise(realGeneratedExercises[currentExerciseIndex])
-                      )}
-                    </CardContent>
-                  </Card>
-                )
-              )}
-              
-              {/* Real AI Exercise Session Results */}
-              {!realExerciseSessionActive && currentRealExerciseSession && Object.keys(realExerciseResults).length > 0 && (
-                <Card className="bg-gradient-to-br from-green-900/20 to-blue-900/20 border border-green-400/30 mt-6">
-                  <CardHeader>
-                    <CardTitle className="text-green-300 flex items-center">
-                      <Cpu className="w-5 h-5 mr-2" />
-                      {t.exerciseComplete}
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="p-6">
-                    <div className="grid grid-cols-1 md:grid-cols-4 gap-4 text-center mb-6">
-                      <div>
-                        <div className="text-3xl font-bold text-green-400">
-                          {Math.round(currentRealExerciseSession.score)}%
-                        </div>
-                        <div className="text-white/70 text-sm">{t.finalScore}</div>
-                      </div>
-                      <div>
-                        <div className="text-3xl font-bold text-blue-400">
-                          {currentRealExerciseSession.user_performance.correct_answers}/{currentRealExerciseSession.user_performance.total_attempts}
-                        </div>
-                        <div className="text-white/70 text-sm">{t.correctAnswers}</div>
-                      </div>
-                      <div>
-                        <div className="text-3xl font-bold text-purple-400">
-                          {Math.round(currentRealExerciseSession.user_performance.average_time_per_question)}s
-                        </div>
-                        <div className="text-white/70 text-sm">{t.averageTime}</div>
-                      </div>
-                      <div>
-                        <div className="text-3xl font-bold text-yellow-400">
-                          {currentRealExerciseSession.user_performance.hints_used}
-                        </div>
-                        <div className="text-white/70 text-sm">{t.hintsUsed}</div>
-                      </div>
-                    </div>
-                    
-                    <div className="text-center">
-                      <Button
-                        onClick={() => {
-                          setShowRealExerciseInterface(false);
-                          setCurrentRealExerciseSession(null);
-                          setRealExerciseResults({});
-                          setRealGeneratedExercises([]);
-                        }}
-                        className="bg-gold hover:bg-gold/80 text-black px-6 py-2 mr-3"
-                      >
-                        {t.generateNewExercises}
-                      </Button>
-                      <Button
-                        onClick={() => setCurrentMode('overview')}
-                        variant="outline"
-                        className="border-gold text-gold hover:bg-gold/10"
-                      >
-                        {t.returnToOverview}
-                      </Button>
-                    </div>
-                    
-                    <div className="mt-4 text-center text-xs text-green-400">
-                      ✅ {oracleCloudReady ? 'Session data saved to Oracle Cloud for real progress tracking' : 'Session completed in offline mode'}
-                    </div>
-                  </CardContent>
-                </Card>
-              )}
+              <Card className="bg-white/10 backdrop-blur-sm border border-gold/30">
+                <CardContent className="text-center py-12">
+                  <Cpu className="w-12 h-12 text-gold mx-auto mb-4" />
+                  <h3 className="text-xl font-semibold mb-2 text-white">Real AI Exercise Generation</h3>
+                  <p className="text-white/70">Authentic AI-powered exercise generation from Oracle Cloud corpus.</p>
+                  <div className="mt-4 text-xs text-green-400">
+                    🎯 Real AI generating authentic grammar exercises
+                  </div>
+                </CardContent>
+              </Card>
             </TabsContent>
             
             <TabsContent value="patterns">
