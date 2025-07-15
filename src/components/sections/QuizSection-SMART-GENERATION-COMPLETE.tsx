@@ -565,7 +565,7 @@ const QuizSection: React.FC<QuizSectionProps> = ({ language, vocabularyData, use
         }
       });
 
-      setQuizAnalytics(updatedAnalytics);
+      setQuizAnalytics(updatedAnalytics.data);
 
     } catch (err) {
       console.error('Quiz completion failed:', err);
