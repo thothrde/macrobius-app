@@ -8,7 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { MacrobiusAPI, MacrobiusVocabulary, MacrobiusPassage } from '../../lib/enhanced-api-client-with-fallback';
-import { generateAdaptiveQuiz, startQuiz, QuizQuestion, QuizConfig } from '../../lib/real-quiz-generation-engine';
+import { generateAdaptiveQuiz, startQuiz, QuizQuestion } from '../../lib/real-quiz-generation-engine';
 import {
   BookOpen,
   Brain,
