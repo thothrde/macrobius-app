@@ -1101,7 +1101,7 @@ const PersonalizedLearningPathsSection: React.FC<PersonalizedLearningPathsProps>
                       <Badge className={`${
                         lesson.type === 'vocabulary' ? 'bg-blue-100 text-blue-700' :
                         lesson.type === 'grammar' ? 'bg-green-100 text-green-700' :
-                        lesson.type === 'culture' ? 'bg-purple-100 text-purple-700' :
+                        lesson.type === 'cultural' ? 'bg-purple-100 text-purple-700' :
                         lesson.type === 'reading' ? 'bg-orange-100 text-orange-700' :
                         'bg-slate-100 text-slate-700'
                       }`}>
