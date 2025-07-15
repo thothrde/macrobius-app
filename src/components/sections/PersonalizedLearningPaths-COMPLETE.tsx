@@ -588,17 +588,17 @@ const PersonalizedLearningPathsSection: React.FC<PersonalizedLearningPathsProps>
         culturalInsights: true,
         confidenceThreshold: 0.7
       });
-      setKnowledgeGaps(gaps.knowledgeGaps);
+      setKnowledgeGaps(gaps.data.knowledgeGaps);
       
       // Step 3: Real AI prerequisite mapping
       setPlanGenerationProgress(60);
       const prerequisites = await MacrobiusAPI.learningPaths.generatePrerequisiteMapping({
-        knowledgeGaps: gaps.knowledgeGaps,
+        knowledgeGaps: gaps.data.knowledgeGaps,
         focusAreas,
         corpusAnalysis: true,
         culturalContext: true
       });
-      setPrerequisiteMap(prerequisites.prerequisiteMap);
+      setPrerequisiteMap(prerequisites.data.prerequisiteMap);
       
       // Step 4: Real AI optimized daily plan creation
       setPlanGenerationProgress(80);
@@ -606,20 +606,20 @@ const PersonalizedLearningPathsSection: React.FC<PersonalizedLearningPathsProps>
         date: date.toISOString(),
         availableTime: timeAvailable,
         focusAreas,
-        knowledgeGaps: gaps.knowledgeGaps,
-        prerequisiteMap: prerequisites.prerequisiteMap,
+        knowledgeGaps: gaps.data.knowledgeGaps,
+        prerequisiteMap: prerequisites.data.prerequisiteMap,
         userProfile
       });
       
       // Step 5: Real AI optimization application
       setPlanGenerationProgress(95);
       const optimizedPlan = await MacrobiusAPI.learningPaths.applyAIOptimization({
-        plan: planData.dailyPlan,
+        plan: planData.data.dailyPlan,
         userCognitivePattern: userProfile?.cognitivePattern,
         performanceHistory: userProfile?.performanceHistory
       });
       
-      setDailyPlan(optimizedPlan.optimizedPlan);
+      setDailyPlan(optimizedPlan.data.optimizedPlan);
       setPlanGenerationProgress(100);
       setAiEngineStatus('ready');
       
@@ -646,10 +646,10 @@ const PersonalizedLearningPathsSection: React.FC<PersonalizedLearningPathsProps>
         quizResults: quizData
       });
       
-      setKnowledgeGaps(gapAnalysis.detectedGaps);
+      setKnowledgeGaps(gapAnalysis.data.detectedGaps);
       setAiEngineStatus('ready');
       
-      return gapAnalysis.detectedGaps;
+      return gapAnalysis.data.detectedGaps;
     } catch (err) {
       console.error('Real AI knowledge gap analysis failed:', err);
       setError('AI knowledge gap analysis failed');
@@ -671,10 +671,10 @@ const PersonalizedLearningPathsSection: React.FC<PersonalizedLearningPathsProps>
         modernRelevance: true
       });
       
-      setPrerequisiteMap(mappingData.prerequisiteMap);
+      setPrerequisiteMap(mappingData.data.prerequisiteMap);
       setAiEngineStatus('ready');
       
-      return mappingData.prerequisiteMap;
+      return mappingData.data.prerequisiteMap;
     } catch (err) {
       console.error('Real AI prerequisite mapping failed:', err);
       setError('AI prerequisite mapping failed');
@@ -696,10 +696,10 @@ const PersonalizedLearningPathsSection: React.FC<PersonalizedLearningPathsProps>
         learningPreferences: userProfile?.learningPreferences
       });
       
-      setAiOptimization(optimization.aiOptimization);
+      setAiOptimization(optimization.data.aiOptimization);
       setAiEngineStatus('ready');
       
-      return optimization.aiOptimization;
+      return optimization.data.aiOptimization;
     } catch (err) {
       console.error('Real AI optimization failed:', err);
       setError('AI optimization failed');
@@ -721,7 +721,7 @@ const PersonalizedLearningPathsSection: React.FC<PersonalizedLearningPathsProps>
         culturalAssessment: userProfile?.culturalKnowledge
       });
       
-      return competencyAnalysis.competencies;
+      return competencyAnalysis.data.competencies;
     } catch (err) {
       console.error('Real AI competency analysis failed:', err);
       return {
