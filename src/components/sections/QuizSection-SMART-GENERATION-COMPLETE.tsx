@@ -347,7 +347,7 @@ const QuizSection: React.FC<QuizSectionProps> = ({ language, vocabularyData, use
       const relevantPassages = await MacrobiusAPI.passages.getByThemes({
         themes: config.cultural_themes,
         focus_areas: config.focus_areas,
-        difficulty_range: [realUserProfile.current_level - 2, realUserProfile.current_level + 3],
+        difficulty_range: [realUserProfile.data.current_level - 2, realUserProfile.data.current_level + 3],
         limit: config.quiz_length * 3 // Get extra passages for variety
       });
 
@@ -358,10 +358,10 @@ const QuizSection: React.FC<QuizSectionProps> = ({ language, vocabularyData, use
       // Step 3: Generate real AI questions using enhanced API
       setGenerationProgress(50);
       const quizGenerationRequest = {
-        user_id: realUserProfile.user_id,
+        user_id: realUserProfile.data.user_id,
         config: {
           ...config,
-          target_difficulty: realUserProfile.current_level,
+          target_difficulty: realUserProfile.data.current_level,
           focus_areas: config.focus_areas,
           cultural_themes: config.cultural_themes
         },
@@ -369,8 +369,8 @@ const QuizSection: React.FC<QuizSectionProps> = ({ language, vocabularyData, use
         vocabulary_context: vocabularyData || {},
         adaptive_settings: {
           adjust_difficulty: config.difficulty_adaptation,
-          user_strengths: realUserProfile.strengths || [],
-          user_weaknesses: realUserProfile.weaknesses || []
+          user_strengths: realUserProfile.data.strengths || [],
+          user_weaknesses: realUserProfile.data.weaknesses || []
         }
       };
 
@@ -386,7 +386,7 @@ const QuizSection: React.FC<QuizSectionProps> = ({ language, vocabularyData, use
       const questionsWithContext = await MacrobiusAPI.quiz.addCulturalContext({
         questions: generatedQuizData.questions,
         cultural_insights: culturalInsights,
-        user_level: realUserProfile.current_level
+        user_level: realUserProfile.data.current_level
       });
 
       // Step 5: Real adaptive difficulty adjustment
@@ -394,7 +394,7 @@ const QuizSection: React.FC<QuizSectionProps> = ({ language, vocabularyData, use
       const adaptedQuestions = await MacrobiusAPI.quiz.adaptiveDifficultyAdjustment({
         questions: questionsWithContext,
         user_performance: userPerformanceData,
-        target_difficulty: realUserProfile.current_level,
+        target_difficulty: realUserProfile.data.current_level,
         adaptive_enabled: config.adaptive_difficulty
       });
 
