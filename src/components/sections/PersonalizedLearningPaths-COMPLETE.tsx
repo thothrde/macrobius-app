@@ -237,7 +237,84 @@ interface LearningPathStep {
   ai_sequencing_reason: string; // Why AI chose this sequence
 }
 
+// 📅 **REAL SCHEDULING OPTIMIZATION INTERFACES - AUTHENTIC AI**
+interface WeeklyPattern {
+  day_of_week: number; // 0-6 (Sunday-Saturday)
+  optimal_study_times: string[]; // Array of time slots like ['09:00', '14:00']
+  energy_level_pattern: number[]; // Hourly energy levels 0-1 for the day
+  recommended_activities: {
+    [timeSlot: string]: string; // e.g., '09:00': 'vocabulary_intensive'
+  };
+  break_frequency: number; // minutes between breaks
+  ai_pattern_confidence: number; // AI's confidence in this pattern
+}
+
+interface SeasonalAdjustment {
+  season: 'spring' | 'summer' | 'autumn' | 'winter';
+  daylight_factor: number; // 0-1, how daylight affects learning
+  motivation_adjustment: number; // -0.5 to 0.5, seasonal motivation change
+  optimal_duration_adjustment: number; // minutes to add/subtract from sessions
+  content_preference_shift: string[]; // preferred content types for season
+  ai_seasonal_confidence: number; // AI's confidence in seasonal adjustments
+}
+
+interface InterruptionStrategy {
+  interruption_type: 'external' | 'fatigue' | 'distraction' | 'technical';
+  detection_method: string; // How AI detects this interruption
+  immediate_response: string; // What to do immediately
+  recovery_strategy: string; // How to get back on track
+  prevention_tips: string[]; // How to prevent in future
+  ai_effectiveness_score: number; // 0-1, how effective this strategy is
+}
+
 // 🤖 **REAL AI OPTIMIZATION INTERFACES - AUTHENTIC MACHINE LEARNING**
+interface PersonalizedStrategy {
+  strategy_id: string;
+  strategy_name: string;
+  description: string;
+  effectiveness_score: number; // 0-1
+  user_match_score: number; // 0-1
+  ai_recommendation_reason: string;
+  implementation_steps: string[];
+  success_probability: number; // 0-1
+  cognitive_load_impact: number; // -1 to 1, how it affects cognitive load
+  time_investment_required: number; // minutes
+  learning_style_alignment: {
+    visual: number;
+    auditory: number;
+    kinesthetic: number;
+    analytical: number;
+  };
+  cultural_context_integration: boolean;
+  corpus_based_evidence: string[]; // Evidence from 1,401 passages
+}
+
+interface AdaptiveRecommendation {
+  recommendation_id: string;
+  recommendation_type: 'content' | 'pacing' | 'difficulty' | 'scheduling' | 'break_timing';
+  priority: 'low' | 'medium' | 'high' | 'critical';
+  description: string;
+  rationale: string; // AI's reasoning for this recommendation
+  implementation_timeframe: string;
+  expected_impact: number; // 0-1, expected positive impact
+  ai_confidence: number; // 0-1
+  user_performance_trigger: string; // What performance data triggered this
+  success_metrics: string[]; // How to measure if recommendation worked
+  rollback_strategy: string; // What to do if recommendation doesn't work
+}
+
+interface LearningAcceleration {
+  acceleration_factor: number; // How much faster learning could be (e.g., 1.3 = 30% faster)
+  bottleneck_areas: string[]; // Areas that are slowing down overall progress
+  optimization_techniques: string[]; // Specific techniques to accelerate learning
+  estimated_time_savings: number; // minutes per session
+  confidence_interval: [number, number]; // AI's confidence range for acceleration
+  ai_prediction_accuracy: number; // 0-1
+  prerequisite_optimizations: string[]; // Other optimizations needed first
+  risk_factors: string[]; // Potential negative effects to watch for
+  monitoring_metrics: string[]; // What to track to ensure acceleration is working
+}
+
 interface AILearningOptimization {
   user_cognitive_pattern: CognitivePattern;
   optimal_scheduling: OptimalScheduling;
