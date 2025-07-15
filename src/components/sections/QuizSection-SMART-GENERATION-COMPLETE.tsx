@@ -376,7 +376,7 @@ const QuizSection: React.FC<QuizSectionProps> = ({ language, vocabularyData, use
 
       const generatedQuizData = await MacrobiusAPI.quiz.generateAdaptive(quizGenerationRequest);
       
-      if (!generatedQuizData.questions || generatedQuizData.questions.length === 0) {
+      if (!generatedQuizData.data.questions || generatedQuizData.data.questions.length === 0) {
         throw new Error('Failed to generate quiz questions');
       }
 
@@ -384,7 +384,7 @@ const QuizSection: React.FC<QuizSectionProps> = ({ language, vocabularyData, use
       setGenerationProgress(70);
       const culturalInsights = await MacrobiusAPI.cultural.getInsightsByThemes(config.cultural_themes);
       const questionsWithContext = await MacrobiusAPI.quiz.addCulturalContext({
-        questions: generatedQuizData.questions,
+        questions: generatedQuizData.data.questions,
         cultural_insights: culturalInsights,
         user_level: realUserProfile.data.current_level
       });
