@@ -1421,7 +1421,7 @@ const PersonalizedLearningPathsSection: React.FC<PersonalizedLearningPathsProps>
           enableCulturalInsights: true
         });
         
-        if (aiInit.success) {
+        if (aiInit.data.success) {
           setAiEngineStatus('ready');
         } else {
           setAiEngineStatus('error');
