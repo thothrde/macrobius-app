@@ -546,7 +546,7 @@ const QuizSection: React.FC<QuizSectionProps> = ({ language, vocabularyData, use
           ...session.performance_metrics,
           accuracy,
           average_response_time: avgResponseTime,
-          ...completionData.metrics
+          ...completionData.data.metrics
         }
       };
 
