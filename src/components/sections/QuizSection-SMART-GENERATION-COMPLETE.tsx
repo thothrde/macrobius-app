@@ -403,7 +403,7 @@ const QuizSection: React.FC<QuizSectionProps> = ({ language, vocabularyData, use
       const quizSession: SmartQuizSession = {
         id: `real_quiz_${Date.now()}`,
         config,
-        questions: adaptedQuestions.slice(0, config.quiz_length),
+        questions: adaptedQuestions.data.slice(0, config.quiz_length),
         current_question_index: 0,
         start_time: new Date(),
         user_answers: {},
@@ -427,7 +427,7 @@ const QuizSection: React.FC<QuizSectionProps> = ({ language, vocabularyData, use
       await MacrobiusAPI.quiz.createSession(quizSession);
 
       setCurrentQuizSession(quizSession);
-      setGeneratedQuestions(adaptedQuestions);
+      setGeneratedQuestions(adaptedQuestions.data);
       setCurrentQuestionIndex(0);
       setQuizMode('active');
       setTimeRemaining(config.time_limit);
