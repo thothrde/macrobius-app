@@ -738,7 +738,7 @@ class EnhancedMacrobiusAPI {
 
     performKnowledgeGapAnalysis: (params: any): Promise<ApiResponse<any>> =>
       this.tryWithFallback(
-        () => apiClient.request<ApiResponse<any>>('/api/learning-paths/perform-knowledge-gap-analysis', { method: 'POST, body: params }),
+        () => apiClient.request<ApiResponse<any>>('/api/learning-paths/perform-knowledge-gap-analysis', { method: 'POST', body: params }),
         () => Promise.resolve({ 
           status: 'success' as const, 
           data: { 
