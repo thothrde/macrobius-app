@@ -1,6 +1,6 @@
 // TIER-COMPLETE Advanced Sections
 export { default as AITutoringSystemSection } from './AITutoringSystemSection-COMPLETE';
-export { default as VisualizationsSection } from './VisualizationsSection-COMPLETE';
+export { default as VisualizationsSection } from './VisualizationsSection';
 export { default as MacrobiusTextProcessor } from './MacrobiusTextProcessor-TIER2-COMPLETE';
 export { default as GrammarExplainer } from './GrammarExplainer-TIER1-COMPLETE';
 export { default as VocabularyTrainer } from './VocabularyTrainer-CORPUS-EXPANSION-COMPLETE';
