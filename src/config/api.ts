@@ -168,7 +168,9 @@ export const checkBackendStatus = async () => {
     return { backend: true, rag: true, details: { health, ragHealth } };
   } catch (error) {
     console.warn('⚠️ Backend connection issue:', error);
-    return { backend: false, rag: false, error: error.message };
+    // Fixed: Type-safe error handling for 'unknown' error type
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    return { backend: false, rag: false, error: errorMessage };
   }
 };
 
