@@ -1,3 +1,4 @@
+// Explicit lowercase imports to avoid case sensitivity conflicts
 export { default as Button } from './button';
-export { default as Card } from './card';
+export { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from './card';
 export { default as Input } from './input';
