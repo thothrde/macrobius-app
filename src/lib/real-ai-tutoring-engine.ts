@@ -4,7 +4,7 @@
  * Provides authentic personalized Latin education with memory and adaptation
  */
 
-import { enhancedApiClient } from './enhanced-api-client-with-fallback';
+import { apiClient } from './enhanced-api-client-with-fallback';
 
 export interface TutoringSession {
   sessionId: string;
@@ -115,7 +115,7 @@ class RealAITutoringEngine {
   private baseUrl: string;
   private activeSessions: Map<string, TutoringSession> = new Map();
   private studentProfiles: Map<string, StudentProfile> = new Map();
-  private apiClient = enhancedApiClient;
+  private apiClient = apiClient;
   private conversationMemory: Map<string, any[]> = new Map();
 
   constructor() {
@@ -220,12 +220,15 @@ class RealAITutoringEngine {
    * Analyze student message for learning insights
    */
   private async analyzeStudentMessage(message: string, session: TutoringSession) {
-    const response = await this.apiClient.post('/api/tutoring/analyze-message', {
-      message,
-      conversationHistory: session.conversationHistory.slice(-10),
-      studentProfile: session.studentProfile,
-      currentTopic: session.currentTopic,
-      language: 'la' // Assuming Latin context
+    const response = await this.apiClient.request('/api/tutoring/analyze-message', {
+      method: 'POST',
+      body: {
+        message,
+        conversationHistory: session.conversationHistory.slice(-10),
+        studentProfile: session.studentProfile,
+        currentTopic: session.currentTopic,
+        language: 'la' // Assuming Latin context
+      }
     });
 
     return {
@@ -243,21 +246,24 @@ class RealAITutoringEngine {
    * Generate intelligent, contextual tutor response
    */
   private async generateTutorResponse(session: TutoringSession, analysis: any): Promise<TutoringResponse> {
-    const response = await this.apiClient.post('/api/tutoring/generate-response', {
-      messageAnalysis: analysis,
-      session: {
-        id: session.sessionId,
-        topic: session.currentTopic,
-        objectives: session.learningObjectives,
-        history: session.conversationHistory.slice(-15), // Last 15 turns for context
-        metrics: session.sessionMetrics
-      },
-      studentProfile: session.studentProfile,
-      adaptiveContext: {
-        needsDifficultyAdjustment: analysis.difficultyLevel !== session.studentProfile.learningLevel,
-        needsEncouragement: analysis.sentiment < 0.3,
-        needsCorrection: analysis.misconceptions.length > 0,
-        needsNewConcepts: session.sessionMetrics.progressMade > 0.7
+    const response = await this.apiClient.request('/api/tutoring/generate-response', {
+      method: 'POST',
+      body: {
+        messageAnalysis: analysis,
+        session: {
+          id: session.sessionId,
+          topic: session.currentTopic,
+          objectives: session.learningObjectives,
+          history: session.conversationHistory.slice(-15), // Last 15 turns for context
+          metrics: session.sessionMetrics
+        },
+        studentProfile: session.studentProfile,
+        adaptiveContext: {
+          needsDifficultyAdjustment: analysis.difficultyLevel !== session.studentProfile.learningLevel,
+          needsEncouragement: analysis.sentiment < 0.3,
+          needsCorrection: analysis.misconceptions.length > 0,
+          needsNewConcepts: session.sessionMetrics.progressMade > 0.7
+        }
       }
     });
 
@@ -277,11 +283,14 @@ class RealAITutoringEngine {
    * Get relevant educational resources from Oracle Cloud
    */
   private async getRelevantResources(topic: string, analysis: any) {
-    const response = await this.apiClient.post('/api/tutoring/resources', {
-      topic,
-      knowledgeGaps: analysis.knowledgeGaps,
-      difficultyLevel: analysis.difficultyLevel,
-      maxResources: 3
+    const response = await this.apiClient.request('/api/tutoring/resources', {
+      method: 'POST',
+      body: {
+        topic,
+        knowledgeGaps: analysis.knowledgeGaps,
+        difficultyLevel: analysis.difficultyLevel,
+        maxResources: 3
+      }
     });
 
     return response.data.resources.map((resource: any) => ({
@@ -342,11 +351,14 @@ class RealAITutoringEngine {
     const recentPerformance = profile.performanceHistory.slice(-10);
     const avgScore = recentPerformance.reduce((sum, p) => sum + p.score, 0) / recentPerformance.length;
     
-    const response = await this.apiClient.post('/api/tutoring/assess-level', {
-      currentLevel: profile.learningLevel,
-      recentPerformance: avgScore,
-      difficultyFeedback: analysis.difficultyLevel,
-      sessionMetrics: analysis.learningIndicators
+    const response = await this.apiClient.request('/api/tutoring/assess-level', {
+      method: 'POST',
+      body: {
+        currentLevel: profile.learningLevel,
+        recentPerformance: avgScore,
+        difficultyFeedback: analysis.difficultyLevel,
+        sessionMetrics: analysis.learningIndicators
+      }
     });
     
     return {
@@ -466,7 +478,7 @@ class RealAITutoringEngine {
     
     try {
       // Try to load existing profile from Oracle Cloud
-      const response = await this.apiClient.get(`/api/students/${userId}/profile`);
+      const response = await this.apiClient.request(`/api/students/${userId}/profile`);
       const profile = response.data;
       this.studentProfiles.set(userId, profile);
       return profile;
@@ -493,11 +505,14 @@ class RealAITutoringEngine {
    * Determine optimal starting topic for student
    */
   private async determineOptimalTopic(profile: StudentProfile): Promise<string> {
-    const response = await this.apiClient.post('/api/tutoring/optimal-topic', {
-      learningLevel: profile.learningLevel,
-      completedLessons: profile.completedLessons,
-      knowledgeGaps: profile.knowledgeGaps,
-      interests: profile.interests
+    const response = await this.apiClient.request('/api/tutoring/optimal-topic', {
+      method: 'POST',
+      body: {
+        learningLevel: profile.learningLevel,
+        completedLessons: profile.completedLessons,
+        knowledgeGaps: profile.knowledgeGaps,
+        interests: profile.interests
+      }
     });
     
     return response.data.recommended_topic || 'Basic Latin Grammar';
@@ -507,11 +522,14 @@ class RealAITutoringEngine {
    * Generate learning objectives for session
    */
   private async generateLearningObjectives(topic: string, profile: StudentProfile): Promise<string[]> {
-    const response = await this.apiClient.post('/api/tutoring/learning-objectives', {
-      topic,
-      learningLevel: profile.learningLevel,
-      knowledgeGaps: profile.knowledgeGaps.slice(0, 5), // Top 5 gaps
-      sessionType: 'conversational'
+    const response = await this.apiClient.request('/api/tutoring/learning-objectives', {
+      method: 'POST',
+      body: {
+        topic,
+        learningLevel: profile.learningLevel,
+        knowledgeGaps: profile.knowledgeGaps.slice(0, 5), // Top 5 gaps
+        sessionType: 'conversational'
+      }
     });
     
     return response.data.objectives;
@@ -521,11 +539,14 @@ class RealAITutoringEngine {
    * Generate personalized welcome message
    */
   private async generateWelcomeMessage(session: TutoringSession): Promise<TutoringResponse> {
-    const response = await this.apiClient.post('/api/tutoring/welcome-message', {
-      studentProfile: session.studentProfile,
-      topic: session.currentTopic,
-      objectives: session.learningObjectives,
-      language: 'multilingual' // Support DE/EN/LA
+    const response = await this.apiClient.request('/api/tutoring/welcome-message', {
+      method: 'POST',
+      body: {
+        studentProfile: session.studentProfile,
+        topic: session.currentTopic,
+        objectives: session.learningObjectives,
+        language: 'multilingual' // Support DE/EN/LA
+      }
     });
     
     return {
@@ -555,14 +576,17 @@ class RealAITutoringEngine {
       throw new Error('Session not found');
     }
     
-    const response = await this.apiClient.post('/api/tutoring/session-summary', {
-      session: {
-        duration: Date.now() - session.startTime,
-        metrics: session.sessionMetrics,
-        conversationTurns: session.conversationHistory.length
-      },
-      profile: session.studentProfile,
-      topic: session.currentTopic
+    const response = await this.apiClient.request('/api/tutoring/session-summary', {
+      method: 'POST',
+      body: {
+        session: {
+          duration: Date.now() - session.startTime,
+          metrics: session.sessionMetrics,
+          conversationTurns: session.conversationHistory.length
+        },
+        profile: session.studentProfile,
+        topic: session.currentTopic
+      }
     });
     
     // Save session data
@@ -584,14 +608,17 @@ class RealAITutoringEngine {
    */
   private async saveSessionData(session: TutoringSession) {
     try {
-      await this.apiClient.post('/api/tutoring/save-session', {
-        sessionId: session.sessionId,
-        userId: session.userId,
-        duration: Date.now() - session.startTime,
-        topic: session.currentTopic,
-        metrics: session.sessionMetrics,
-        conversationHistory: session.conversationHistory,
-        finalProfile: session.studentProfile
+      await this.apiClient.request('/api/tutoring/save-session', {
+        method: 'POST',
+        body: {
+          sessionId: session.sessionId,
+          userId: session.userId,
+          duration: Date.now() - session.startTime,
+          topic: session.currentTopic,
+          metrics: session.sessionMetrics,
+          conversationHistory: session.conversationHistory,
+          finalProfile: session.studentProfile
+        }
       });
     } catch (error) {
       console.error('Failed to save session data:', error);
