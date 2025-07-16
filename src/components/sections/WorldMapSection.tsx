@@ -434,7 +434,7 @@ function WorldMapSection({ isActive, language = 'DE' }: WorldMapSectionProps) {
                               <BookOpen className="w-4 h-4" />
                               {t.macrobius_quote_label}:
                             </h5>
-                            <p className="text-blue-800 text-sm italic font-medium'>'{zone.macrobiusQuote}'</p>
+                            <p className="text-blue-800 text-sm italic font-medium">'{zone.macrobiusQuote}'</p>
                           </div>
                         </div>
                       </motion.div>
