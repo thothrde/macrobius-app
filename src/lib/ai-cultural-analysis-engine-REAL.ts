@@ -412,6 +412,8 @@ class RealAICulturalAnalysisEngine {
 
   /**
    * GENERATE SEMANTIC EMBEDDING (SIMPLIFIED)
+   * FIXED: Error #45 - Type Mismatch
+   * Convert string hash to number for Math.abs() compatibility
    */
   private generateSemanticEmbedding(text: string): number[] {
     // Simplified semantic embedding - in production, use actual embeddings
@@ -419,7 +421,8 @@ class RealAICulturalAnalysisEngine {
     const embedding = new Array(50).fill(0);
     
     words.forEach((word, index) => {
-      const hash = this.hashText(word);
+      const hashString = this.hashText(word);
+      const hash = parseInt(hashString, 36); // Convert string hash to number
       embedding[Math.abs(hash) % 50] += 1;
     });
     
