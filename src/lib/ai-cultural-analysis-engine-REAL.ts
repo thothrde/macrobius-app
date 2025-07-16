@@ -374,11 +374,13 @@ class RealAICulturalAnalysisEngine {
 
   /**
    * EXTRACT KEYWORDS FROM LATIN TEXT
+   * FIXED: TypeScript Configuration Error #44
+   * Replaced spread operator with Array.from() for Set iteration compatibility
    */
   private extractKeywords(text: string): string[] {
     const commonWords = ['et', 'in', 'est', 'non', 'ut', 'ad', 'cum', 'ex', 'de', 'se', 'si', 'qui', 'quod', 'id'];
     const words = text.toLowerCase().match(/\b[a-z]+\b/g) || [];
-    const uniqueWords = [...new Set(words)]
+    const uniqueWords = Array.from(new Set(words))
       .filter(word => word.length > 3 && !commonWords.includes(word))
       .slice(0, 10);
     
