@@ -19,6 +19,31 @@ export interface MacrobiusPassage {
   created_at: string;
 }
 
+export interface MacrobiusVocabulary {
+  id: string;
+  word: string;
+  latin_form: string;
+  translation_de: string;
+  translation_en: string;
+  translation_la: string;
+  grammatical_info: string;
+  cultural_context: string;
+  frequency: number;
+  difficulty_level: 'beginner' | 'intermediate' | 'advanced' | 'expert';
+  cultural_theme: string;
+  passage_references: string[];
+  etymology: string;
+  usage_examples: string[];
+  semantic_field: string;
+  ai_insights: {
+    learning_priority: number;
+    memory_techniques: string[];
+    cultural_importance: number;
+    cross_references: string[];
+  };
+  created_at: string;
+}
+
 export interface SearchFilters {
   cultural_themes?: string[];
   difficulty_range?: [number, number];
@@ -153,13 +178,38 @@ class MacrobiusAPIClient {
     level?: string,
     theme?: string,
     limit?: number
-  ): Promise<APIResponse<any[]>> {
+  ): Promise<APIResponse<MacrobiusVocabulary[]>> {
     const params = new URLSearchParams();
     if (level) params.append('level', level);
     if (theme) params.append('theme', theme);
     if (limit) params.append('limit', limit.toString());
     
     return this.request(`/api/vocabulary?${params}`);
+  }
+  
+  async analyzeFullCorpus(options: any): Promise<APIResponse<any>> {
+    return this.request('/api/vocabulary/analyze-corpus', {
+      method: 'POST',
+      body: JSON.stringify(options)
+    });
+  }
+  
+  async extractVocabulary(options: any): Promise<APIResponse<any>> {
+    return this.request('/api/vocabulary/extract', {
+      method: 'POST',
+      body: JSON.stringify(options)
+    });
+  }
+  
+  async saveCorpusAnalysis(analysis: any): Promise<APIResponse<any>> {
+    return this.request('/api/vocabulary/save-analysis', {
+      method: 'POST',
+      body: JSON.stringify(analysis)
+    });
+  }
+  
+  async getStoredCorpusAnalysis(): Promise<APIResponse<any>> {
+    return this.request('/api/vocabulary/stored-analysis');
   }
   
   // Analytics endpoints
@@ -181,6 +231,59 @@ class MacrobiusAPIClient {
     if (difficulty) params.append('difficulty', difficulty);
     
     return this.request(`/api/grammar/exercises?${params}`);
+  }
+  
+  // AI endpoints
+  async generateVocabularyInsights(options: any): Promise<APIResponse<any>> {
+    return this.request('/api/ai/vocabulary-insights', {
+      method: 'POST',
+      body: JSON.stringify(options)
+    });
+  }
+  
+  async generatePersonalizedRecommendations(options: any): Promise<APIResponse<any>> {
+    return this.request('/api/ai/recommendations', {
+      method: 'POST',
+      body: JSON.stringify(options)
+    });
+  }
+  
+  async createPersonalizedSet(options: any): Promise<APIResponse<any>> {
+    return this.request('/api/ai/create-set', {
+      method: 'POST',
+      body: JSON.stringify(options)
+    });
+  }
+  
+  async optimizeUserExperience(options: any): Promise<APIResponse<any>> {
+    return this.request('/api/ai/optimize-experience', {
+      method: 'POST',
+      body: JSON.stringify(options)
+    });
+  }
+  
+  // SRS endpoints
+  async processReview(options: any): Promise<APIResponse<any>> {
+    return this.request('/api/srs/process-review', {
+      method: 'POST',
+      body: JSON.stringify(options)
+    });
+  }
+  
+  async getUserSRSData(userId: string): Promise<APIResponse<any>> {
+    return this.request(`/api/srs/user/${userId}`);
+  }
+  
+  async optimizeVocabularyOrder(options: any): Promise<APIResponse<any>> {
+    return this.request('/api/srs/optimize-order', {
+      method: 'POST',
+      body: JSON.stringify(options)
+    });
+  }
+  
+  // System endpoints
+  async systemHealthCheck(): Promise<APIResponse<any>> {
+    return this.request('/api/system/health');
   }
 }
 
@@ -214,7 +317,11 @@ export const MacrobiusAPI = {
   // Vocabulary services
   vocabulary: {
     get: (level?: string, theme?: string, limit?: number) => 
-      new MacrobiusAPIClient().getVocabulary(level, theme, limit)
+      new MacrobiusAPIClient().getVocabulary(level, theme, limit),
+    analyzeFullCorpus: (options: any) => new MacrobiusAPIClient().analyzeFullCorpus(options),
+    extractVocabulary: (options: any) => new MacrobiusAPIClient().extractVocabulary(options),
+    saveCorpusAnalysis: (analysis: any) => new MacrobiusAPIClient().saveCorpusAnalysis(analysis),
+    getStoredCorpusAnalysis: () => new MacrobiusAPIClient().getStoredCorpusAnalysis()
   },
   
   // Analytics services
@@ -227,6 +334,26 @@ export const MacrobiusAPI = {
   grammar: {
     getExercises: (pattern?: string, difficulty?: string) => 
       new MacrobiusAPIClient().getGrammarExercises(pattern, difficulty)
+  },
+  
+  // AI services
+  ai: {
+    generateVocabularyInsights: (options: any) => new MacrobiusAPIClient().generateVocabularyInsights(options),
+    generatePersonalizedRecommendations: (options: any) => new MacrobiusAPIClient().generatePersonalizedRecommendations(options),
+    createPersonalizedSet: (options: any) => new MacrobiusAPIClient().createPersonalizedSet(options),
+    optimizeUserExperience: (options: any) => new MacrobiusAPIClient().optimizeUserExperience(options)
+  },
+  
+  // SRS services
+  srs: {
+    processReview: (options: any) => new MacrobiusAPIClient().processReview(options),
+    getUserSRSData: (userId: string) => new MacrobiusAPIClient().getUserSRSData(userId),
+    optimizeVocabularyOrder: (options: any) => new MacrobiusAPIClient().optimizeVocabularyOrder(options)
+  },
+  
+  // System services
+  system: {
+    healthCheck: () => new MacrobiusAPIClient().systemHealthCheck()
   },
   
   // Health check
