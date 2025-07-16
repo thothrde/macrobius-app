@@ -373,6 +373,16 @@ const VocabularyTrainerSection: React.FC<VocabularyTrainerSectionProps> = ({ lan
 
   const t = translations[language] || translations.EN;
 
+  // Helper function to convert ComponentLanguage to lowercase
+  const getLanguageCode = (lang: ComponentLanguage): 'de' | 'en' | 'la' => {
+    switch(lang) {
+      case 'DE': return 'de';
+      case 'EN': return 'en';
+      case 'LA': return 'la';
+      default: return 'en';
+    }
+  };
+
   // 🚀 **REAL AI CORPUS ANALYSIS - NO MORE MOCK SYSTEMS**
   const analyzeRealCorpus = useCallback(async () => {
     setIsCorpusAnalyzing(true);
@@ -380,13 +390,14 @@ const VocabularyTrainerSection: React.FC<VocabularyTrainerSectionProps> = ({ lan
     setError(null);
     
     try {
-      // Step 1: Initialize real vocabulary engine
+      // Step 1: Initialize real vocabulary engine with correct property names
       setCorpusProgress(15);
       const vocabularyEngine = await initializeVocabulary({
-        user_id: 'current_user',
-        proficiency_level: 'intermediate',
-        learning_goals: ['vocabulary', 'culture'],
-        corpus_focus: true
+        userId: 'current_user',
+        language: getLanguageCode(language),
+        difficulty: 'intermediate',
+        culturalThemes: ['vocabulary', 'culture'],
+        initialWordCount: 20
       });
 
       // Step 2: Real corpus analysis from Oracle Cloud
@@ -482,7 +493,7 @@ const VocabularyTrainerSection: React.FC<VocabularyTrainerSectionProps> = ({ lan
     } finally {
       setIsCorpusAnalyzing(false);
     }
-  }, [realSession.wordsStudied, realSession.performance_trend]);
+  }, [language, realSession.wordsStudied, realSession.performance_trend]);
 
   // 🧠 **REAL AI VOCABULARY RECOMMENDATIONS - NO MORE MOCK**
   const getRealAIRecommendations = useCallback(async () => {
@@ -941,10 +952,10 @@ const VocabularyTrainerSection: React.FC<VocabularyTrainerSectionProps> = ({ lan
               onClick={() => {
                 // Start real SRS session
                 startVocabularySession({
-                  user_id: 'current_user',
-                  session_type: 'srs',
-                  ai_optimization: true,
-                  corpus_focus: true
+                  userId: 'current_user',
+                  language: getLanguageCode(language),
+                  sessionType: 'reinforcement',
+                  maxCards: 20
                 });
               }}
               className="bg-amber-600 hover:bg-amber-700"
@@ -1039,12 +1050,13 @@ const VocabularyTrainerSection: React.FC<VocabularyTrainerSectionProps> = ({ lan
         if (healthResponse.status === 'success') {
           setBackendStatus('connected');
           
-          // Initialize real vocabulary engine
+          // Initialize real vocabulary engine with correct property names
           const vocabularyEngine = await initializeVocabulary({
-            user_id: 'current_user',
-            proficiency_level: 'intermediate',
-            learning_goals: ['vocabulary', 'culture'],
-            corpus_focus: true
+            userId: 'current_user',
+            language: getLanguageCode(language),
+            difficulty: 'intermediate',
+            culturalThemes: ['vocabulary', 'culture'],
+            initialWordCount: 20
           });
           
           // Load existing real data if available
@@ -1075,7 +1087,7 @@ const VocabularyTrainerSection: React.FC<VocabularyTrainerSectionProps> = ({ lan
     };
 
     initializeRealAISystems();
-  }, []);
+  }, [language]);
 
   // Simplified other modes for now
   const renderSimplifiedMode = (modeName: string, icon: any) => (
