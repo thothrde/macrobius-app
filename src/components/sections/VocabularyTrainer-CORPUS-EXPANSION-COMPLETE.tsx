@@ -414,60 +414,60 @@ const VocabularyTrainerSection: React.FC<VocabularyTrainerSectionProps> = ({ lan
         throw new Error('Failed to retrieve corpus analysis from Oracle Cloud');
       }
 
-      // Step 3: Real AI vocabulary extraction
+      // Step 3: Real AI vocabulary extraction - ✅ FIXED: Access via .data property
       setCorpusProgress(50);
       const vocabularyAnalysis = await MacrobiusAPI.vocabulary.extractVocabulary({
-        passages: realCorpusData.passages,
+        passages: realCorpusData.data.passages,
         ai_categorization: true,
         cultural_context_mapping: true,
         difficulty_assessment: true,
         semantic_clustering: true
       });
 
-      // Step 4: Real AI categorization and insights
+      // Step 4: Real AI categorization and insights - ✅ FIXED: Access via .data property
       setCorpusProgress(70);
       const aiInsights = await MacrobiusAPI.ai.generateVocabularyInsights({
-        vocabulary_data: vocabularyAnalysis.vocabulary,
+        vocabulary_data: vocabularyAnalysis.data.vocabulary,
         user_profile: {
           current_level: 'intermediate',
           learning_history: Array.from(realSession.wordsStudied),
           performance_data: realSession.performance_trend
         },
-        cultural_themes: realCorpusData.cultural_themes
+        cultural_themes: realCorpusData.data.cultural_themes
       });
 
-      // Step 5: Real SRS optimization
+      // Step 5: Real SRS optimization - ✅ FIXED: Access via .data property
       setCorpusProgress(85);
       const srsOptimization = await MacrobiusAPI.srs.optimizeVocabularyOrder({
-        vocabulary: vocabularyAnalysis.vocabulary,
+        vocabulary: vocabularyAnalysis.data.vocabulary,
         user_performance: realSession.performance_trend,
         learning_objectives: ['retention', 'cultural_understanding', 'practical_usage']
       });
 
-      // Step 6: Create real corpus analysis
+      // Step 6: Create real corpus analysis - ✅ FIXED: Access via .data property
       setCorpusProgress(95);
       const completeAnalysis: RealCorpusAnalysis = {
-        passage_count: realCorpusData.passage_count,
-        word_occurrences: realCorpusData.total_word_occurrences,
-        unique_vocabulary: vocabularyAnalysis.vocabulary,
+        passage_count: realCorpusData.data.passage_count,
+        word_occurrences: realCorpusData.data.total_word_occurrences,
+        unique_vocabulary: vocabularyAnalysis.data.vocabulary,
         difficulty_analysis: {
-          beginner: vocabularyAnalysis.by_difficulty.beginner,
-          intermediate: vocabularyAnalysis.by_difficulty.intermediate,
-          advanced: vocabularyAnalysis.by_difficulty.advanced,
-          expert: vocabularyAnalysis.by_difficulty.expert
+          beginner: vocabularyAnalysis.data.by_difficulty.beginner,
+          intermediate: vocabularyAnalysis.data.by_difficulty.intermediate,
+          advanced: vocabularyAnalysis.data.by_difficulty.advanced,
+          expert: vocabularyAnalysis.data.by_difficulty.expert
         },
-        cultural_distribution: vocabularyAnalysis.by_cultural_theme,
+        cultural_distribution: vocabularyAnalysis.data.by_cultural_theme,
         frequency_bands: {
-          high_frequency: vocabularyAnalysis.by_frequency.high,
-          medium_frequency: vocabularyAnalysis.by_frequency.medium,
-          low_frequency: vocabularyAnalysis.by_frequency.low,
-          rare_words: vocabularyAnalysis.by_frequency.rare
+          high_frequency: vocabularyAnalysis.data.by_frequency.high,
+          medium_frequency: vocabularyAnalysis.data.by_frequency.medium,
+          low_frequency: vocabularyAnalysis.data.by_frequency.low,
+          rare_words: vocabularyAnalysis.data.by_frequency.rare
         },
         ai_insights: {
-          optimal_learning_order: srsOptimization.optimal_order,
-          cultural_connection_strength: aiInsights.cultural_connections,
-          etymology_patterns: aiInsights.etymology_analysis,
-          semantic_clusters: aiInsights.semantic_groupings
+          optimal_learning_order: srsOptimization.data.optimal_order,
+          cultural_connection_strength: aiInsights.data.cultural_connections,
+          etymology_patterns: aiInsights.data.etymology_analysis,
+          semantic_clusters: aiInsights.data.semantic_groupings
         }
       };
 
@@ -514,7 +514,7 @@ const VocabularyTrainerSection: React.FC<VocabularyTrainerSectionProps> = ({ lan
         }
       });
 
-      return realRecommendations.recommendations || [];
+      return realRecommendations.data.recommendations || [];
     } catch (err) {
       console.error('Real AI recommendations failed:', err);
       return [];
@@ -534,15 +534,15 @@ const VocabularyTrainerSection: React.FC<VocabularyTrainerSectionProps> = ({ lan
         user_learning_pattern: realSession.performance_trend
       });
 
-      // Update real SRS data
+      // Update real SRS data - ✅ FIXED: Access via .data property
       setRealSrsData(prev => ({
         ...prev,
         [wordId]: {
           word_id: wordId,
-          repetition_count: realSRSResult.new_repetition_count,
-          easiness_factor: realSRSResult.new_easiness_factor,
-          next_review_date: new Date(realSRSResult.next_review_timestamp),
-          last_interval: realSRSResult.new_interval_days,
+          repetition_count: realSRSResult.data.new_repetition_count,
+          easiness_factor: realSRSResult.data.new_easiness_factor,
+          next_review_date: new Date(realSRSResult.data.next_review_timestamp),
+          last_interval: realSRSResult.data.new_interval_days,
           last_review_date: new Date(),
           review_history: [
             ...(prev[wordId]?.review_history || []),
@@ -550,32 +550,32 @@ const VocabularyTrainerSection: React.FC<VocabularyTrainerSectionProps> = ({ lan
               date: new Date(),
               performance,
               response_time: responseTime,
-              ai_analysis: realSRSResult.ai_insights.performance_analysis
+              ai_analysis: realSRSResult.data.ai_insights.performance_analysis
             }
           ],
           ai_optimization: {
-            optimal_review_time: realSRSResult.ai_insights.optimal_time,
-            difficulty_adjustment: realSRSResult.ai_insights.difficulty_adjustment,
-            memory_strength: realSRSResult.ai_insights.memory_strength,
-            forgetting_curve_prediction: realSRSResult.ai_insights.forgetting_prediction
+            optimal_review_time: realSRSResult.data.ai_insights.optimal_time,
+            difficulty_adjustment: realSRSResult.data.ai_insights.difficulty_adjustment,
+            memory_strength: realSRSResult.data.ai_insights.memory_strength,
+            forgetting_curve_prediction: realSRSResult.data.ai_insights.forgetting_prediction
           }
         }
       }));
 
-      // Update session with AI insights
+      // Update session with AI insights - ✅ FIXED: Access via .data property
       setRealSession(prev => ({
         ...prev,
         srs_reviews: prev.srs_reviews + 1,
         performance_trend: [...prev.performance_trend, performance].slice(-20),
         ai_insights: {
-          learning_velocity: realSRSResult.ai_insights.updated_learning_velocity,
-          retention_prediction: realSRSResult.ai_insights.retention_prediction,
-          optimal_session_length: realSRSResult.ai_insights.session_length_recommendation,
-          recommended_break_time: realSRSResult.ai_insights.break_recommendation
+          learning_velocity: realSRSResult.data.ai_insights.updated_learning_velocity,
+          retention_prediction: realSRSResult.data.ai_insights.retention_prediction,
+          optimal_session_length: realSRSResult.data.ai_insights.session_length_recommendation,
+          recommended_break_time: realSRSResult.data.ai_insights.break_recommendation
         }
       }));
 
-      return realSRSResult;
+      return realSRSResult.data;
     } catch (err) {
       console.error('Real SRS processing failed:', err);
       throw err;
@@ -599,19 +599,20 @@ const VocabularyTrainerSection: React.FC<VocabularyTrainerSectionProps> = ({ lan
         cultural_integration: true
       });
 
+      // ✅ FIXED: Access via .data property
       const newRealSet: RealPersonalizedVocabularySet = {
-        id: aiGeneratedSet.set_id,
+        id: aiGeneratedSet.data.set_id,
         name,
         description,
-        words: aiGeneratedSet.selected_vocabulary,
+        words: aiGeneratedSet.data.selected_vocabulary,
         created_date: new Date(),
         last_modified: new Date(),
         performance_stats: {
-          average_difficulty: aiGeneratedSet.metrics.average_difficulty,
+          average_difficulty: aiGeneratedSet.data.metrics.average_difficulty,
           completion_rate: 0,
-          time_to_master: aiGeneratedSet.metrics.estimated_mastery_time,
+          time_to_master: aiGeneratedSet.data.metrics.estimated_mastery_time,
           success_rate: 0,
-          ai_optimization_score: aiGeneratedSet.metrics.ai_score
+          ai_optimization_score: aiGeneratedSet.data.metrics.ai_score
         },
         adaptive_features: {
           auto_difficulty_adjustment: true,
@@ -629,7 +630,7 @@ const VocabularyTrainerSection: React.FC<VocabularyTrainerSectionProps> = ({ lan
         reward: {
           icon: '🤖',
           title: 'Real AI Set Created!',
-          description: `AI generated "${name}" with ${aiGeneratedSet.selected_vocabulary.length} optimally selected words`,
+          description: `AI generated "${name}" with ${aiGeneratedSet.data.selected_vocabulary.length} optimally selected words`,
           type: 'real_ai_creation'
         }
       });
@@ -1063,12 +1064,12 @@ const VocabularyTrainerSection: React.FC<VocabularyTrainerSectionProps> = ({ lan
           try {
             const existingAnalysis = await MacrobiusAPI.vocabulary.getStoredCorpusAnalysis();
             if (existingAnalysis) {
-              setRealCorpusAnalysis(existingAnalysis);
+              setRealCorpusAnalysis(existingAnalysis.data);
             }
             
             const existingSRS = await MacrobiusAPI.srs.getUserSRSData('current_user');
             if (existingSRS) {
-              setRealSrsData(existingSRS);
+              setRealSrsData(existingSRS.data);
             }
           } catch (err) {
             console.log('No existing real AI data found - ready for fresh analysis');
