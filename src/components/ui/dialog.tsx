@@ -10,12 +10,19 @@ interface DialogProps {
   children?: React.ReactNode
 }
 
+// Define interface for components that can accept dialog props
+interface DialogChildProps {
+  open?: boolean
+  onOpenChange?: (open: boolean) => void
+}
+
 const Dialog: React.FC<DialogProps> = ({ open, onOpenChange, children }) => {
   return (
     <>
       {React.Children.map(children, child => {
         if (React.isValidElement(child)) {
-          return React.cloneElement(child, { open, onOpenChange })
+          // Type assertion to tell TypeScript that child can accept dialog props
+          return React.cloneElement(child as React.ReactElement<DialogChildProps>, { open, onOpenChange })
         }
         return child
       })}
