@@ -1,5 +1,5 @@
 import React from 'react';
-import { motion } from 'framer-motion';
+import { motion, MotionProps } from 'framer-motion';
 
 // Apply comprehensive Omit pattern to resolve React/Framer Motion type conflicts
 // This excludes event handlers that have incompatible types between React and Framer Motion
@@ -19,13 +19,29 @@ interface InputProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>,
   iconPosition?: 'left' | 'right';
 }
 
-const Input = React.forwardRef<HTMLInputElement, InputProps>(
+// Create Motion-specific props interface that combines clean InputProps with selected MotionProps
+interface MotionInputProps extends InputProps {
+  whileFocus?: MotionProps['whileFocus'];
+  whileHover?: MotionProps['whileHover'];
+  initial?: MotionProps['initial'];
+  animate?: MotionProps['animate'];
+  exit?: MotionProps['exit'];
+  transition?: MotionProps['transition'];
+}
+
+const Input = React.forwardRef<HTMLInputElement, MotionInputProps>(
   ({
     className = '',
     label,
     error,
     icon,
     iconPosition = 'left',
+    whileFocus,
+    whileHover,
+    initial,
+    animate,
+    exit,
+    transition,
     ...props
   }, ref) => {
     const baseClasses = 'w-full px-4 py-3 bg-white/20 border border-white/30 rounded-lg text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-transparent transition-all duration-200';
@@ -33,6 +49,21 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
     
     const inputClasses = `${baseClasses} ${errorClasses} ${className}`;
     const iconClasses = icon ? (iconPosition === 'left' ? 'pl-12' : 'pr-12') : '';
+    
+    // Extract Motion props separately
+    const motionProps = {
+      whileFocus: whileFocus || { scale: 1.01 },
+      whileHover,
+      initial,
+      animate,
+      exit,
+      transition
+    };
+    
+    // Filter out undefined motion props
+    const filteredMotionProps = Object.fromEntries(
+      Object.entries(motionProps).filter(([_, value]) => value !== undefined)
+    );
     
     return (
       <div className="space-y-2">
@@ -52,7 +83,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
           <motion.input
             ref={ref}
             className={`${inputClasses} ${iconClasses}`}
-            whileFocus={{ scale: 1.01 }}
+            {...filteredMotionProps}
             {...props}
           />
         </div>
