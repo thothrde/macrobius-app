@@ -194,6 +194,11 @@ export class EnhancedMacrobiusApiClient {
     return `${method}:${endpoint}:${body}`;
   }
 
+  /**
+   * GET FROM CACHE WITH PROPER GENERIC TYPE CASTING
+   * FIXED: Error #48 - Type Mismatch Error
+   * Cast entry.data to T to resolve type mismatch between unknown and T | null
+   */
   private getFromCache<T>(key: string): T | null {
     const entry = this.cache.get(key);
     if (!entry) return null;
@@ -203,7 +208,7 @@ export class EnhancedMacrobiusApiClient {
       return null;
     }
     
-    return entry.data;
+    return entry.data as T;
   }
 
   private setCache(key: string, data: any, expiry: number): void {
