@@ -26,10 +26,11 @@ import {
 import { 
   realAICulturalAnalysisEngine as aiCulturalAnalysisEngine, 
   CulturalTheme, 
-  MacrobiusPassage, 
   CulturalAnalysisResult,
-  AnalysisFilters 
+  AnalysisFilters,
+  EnhancedMacrobiusPassage
 } from '@/lib/ai-cultural-analysis-engine-REAL';
+import { MacrobiusPassage } from '@/lib/enhanced-api-client-with-fallback';
 import { useLanguage } from '@/contexts/LanguageContext';
 
 interface AnalysisProps {
@@ -180,7 +181,7 @@ export default function AICulturalAnalysisSectionFixed({ className = '', languag
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [culturalThemes, setCulturalThemes] = useState<CulturalTheme[]>([]);
   const [selectedThemes, setSelectedThemes] = useState<string[]>([]);
-  const [searchResults, setSearchResults] = useState<MacrobiusPassage[]>([]);
+  const [searchResults, setSearchResults] = useState<EnhancedMacrobiusPassage[]>([]);
   const [activeTab, setActiveTab] = useState<'analyze' | 'explore' | 'statistics'>('analyze');
   const [statistics, setStatistics] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -415,19 +416,24 @@ export default function AICulturalAnalysisSectionFixed({ className = '', languag
     } catch (error) {
       console.error('Search failed:', error);
       // Provide fallback search results
-      const fallbackResults: MacrobiusPassage[] = [
+      const fallbackResults: EnhancedMacrobiusPassage[] = [
         {
-          id: 'sat_1_1_1',
-          workType: 'Saturnalia',
-          bookNumber: 1,
-          chapterNumber: 1,
-          sectionNumber: 1,
-          latinText: 'Multa sunt, Macrobi, quae nos in hac vita delectant...',
-          difficulty: 'Intermediate',
-          culturalTheme: 'Philosophy',
-          modernRelevance: 'Demonstrates ancient approaches to learning and wisdom',
+          id: 1,
+          latin_text: 'Multa sunt, Macrobi, quae nos in hac vita delectant...',
+          work_type: 'Saturnalia',
+          book_number: 1,
+          chapter_number: 1,
+          section_number: 1,
+          cultural_theme: 'Philosophy',
+          modern_relevance: 'Demonstrates ancient approaches to learning and wisdom',
+          difficulty_level: 'intermediate',
+          source_reference: 'Sat. 1.1.1',
+          word_count: 50,
+          character_count: 200,
+          created_at: new Date().toISOString(),
+          keywords: ['wisdom', 'learning', 'life'],
           relevanceScore: 0.85,
-          keywords: ['wisdom', 'learning', 'life']
+          semanticEmbedding: []
         }
       ];
       setSearchResults(fallbackResults);
@@ -744,28 +750,28 @@ export default function AICulturalAnalysisSectionFixed({ className = '', languag
                         <div className="flex items-start justify-between mb-3">
                           <div>
                             <span className="text-sm font-medium text-blue-600">
-                              {passage.workType} {passage.bookNumber}.{passage.chapterNumber}.{passage.sectionNumber}
+                              {passage.work_type} {passage.book_number}.{passage.chapter_number}.{passage.section_number}
                             </span>
                             <span className={`ml-3 text-xs px-2 py-1 rounded-full ${
-                              passage.difficulty === 'Beginner' ? 'bg-green-100 text-green-700' :
-                              passage.difficulty === 'Intermediate' ? 'bg-blue-100 text-blue-700' :
-                              passage.difficulty === 'Advanced' ? 'bg-orange-100 text-orange-700' :
+                              passage.difficulty_level === 'beginner' ? 'bg-green-100 text-green-700' :
+                              passage.difficulty_level === 'intermediate' ? 'bg-blue-100 text-blue-700' :
+                              passage.difficulty_level === 'advanced' ? 'bg-orange-100 text-orange-700' :
                               'bg-red-100 text-red-700'
                             }`}>
-                              {passage.difficulty}
+                              {passage.difficulty_level}
                             </span>
                           </div>
                           <div className="text-right">
                             <div className="text-xs text-gray-500">Relevanz</div>
-                            <div className="text-sm font-medium">{Math.round(passage.relevanceScore * 100)}%</div>
+                            <div className="text-sm font-medium">{Math.round((passage.relevanceScore || 0) * 100)}%</div>
                           </div>
                         </div>
                         
-                        <p className="text-gray-800 mb-3 italic">"{passage.latinText}"</p>
-                        <p className="text-sm text-gray-600 mb-2">{passage.modernRelevance}</p>
+                        <p className="text-gray-800 mb-3 italic">"{passage.latin_text}"</p>
+                        <p className="text-sm text-gray-600 mb-2">{passage.modern_relevance}</p>
                         
                         <div className="flex flex-wrap gap-2">
-                          {passage.keywords.map((keyword, index) => (
+                          {passage.keywords?.map((keyword, index) => (
                             <span key={index} className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full">
                               {keyword}
                             </span>
