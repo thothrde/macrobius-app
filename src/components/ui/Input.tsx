@@ -1,7 +1,18 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 
-interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+// Apply comprehensive Omit pattern to resolve React/Framer Motion type conflicts
+// This excludes event handlers that have incompatible types between React and Framer Motion
+interface InputProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 
+  // Animation-related props that conflict with Framer Motion
+  'onAnimationStart' | 'onAnimationEnd' | 'onAnimationIteration' |
+  // Drag-related props that conflict with Framer Motion
+  'onDragStart' | 'onDragEnd' | 'onDrag' | 'onDragEnter' | 'onDragExit' | 'onDragLeave' | 'onDragOver' | 'onDrop' |
+  // Transition-related props that conflict with Framer Motion
+  'onTransitionStart' | 'onTransitionEnd' | 'onTransitionRun' | 'onTransitionCancel' |
+  // Pointer-related props that conflict with Framer Motion
+  'onPointerDown' | 'onPointerMove' | 'onPointerUp' | 'onPointerCancel' | 'onPointerEnter' | 'onPointerLeave' | 'onPointerOver' | 'onPointerOut'
+> {
   label?: string;
   error?: string;
   icon?: React.ReactNode;
