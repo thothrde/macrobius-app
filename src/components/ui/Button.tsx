@@ -2,9 +2,17 @@ import React from 'react';
 import { motion, MotionProps } from 'framer-motion';
 import { Loader2 } from 'lucide-react';
 
-// Exclude conflicting animation props from React's ButtonHTMLAttributes
+// Exclude all conflicting event handler props from React's ButtonHTMLAttributes
 interface ButtonProps extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 
-  'onAnimationStart' | 'onAnimationEnd' | 'onAnimationIteration'> {
+  // Animation-related props
+  'onAnimationStart' | 'onAnimationEnd' | 'onAnimationIteration' |
+  // Drag-related props
+  'onDragStart' | 'onDragEnd' | 'onDrag' | 'onDragEnter' | 'onDragExit' | 'onDragLeave' | 'onDragOver' | 'onDrop' |
+  // Transition-related props
+  'onTransitionStart' | 'onTransitionEnd' | 'onTransitionRun' | 'onTransitionCancel' |
+  // Pointer-related props that might conflict
+  'onPointerDown' | 'onPointerMove' | 'onPointerUp' | 'onPointerCancel' | 'onPointerEnter' | 'onPointerLeave' | 'onPointerOver' | 'onPointerOut'
+> {
   variant?: 'primary' | 'secondary' | 'ghost' | 'outline';
   size?: 'sm' | 'md' | 'lg';
   loading?: boolean;
@@ -16,6 +24,14 @@ interface ButtonProps extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>
 interface MotionButtonProps extends ButtonProps {
   whileHover?: MotionProps['whileHover'];
   whileTap?: MotionProps['whileTap'];
+  whileDrag?: MotionProps['whileDrag'];
+  drag?: MotionProps['drag'];
+  dragConstraints?: MotionProps['dragConstraints'];
+  dragElastic?: MotionProps['dragElastic'];
+  dragMomentum?: MotionProps['dragMomentum'];
+  onDragStart?: MotionProps['onDragStart'];
+  onDragEnd?: MotionProps['onDragEnd'];
+  onDrag?: MotionProps['onDrag'];
 }
 
 const Button = React.forwardRef<HTMLButtonElement, MotionButtonProps>(
@@ -30,6 +46,14 @@ const Button = React.forwardRef<HTMLButtonElement, MotionButtonProps>(
     iconPosition = 'left',
     whileHover,
     whileTap,
+    whileDrag,
+    drag,
+    dragConstraints,
+    dragElastic,
+    dragMomentum,
+    onDragStart,
+    onDragEnd,
+    onDrag,
     ...props
   }, ref) => {
     const baseClasses = 'inline-flex items-center justify-center rounded-lg font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed';
@@ -49,18 +73,31 @@ const Button = React.forwardRef<HTMLButtonElement, MotionButtonProps>(
     
     const classes = `${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${className}`;
     
-    // Default motion props with proper typing
-    const defaultMotionProps = {
+    // Collect all Motion-specific props
+    const motionProps = {
       whileHover: whileHover || (disabled || loading ? undefined : { scale: 1.02 }),
-      whileTap: whileTap || (disabled || loading ? undefined : { scale: 0.98 })
+      whileTap: whileTap || (disabled || loading ? undefined : { scale: 0.98 }),
+      whileDrag,
+      drag,
+      dragConstraints,
+      dragElastic,
+      dragMomentum,
+      onDragStart,
+      onDragEnd,
+      onDrag
     };
+    
+    // Filter out undefined values
+    const filteredMotionProps = Object.fromEntries(
+      Object.entries(motionProps).filter(([_, value]) => value !== undefined)
+    );
     
     return (
       <motion.button
         ref={ref}
         className={classes}
         disabled={disabled || loading}
-        {...defaultMotionProps}
+        {...filteredMotionProps}
         {...props}
       >
         {loading && (
