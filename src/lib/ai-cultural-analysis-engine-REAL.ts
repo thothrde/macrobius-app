@@ -948,13 +948,18 @@ class RealAICulturalAnalysisEngine {
     return Promise.resolve([]);
   }
 
+  /**
+   * EXTRACT SEMANTIC CONCEPTS FROM PASSAGES
+   * FIXED: Error #47 - Type Safety Error
+   * Add explicit type annotation to forEach parameter
+   */
   private extractSemanticConcepts(passages: any[]): string[] {
     const concepts = new Set<string>();
     passages.forEach(passage => {
       // Extract concepts from latin_text using snake_case property names
       if (passage.latin_text) {
         const words = passage.latin_text.toLowerCase().match(/\b[a-z]+\b/g) || [];
-        words.slice(0, 3).forEach(word => concepts.add(word));
+        words.slice(0, 3).forEach((word: string) => concepts.add(word));
       }
     });
     return Array.from(concepts).slice(0, 10);
