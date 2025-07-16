@@ -19,6 +19,18 @@ export interface CulturalTheme {
   semanticVector?: number[];
 }
 
+// Import the Oracle Cloud CulturalTheme interface for transformation
+type OracleCloudCulturalTheme = {
+  id: string;
+  name: string;
+  description: string;
+  examples: string[];
+  related_themes: string[];
+  modern_applications: string[];
+  passage_count: number;
+  educational_level: string;
+};
+
 // Updated interface to match enhanced-api-client-with-fallback.ts
 export interface EnhancedMacrobiusPassage extends MacrobiusPassage {
   keywords?: string[];
@@ -98,6 +110,49 @@ class RealAICulturalAnalysisEngine {
   private cache = new Map<string, any>();
   private culturalThemesCache: Record<string, CulturalTheme[]> = {};
   private passagesCache: EnhancedMacrobiusPassage[] = [];
+
+  /**
+   * TRANSFORM ORACLE CLOUD THEME FORMAT TO LOCAL ENGINE FORMAT
+   * Converts Oracle Cloud CulturalTheme to local CulturalTheme interface
+   */
+  private transformOracleThemeToLocal(oracleTheme: OracleCloudCulturalTheme): CulturalTheme {
+    // Generate color based on theme ID for consistency
+    const themeColors: Record<string, string> = {
+      'philosophy': '#3B82F6',
+      'social-customs': '#EF4444', 
+      'religion': '#8B5CF6',
+      'education': '#10B981',
+      'literature': '#F59E0B',
+      'roman-history': '#DC2626',
+      'astronomy': '#6366F1',
+      'law': '#059669',
+      'general': '#6B7280'
+    };
+    
+    // Calculate prevalence based on passage count (assuming total ~1401 passages)
+    const prevalence = oracleTheme.passage_count / 1401;
+    
+    // Extract keywords from examples, fallback to related themes
+    const keywords = oracleTheme.examples.length > 0 
+      ? oracleTheme.examples.slice(0, 5)
+      : oracleTheme.related_themes.slice(0, 5);
+    
+    // Use first modern application as primary modern relevance
+    const modernRelevance = oracleTheme.modern_applications.length > 0
+      ? oracleTheme.modern_applications[0]
+      : 'Modern applications in cultural and educational contexts';
+    
+    return {
+      id: oracleTheme.id,
+      name: oracleTheme.name,
+      description: oracleTheme.description,
+      color: themeColors[oracleTheme.id] || '#6B7280', // Default gray for unknown themes
+      passages: oracleTheme.passage_count,
+      prevalence: Math.round(prevalence * 100) / 100, // Round to 2 decimal places
+      modernRelevance,
+      keywords
+    };
+  }
 
   /**
    * CORE AI ANALYSIS METHOD
@@ -433,6 +488,8 @@ class RealAICulturalAnalysisEngine {
 
   /**
    * GET CULTURAL THEMES WITH ORACLE CLOUD DATA
+   * FIXED: Error #46 - Interface Conflict
+   * Transform Oracle Cloud CulturalTheme format to local engine format
    */
   async getCulturalThemes(language: string = 'DE'): Promise<CulturalTheme[]> {
     if (this.culturalThemesCache[language]) {
@@ -443,8 +500,13 @@ class RealAICulturalAnalysisEngine {
       const response = await MacrobiusAPI.cultural.getThemes();
       
       if (response.status === 'success' && response.data) {
-        this.culturalThemesCache[language] = response.data.themes;
-        return response.data.themes;
+        // Transform Oracle Cloud themes to local format
+        const transformedThemes = response.data.themes.map((oracleTheme: any) => 
+          this.transformOracleThemeToLocal(oracleTheme as OracleCloudCulturalTheme)
+        );
+        
+        this.culturalThemesCache[language] = transformedThemes;
+        return transformedThemes;
       }
     } catch (error) {
       console.warn('Failed to load themes from Oracle Cloud:', error);
