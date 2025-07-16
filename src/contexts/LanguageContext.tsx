@@ -603,11 +603,16 @@ function getTranslation(key: string, language: Language = 'DE'): string {
       if (value && typeof value === 'object' && k in value) {
         value = value[k];
       } else {
-        // Translation not found - try German as fallback, then English
-        if (language !== 'DE') {
-          return getTranslation(key, 'DE');
-        } else if (language !== 'EN') {
+        // ✅ FIXED LOGIC: Proper language fallback hierarchy
+        if (language === 'DE') {
+          // If German fails, try English as fallback
           return getTranslation(key, 'EN');
+        } else if (language === 'EN') {
+          // If English fails, try Latin as fallback
+          return getTranslation(key, 'LA');
+        } else if (language === 'LA') {
+          // If Latin fails, try German as final fallback
+          return getTranslation(key, 'DE');
         }
         // Don't log warnings during build to avoid console spam
         if (typeof window !== 'undefined') {
