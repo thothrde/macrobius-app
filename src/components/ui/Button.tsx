@@ -1,8 +1,10 @@
 import React from 'react';
-import { motion } from 'framer-motion';
+import { motion, MotionProps } from 'framer-motion';
 import { Loader2 } from 'lucide-react';
 
-interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+// Exclude conflicting animation props from React's ButtonHTMLAttributes
+interface ButtonProps extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 
+  'onAnimationStart' | 'onAnimationEnd' | 'onAnimationIteration'> {
   variant?: 'primary' | 'secondary' | 'ghost' | 'outline';
   size?: 'sm' | 'md' | 'lg';
   loading?: boolean;
@@ -10,7 +12,13 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   iconPosition?: 'left' | 'right';
 }
 
-const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
+// Motion-specific props that are safe to use with Framer Motion
+interface MotionButtonProps extends ButtonProps {
+  whileHover?: MotionProps['whileHover'];
+  whileTap?: MotionProps['whileTap'];
+}
+
+const Button = React.forwardRef<HTMLButtonElement, MotionButtonProps>(
   ({
     className = '',
     variant = 'primary',
@@ -20,6 +28,8 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     children,
     icon,
     iconPosition = 'left',
+    whileHover,
+    whileTap,
     ...props
   }, ref) => {
     const baseClasses = 'inline-flex items-center justify-center rounded-lg font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed';
@@ -39,13 +49,18 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     
     const classes = `${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${className}`;
     
+    // Default motion props with proper typing
+    const defaultMotionProps = {
+      whileHover: whileHover || (disabled || loading ? undefined : { scale: 1.02 }),
+      whileTap: whileTap || (disabled || loading ? undefined : { scale: 0.98 })
+    };
+    
     return (
       <motion.button
         ref={ref}
         className={classes}
         disabled={disabled || loading}
-        whileHover={{ scale: disabled || loading ? 1 : 1.02 }}
-        whileTap={{ scale: disabled || loading ? 1 : 0.98 }}
+        {...defaultMotionProps}
         {...props}
       >
         {loading && (
