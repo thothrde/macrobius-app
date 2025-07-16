@@ -232,13 +232,13 @@ class RealAITutoringEngine {
     });
 
     return {
-      intent: response.data.intent, // question, answer, confusion, progress, etc.
-      entities: response.data.entities,
-      sentiment: response.data.sentiment,
-      difficultyLevel: response.data.difficulty_assessment,
-      knowledgeGaps: response.data.knowledge_gaps,
-      misconceptions: response.data.misconceptions,
-      learningIndicators: response.data.learning_indicators
+      intent: (response as any).data.intent, // question, answer, confusion, progress, etc.
+      entities: (response as any).data.entities,
+      sentiment: (response as any).data.sentiment,
+      difficultyLevel: (response as any).data.difficulty_assessment,
+      knowledgeGaps: (response as any).data.knowledge_gaps,
+      misconceptions: (response as any).data.misconceptions,
+      learningIndicators: (response as any).data.learning_indicators
     };
   }
 
@@ -268,14 +268,14 @@ class RealAITutoringEngine {
     });
 
     return {
-      message: response.data.message,
-      intent: response.data.intent,
-      confidence: response.data.confidence,
-      adaptations: response.data.adaptations,
-      suggestedExercises: response.data.exercises,
+      message: (response as any).data.message,
+      intent: (response as any).data.intent,
+      confidence: (response as any).data.confidence,
+      adaptations: (response as any).data.adaptations,
+      suggestedExercises: (response as any).data.exercises,
       resources: await this.getRelevantResources(session.currentTopic, analysis),
-      nextSteps: response.data.next_steps,
-      sessionContinuation: response.data.session_continuation
+      nextSteps: (response as any).data.next_steps,
+      sessionContinuation: (response as any).data.session_continuation
     };
   }
 
@@ -293,7 +293,7 @@ class RealAITutoringEngine {
       }
     });
 
-    return response.data.resources.map((resource: any) => ({
+    return (response as any).data.resources.map((resource: any) => ({
       type: resource.type,
       title: resource.title,
       content: resource.content,
@@ -362,9 +362,9 @@ class RealAITutoringEngine {
     });
     
     return {
-      shouldAdjust: response.data.should_adjust,
-      newLevel: response.data.recommended_level,
-      confidence: response.data.confidence
+      shouldAdjust: (response as any).data.should_adjust,
+      newLevel: (response as any).data.recommended_level,
+      confidence: (response as any).data.confidence
     };
   }
 
@@ -479,7 +479,7 @@ class RealAITutoringEngine {
     try {
       // Try to load existing profile from Oracle Cloud
       const response = await this.apiClient.request(`/api/students/${userId}/profile`);
-      const profile = response.data;
+      const profile = (response as any).data;
       this.studentProfiles.set(userId, profile);
       return profile;
     } catch (error) {
@@ -515,7 +515,7 @@ class RealAITutoringEngine {
       }
     });
     
-    return response.data.recommended_topic || 'Basic Latin Grammar';
+    return (response as any).data.recommended_topic || 'Basic Latin Grammar';
   }
 
   /**
@@ -532,7 +532,7 @@ class RealAITutoringEngine {
       }
     });
     
-    return response.data.objectives;
+    return (response as any).data.objectives;
   }
 
   /**
@@ -550,11 +550,11 @@ class RealAITutoringEngine {
     });
     
     return {
-      message: response.data.message,
+      message: (response as any).data.message,
       intent: 'teach',
       confidence: 0.9,
       adaptations: {},
-      nextSteps: response.data.next_steps,
+      nextSteps: (response as any).data.next_steps,
       sessionContinuation: {
         shouldContinue: true,
         suggestedDuration: 30 * 60 * 1000 // 30 minutes
@@ -596,10 +596,10 @@ class RealAITutoringEngine {
     this.activeSessions.delete(sessionId);
     
     return {
-      summary: response.data.summary,
+      summary: (response as any).data.summary,
       progress: session.sessionMetrics.progressMade,
-      recommendations: response.data.recommendations,
-      nextSessionTopic: response.data.next_topic
+      recommendations: (response as any).data.recommendations,
+      nextSessionTopic: (response as any).data.next_topic
     };
   }
 
