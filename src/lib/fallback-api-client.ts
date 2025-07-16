@@ -20,7 +20,7 @@ class FallbackMacrobiusApiClient {
   private async tryRequest<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
     try {
       const response = await fetch(`${this.baseURL}${endpoint}`, {
-        timeout: 5000,
+        signal: AbortSignal.timeout(5000),
         ...options,
         headers: {
           'Content-Type': 'application/json',
