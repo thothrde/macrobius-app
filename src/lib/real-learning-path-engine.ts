@@ -4,7 +4,7 @@
  * Creates personalized learning journeys using authentic Macrobius content and AI analysis
  */
 
-import { enhancedApiClient } from './enhanced-api-client-with-fallback';
+import { apiClient } from './enhanced-api-client-with-fallback';
 
 export interface LearningPath {
   id: string;
@@ -224,7 +224,7 @@ export interface PathGenRequest {
 
 class RealLearningPathEngine {
   private baseUrl: string;
-  private apiClient = enhancedApiClient;
+  private apiClient = apiClient;
   private learnerProfiles: Map<string, LearnerProfile> = new Map();
   private activePaths: Map<string, LearningPath> = new Map();
   private knowledgeGraph: KnowledgeGraph | null = null;
@@ -325,21 +325,26 @@ class RealLearningPathEngine {
    * Analyze learner's current knowledge state using AI
    */
   private async analyzeKnowledgeState(profile: LearnerProfile) {
-    const response = await this.apiClient.post('/api/learning-paths/analyze-knowledge', {
-      userId: profile.userId,
-      masteredConcepts: profile.knowledgeState.masteredConcepts,
-      knowledgeGaps: profile.knowledgeState.knowledgeGaps,
-      learningHistory: profile.knowledgeState.learningConcepts,
-      cognitiveProfile: profile.cognitiveProfile
+    const response = await this.apiClient.request('/api/learning-paths/analyze-knowledge', {
+      method: 'POST',
+      body: {
+        userId: profile.userId,
+        masteredConcepts: profile.knowledgeState.masteredConcepts,
+        knowledgeGaps: profile.knowledgeState.knowledgeGaps,
+        learningHistory: profile.knowledgeState.learningConcepts,
+        cognitiveProfile: profile.cognitiveProfile
+      }
     });
     
+    const responseData = (response as any).data;
+    
     return {
-      strengthAreas: response.data.strength_areas,
-      weaknessAreas: response.data.weakness_areas,
-      readinessLevel: response.data.readiness_level,
-      optimalStartingPoint: response.data.optimal_starting_point,
-      learningCapacity: response.data.learning_capacity,
-      recommendedPace: response.data.recommended_pace
+      strengthAreas: responseData.strength_areas,
+      weaknessAreas: responseData.weakness_areas,
+      readinessLevel: responseData.readiness_level,
+      optimalStartingPoint: responseData.optimal_starting_point,
+      learningCapacity: responseData.learning_capacity,
+      recommendedPace: responseData.recommended_pace
     };
   }
 
@@ -347,26 +352,31 @@ class RealLearningPathEngine {
    * Generate optimal learning sequence using knowledge graph
    */
   private async generateOptimalSequence(request: PathGenRequest, profile: LearnerProfile, analysis: any) {
-    const response = await this.apiClient.post('/api/learning-paths/generate-sequence', {
-      goal: request.goal,
-      timeframe: request.timeframe,
-      intensity: request.intensity,
-      focusAreas: request.focusAreas,
-      avoidTopics: request.avoidTopics,
-      currentLevel: request.currentLevel,
-      knowledgeAnalysis: analysis,
-      cognitiveProfile: profile.cognitiveProfile,
-      motivationalProfile: profile.motivationalProfile,
-      culturalInterests: profile.culturalInterests,
-      knowledgeGraph: this.knowledgeGraph
+    const response = await this.apiClient.request('/api/learning-paths/generate-sequence', {
+      method: 'POST',
+      body: {
+        goal: request.goal,
+        timeframe: request.timeframe,
+        intensity: request.intensity,
+        focusAreas: request.focusAreas,
+        avoidTopics: request.avoidTopics,
+        currentLevel: request.currentLevel,
+        knowledgeAnalysis: analysis,
+        cognitiveProfile: profile.cognitiveProfile,
+        motivationalProfile: profile.motivationalProfile,
+        culturalInterests: profile.culturalInterests,
+        knowledgeGraph: this.knowledgeGraph
+      }
     });
     
+    const responseData = (response as any).data;
+    
     return {
-      conceptSequence: response.data.concept_sequence,
-      difficultyProgression: response.data.difficulty_progression,
-      timeAllocation: response.data.time_allocation,
-      branchingPoints: response.data.branching_points,
-      adaptiveParameters: response.data.adaptive_parameters
+      conceptSequence: responseData.concept_sequence,
+      difficultyProgression: responseData.difficulty_progression,
+      timeAllocation: responseData.time_allocation,
+      branchingPoints: responseData.branching_points,
+      adaptiveParameters: responseData.adaptive_parameters
     };
   }
 
@@ -401,14 +411,19 @@ class RealLearningPathEngine {
    * Create a single milestone with activities
    */
   private async createSingleMilestone(params: any): Promise<Milestone> {
-    const response = await this.apiClient.post('/api/learning-paths/create-milestone', {
-      concept: params.concept,
-      difficulty: params.difficulty,
-      timeAllocation: params.timeAllocation,
-      learnerProfile: params.profile,
-      culturalPreferences: params.request.culturalPreferences,
-      adaptiveFeatures: params.request.adaptiveFeatures
+    const response = await this.apiClient.request('/api/learning-paths/create-milestone', {
+      method: 'POST',
+      body: {
+        concept: params.concept,
+        difficulty: params.difficulty,
+        timeAllocation: params.timeAllocation,
+        learnerProfile: params.profile,
+        culturalPreferences: params.request.culturalPreferences,
+        adaptiveFeatures: params.request.adaptiveFeatures
+      }
     });
+    
+    const responseData = (response as any).data;
     
     // Generate activities for this milestone
     const activities = await this.generateMilestoneActivities({
@@ -427,16 +442,16 @@ class RealLearningPathEngine {
     
     return {
       id: `milestone_${params.concept}_${Date.now()}`,
-      title: response.data.title,
-      description: response.data.description,
+      title: responseData.title,
+      description: responseData.description,
       order: params.order,
       difficulty: params.difficulty,
       estimatedTime: params.timeAllocation,
       prerequisites: params.prerequisites,
-      learningObjectives: response.data.learning_objectives,
+      learningObjectives: responseData.learning_objectives,
       activities,
       assessments,
-      culturalConnections: response.data.cultural_connections,
+      culturalConnections: responseData.cultural_connections,
       completionCriteria: {
         minimumScore: 0.7,
         requiredActivities: Math.ceil(activities.length * 0.8),
@@ -457,17 +472,22 @@ class RealLearningPathEngine {
    * Generate activities for milestone using authentic content
    */
   private async generateMilestoneActivities(params: any): Promise<LearningActivity[]> {
-    const response = await this.apiClient.post('/api/learning-paths/generate-activities', {
-      concept: params.concept,
-      difficulty: params.difficulty,
-      timeAllocation: params.timeAllocation,
-      learnerProfile: params.profile,
-      activityTypes: ['reading', 'exercise', 'practice', 'analysis'],
-      contentSource: 'macrobius_corpus',
-      includeAuthentic: true
+    const response = await this.apiClient.request('/api/learning-paths/generate-activities', {
+      method: 'POST',
+      body: {
+        concept: params.concept,
+        difficulty: params.difficulty,
+        timeAllocation: params.timeAllocation,
+        learnerProfile: params.profile,
+        activityTypes: ['reading', 'exercise', 'practice', 'analysis'],
+        contentSource: 'macrobius_corpus',
+        includeAuthentic: true
+      }
     });
     
-    return response.data.activities.map((activity: any, index: number) => ({
+    const responseData = (response as any).data;
+    
+    return responseData.activities.map((activity: any, index: number) => ({
       id: `activity_${params.concept}_${index}`,
       type: activity.type,
       title: activity.title,
@@ -506,17 +526,22 @@ class RealLearningPathEngine {
    * Generate assessments for milestone
    */
   private async generateMilestoneAssessments(params: any): Promise<Assessment[]> {
-    const response = await this.apiClient.post('/api/learning-paths/generate-assessments', {
-      concept: params.concept,
-      difficulty: params.difficulty,
-      activities: params.activities.map((a: any) => ({
-        type: a.type,
-        objectives: a.learningObjectives
-      })),
-      assessmentTypes: ['formative', 'summative']
+    const response = await this.apiClient.request('/api/learning-paths/generate-assessments', {
+      method: 'POST',
+      body: {
+        concept: params.concept,
+        difficulty: params.difficulty,
+        activities: params.activities.map((a: any) => ({
+          type: a.type,
+          objectives: a.learningObjectives
+        })),
+        assessmentTypes: ['formative', 'summative']
+      }
     });
     
-    return response.data.assessments.map((assessment: any) => ({
+    const responseData = (response as any).data;
+    
+    return responseData.assessments.map((assessment: any) => ({
       id: `assessment_${params.concept}_${assessment.type}`,
       type: assessment.type,
       title: assessment.title,
@@ -638,22 +663,27 @@ class RealLearningPathEngine {
       const profile = await this.getOrCreateLearnerProfile(userId);
       const activePaths = Array.from(this.activePaths.values()).filter(p => p.userId === userId);
       
-      const response = await this.apiClient.post('/api/learning-paths/personalized-recommendations', {
-        userId,
-        learnerProfile: profile,
-        activePaths: activePaths.map(p => ({
-          id: p.id,
-          progress: p.progress,
-          currentMilestone: p.milestones[p.progress.currentMilestone]
-        })),
-        knowledgeGraph: this.knowledgeGraph
+      const response = await this.apiClient.request('/api/learning-paths/personalized-recommendations', {
+        method: 'POST',
+        body: {
+          userId,
+          learnerProfile: profile,
+          activePaths: activePaths.map(p => ({
+            id: p.id,
+            progress: p.progress,
+            currentMilestone: p.milestones[p.progress.currentMilestone]
+          })),
+          knowledgeGraph: this.knowledgeGraph
+        }
       });
       
+      const responseData = (response as any).data;
+      
       return {
-        studyPlan: response.data.study_plan,
-        priorityTopics: response.data.priority_topics,
-        recommendedActivities: response.data.recommended_activities,
-        motivationalSupport: response.data.motivational_support
+        studyPlan: responseData.study_plan,
+        priorityTopics: responseData.priority_topics,
+        recommendedActivities: responseData.recommended_activities,
+        motivationalSupport: responseData.motivational_support
       };
       
     } catch (error) {
@@ -664,13 +694,18 @@ class RealLearningPathEngine {
 
   // Helper methods
   private async loadKnowledgeGraph(): Promise<KnowledgeGraph> {
-    const response = await this.apiClient.get('/api/learning-paths/knowledge-graph');
-    return response.data;
+    const response = await this.apiClient.request('/api/learning-paths/knowledge-graph', {
+      method: 'GET'
+    });
+    return (response as any).data;
   }
   
   private async loadPathTemplates() {
-    const response = await this.apiClient.get('/api/learning-paths/templates');
-    response.data.templates.forEach((template: any) => {
+    const response = await this.apiClient.request('/api/learning-paths/templates', {
+      method: 'GET'
+    });
+    const responseData = (response as any).data;
+    responseData.templates.forEach((template: any) => {
       this.pathTemplates.set(template.id, template);
     });
   }
@@ -681,8 +716,10 @@ class RealLearningPathEngine {
     }
     
     try {
-      const response = await this.apiClient.get(`/api/learning-paths/learner-profile/${userId}`);
-      const profile = response.data;
+      const response = await this.apiClient.request(`/api/learning-paths/learner-profile/${userId}`, {
+        method: 'GET'
+      });
+      const profile = (response as any).data;
       this.learnerProfiles.set(userId, profile);
       return profile;
     } catch (error) {
@@ -801,7 +838,10 @@ class RealLearningPathEngine {
   
   private async saveLearningPath(path: LearningPath) {
     try {
-      await this.apiClient.post('/api/learning-paths/save', path);
+      await this.apiClient.request('/api/learning-paths/save', {
+        method: 'POST',
+        body: path
+      });
     } catch (error) {
       console.error('Failed to save learning path:', error);
     }
