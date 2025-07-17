@@ -209,8 +209,9 @@ class RealRAGSystemEngine {
 
   /**
    * Extract cultural insights from passages
+   * Fixed: Changed language parameter type to match generateFallbackInsights signature
    */
-  private async extractCulturalInsights(passages: any[], language: string): Promise<string[]> {
+  private async extractCulturalInsights(passages: any[], language: 'de' | 'en' | 'la'): Promise<string[]> {
     const themes = Array.from(new Set(passages.map(p => p.culturalTheme)));
     const insights: string[] = [];
     
