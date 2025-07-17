@@ -4,7 +4,7 @@
  * Provides authentic grammatical parsing and exercise generation from 1,401 passages
  */
 
-import { enhancedApiClient } from './enhanced-api-client-with-fallback';
+import { apiClient } from './enhanced-api-client-with-fallback';
 
 export interface LatinGrammarAnalysis {
   word: string;
@@ -178,7 +178,7 @@ export interface ExerciseGenerationRequest {
 
 class RealGrammarAnalysisEngine {
   private baseUrl: string;
-  private apiClient = enhancedApiClient;
+  private apiClient = apiClient;
   private userProgress: Map<string, GrammarProgress> = new Map();
   private lessonsCache: Map<string, GrammarLesson> = new Map();
   private analysisCache: Map<string, SentenceAnalysis> = new Map();
