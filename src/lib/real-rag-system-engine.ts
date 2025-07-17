@@ -373,7 +373,7 @@ class RealRAGSystemEngine {
   /**
    * Generate fallback cultural insights
    */
-  private generateFallbackInsights(passages: any[], language: string): string[] {
+  private generateFallbackInsights(passages: any[], language: 'de' | 'en' | 'la'): string[] {
     const themes = Array.from(new Set(passages.map(p => p.culturalTheme)));
     
     const insightTemplates = {
