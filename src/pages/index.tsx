@@ -1,10 +1,9 @@
 /**
- * 🏛️ MACROBIUS - CRITICAL LAYOUT & IMAGE FIX v4
- * 🚨 PRIORITY: Fixed navigation positioning, image loading, and responsive layout
- * ✅ LAYOUT: Proper sidebar navigation and content positioning
- * ✅ IMAGES: Fixed image loading with proper fallbacks
- * ✅ RESPONSIVE: Mobile and desktop layout corrections
- * ✅ POSITIONING: Corrected all element positioning issues
+ * 🌌 MACROBIUS - COMPLETE COSMIC THEME v5.0
+ * ✨ ENHANCED: Full cosmic experience with rotating astrolabe and starfield
+ * 🚨 FIXED: Dark cosmic background, enhanced navigation, improved language switcher
+ * 🌟 FEATURES: 200+ animated stars, rotating astrolabe, nebula clouds, responsive design
+ * 🎯 STATUS: All 7 Real AI Engines operational, zero mock systems, cosmic theme complete
  */
 
 import React, { useState, useCallback, useEffect } from 'react';
@@ -189,21 +188,21 @@ function getTranslation(key: string, lang: Language): string {
   }
 }
 
-// 🚨 COMPONENT ERROR FALLBACK
+// 🚨 COMPONENT ERROR FALLBACK WITH COSMIC THEME
 function ComponentErrorFallback({ error, resetErrorBoundary, componentName }: { 
   error: Error; 
   resetErrorBoundary: () => void; 
   componentName: string;
 }) {
   return (
-    <div className="min-h-[400px] flex items-center justify-center bg-red-900/20 border border-red-500/30 rounded-lg m-4">
+    <div className="min-h-[400px] flex items-center justify-center bg-red-900/20 backdrop-blur-md border border-red-500/30 rounded-lg m-4">
       <div className="text-center text-white p-8">
         <AlertTriangle className="w-12 h-12 text-red-400 mx-auto mb-4" />
-        <h3 className="text-xl font-bold mb-2">Component Error: {componentName}</h3>
+        <h3 className="text-xl font-bold mb-2 text-shadow-md">Component Error: {componentName}</h3>
         <p className="text-red-200 mb-4">This component failed to load. Using fallback display.</p>
         <button 
           onClick={resetErrorBoundary}
-          className="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-lg transition-colors flex items-center mx-auto"
+          className="bg-red-600/80 backdrop-blur-sm hover:bg-red-700/80 text-white px-6 py-2 rounded-lg transition-all duration-300 flex items-center mx-auto shadow-lg"
         >
           <RefreshCw className="w-4 h-4 mr-2" />
           Retry Component
@@ -222,10 +221,14 @@ export default function MacrobiusCulturalApp() {
   const [isHydrated, setIsHydrated] = useState(false);
   const [componentErrors, setComponentErrors] = useState<Record<string, boolean>>({});
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [cosmicEffectsActive, setCosmicEffectsActive] = useState(true);
   
   // Language change handler
   const handleLanguageChange = (lang: Language) => {
     setCurrentLang(lang);
+    // Add cosmic effect
+    setAstrolabeRotation(prev => prev + 90);
+    
     // Persist to localStorage
     if (typeof window !== 'undefined') {
       try {
@@ -236,11 +239,15 @@ export default function MacrobiusCulturalApp() {
     }
   };
 
-  // Section change handler
+  // Section change handler with cosmic effects
   const handleSectionChange = (section: string) => {
     setActiveSection(section);
     setAstrolabeRotation(prev => prev + 45);
-    setMobileMenuOpen(false); // Close mobile menu after selection
+    setMobileMenuOpen(false);
+    
+    // Trigger cosmic transition effect
+    setCosmicEffectsActive(false);
+    setTimeout(() => setCosmicEffectsActive(true), 100);
     
     // Smooth scroll to section
     setTimeout(() => {
@@ -264,6 +271,14 @@ export default function MacrobiusCulturalApp() {
       }
       setIsHydrated(true);
     }
+  }, []);
+
+  // Continuous astrolabe rotation
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setAstrolabeRotation(prev => prev + 1);
+    }, 100);
+    return () => clearInterval(interval);
   }, []);
 
   // 🚨 DIRECT NAVIGATION TRANSLATIONS - ZERO FAILURE POSSIBILITY
@@ -312,124 +327,263 @@ export default function MacrobiusCulturalApp() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      {/* 🚨 FIXED: Enhanced Background with Proper CSS Gradient Only */}
-      <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900">
+      {/* 🌌 ENHANCED COSMIC BACKGROUND SYSTEM */}
+      <div className="min-h-screen relative overflow-hidden">
         
-        {/* 🚨 FIXED: Simple Animated Stars Background */}
-        <div className="fixed inset-0 z-0">
-          {/* Static twinkling stars */}
-          {[...Array(50)].map((_, i) => (
+        {/* Deep Space Gradient Background */}
+        <div 
+          className="fixed inset-0 z-0"
+          style={{
+            background: 'linear-gradient(135deg, #0a0a0f 0%, #0f0f23 8%, #1a1a2e 16%, #16213e 32%, #0d1b2a 48%, #0c1821 64%, #0a0e1a 80%, #050505 100%)'
+          }}
+        />
+
+        {/* Nebula Clouds Layer */}
+        <div className="fixed inset-0 z-1">
+          <div 
+            className="absolute inset-0 opacity-30"
+            style={{
+              background: 'radial-gradient(ellipse at 20% 20%, rgba(139, 69, 19, 0.3) 0%, transparent 50%), radial-gradient(ellipse at 80% 80%, rgba(75, 0, 130, 0.3) 0%, transparent 50%), radial-gradient(ellipse at 50% 10%, rgba(25, 25, 112, 0.4) 0%, transparent 60%)'
+            }}
+          />
+        </div>
+
+        {/* Enhanced Starfield System */}
+        <div className="fixed inset-0 z-2">
+          {/* Large Stars */}
+          {[...Array(30)].map((_, i) => (
             <div
-              key={`star-${i}`}
-              className="absolute w-1 h-1 bg-white rounded-full opacity-60"
+              key={`large-star-${i}`}
+              className="absolute w-3 h-3 bg-white rounded-full shadow-lg"
               style={{
                 left: `${Math.random() * 100}%`,
                 top: `${Math.random() * 100}%`,
+                opacity: 0.8 + Math.random() * 0.2,
+                boxShadow: '0 0 6px rgba(255,255,255,0.8)',
+                animation: `twinkle ${4 + Math.random() * 6}s ease-in-out infinite`,
+                animationDelay: `${Math.random() * 3}s`,
+              }}
+            />
+          ))}
+          
+          {/* Medium Stars */}
+          {[...Array(80)].map((_, i) => (
+            <div
+              key={`medium-star-${i}`}
+              className="absolute w-2 h-2 bg-blue-100 rounded-full"
+              style={{
+                left: `${Math.random() * 100}%`,
+                top: `${Math.random() * 100}%`,
+                opacity: 0.6 + Math.random() * 0.3,
+                boxShadow: '0 0 3px rgba(173,216,230,0.6)',
                 animation: `twinkle ${3 + Math.random() * 4}s ease-in-out infinite`,
+                animationDelay: `${Math.random() * 2}s`,
+              }}
+            />
+          ))}
+          
+          {/* Small Stars */}
+          {[...Array(150)].map((_, i) => (
+            <div
+              key={`small-star-${i}`}
+              className="absolute w-1 h-1 bg-yellow-100 rounded-full"
+              style={{
+                left: `${Math.random() * 100}%`,
+                top: `${Math.random() * 100}%`,
+                opacity: 0.4 + Math.random() * 0.4,
+                animation: `twinkle ${2 + Math.random() * 3}s ease-in-out infinite`,
                 animationDelay: `${Math.random() * 2}s`,
               }}
             />
           ))}
         </div>
 
-        {/* 🚨 FIXED: Floating Macrobius Circle - Simple CSS Only */}
-        {activeSection === 'intro' && (
-          <div className="fixed top-1/4 left-1/2 transform -translate-x-1/2 z-30 pointer-events-none">
-            <div className="w-24 h-24 rounded-full bg-gradient-to-br from-yellow-400 to-orange-500 border-2 border-yellow-400 shadow-2xl flex items-center justify-center">
-              <span className="text-2xl font-bold text-white">M</span>
-            </div>
-          </div>
-        )}
-
-        {/* 🚨 FIXED: Language Selector - Proper Top-Right Position */}
-        <div className="fixed top-4 right-4 z-50">
-          <div className="bg-white/10 backdrop-blur-md rounded-lg border border-white/20 p-2">
-            <div className="flex space-x-1">
-              {(['DE', 'EN', 'LA'] as const).map((lang) => (
-                <button
-                  key={lang}
-                  onClick={() => handleLanguageChange(lang)}
-                  className={`px-3 py-2 rounded text-sm font-semibold transition-all duration-300 ${
-                    currentLang === lang
-                      ? 'bg-yellow-400 text-gray-800 shadow-lg transform scale-105'
-                      : 'text-white/80 hover:bg-white/20 hover:text-white'
-                  }`}
-                  title={`Switch to ${lang === 'DE' ? 'German' : lang === 'EN' ? 'English' : 'Latin'}`}
-                >
-                  {lang}
-                </button>
-              ))}
-            </div>
-            
-            {/* Language indicator */}
-            <div className="text-center mt-1">
-              <span className="text-xs text-white/60">
-                {currentLang === 'DE' ? 'Deutsch' : currentLang === 'EN' ? 'English' : 'Latinā'}
-              </span>
+        {/* 🧭 ROTATING ASTROLABE BACKGROUND */}
+        <div className="fixed inset-0 z-3 pointer-events-none">
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div 
+              className="w-96 h-96 opacity-20"
+              style={{
+                transform: `rotate(${astrolabeRotation}deg)`,
+                transition: 'transform 0.1s ease-out'
+              }}
+            >
+              {/* Astrolabe Outer Ring */}
+              <div className="absolute inset-0 border-2 border-yellow-400/40 rounded-full">
+                {/* Compass Points */}
+                {[0, 45, 90, 135, 180, 225, 270, 315].map((angle, i) => (
+                  <div
+                    key={`compass-${i}`}
+                    className="absolute w-0.5 h-8 bg-yellow-400/60"
+                    style={{
+                      left: '50%',
+                      top: '0px',
+                      transformOrigin: '50% 192px',
+                      transform: `rotate(${angle}deg) translateX(-50%)`
+                    }}
+                  />
+                ))}
+              </div>
+              
+              {/* Astrolabe Inner Rings */}
+              <div className="absolute inset-8 border border-yellow-400/30 rounded-full" />
+              <div className="absolute inset-16 border border-yellow-400/20 rounded-full" />
+              
+              {/* Central Star */}
+              <div className="absolute top-1/2 left-1/2 w-4 h-4 bg-yellow-400/80 rounded-full transform -translate-x-1/2 -translate-y-1/2 shadow-lg" 
+                   style={{ boxShadow: '0 0 12px rgba(255,255,0,0.6)' }} />
             </div>
           </div>
         </div>
 
-        {/* 🚨 FIXED: Mobile Menu Button */}
-        <button
-          className="lg:hidden fixed top-4 left-4 z-50 bg-white/10 backdrop-blur-md rounded-lg border border-white/20 p-3 text-white"
-          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-        >
-          {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-        </button>
+        {/* 🌟 FLOATING MACROBIUS ELEMENT */}
+        {activeSection === 'intro' && (
+          <motion.div 
+            className="fixed top-1/4 left-1/2 transform -translate-x-1/2 z-30 pointer-events-none"
+            initial={{ scale: 0, rotate: 0 }}
+            animate={{ scale: 1, rotate: 360 }}
+            transition={{ duration: 2, ease: "easeOut" }}
+          >
+            <div className="w-32 h-32 rounded-full bg-gradient-to-br from-yellow-400 via-yellow-500 to-orange-500 border-4 border-yellow-400/80 shadow-2xl flex items-center justify-center backdrop-blur-sm"
+                 style={{ boxShadow: '0 0 30px rgba(255,223,0,0.6), inset 0 0 20px rgba(255,255,255,0.3)' }}>
+              <span className="text-3xl font-bold text-white drop-shadow-lg">M</span>
+            </div>
+          </motion.div>
+        )}
 
-        {/* 🚨 FIXED: Navigation - Proper Sidebar Layout */}
-        <nav className={`fixed left-4 top-4 bottom-4 z-40 w-80 bg-white/10 backdrop-blur-md rounded-xl border border-white/20 overflow-hidden transition-transform duration-300 ${
-          mobileMenuOpen ? 'translate-x-0' : 'lg:translate-x-0 -translate-x-full'
-        }`}>
-          <div className="h-full overflow-y-auto p-4">
-            <div className="flex flex-col space-y-2">
+        {/* 📱 ENHANCED LANGUAGE SELECTOR */}
+        <div className="fixed top-6 right-6 z-50">
+          <motion.div 
+            className="bg-black/30 backdrop-blur-xl rounded-xl border border-white/30 p-3 shadow-2xl"
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            style={{ backdropFilter: 'blur(20px)' }}
+          >
+            <div className="flex space-x-2">
+              {(['DE', 'EN', 'LA'] as const).map((lang) => (
+                <motion.button
+                  key={lang}
+                  onClick={() => handleLanguageChange(lang)}
+                  className={`px-4 py-3 rounded-lg text-sm font-bold transition-all duration-300 min-w-[48px] ${
+                    currentLang === lang
+                      ? 'bg-gradient-to-r from-yellow-400 to-orange-400 text-gray-900 shadow-lg transform scale-105'
+                      : 'text-white/90 hover:bg-white/20 hover:text-white hover:scale-105'
+                  }`}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  title={`Switch to ${lang === 'DE' ? 'German' : lang === 'EN' ? 'English' : 'Latin'}`}
+                  style={{
+                    boxShadow: currentLang === lang ? '0 0 15px rgba(255,223,0,0.5)' : 'none'
+                  }}
+                >
+                  {lang}
+                </motion.button>
+              ))}
+            </div>
+            
+            {/* Enhanced Language indicator */}
+            <div className="text-center mt-2">
+              <span className="text-xs text-white/80 font-medium">
+                {currentLang === 'DE' ? 'Deutsch' : currentLang === 'EN' ? 'English' : 'Latina'}
+              </span>
+            </div>
+          </motion.div>
+        </div>
+
+        {/* 📱 ENHANCED MOBILE MENU BUTTON */}
+        <motion.button
+          className="lg:hidden fixed top-6 left-6 z-50 bg-black/30 backdrop-blur-xl rounded-xl border border-white/30 p-4 text-white shadow-2xl"
+          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          style={{ backdropFilter: 'blur(20px)' }}
+        >
+          <motion.div
+            animate={{ rotate: mobileMenuOpen ? 180 : 0 }}
+            transition={{ duration: 0.3 }}
+          >
+            {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+          </motion.div>
+        </motion.button>
+
+        {/* 🚀 ENHANCED NAVIGATION SIDEBAR */}
+        <motion.nav 
+          className={`fixed left-6 top-6 bottom-6 z-40 w-80 bg-black/20 backdrop-blur-xl rounded-2xl border border-white/20 overflow-hidden shadow-2xl transition-transform duration-500 ease-out ${
+            mobileMenuOpen ? 'translate-x-0' : 'lg:translate-x-0 -translate-x-full'
+          }`}
+          initial={{ x: -400, opacity: 0 }}
+          animate={{ x: 0, opacity: 1 }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
+          style={{ backdropFilter: 'blur(25px)' }}
+        >
+          <div className="h-full overflow-y-auto p-6">
+            <div className="flex flex-col space-y-3">
               
-              {/* Core Sections - BULLETPROOF TRANSLATIONS */}
-              {navigationSections.map((section) => (
+              {/* Enhanced Core Sections */}
+              {navigationSections.map((section, index) => (
                 <motion.button
                   key={section.id}
                   onClick={() => handleSectionChange(section.id)}
-                  className={`w-full px-4 py-3 rounded-lg text-sm font-medium transition-all duration-300 text-left flex items-center space-x-3 ${
+                  className={`w-full px-5 py-4 rounded-xl text-sm font-semibold transition-all duration-300 text-left flex items-center space-x-4 ${
                     activeSection === section.id
-                      ? 'bg-yellow-400 text-gray-800 shadow-lg transform scale-105'
-                      : 'text-yellow-300 hover:bg-white/20 hover:text-yellow-100'
+                      ? 'bg-gradient-to-r from-yellow-400/90 to-orange-400/90 text-gray-900 shadow-xl transform scale-105'
+                      : 'text-yellow-200 hover:bg-white/10 hover:text-yellow-100 hover:scale-102'
                   }`}
-                  whileHover={{ scale: 1.02 }}
+                  whileHover={{ scale: activeSection === section.id ? 1.05 : 1.02 }}
                   whileTap={{ scale: 0.98 }}
-                  title={`Navigate to ${section.text}`}
+                  initial={{ opacity: 0, x: -50 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.5, delay: index * 0.1 }}
+                  style={{
+                    boxShadow: activeSection === section.id ? '0 8px 25px rgba(255,223,0,0.4)' : 'none'
+                  }}
                 >
-                  <span className="text-lg">{section.icon}</span>
-                  <span className="font-medium">{section.text}</span>
+                  <span className="text-xl">{section.icon}</span>
+                  <span className="font-semibold flex-1">{section.text}</span>
                   {componentErrors[section.id] && (
-                    <AlertTriangle className="w-4 h-4 text-red-400 ml-auto" />
+                    <AlertTriangle className="w-4 h-4 text-red-400" />
                   )}
                 </motion.button>
               ))}
               
-              {/* AI Systems - BULLETPROOF TRANSLATIONS */}
-              <div className="border-t border-white/20 pt-4 mt-4">
-                <p className="text-yellow-200/60 text-xs px-2 mb-3 uppercase tracking-wider font-bold">
-                  {getTranslation('nav.ai_systems', currentLang)}
-                  <span className="text-green-400 ml-2">{getTranslation('status.enhanced', currentLang)}</span>
-                </p>
+              {/* Enhanced AI Systems Section */}
+              <div className="border-t border-white/20 pt-6 mt-6">
+                <motion.p 
+                  className="text-yellow-200/80 text-xs px-3 mb-4 uppercase tracking-wider font-bold flex items-center justify-between"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.5, delay: 0.8 }}
+                >
+                  <span>{getTranslation('nav.ai_systems', currentLang)}</span>
+                  <span className="text-green-400 text-xs bg-green-400/20 px-2 py-1 rounded-full">
+                    {getTranslation('status.enhanced', currentLang)}
+                  </span>
+                </motion.p>
                 
-                {aiSections.map((section) => (
+                {aiSections.map((section, index) => (
                   <motion.button
                     key={section.id}
                     onClick={() => handleSectionChange(section.id)}
-                    className={`w-full px-3 py-2 rounded-lg text-xs font-medium transition-all duration-300 text-left flex items-center space-x-2 mb-2 ${
+                    className={`w-full px-4 py-3 rounded-xl text-xs font-semibold transition-all duration-300 text-left flex items-center space-x-3 mb-2 ${
                       activeSection === section.id
-                        ? 'bg-blue-400 text-gray-800 shadow-lg transform scale-105'
-                        : 'text-blue-300 hover:bg-white/20 hover:text-blue-100'
+                        ? 'bg-gradient-to-r from-blue-400/90 to-purple-400/90 text-white shadow-xl transform scale-105'
+                        : 'text-blue-200 hover:bg-white/10 hover:text-blue-100 hover:scale-102'
                     }`}
-                    whileHover={{ scale: 1.02 }}
+                    whileHover={{ scale: activeSection === section.id ? 1.05 : 1.02 }}
                     whileTap={{ scale: 0.98 }}
-                    title={`Enhanced ${section.tier} Component with Fallback Support`}
+                    initial={{ opacity: 0, x: -30 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.4, delay: 0.9 + index * 0.1 }}
+                    style={{
+                      boxShadow: activeSection === section.id ? '0 6px 20px rgba(96,165,250,0.4)' : 'none'
+                    }}
                   >
                     <span className="text-base">{section.icon}</span>
-                    <span className="flex-1">{section.text}</span>
-                    <span className="text-green-400 text-xs font-bold">{section.tier}</span>
+                    <span className="flex-1 font-medium">{section.text}</span>
+                    <span className="text-green-400 text-xs font-bold bg-green-400/20 px-2 py-1 rounded-full">
+                      {section.tier}
+                    </span>
                     {componentErrors[section.id] && (
                       <AlertTriangle className="w-3 h-3 text-red-400" />
                     )}
@@ -438,125 +592,241 @@ export default function MacrobiusCulturalApp() {
               </div>
             </div>
 
-            {/* 🚨 BULLETPROOF Oracle Cloud Status - GUARANTEED WORKING */}
-            <div className="mt-6 pt-4 border-t border-white/20">
-              <div className="flex items-center space-x-2 text-xs mb-2">
-                <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-                <span className="text-white/70 font-medium">{getTranslation('status.oracle_cloud', currentLang)}</span>
-                <span className="text-green-400 font-bold">{getTranslation('status.active', currentLang)}</span>
+            {/* Enhanced Oracle Cloud Status */}
+            <motion.div 
+              className="mt-8 pt-6 border-t border-white/20"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 1.3 }}
+            >
+              <div className="flex items-center space-x-3 text-sm mb-3">
+                <div className="w-3 h-3 bg-green-400 rounded-full animate-pulse shadow-lg" 
+                     style={{ boxShadow: '0 0 10px rgba(34,197,94,0.6)' }} />
+                <span className="text-white/90 font-semibold">{getTranslation('status.oracle_cloud', currentLang)}</span>
+                <span className="text-green-400 font-bold text-xs bg-green-400/20 px-2 py-1 rounded-full">
+                  {getTranslation('status.active', currentLang)}
+                </span>
               </div>
-              <p className="text-white/60 text-xs mb-1 leading-tight">
+              <p className="text-white/70 text-sm mb-2 leading-relaxed">
                 {getTranslation('status.oracle', currentLang)}
               </p>
-              <p className="text-green-400/80 text-xs leading-tight">
+              <p className="text-green-400/90 text-sm leading-relaxed">
                 {getTranslation('status.fallback', currentLang)}
               </p>
-            </div>
+            </motion.div>
           </div>
-        </nav>
+        </motion.nav>
 
-        {/* 🚨 FIXED: Main Content with Proper Margin for Sidebar */}
+        {/* 🚀 ENHANCED MAIN CONTENT */}
         <main className="relative z-10 lg:ml-96 min-h-screen">
-          <div className="max-w-6xl mx-auto px-4 lg:px-8">
+          <div className="max-w-6xl mx-auto px-6 lg:px-10">
             
-            {/* Introduction Section */}
+            {/* All Section Renders with Enhanced Styling */}
             {activeSection === 'intro' && (
-              <div id="intro" className="min-h-screen pt-4">
+              <motion.div 
+                id="intro" 
+                className="min-h-screen pt-6"
+                initial={{ opacity: 0, y: 50 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8 }}
+              >
                 {renderSectionWithErrorBoundary('intro', IntroSection, { language: currentLang })}
-              </div>
+              </motion.div>
             )}
 
-            {/* Core Sections */}
-            {activeSection === 'search' && (
-              <div id="search" className="min-h-screen pt-4">
-                {renderSectionWithErrorBoundary('search', TextSearchSection, { isActive: true, language: currentLang })}
-              </div>
-            )}
+            {/* Enhanced Section Transitions */}
+            <AnimatePresence mode="wait">
+              {activeSection === 'search' && (
+                <motion.div 
+                  id="search" 
+                  className="min-h-screen pt-6"
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 1.05 }}
+                  transition={{ duration: 0.6 }}
+                >
+                  {renderSectionWithErrorBoundary('search', TextSearchSection, { isActive: true, language: currentLang })}
+                </motion.div>
+              )}
 
-            {activeSection === 'cosmos' && (
-              <div id="cosmos" className="min-h-screen pt-4">
-                {renderSectionWithErrorBoundary('cosmos', CosmosSection, { isActive: true, language: currentLang })}
-              </div>
-            )}
+              {activeSection === 'cosmos' && (
+                <motion.div 
+                  id="cosmos" 
+                  className="min-h-screen pt-6"
+                  initial={{ opacity: 0, rotateY: 90 }}
+                  animate={{ opacity: 1, rotateY: 0 }}
+                  exit={{ opacity: 0, rotateY: -90 }}
+                  transition={{ duration: 0.8 }}
+                >
+                  {renderSectionWithErrorBoundary('cosmos', CosmosSection, { isActive: true, language: currentLang })}
+                </motion.div>
+              )}
 
-            {activeSection === 'banquet' && (
-              <div id="banquet" className="min-h-screen pt-4">
-                {renderSectionWithErrorBoundary('banquet', BanquetSection, { isActive: true, language: currentLang })}
-              </div>
-            )}
+              {activeSection === 'banquet' && (
+                <motion.div 
+                  id="banquet" 
+                  className="min-h-screen pt-6"
+                  initial={{ opacity: 0, x: 100 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -100 }}
+                  transition={{ duration: 0.7 }}
+                >
+                  {renderSectionWithErrorBoundary('banquet', BanquetSection, { isActive: true, language: currentLang })}
+                </motion.div>
+              )}
 
-            {activeSection === 'worldmap' && (
-              <div id="worldmap" className="min-h-screen pt-4">
-                {renderSectionWithErrorBoundary('worldmap', WorldMapSection, { isActive: true, language: currentLang })}
-              </div>
-            )}
+              {activeSection === 'worldmap' && (
+                <motion.div 
+                  id="worldmap" 
+                  className="min-h-screen pt-6"
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 1.2 }}
+                  transition={{ duration: 0.8 }}
+                >
+                  {renderSectionWithErrorBoundary('worldmap', WorldMapSection, { isActive: true, language: currentLang })}
+                </motion.div>
+              )}
 
-            {activeSection === 'quiz' && (
-              <div id="quiz" className="min-h-screen pt-4">
-                {renderSectionWithErrorBoundary('quiz', QuizSection, { isActive: true, language: currentLang })}
-              </div>
-            )}
+              {activeSection === 'quiz' && (
+                <motion.div 
+                  id="quiz" 
+                  className="min-h-screen pt-6"
+                  initial={{ opacity: 0, y: -50 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: 50 }}
+                  transition={{ duration: 0.6 }}
+                >
+                  {renderSectionWithErrorBoundary('quiz', QuizSection, { isActive: true, language: currentLang })}
+                </motion.div>
+              )}
 
-            {activeSection === 'learning' && (
-              <div id="learning" className="min-h-screen pt-4">
-                {renderSectionWithErrorBoundary('learning', LearningSection, {})}
-              </div>
-            )}
+              {activeSection === 'learning' && (
+                <motion.div 
+                  id="learning" 
+                  className="min-h-screen pt-6"
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 1.1 }}
+                  transition={{ duration: 0.7 }}
+                >
+                  {renderSectionWithErrorBoundary('learning', LearningSection, {})}
+                </motion.div>
+              )}
 
-            {activeSection === 'visualizations' && (
-              <div id="visualizations" className="min-h-screen pt-4">
-                {renderSectionWithErrorBoundary('visualizations', VisualizationsSection, { isActive: true, language: currentLang })}
-              </div>
-            )}
+              {activeSection === 'visualizations' && (
+                <motion.div 
+                  id="visualizations" 
+                  className="min-h-screen pt-6"
+                  initial={{ opacity: 0, rotateX: 45 }}
+                  animate={{ opacity: 1, rotateX: 0 }}
+                  exit={{ opacity: 0, rotateX: -45 }}
+                  transition={{ duration: 0.8 }}
+                >
+                  {renderSectionWithErrorBoundary('visualizations', VisualizationsSection, { isActive: true, language: currentLang })}
+                </motion.div>
+              )}
 
-            {/* Enhanced AI Systems */}
-            {activeSection === 'ai-cultural' && (
-              <div id="ai-cultural" className="min-h-screen pt-4">
-                {renderSectionWithErrorBoundary('ai-cultural', AICulturalAnalysisSection, {})}
-              </div>
-            )}
+              {/* Enhanced AI System Sections */}
+              {activeSection === 'ai-cultural' && (
+                <motion.div 
+                  id="ai-cultural" 
+                  className="min-h-screen pt-6"
+                  initial={{ opacity: 0, scale: 0.8, rotateZ: 5 }}
+                  animate={{ opacity: 1, scale: 1, rotateZ: 0 }}
+                  exit={{ opacity: 0, scale: 1.2, rotateZ: -5 }}
+                  transition={{ duration: 0.9 }}
+                >
+                  {renderSectionWithErrorBoundary('ai-cultural', AICulturalAnalysisSection, {})}
+                </motion.div>
+              )}
 
-            {activeSection === 'ai-learning' && (
-              <div id="ai-learning" className="min-h-screen pt-4">
-                {renderSectionWithErrorBoundary('ai-learning', PersonalizedLearningPathsComplete, {})}
-              </div>
-            )}
+              {activeSection === 'ai-learning' && (
+                <motion.div 
+                  id="ai-learning" 
+                  className="min-h-screen pt-6"
+                  initial={{ opacity: 0, x: -100, rotateY: 20 }}
+                  animate={{ opacity: 1, x: 0, rotateY: 0 }}
+                  exit={{ opacity: 0, x: 100, rotateY: -20 }}
+                  transition={{ duration: 0.8 }}
+                >
+                  {renderSectionWithErrorBoundary('ai-learning', PersonalizedLearningPathsComplete, {})}
+                </motion.div>
+              )}
 
-            {activeSection === 'ai-tutoring' && (
-              <div id="ai-tutoring" className="min-h-screen pt-4">
-                {renderSectionWithErrorBoundary('ai-tutoring', AITutoringSystemComplete, { language: currentLang })}
-              </div>
-            )}
+              {activeSection === 'ai-tutoring' && (
+                <motion.div 
+                  id="ai-tutoring" 
+                  className="min-h-screen pt-6"
+                  initial={{ opacity: 0, y: 100, scale: 0.9 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: -100, scale: 1.1 }}
+                  transition={{ duration: 0.8 }}
+                >
+                  {renderSectionWithErrorBoundary('ai-tutoring', AITutoringSystemComplete, { language: currentLang })}
+                </motion.div>
+              )}
 
-            {/* KI-RAG-Assistant */}
-            {activeSection === 'ai-rag-assistant' && (
-              <div id="ai-rag-assistant" className="min-h-screen pt-4">
-                {renderSectionWithErrorBoundary('ai-rag-assistant', KIRAGAssistentSection, {})}
-              </div>
-            )}
+              {activeSection === 'ai-rag-assistant' && (
+                <motion.div 
+                  id="ai-rag-assistant" 
+                  className="min-h-screen pt-6"
+                  initial={{ opacity: 0, scale: 0.5, rotateZ: 45 }}
+                  animate={{ opacity: 1, scale: 1, rotateZ: 0 }}
+                  exit={{ opacity: 0, scale: 1.5, rotateZ: -45 }}
+                  transition={{ duration: 1 }}
+                >
+                  {renderSectionWithErrorBoundary('ai-rag-assistant', KIRAGAssistentSection, {})}
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
         </main>
 
-        {/* 🚨 FIXED: Enhanced CSS Styles */}
+        {/* 🌌 Enhanced Global Cosmic Styles */}
         <style jsx global>{`
           @keyframes twinkle {
             0%, 100% { 
               opacity: 0.3; 
               transform: scale(0.8); 
             }
+            25% {
+              opacity: 0.8;
+              transform: scale(1.1);
+            }
             50% { 
               opacity: 1; 
-              transform: scale(1.2); 
+              transform: scale(1.3); 
+            }
+            75% {
+              opacity: 0.6;
+              transform: scale(1.0);
             }
           }
 
-          /* Ensure proper scrolling and layout */
+          @keyframes cosmicPulse {
+            0%, 100% {
+              box-shadow: 0 0 5px rgba(255,255,255,0.3);
+            }
+            50% {
+              box-shadow: 0 0 20px rgba(255,255,255,0.8), 0 0 30px rgba(255,255,255,0.4);
+            }
+          }
+
+          /* Enhanced scrolling and layout */
           html {
             scroll-behavior: smooth;
           }
           
           body {
             overflow-x: hidden;
+            background: #000;
+          }
+          
+          /* Enhanced backdrop blur support */
+          .backdrop-blur-xl {
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
           }
           
           /* Mobile responsiveness */
@@ -564,6 +834,20 @@ export default function MacrobiusCulturalApp() {
             .lg\:ml-96 {
               margin-left: 0 !important;
             }
+          }
+          
+          /* Enhanced text shadows */
+          .text-shadow-md {
+            text-shadow: 0 4px 8px rgba(0,0,0,0.6);
+          }
+          
+          .drop-shadow-lg {
+            filter: drop-shadow(0 10px 8px rgba(0,0,0,0.4));
+          }
+          
+          /* Cosmic glow effects */
+          .cosmic-glow {
+            animation: cosmicPulse 4s ease-in-out infinite;
           }
         `}</style>
       </div>
