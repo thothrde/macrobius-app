@@ -4,7 +4,7 @@
  * Creates authentic Latin quizzes from 1,401 passages with intelligent difficulty scaling
  */
 
-import { enhancedApiClient } from './enhanced-api-client-with-fallback';
+import { apiClient } from './enhanced-api-client-with-fallback';
 
 export interface QuizRequest {
   userId: string;
@@ -141,7 +141,7 @@ export interface QuizAnalytics {
 
 class RealQuizGenerationEngine {
   private baseUrl: string;
-  private apiClient = enhancedApiClient;
+  private apiClient = apiClient;
   private activeQuizzes: Map<string, Quiz> = new Map();
   private activeAttempts: Map<string, QuizAttempt> = new Map();
   private userAnalytics: Map<string, QuizAnalytics> = new Map();
