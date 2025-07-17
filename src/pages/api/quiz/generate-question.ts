@@ -515,12 +515,15 @@ function generateIntelligentFallback(
     };
   }
 
+  // ✅ FIX FOR ERROR #75: Conditional property access based on question type
   return {
     id: questionId,
     type: questionType,
     question: selectedPool.question,
-    options: selectedPool.options,
-    correctAnswer: selectedPool.correctAnswer,
+    // Conditional property access: options only for multiple-choice and grammar
+    options: 'options' in selectedPool ? selectedPool.options : undefined,
+    // Conditional property access: correctAnswer only for translation and fill-blank
+    correctAnswer: 'correctAnswer' in selectedPool ? selectedPool.correctAnswer : undefined,
     explanation: selectedPool.explanation,
     difficulty,
     culturalContext: request.culturalTheme ? 
