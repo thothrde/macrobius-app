@@ -264,7 +264,7 @@ class RealQuizGenerationEngine {
       points: this.calculateQuestionPoints(params.difficulty, params.type),
       estimatedTime: response.data.estimated_time || 30,
       source: {
-        passageId: passage.id,
+        passageId: passage.id.toString(),
         culturalTheme: passage.culturalTheme,
         workType: passage.workType,
         citation: `${passage.workType} ${passage.bookNumber}.${passage.chapterNumber}.${passage.sectionNumber}`
