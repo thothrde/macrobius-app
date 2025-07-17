@@ -266,7 +266,7 @@ class RealQuizGenerationEngine {
       source: {
         passageId: passage.id.toString(),
         culturalTheme: passage.culturalTheme,
-        workType: passage.workType,
+        workType: passage.workType as 'Saturnalia' | 'Commentarii',
         citation: `${passage.workType} ${passage.bookNumber}.${passage.chapterNumber}.${passage.sectionNumber}`
       },
       hints,
