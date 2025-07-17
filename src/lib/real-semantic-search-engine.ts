@@ -4,6 +4,7 @@
  * Connects to Oracle Cloud backend for authentic Latin text processing
  * FIXED: Error #67 - API Method Integration - Replace ALL generic HTTP methods with proper MacrobiusAPI calls
  * FIXED: Error #68 - Type Mismatch - Correct SearchFilters interface usage in getContext()
+ * FIXED: Error #69 - Interface Property Access - Remove non-existent context_before/context_after properties
  */
 
 import { MacrobiusAPI } from './enhanced-api-client-with-fallback';
@@ -310,7 +311,9 @@ class RealSemanticSearchEngine {
 
   /**
    * Get surrounding context for passages
-   * FIXED: Error #68 - Use proper SearchFilters interface properties
+   * FIXED: Error #69 - Interface Property Access - Use existing MacrobiusPassage properties
+   * Note: context_before and context_after properties don't exist in MacrobiusPassage interface
+   * Implementation uses fallback approach until backend provides context data
    */
   private async getContext(result: any) {
     try {
@@ -322,13 +325,28 @@ class RealSemanticSearchEngine {
         chapter_number: result.chapterNumber,
         cultural_theme: result.culturalTheme,
         sort_by: 'relevance',
-        limit: 1
+        limit: 3 // Get multiple passages for context simulation
       });
 
-      const passage = response.data?.passages?.[0];
+      const passages = response.data?.passages || [];
+      
+      // FIXED: Use available MacrobiusPassage properties instead of non-existent context fields
+      // Derive context from surrounding passages in the same chapter
+      if (passages.length > 1) {
+        const currentIndex = passages.findIndex(p => p.id === result.id);
+        const beforePassage = currentIndex > 0 ? passages[currentIndex - 1] : null;
+        const afterPassage = currentIndex < passages.length - 1 ? passages[currentIndex + 1] : null;
+        
+        return {
+          before: beforePassage?.latin_text?.substring(0, 100) || '',
+          after: afterPassage?.latin_text?.substring(0, 100) || ''
+        };
+      }
+      
+      // Fallback: Use empty context (maintains interface compliance)
       return {
-        before: passage?.context_before || '',
-        after: passage?.context_after || ''
+        before: '',
+        after: ''
       };
     } catch (error) {
       console.warn('Failed to get context:', error);
