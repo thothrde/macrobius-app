@@ -4,7 +4,7 @@
  * Connects to Oracle Cloud backend for authentic Latin text processing
  */
 
-import { enhancedApiClient } from './enhanced-api-client-with-fallback';
+import { MacrobiusAPI } from './enhanced-api-client-with-fallback';
 
 export interface SemanticQuery {
   text: string;
@@ -91,7 +91,7 @@ export interface UserSearchProfile {
 class RealSemanticSearchEngine {
   private baseUrl: string;
   private userProfiles: Map<string, UserSearchProfile> = new Map();
-  private apiClient = enhancedApiClient;
+  private apiClient = MacrobiusAPI;
   private conceptCache: Map<string, any[]> = new Map();
 
   constructor() {
@@ -593,7 +593,7 @@ export async function performSemanticSearch(
  */
 export async function generateEmbedding(text: string, language: 'de' | 'en' | 'la' = 'la'): Promise<number[]> {
   try {
-    const response = await enhancedApiClient.post('/api/search/embedding', {
+    const response = await MacrobiusAPI.post('/api/search/embedding', {
       text,
       language,
       modelType: 'macrobius-specialized'
@@ -615,7 +615,7 @@ export async function analyzeQuerySemantics(params: {
   includeExpansion?: boolean;
 }): Promise<any> {
   try {
-    const response = await enhancedApiClient.post('/api/search/analyze-query', {
+    const response = await MacrobiusAPI.post('/api/search/analyze-query', {
       query: params.query,
       language: params.language,
       userProfile: params.userProfile,
@@ -648,7 +648,7 @@ export async function expandQuery(params: {
   expansionTypes?: string[];
 }): Promise<any> {
   try {
-    const response = await enhancedApiClient.post('/api/search/expand-query', {
+    const response = await MacrobiusAPI.post('/api/search/expand-query', {
       text: params.originalQuery,
       concepts: params.detectedConcepts,
       userProfile: params.userProfile,
@@ -683,7 +683,7 @@ export async function filterResults(params: {
   prioritizePersonalization?: boolean;
 }): Promise<any> {
   try {
-    const response = await enhancedApiClient.post('/api/search/filter-results', {
+    const response = await MacrobiusAPI.post('/api/search/filter-results', {
       results: params.results,
       userProfile: params.userProfile,
       filterTypes: params.filterTypes,
