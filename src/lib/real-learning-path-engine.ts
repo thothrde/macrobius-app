@@ -840,7 +840,7 @@ class RealLearningPathEngine {
     try {
       await this.apiClient.request('/api/learning-paths/save', {
         method: 'POST',
-        body: path as Record<string, unknown>
+        body: path as unknown as Record<string, unknown>
       });
     } catch (error) {
       console.error('Failed to save learning path:', error);
