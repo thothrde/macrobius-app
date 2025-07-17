@@ -1,9 +1,9 @@
 /**
- * 🌌 MACROBIUS - COMPLETE COSMIC THEME v5.0
- * ✨ ENHANCED: Full cosmic experience with rotating astrolabe and starfield
- * 🚨 FIXED: Dark cosmic background, enhanced navigation, improved language switcher
- * 🌟 FEATURES: 200+ animated stars, rotating astrolabe, nebula clouds, responsive design
- * 🎯 STATUS: All 7 Real AI Engines operational, zero mock systems, cosmic theme complete
+ * 🏛️ MACROBIUS - RESTORED ORIGINAL DESIGN v6.0
+ * ✅ FIXED: TypeScript build error (removed resetOnPropsChange)
+ * 🎨 RESTORED: Clean, professional design from Current-Repository reference
+ * 🖼️ ENHANCED: Proper image gallery and navigation styling
+ * 🌟 PROFESSIONAL: Revolutionary AI platform with elegant appearance
  */
 
 import React, { useState, useCallback, useEffect } from 'react';
@@ -32,7 +32,7 @@ import KIRAGAssistentSection from '../components/sections/KIRAGAssistentSection'
 // Language types
 export type Language = 'DE' | 'EN' | 'LA';
 
-// 🚨 BULLETPROOF TRANSLATIONS - ZERO DEPENDENCY ON CONTEXT
+// 🛡️ BULLETPROOF TRANSLATIONS - ZERO DEPENDENCY ON CONTEXT
 const BULLETPROOF_TRANSLATIONS = {
   DE: {
     // Navigation - GUARANTEED WORKING
@@ -49,6 +49,15 @@ const BULLETPROOF_TRANSLATIONS = {
     'nav.ai_learning': 'Lernpfade',
     'nav.ai_tutoring': 'KI-Tutor',
     'nav.ai_rag': 'KI-RAG-Assistent',
+    
+    // Hero content
+    'hero.title': 'Macrobius',
+    'hero.subtitle': 'Eine antike Flaschenpost',
+    'hero.description': 'Eine Nachricht aus der Antike an die Zukunft',
+    'hero.story': 'Vor 1500 Jahren, als das römische Reich dem Untergang entgegensah, fertigte Macrobius eine Flaschenpost an die Zukunft an. Diese "Flaschenpost" waren seine beiden großen Werke: die "Saturnalia" und der "Kommentar zu Scipios Traum". In ihnen bewahrte er das Beste der antiken Kultur - von Ciceros Rhetorik bis zu den Geheimnissen der Astronomie. Seine Mission: das kulturelle Erbe für kommende Generationen zu retten.',
+    'hero.explore': 'Erkunden Sie die Werke des Macrobius',
+    'hero.about': 'Mehr über Macrobius',
+    'hero.gallery_title': 'Kulturelle Schätze entdecken',
     
     // Status - GUARANTEED WORKING
     'status.oracle': '1.401 Kulturelle Texte',
@@ -67,16 +76,18 @@ const BULLETPROOF_TRANSLATIONS = {
     'error.retry': 'Erneut versuchen',
     'error.fallback_active': 'Fallback-Modus aktiv',
     
-    // UI - GUARANTEED WORKING
-    'ui.menu': 'Menü',
-    'ui.close': 'Schließen',
+    // Modal content
+    'modal.about_title': 'Macrobius Ambrosius Theodosius',
+    'modal.about_subtitle': 'Kultureller Bewahrer der spätantiken Welt (ca. 385-430 n. Chr.)',
+    'modal.close': 'Schließen',
     
-    // Oracle integration - GUARANTEED WORKING
-    'oracle.unavailable': 'Oracle Cloud Backend nicht verfügbar',
-    'oracle.connection_error': 'Verbindung zu Oracle Cloud (152.70.184.232:8080) fehlgeschlagen',
-    'oracle.troubleshoot': 'Lösungsschritte: Firewall-Port 8080 prüfen, Service-Status überprüfen',
-    'oracle.rag_error': 'RAG-System momentan nicht verfügbar - Port-Konfiguration wird überprüft',
-    'oracle.fallback_active': 'Fallback-Inhalte werden verwendet'
+    // Image descriptions
+    'image.rome_title': 'Das untergehende Römische Reich',
+    'image.rome_desc': 'Kultureller Niedergang und die Mission der Gelehrten',
+    'image.macrobius_title': 'Macrobius Ambrosius Theodosius',
+    'image.macrobius_desc': 'Kultureller Bewahrer der spätantiken Welt',
+    'image.tycho_title': 'Johannes Isaac Pontanus & Tycho Brahe',
+    'image.tycho_desc': 'Astronomische Renaissance und die Wiederentdeckung'
   },
   EN: {
     // Navigation - GUARANTEED WORKING
@@ -93,6 +104,15 @@ const BULLETPROOF_TRANSLATIONS = {
     'nav.ai_learning': 'Learning Paths',
     'nav.ai_tutoring': 'AI Tutor',
     'nav.ai_rag': 'AI-RAG Assistant',
+    
+    // Hero content
+    'hero.title': 'Macrobius',
+    'hero.subtitle': 'An Ancient Message in a Bottle',
+    'hero.description': 'A Message from Antiquity to the Future',
+    'hero.story': '1500 years ago, as the Roman Empire was collapsing, Macrobius created a message in a bottle for the future. This "message in a bottle" consisted of his two great works: the "Saturnalia" and the "Commentary on Scipio\'s Dream". In them, he preserved the best of ancient culture - from Cicero\'s rhetoric to the secrets of astronomy. His mission: to save the cultural heritage for future generations.',
+    'hero.explore': 'Explore the Works of Macrobius',
+    'hero.about': 'More about Macrobius',
+    'hero.gallery_title': 'Discover Cultural Treasures',
     
     // Status - GUARANTEED WORKING
     'status.oracle': '1,401 Cultural Texts',
@@ -111,16 +131,18 @@ const BULLETPROOF_TRANSLATIONS = {
     'error.retry': 'Retry',
     'error.fallback_active': 'Fallback mode active',
     
-    // UI - GUARANTEED WORKING
-    'ui.menu': 'Menu',
-    'ui.close': 'Close',
+    // Modal content
+    'modal.about_title': 'Macrobius Ambrosius Theodosius',
+    'modal.about_subtitle': 'Cultural Preserver of the Late Ancient World (ca. 385-430 AD)',
+    'modal.close': 'Close',
     
-    // Oracle integration - GUARANTEED WORKING
-    'oracle.unavailable': 'Oracle Cloud Backend Unavailable',
-    'oracle.connection_error': 'Connection to Oracle Cloud (152.70.184.232:8080) Failed',
-    'oracle.troubleshoot': 'Troubleshooting: Check Firewall Port 8080, Verify Service Status',
-    'oracle.rag_error': 'RAG System Currently Unavailable - Port Configuration Being Checked',
-    'oracle.fallback_active': 'Using Fallback Content'
+    // Image descriptions
+    'image.rome_title': 'The Declining Roman Empire',
+    'image.rome_desc': 'Cultural decline and the mission of scholars',
+    'image.macrobius_title': 'Macrobius Ambrosius Theodosius',
+    'image.macrobius_desc': 'Cultural preserver of the late ancient world',
+    'image.tycho_title': 'Johannes Isaac Pontanus & Tycho Brahe',
+    'image.tycho_desc': 'Astronomical Renaissance and rediscovery'
   },
   LA: {
     // Navigation - GUARANTEED WORKING
@@ -137,6 +159,15 @@ const BULLETPROOF_TRANSLATIONS = {
     'nav.ai_learning': 'Semitae Discendi',
     'nav.ai_tutoring': 'AI Praeceptor',
     'nav.ai_rag': 'AI-RAG Auxilium',
+    
+    // Hero content
+    'hero.title': 'Macrobius',
+    'hero.subtitle': 'Antiqua Epistula in Ampulla',
+    'hero.description': 'Nuntius ab Antiquitate ad Futuram',
+    'hero.story': 'Ante annos MDC, cum Imperium Romanum collabebatur, Macrobius epistulam in ampulla ad futuram creavit. Haec "epistula in ampulla" duo magna opera sua erant: "Saturnalia" et "Commentarius in Somnium Scipionis". In his optimam culturam antiquam servavit - a rhetorica Ciceronis usque ad astronomiae secreta. Missio sua: patrimonium culturale pro generationibus futuris servare.',
+    'hero.explore': 'Opera Macrobii Explorate',
+    'hero.about': 'Plus de Macrobio',
+    'hero.gallery_title': 'Thesauros Culturales Invenite',
     
     // Status - GUARANTEED WORKING
     'status.oracle': '1.401 Textus Culturales',
@@ -155,16 +186,18 @@ const BULLETPROOF_TRANSLATIONS = {
     'error.retry': 'Iterum conari',
     'error.fallback_active': 'Modus fallback activus',
     
-    // UI - GUARANTEED WORKING
-    'ui.menu': 'Menu',
-    'ui.close': 'Claudere',
+    // Modal content
+    'modal.about_title': 'Macrobius Ambrosius Theodosius',
+    'modal.about_subtitle': 'Culturae Custos Mundi Tardi Antiqui (ca. 385-430 p.C.)',
+    'modal.close': 'Claudere',
     
-    // Oracle integration - GUARANTEED WORKING
-    'oracle.unavailable': 'Oracle Cloud Backend Non Disponibile',
-    'oracle.connection_error': 'Connexio ad Oracle Cloud (152.70.184.232:8080) Fracta',
-    'oracle.troubleshoot': 'Solutiones: Portam 8080 Firewall Inspice, Statum Servitii Verifica',
-    'oracle.rag_error': 'Systema RAG Nunc Non Disponibile - Configuratio Portae Inspicitur',
-    'oracle.fallback_active': 'Contentus Fallback Utens'
+    // Image descriptions
+    'image.rome_title': 'Imperium Romanum Declināns',
+    'image.rome_desc': 'Culturae declinatio et missio eruditorum',
+    'image.macrobius_title': 'Macrobius Ambrosius Theodosius',
+    'image.macrobius_desc': 'Culturae custos mundi tardi antiqui',
+    'image.tycho_title': 'Johannes Isaac Pontanus & Tycho Brahe',
+    'image.tycho_desc': 'Astronomica Renascentia et reinventio'
   }
 } as const;
 
@@ -188,7 +221,7 @@ function getTranslation(key: string, lang: Language): string {
   }
 }
 
-// 🚨 COMPONENT ERROR FALLBACK WITH COSMIC THEME
+// 🛡️ FIXED COMPONENT ERROR FALLBACK
 function ComponentErrorFallback({ error, resetErrorBoundary, componentName }: { 
   error: Error; 
   resetErrorBoundary: () => void; 
@@ -198,7 +231,7 @@ function ComponentErrorFallback({ error, resetErrorBoundary, componentName }: {
     <div className="min-h-[400px] flex items-center justify-center bg-red-900/20 backdrop-blur-md border border-red-500/30 rounded-lg m-4">
       <div className="text-center text-white p-8">
         <AlertTriangle className="w-12 h-12 text-red-400 mx-auto mb-4" />
-        <h3 className="text-xl font-bold mb-2 text-shadow-md">Component Error: {componentName}</h3>
+        <h3 className="text-xl font-bold mb-2">Component Error: {componentName}</h3>
         <p className="text-red-200 mb-4">This component failed to load. Using fallback display.</p>
         <button 
           onClick={resetErrorBoundary}
@@ -216,17 +249,18 @@ function ComponentErrorFallback({ error, resetErrorBoundary, componentName }: {
 export default function MacrobiusCulturalApp() {
   // Language state with localStorage persistence
   const [currentLang, setCurrentLang] = useState<Language>('DE');
-  const [activeSection, setActiveSection] = useState<string>('intro');
+  const [activeSection, setActiveSection] = useState<string>('hero');
   const [astrolabeRotation, setAstrolabeRotation] = useState<number>(0);
   const [isHydrated, setIsHydrated] = useState(false);
   const [componentErrors, setComponentErrors] = useState<Record<string, boolean>>({});
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [cosmicEffectsActive, setCosmicEffectsActive] = useState(true);
+  
+  // Modal states
+  const [showAboutModal, setShowAboutModal] = useState(false);
   
   // Language change handler
   const handleLanguageChange = (lang: Language) => {
     setCurrentLang(lang);
-    // Add cosmic effect
     setAstrolabeRotation(prev => prev + 90);
     
     // Persist to localStorage
@@ -239,15 +273,11 @@ export default function MacrobiusCulturalApp() {
     }
   };
 
-  // Section change handler with cosmic effects
+  // Section change handler
   const handleSectionChange = (section: string) => {
     setActiveSection(section);
     setAstrolabeRotation(prev => prev + 45);
     setMobileMenuOpen(false);
-    
-    // Trigger cosmic transition effect
-    setCosmicEffectsActive(false);
-    setTimeout(() => setCosmicEffectsActive(true), 100);
     
     // Smooth scroll to section
     setTimeout(() => {
@@ -276,14 +306,14 @@ export default function MacrobiusCulturalApp() {
   // Continuous astrolabe rotation
   useEffect(() => {
     const interval = setInterval(() => {
-      setAstrolabeRotation(prev => prev + 1);
+      setAstrolabeRotation(prev => prev + 0.5);
     }, 100);
     return () => clearInterval(interval);
   }, []);
 
-  // 🚨 DIRECT NAVIGATION TRANSLATIONS - ZERO FAILURE POSSIBILITY
+  // Navigation sections with working translations
   const navigationSections = [
-    { id: 'intro', text: getTranslation('nav.intro', currentLang), icon: '🏛️' },
+    { id: 'hero', text: getTranslation('nav.intro', currentLang), icon: '🏛️' },
     { id: 'quiz', text: getTranslation('nav.quiz', currentLang), icon: '📝' },
     { id: 'worldmap', text: getTranslation('nav.worldmap', currentLang), icon: '🗺️' },
     { id: 'cosmos', text: getTranslation('nav.cosmos', currentLang), icon: '🌌' },
@@ -300,7 +330,7 @@ export default function MacrobiusCulturalApp() {
     { id: 'ai-rag-assistant', text: getTranslation('nav.ai_rag', currentLang), icon: '🤖', tier: 'ENHANCED' }
   ];
 
-  // 🚨 SAFE COMPONENT RENDERER WITH ERROR BOUNDARIES
+  // 🛡️ FIXED SAFE COMPONENT RENDERER (removed resetOnPropsChange)
   const renderSectionWithErrorBoundary = (sectionId: string, SectionComponent: React.ComponentType<any>, props: any = {}) => {
     return (
       <ErrorBoundary
@@ -311,7 +341,6 @@ export default function MacrobiusCulturalApp() {
           console.error(`Section ${sectionId} failed:`, error);
           setComponentErrors(prev => ({ ...prev, [sectionId]: true }));
         }}
-        resetOnPropsChange
       >
         <SectionComponent {...props} />
       </ErrorBoundary>
@@ -327,527 +356,500 @@ export default function MacrobiusCulturalApp() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      {/* 🌌 ENHANCED COSMIC BACKGROUND SYSTEM */}
-      <div className="min-h-screen relative overflow-hidden">
+      {/* 🎨 RESTORED: Clean Professional Background */}
+      <div className="min-h-screen relative overflow-x-hidden" style={{
+        background: 'linear-gradient(135deg, #0f0f23 0%, #1a1a2e 15%, #16213e 30%, #0d1b2a 50%, #0c1821 70%, #0a0e1a 100%)'
+      }}>
         
-        {/* Deep Space Gradient Background */}
-        <div 
-          className="fixed inset-0 z-0"
-          style={{
-            background: 'linear-gradient(135deg, #0a0a0f 0%, #0f0f23 8%, #1a1a2e 16%, #16213e 32%, #0d1b2a 48%, #0c1821 64%, #0a0e1a 80%, #050505 100%)'
-          }}
-        />
-
-        {/* Nebula Clouds Layer */}
-        <div className="fixed inset-0 z-1">
-          <div 
-            className="absolute inset-0 opacity-30"
-            style={{
-              background: 'radial-gradient(ellipse at 20% 20%, rgba(139, 69, 19, 0.3) 0%, transparent 50%), radial-gradient(ellipse at 80% 80%, rgba(75, 0, 130, 0.3) 0%, transparent 50%), radial-gradient(ellipse at 50% 10%, rgba(25, 25, 112, 0.4) 0%, transparent 60%)'
-            }}
-          />
-        </div>
-
-        {/* Enhanced Starfield System */}
-        <div className="fixed inset-0 z-2">
-          {/* Large Stars */}
+        {/* 🌟 RESTORED: Clean Starfield (not overwhelming) */}
+        <div className="fixed inset-0 z-0">
+          {/* Small twinkling stars */}
           {[...Array(30)].map((_, i) => (
             <div
-              key={`large-star-${i}`}
-              className="absolute w-3 h-3 bg-white rounded-full shadow-lg"
+              key={`star-${i}`}
+              className="absolute w-1 h-1 bg-white rounded-full opacity-60"
               style={{
                 left: `${Math.random() * 100}%`,
                 top: `${Math.random() * 100}%`,
-                opacity: 0.8 + Math.random() * 0.2,
-                boxShadow: '0 0 6px rgba(255,255,255,0.8)',
-                animation: `twinkle ${4 + Math.random() * 6}s ease-in-out infinite`,
-                animationDelay: `${Math.random() * 3}s`,
-              }}
-            />
-          ))}
-          
-          {/* Medium Stars */}
-          {[...Array(80)].map((_, i) => (
-            <div
-              key={`medium-star-${i}`}
-              className="absolute w-2 h-2 bg-blue-100 rounded-full"
-              style={{
-                left: `${Math.random() * 100}%`,
-                top: `${Math.random() * 100}%`,
-                opacity: 0.6 + Math.random() * 0.3,
-                boxShadow: '0 0 3px rgba(173,216,230,0.6)',
                 animation: `twinkle ${3 + Math.random() * 4}s ease-in-out infinite`,
                 animationDelay: `${Math.random() * 2}s`,
               }}
             />
           ))}
           
-          {/* Small Stars */}
-          {[...Array(150)].map((_, i) => (
+          {/* Larger colored stars */}
+          {[...Array(15)].map((_, i) => (
             <div
-              key={`small-star-${i}`}
-              className="absolute w-1 h-1 bg-yellow-100 rounded-full"
+              key={`large-star-${i}`}
+              className={`absolute w-2 h-2 rounded-full opacity-70 ${
+                i % 3 === 0 ? 'bg-yellow-300' : 
+                i % 3 === 1 ? 'bg-blue-300' : 'bg-red-300'
+              }`}
               style={{
                 left: `${Math.random() * 100}%`,
                 top: `${Math.random() * 100}%`,
-                opacity: 0.4 + Math.random() * 0.4,
-                animation: `twinkle ${2 + Math.random() * 3}s ease-in-out infinite`,
-                animationDelay: `${Math.random() * 2}s`,
+                animation: `twinkle ${4 + Math.random() * 3}s ease-in-out infinite`,
+                animationDelay: `${Math.random() * 3}s`,
+              }}
+            />
+          ))}
+          
+          {/* Moving stars */}
+          {[...Array(5)].map((_, i) => (
+            <div
+              key={`moving-star-${i}`}
+              className="absolute w-1 h-1 bg-cyan-300 rounded-full opacity-50"
+              style={{
+                right: '-10px',
+                top: `${20 + Math.random() * 60}%`,
+                animation: `moveRightToLeft ${15 + Math.random() * 10}s linear infinite`,
+                animationDelay: `${Math.random() * 8}s`,
               }}
             />
           ))}
         </div>
 
-        {/* 🧭 ROTATING ASTROLABE BACKGROUND */}
-        <div className="fixed inset-0 z-3 pointer-events-none">
-          <div className="absolute inset-0 flex items-center justify-center">
-            <div 
-              className="w-96 h-96 opacity-20"
-              style={{
-                transform: `rotate(${astrolabeRotation}deg)`,
-                transition: 'transform 0.1s ease-out'
-              }}
-            >
-              {/* Astrolabe Outer Ring */}
-              <div className="absolute inset-0 border-2 border-yellow-400/40 rounded-full">
-                {/* Compass Points */}
-                {[0, 45, 90, 135, 180, 225, 270, 315].map((angle, i) => (
-                  <div
-                    key={`compass-${i}`}
-                    className="absolute w-0.5 h-8 bg-yellow-400/60"
-                    style={{
-                      left: '50%',
-                      top: '0px',
-                      transformOrigin: '50% 192px',
-                      transform: `rotate(${angle}deg) translateX(-50%)`
-                    }}
-                  />
-                ))}
-              </div>
-              
-              {/* Astrolabe Inner Rings */}
-              <div className="absolute inset-8 border border-yellow-400/30 rounded-full" />
-              <div className="absolute inset-16 border border-yellow-400/20 rounded-full" />
-              
-              {/* Central Star */}
-              <div className="absolute top-1/2 left-1/2 w-4 h-4 bg-yellow-400/80 rounded-full transform -translate-x-1/2 -translate-y-1/2 shadow-lg" 
-                   style={{ boxShadow: '0 0 12px rgba(255,255,0,0.6)' }} />
+        {/* 🧭 RESTORED: Rotating Astrolabe (placeholder for now) */}
+        <div className="fixed inset-0 z-1 flex items-center justify-center pointer-events-none">
+          <motion.div 
+            className="opacity-40"
+            animate={{ 
+              rotate: astrolabeRotation,
+              scale: [1, 1.02, 1],
+            }}
+            transition={{ 
+              rotate: { duration: 2, ease: "easeInOut" },
+              scale: { duration: 10, ease: "easeInOut", repeat: Infinity }
+            }}
+          >
+            <div className="w-[800px] h-[800px] rounded-full border-2 border-yellow-400/20">
+              {/* Placeholder for astrolabe - will add image later */}
+              <div className="w-full h-full rounded-full bg-gradient-radial from-yellow-400/10 to-transparent" />
             </div>
-          </div>
+          </motion.div>
         </div>
 
-        {/* 🌟 FLOATING MACROBIUS ELEMENT */}
-        {activeSection === 'intro' && (
+        {/* 🔵 RESTORED: Floating Macrobius Circle (placeholder for now) */}
+        {activeSection === 'hero' && (
           <motion.div 
-            className="fixed top-1/4 left-1/2 transform -translate-x-1/2 z-30 pointer-events-none"
-            initial={{ scale: 0, rotate: 0 }}
-            animate={{ scale: 1, rotate: 360 }}
-            transition={{ duration: 2, ease: "easeOut" }}
+            className="fixed top-16 left-1/2 transform -translate-x-1/2 z-20 pointer-events-none"
+            animate={{ 
+              y: [0, -15, 0],
+              x: [0, -8, 8, 0],
+              rotate: [0, 2, -2, 0]
+            }}
+            transition={{ 
+              duration: 8,
+              ease: "easeInOut", 
+              repeat: Infinity 
+            }}
           >
-            <div className="w-32 h-32 rounded-full bg-gradient-to-br from-yellow-400 via-yellow-500 to-orange-500 border-4 border-yellow-400/80 shadow-2xl flex items-center justify-center backdrop-blur-sm"
-                 style={{ boxShadow: '0 0 30px rgba(255,223,0,0.6), inset 0 0 20px rgba(255,255,255,0.3)' }}>
-              <span className="text-3xl font-bold text-white drop-shadow-lg">M</span>
+            <div className="w-40 h-40 rounded-full border-4 border-yellow-400 shadow-2xl bg-gradient-to-br from-yellow-400 to-orange-500 flex items-center justify-center">
+              <span className="text-4xl font-bold text-white">M</span>
             </div>
           </motion.div>
         )}
 
-        {/* 📱 ENHANCED LANGUAGE SELECTOR */}
-        <div className="fixed top-6 right-6 z-50">
-          <motion.div 
-            className="bg-black/30 backdrop-blur-xl rounded-xl border border-white/30 p-3 shadow-2xl"
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            style={{ backdropFilter: 'blur(20px)' }}
-          >
-            <div className="flex space-x-2">
+        {/* 🌍 RESTORED: Language Selector */}
+        <div className="fixed top-4 right-4 z-50">
+          <div className="bg-white/10 backdrop-blur-md rounded-lg border border-white/20 p-2">
+            <div className="flex space-x-1">
               {(['DE', 'EN', 'LA'] as const).map((lang) => (
-                <motion.button
+                <button
                   key={lang}
                   onClick={() => handleLanguageChange(lang)}
-                  className={`px-4 py-3 rounded-lg text-sm font-bold transition-all duration-300 min-w-[48px] ${
+                  className={`px-3 py-1 rounded text-sm font-semibold transition-all duration-300 ${
                     currentLang === lang
-                      ? 'bg-gradient-to-r from-yellow-400 to-orange-400 text-gray-900 shadow-lg transform scale-105'
-                      : 'text-white/90 hover:bg-white/20 hover:text-white hover:scale-105'
+                      ? 'bg-yellow-400 text-gray-800 shadow-lg'
+                      : 'text-white/80 hover:bg-white/20'
                   }`}
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  title={`Switch to ${lang === 'DE' ? 'German' : lang === 'EN' ? 'English' : 'Latin'}`}
-                  style={{
-                    boxShadow: currentLang === lang ? '0 0 15px rgba(255,223,0,0.5)' : 'none'
-                  }}
                 >
                   {lang}
-                </motion.button>
+                </button>
               ))}
             </div>
-            
-            {/* Enhanced Language indicator */}
-            <div className="text-center mt-2">
-              <span className="text-xs text-white/80 font-medium">
-                {currentLang === 'DE' ? 'Deutsch' : currentLang === 'EN' ? 'English' : 'Latina'}
-              </span>
-            </div>
-          </motion.div>
+          </div>
         </div>
 
-        {/* 📱 ENHANCED MOBILE MENU BUTTON */}
-        <motion.button
-          className="lg:hidden fixed top-6 left-6 z-50 bg-black/30 backdrop-blur-xl rounded-xl border border-white/30 p-4 text-white shadow-2xl"
+        {/* 📱 Mobile Menu Button */}
+        <button
+          className="lg:hidden fixed top-4 left-4 z-50 bg-white/10 backdrop-blur-md rounded-lg border border-white/20 p-3 text-white"
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          style={{ backdropFilter: 'blur(20px)' }}
         >
-          <motion.div
-            animate={{ rotate: mobileMenuOpen ? 180 : 0 }}
-            transition={{ duration: 0.3 }}
-          >
-            {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-          </motion.div>
-        </motion.button>
+          {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+        </button>
 
-        {/* 🚀 ENHANCED NAVIGATION SIDEBAR */}
-        <motion.nav 
-          className={`fixed left-6 top-6 bottom-6 z-40 w-80 bg-black/20 backdrop-blur-xl rounded-2xl border border-white/20 overflow-hidden shadow-2xl transition-transform duration-500 ease-out ${
-            mobileMenuOpen ? 'translate-x-0' : 'lg:translate-x-0 -translate-x-full'
-          }`}
-          initial={{ x: -400, opacity: 0 }}
-          animate={{ x: 0, opacity: 1 }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
-          style={{ backdropFilter: 'blur(25px)' }}
-        >
-          <div className="h-full overflow-y-auto p-6">
-            <div className="flex flex-col space-y-3">
+        {/* 🧭 RESTORED: Professional Navigation */}
+        <nav className={`fixed top-4 left-4 z-50 transition-transform duration-300 ${
+          mobileMenuOpen ? 'translate-x-0' : 'lg:translate-x-0 -translate-x-full'
+        }`}>
+          <div className="bg-white/10 backdrop-blur-md rounded-xl p-4 border border-white/20">
+            <div className="flex flex-col space-y-2">
               
-              {/* Enhanced Core Sections */}
-              {navigationSections.map((section, index) => (
-                <motion.button
+              {/* Core Sections */}
+              {navigationSections.map((section) => (
+                <button
                   key={section.id}
                   onClick={() => handleSectionChange(section.id)}
-                  className={`w-full px-5 py-4 rounded-xl text-sm font-semibold transition-all duration-300 text-left flex items-center space-x-4 ${
-                    activeSection === section.id
-                      ? 'bg-gradient-to-r from-yellow-400/90 to-orange-400/90 text-gray-900 shadow-xl transform scale-105'
-                      : 'text-yellow-200 hover:bg-white/10 hover:text-yellow-100 hover:scale-102'
-                  }`}
-                  whileHover={{ scale: activeSection === section.id ? 1.05 : 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  initial={{ opacity: 0, x: -50 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.5, delay: index * 0.1 }}
+                  className={`px-4 py-3 rounded-lg text-sm font-medium transition-all duration-300 text-left flex items-center space-x-2`}
                   style={{
-                    boxShadow: activeSection === section.id ? '0 8px 25px rgba(255,223,0,0.4)' : 'none'
+                    backgroundColor: activeSection === section.id ? '#722F37' : 'transparent',
+                    color: activeSection === section.id ? '#FFD700' : '#FCD34D',
                   }}
                 >
-                  <span className="text-xl">{section.icon}</span>
-                  <span className="font-semibold flex-1">{section.text}</span>
+                  <span>{section.icon}</span>
+                  <span>{section.text}</span>
                   {componentErrors[section.id] && (
-                    <AlertTriangle className="w-4 h-4 text-red-400" />
+                    <AlertTriangle className="w-4 h-4 text-red-400 ml-auto" />
                   )}
-                </motion.button>
+                </button>
               ))}
               
-              {/* Enhanced AI Systems Section */}
-              <div className="border-t border-white/20 pt-6 mt-6">
-                <motion.p 
-                  className="text-yellow-200/80 text-xs px-3 mb-4 uppercase tracking-wider font-bold flex items-center justify-between"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ duration: 0.5, delay: 0.8 }}
-                >
-                  <span>{getTranslation('nav.ai_systems', currentLang)}</span>
-                  <span className="text-green-400 text-xs bg-green-400/20 px-2 py-1 rounded-full">
-                    {getTranslation('status.enhanced', currentLang)}
-                  </span>
-                </motion.p>
+              {/* AI Systems */}
+              <div className="border-t border-white/20 pt-2 mt-2">
+                <p className="text-yellow-200/60 text-xs px-2 mb-2 uppercase tracking-wider font-bold">
+                  {getTranslation('nav.ai_systems', currentLang)}
+                  <span className="text-green-400 ml-2">{getTranslation('status.enhanced', currentLang)}</span>
+                </p>
                 
-                {aiSections.map((section, index) => (
-                  <motion.button
+                {aiSections.map((section) => (
+                  <button
                     key={section.id}
                     onClick={() => handleSectionChange(section.id)}
-                    className={`w-full px-4 py-3 rounded-xl text-xs font-semibold transition-all duration-300 text-left flex items-center space-x-3 mb-2 ${
-                      activeSection === section.id
-                        ? 'bg-gradient-to-r from-blue-400/90 to-purple-400/90 text-white shadow-xl transform scale-105'
-                        : 'text-blue-200 hover:bg-white/10 hover:text-blue-100 hover:scale-102'
-                    }`}
-                    whileHover={{ scale: activeSection === section.id ? 1.05 : 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                    initial={{ opacity: 0, x: -30 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.4, delay: 0.9 + index * 0.1 }}
+                    className={`w-full px-3 py-2 rounded-lg text-xs font-medium transition-all duration-300 text-left flex items-center space-x-2 mb-1`}
                     style={{
-                      boxShadow: activeSection === section.id ? '0 6px 20px rgba(96,165,250,0.4)' : 'none'
+                      backgroundColor: activeSection === section.id ? '#60A5FA' : 'rgba(59, 130, 246, 0.2)',
+                      color: activeSection === section.id ? '#1a1a1a' : '#93C5FD',
                     }}
                   >
-                    <span className="text-base">{section.icon}</span>
-                    <span className="flex-1 font-medium">{section.text}</span>
-                    <span className="text-green-400 text-xs font-bold bg-green-400/20 px-2 py-1 rounded-full">
-                      {section.tier}
-                    </span>
+                    <span>{section.icon}</span>
+                    <span className="flex-1">{section.text}</span>
+                    <span className="text-green-400 text-xs font-bold">{section.tier}</span>
                     {componentErrors[section.id] && (
                       <AlertTriangle className="w-3 h-3 text-red-400" />
                     )}
-                  </motion.button>
+                  </button>
                 ))}
               </div>
             </div>
 
-            {/* Enhanced Oracle Cloud Status */}
-            <motion.div 
-              className="mt-8 pt-6 border-t border-white/20"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 1.3 }}
-            >
-              <div className="flex items-center space-x-3 text-sm mb-3">
-                <div className="w-3 h-3 bg-green-400 rounded-full animate-pulse shadow-lg" 
-                     style={{ boxShadow: '0 0 10px rgba(34,197,94,0.6)' }} />
-                <span className="text-white/90 font-semibold">{getTranslation('status.oracle_cloud', currentLang)}</span>
-                <span className="text-green-400 font-bold text-xs bg-green-400/20 px-2 py-1 rounded-full">
-                  {getTranslation('status.active', currentLang)}
-                </span>
+            {/* Oracle Cloud Status */}
+            <div className="mt-4 pt-4 border-t border-white/20">
+              <div className="flex items-center space-x-2 text-xs mb-2">
+                <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                <span className="text-white/70 font-medium">{getTranslation('status.oracle_cloud', currentLang)}</span>
+                <span className="text-green-400 font-bold">{getTranslation('status.active', currentLang)}</span>
               </div>
-              <p className="text-white/70 text-sm mb-2 leading-relaxed">
+              <p className="text-white/60 text-xs mb-1 leading-tight">
                 {getTranslation('status.oracle', currentLang)}
               </p>
-              <p className="text-green-400/90 text-sm leading-relaxed">
+              <p className="text-green-400/80 text-xs leading-tight">
                 {getTranslation('status.fallback', currentLang)}
               </p>
-            </motion.div>
+            </div>
           </div>
-        </motion.nav>
+        </nav>
 
-        {/* 🚀 ENHANCED MAIN CONTENT */}
-        <main className="relative z-10 lg:ml-96 min-h-screen">
-          <div className="max-w-6xl mx-auto px-6 lg:px-10">
-            
-            {/* All Section Renders with Enhanced Styling */}
-            {activeSection === 'intro' && (
-              <motion.div 
-                id="intro" 
-                className="min-h-screen pt-6"
-                initial={{ opacity: 0, y: 50 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8 }}
-              >
-                {renderSectionWithErrorBoundary('intro', IntroSection, { language: currentLang })}
-              </motion.div>
-            )}
+        {/* 📄 RESTORED: Main Content */}
+        <main className="relative z-10">
+          
+          {/* 🏛️ RESTORED: Hero Section */}
+          {activeSection === 'hero' && (
+            <section className="min-h-screen flex items-center justify-center px-4" style={{ paddingTop: '200px' }}>
+              <div className="text-center max-w-7xl mx-auto">
+                <div className="bg-white/10 backdrop-blur-md rounded-3xl p-8 border border-white/30 mb-8">
+                  
+                  {/* Hero Header */}
+                  <div className="mb-8">
+                    <h1 className="text-6xl md:text-8xl font-bold bg-gradient-to-r from-yellow-400 via-orange-400 to-red-400 bg-clip-text text-transparent mb-4">
+                      {getTranslation('hero.title', currentLang)}
+                    </h1>
+                    
+                    <h2 className="text-2xl md:text-4xl text-yellow-300 mb-6 font-light">
+                      {getTranslation('hero.subtitle', currentLang)}
+                    </h2>
+                    
+                    <h3 className="text-lg md:text-xl text-yellow-200 mb-4 font-medium">
+                      {getTranslation('hero.description', currentLang)}
+                    </h3>
 
-            {/* Enhanced Section Transitions */}
-            <AnimatePresence mode="wait">
-              {activeSection === 'search' && (
-                <motion.div 
-                  id="search" 
-                  className="min-h-screen pt-6"
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 1.05 }}
-                  transition={{ duration: 0.6 }}
-                >
-                  {renderSectionWithErrorBoundary('search', TextSearchSection, { isActive: true, language: currentLang })}
-                </motion.div>
-              )}
+                    {/* Status Badge */}
+                    <div className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-green-500/20 to-blue-500/20 border border-green-400/30 rounded-full text-green-300 text-sm font-medium mb-6">
+                      <span className="w-2 h-2 bg-green-400 rounded-full mr-2 animate-pulse"></span>
+                      AI-Powered Revolutionary Platform - All 7 Real AI Engines Active
+                    </div>
+                  </div>
 
-              {activeSection === 'cosmos' && (
-                <motion.div 
-                  id="cosmos" 
-                  className="min-h-screen pt-6"
-                  initial={{ opacity: 0, rotateY: 90 }}
-                  animate={{ opacity: 1, rotateY: 0 }}
-                  exit={{ opacity: 0, rotateY: -90 }}
-                  transition={{ duration: 0.8 }}
-                >
-                  {renderSectionWithErrorBoundary('cosmos', CosmosSection, { isActive: true, language: currentLang })}
-                </motion.div>
-              )}
+                  {/* Cultural Story */}
+                  <div className="max-w-4xl mx-auto mb-8">
+                    <p className="text-base md:text-lg text-white/90 leading-relaxed text-justify">
+                      {getTranslation('hero.story', currentLang)}
+                    </p>
+                  </div>
 
-              {activeSection === 'banquet' && (
-                <motion.div 
-                  id="banquet" 
-                  className="min-h-screen pt-6"
-                  initial={{ opacity: 0, x: 100 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -100 }}
-                  transition={{ duration: 0.7 }}
-                >
-                  {renderSectionWithErrorBoundary('banquet', BanquetSection, { isActive: true, language: currentLang })}
-                </motion.div>
-              )}
+                  {/* Picture Gallery */}
+                  <div className="mb-8">
+                    <div className="flex items-center justify-center space-x-3 mb-6">
+                      <ImageIcon className="w-6 h-6 text-yellow-300" />
+                      <h4 className="text-xl font-semibold text-yellow-200">
+                        {getTranslation('hero.gallery_title', currentLang)}
+                      </h4>
+                      <Eye className="w-6 h-6 text-yellow-300" />
+                    </div>
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+                      {/* Rome Image Placeholder */}
+                      <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.2, duration: 0.6 }}
+                        className="md:col-span-2 lg:col-span-1"
+                      >
+                        <div className="relative group cursor-pointer overflow-hidden rounded-xl border-2 border-orange-400/60 shadow-2xl bg-gradient-to-br from-orange-400/20 to-red-400/20">
+                          <div className="w-full h-64 flex items-center justify-center">
+                            <span className="text-white text-lg font-medium">{getTranslation('image.rome_title', currentLang)}</span>
+                          </div>
+                          <div className="p-4 bg-black/60">
+                            <h3 className="text-white font-bold text-xl mb-1">{getTranslation('image.rome_title', currentLang)}</h3>
+                            <p className="text-white/95 text-sm">{getTranslation('image.rome_desc', currentLang)}</p>
+                          </div>
+                        </div>
+                      </motion.div>
+                      
+                      {/* Macrobius Portrait Placeholder */}
+                      <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.4, duration: 0.6 }}
+                      >
+                        <div className="relative group cursor-pointer overflow-hidden rounded-xl border-2 border-yellow-400/60 shadow-xl bg-gradient-to-br from-yellow-400/20 to-orange-400/20"
+                             onClick={() => setShowAboutModal(true)}>
+                          <div className="w-full h-80 flex items-center justify-center">
+                            <span className="text-white text-lg font-medium text-center px-4">{getTranslation('image.macrobius_title', currentLang)}</span>
+                          </div>
+                          <div className="p-4 bg-black/60">
+                            <h3 className="text-white font-bold text-lg mb-1">{getTranslation('image.macrobius_title', currentLang)}</h3>
+                            <p className="text-white/90 text-sm">{getTranslation('image.macrobius_desc', currentLang)}</p>
+                          </div>
+                        </div>
+                      </motion.div>
 
-              {activeSection === 'worldmap' && (
-                <motion.div 
-                  id="worldmap" 
-                  className="min-h-screen pt-6"
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 1.2 }}
-                  transition={{ duration: 0.8 }}
-                >
-                  {renderSectionWithErrorBoundary('worldmap', WorldMapSection, { isActive: true, language: currentLang })}
-                </motion.div>
-              )}
+                      {/* Tycho & Pontanus Placeholder */}
+                      <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.6, duration: 0.6 }}
+                      >
+                        <div className="relative group cursor-pointer overflow-hidden rounded-xl border-2 border-blue-400/60 shadow-xl bg-gradient-to-br from-blue-400/20 to-purple-400/20">
+                          <div className="w-full h-80 flex items-center justify-center">
+                            <span className="text-white text-lg font-medium text-center px-4">{getTranslation('image.tycho_title', currentLang)}</span>
+                          </div>
+                          <div className="p-4 bg-black/60">
+                            <h3 className="text-white font-bold text-lg mb-1">{getTranslation('image.tycho_title', currentLang)}</h3>
+                            <p className="text-white/90 text-sm">{getTranslation('image.tycho_desc', currentLang)}</p>
+                          </div>
+                        </div>
+                      </motion.div>
+                    </div>
+                  </div>
+                </div>
 
-              {activeSection === 'quiz' && (
-                <motion.div 
-                  id="quiz" 
-                  className="min-h-screen pt-6"
-                  initial={{ opacity: 0, y: -50 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: 50 }}
-                  transition={{ duration: 0.6 }}
-                >
-                  {renderSectionWithErrorBoundary('quiz', QuizSection, { isActive: true, language: currentLang })}
-                </motion.div>
-              )}
+                {/* Action Buttons */}
+                <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+                  <button
+                    onClick={() => handleSectionChange('banquet')}
+                    className="px-6 py-3 text-lg font-semibold rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1"
+                    style={{
+                      backgroundColor: '#722F37',
+                      color: '#FFD700',
+                    }}
+                  >
+                    {getTranslation('hero.explore', currentLang)}
+                  </button>
+                  
+                  <button
+                    onClick={() => setShowAboutModal(true)}
+                    className="px-6 py-3 text-lg font-semibold rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1"
+                    style={{
+                      backgroundColor: '#722F37',
+                      color: '#FFD700',
+                    }}
+                  >
+                    {getTranslation('hero.about', currentLang)}
+                  </button>
+                </div>
+              </div>
+            </section>
+          )}
 
-              {activeSection === 'learning' && (
-                <motion.div 
-                  id="learning" 
-                  className="min-h-screen pt-6"
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 1.1 }}
-                  transition={{ duration: 0.7 }}
-                >
-                  {renderSectionWithErrorBoundary('learning', LearningSection, {})}
-                </motion.div>
-              )}
+          {/* Other Sections */}
+          {activeSection === 'search' && (
+            <div id="search" className="min-h-screen pt-6">
+              {renderSectionWithErrorBoundary('search', TextSearchSection, { isActive: true, language: currentLang })}
+            </div>
+          )}
 
-              {activeSection === 'visualizations' && (
-                <motion.div 
-                  id="visualizations" 
-                  className="min-h-screen pt-6"
-                  initial={{ opacity: 0, rotateX: 45 }}
-                  animate={{ opacity: 1, rotateX: 0 }}
-                  exit={{ opacity: 0, rotateX: -45 }}
-                  transition={{ duration: 0.8 }}
-                >
-                  {renderSectionWithErrorBoundary('visualizations', VisualizationsSection, { isActive: true, language: currentLang })}
-                </motion.div>
-              )}
+          {activeSection === 'cosmos' && (
+            <div id="cosmos" className="min-h-screen pt-6">
+              {renderSectionWithErrorBoundary('cosmos', CosmosSection, { isActive: true, language: currentLang })}
+            </div>
+          )}
 
-              {/* Enhanced AI System Sections */}
-              {activeSection === 'ai-cultural' && (
-                <motion.div 
-                  id="ai-cultural" 
-                  className="min-h-screen pt-6"
-                  initial={{ opacity: 0, scale: 0.8, rotateZ: 5 }}
-                  animate={{ opacity: 1, scale: 1, rotateZ: 0 }}
-                  exit={{ opacity: 0, scale: 1.2, rotateZ: -5 }}
-                  transition={{ duration: 0.9 }}
-                >
-                  {renderSectionWithErrorBoundary('ai-cultural', AICulturalAnalysisSection, {})}
-                </motion.div>
-              )}
+          {activeSection === 'banquet' && (
+            <div id="banquet" className="min-h-screen pt-6">
+              {renderSectionWithErrorBoundary('banquet', BanquetSection, { isActive: true, language: currentLang })}
+            </div>
+          )}
 
-              {activeSection === 'ai-learning' && (
-                <motion.div 
-                  id="ai-learning" 
-                  className="min-h-screen pt-6"
-                  initial={{ opacity: 0, x: -100, rotateY: 20 }}
-                  animate={{ opacity: 1, x: 0, rotateY: 0 }}
-                  exit={{ opacity: 0, x: 100, rotateY: -20 }}
-                  transition={{ duration: 0.8 }}
-                >
-                  {renderSectionWithErrorBoundary('ai-learning', PersonalizedLearningPathsComplete, {})}
-                </motion.div>
-              )}
+          {activeSection === 'worldmap' && (
+            <div id="worldmap" className="min-h-screen pt-6">
+              {renderSectionWithErrorBoundary('worldmap', WorldMapSection, { isActive: true, language: currentLang })}
+            </div>
+          )}
 
-              {activeSection === 'ai-tutoring' && (
-                <motion.div 
-                  id="ai-tutoring" 
-                  className="min-h-screen pt-6"
-                  initial={{ opacity: 0, y: 100, scale: 0.9 }}
-                  animate={{ opacity: 1, y: 0, scale: 1 }}
-                  exit={{ opacity: 0, y: -100, scale: 1.1 }}
-                  transition={{ duration: 0.8 }}
-                >
-                  {renderSectionWithErrorBoundary('ai-tutoring', AITutoringSystemComplete, { language: currentLang })}
-                </motion.div>
-              )}
+          {activeSection === 'quiz' && (
+            <div id="quiz" className="min-h-screen pt-6">
+              {renderSectionWithErrorBoundary('quiz', QuizSection, { isActive: true, language: currentLang })}
+            </div>
+          )}
 
-              {activeSection === 'ai-rag-assistant' && (
-                <motion.div 
-                  id="ai-rag-assistant" 
-                  className="min-h-screen pt-6"
-                  initial={{ opacity: 0, scale: 0.5, rotateZ: 45 }}
-                  animate={{ opacity: 1, scale: 1, rotateZ: 0 }}
-                  exit={{ opacity: 0, scale: 1.5, rotateZ: -45 }}
-                  transition={{ duration: 1 }}
-                >
-                  {renderSectionWithErrorBoundary('ai-rag-assistant', KIRAGAssistentSection, {})}
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
+          {activeSection === 'learning' && (
+            <div id="learning" className="min-h-screen pt-6">
+              {renderSectionWithErrorBoundary('learning', LearningSection, {})}
+            </div>
+          )}
+
+          {activeSection === 'visualizations' && (
+            <div id="visualizations" className="min-h-screen pt-6">
+              {renderSectionWithErrorBoundary('visualizations', VisualizationsSection, { isActive: true, language: currentLang })}
+            </div>
+          )}
+
+          {/* AI System Sections */}
+          {activeSection === 'ai-cultural' && (
+            <div id="ai-cultural" className="min-h-screen pt-6">
+              {renderSectionWithErrorBoundary('ai-cultural', AICulturalAnalysisSection, {})}
+            </div>
+          )}
+
+          {activeSection === 'ai-learning' && (
+            <div id="ai-learning" className="min-h-screen pt-6">
+              {renderSectionWithErrorBoundary('ai-learning', PersonalizedLearningPathsComplete, {})}
+            </div>
+          )}
+
+          {activeSection === 'ai-tutoring' && (
+            <div id="ai-tutoring" className="min-h-screen pt-6">
+              {renderSectionWithErrorBoundary('ai-tutoring', AITutoringSystemComplete, { language: currentLang })}
+            </div>
+          )}
+
+          {activeSection === 'ai-rag-assistant' && (
+            <div id="ai-rag-assistant" className="min-h-screen pt-6">
+              {renderSectionWithErrorBoundary('ai-rag-assistant', KIRAGAssistentSection, {})}
+            </div>
+          )}
         </main>
 
-        {/* 🌌 Enhanced Global Cosmic Styles */}
+        {/* About Modal */}
+        <AnimatePresence>
+          {showAboutModal && (
+            <motion.div
+              className="fixed inset-0 z-50 flex items-center justify-center p-4"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setShowAboutModal(false)}
+            >
+              <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" />
+              
+              <motion.div
+                className="relative bg-white/10 backdrop-blur-md rounded-3xl p-8 max-w-4xl mx-auto border border-white/30 shadow-2xl max-h-[90vh] overflow-y-auto"
+                initial={{ scale: 0.8, y: 50 }}
+                animate={{ scale: 1, y: 0 }}
+                exit={{ scale: 0.8, y: 50 }}
+                onClick={(e) => e.stopPropagation()}
+              >
+                <button
+                  onClick={() => setShowAboutModal(false)}
+                  className="absolute top-6 right-6 w-10 h-10 rounded-full bg-white/20 border border-white/30 flex items-center justify-center text-white/80 hover:bg-white/30 transition-all duration-300 z-10"
+                >
+                  ×
+                </button>
+
+                <div className="space-y-6">
+                  <div className="text-center">
+                    <h2 className="text-4xl font-bold text-yellow-400 mb-2">
+                      {getTranslation('modal.about_title', currentLang)}
+                    </h2>
+                    <p className="text-xl text-yellow-300/90 font-medium">
+                      {getTranslation('modal.about_subtitle', currentLang)}
+                    </p>
+                  </div>
+
+                  <div className="text-center">
+                    <button
+                      onClick={() => setShowAboutModal(false)}
+                      className="px-8 py-3 rounded-xl font-semibold transition-all duration-300"
+                      style={{
+                        backgroundColor: '#722F37',
+                        color: '#FFD700',
+                      }}
+                    >
+                      {getTranslation('modal.close', currentLang)}
+                    </button>
+                  </div>
+                </div>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* CSS Styles */}
         <style jsx global>{`
           @keyframes twinkle {
             0%, 100% { 
               opacity: 0.3; 
               transform: scale(0.8); 
             }
-            25% {
-              opacity: 0.8;
-              transform: scale(1.1);
-            }
             50% { 
               opacity: 1; 
-              transform: scale(1.3); 
+              transform: scale(1.2); 
             }
-            75% {
+          }
+
+          @keyframes moveRightToLeft {
+            0% { 
+              transform: translateX(0);
+              opacity: 0.3; 
+            }
+            25% { 
+              opacity: 0.8;
+            }
+            50% { 
+              opacity: 1;
+            }
+            75% { 
               opacity: 0.6;
-              transform: scale(1.0);
+            }
+            100% { 
+              transform: translateX(calc(-100vw - 20px));
+              opacity: 0; 
             }
           }
 
-          @keyframes cosmicPulse {
-            0%, 100% {
-              box-shadow: 0 0 5px rgba(255,255,255,0.3);
-            }
-            50% {
-              box-shadow: 0 0 20px rgba(255,255,255,0.8), 0 0 30px rgba(255,255,255,0.4);
-            }
-          }
-
-          /* Enhanced scrolling and layout */
           html {
             scroll-behavior: smooth;
           }
           
           body {
             overflow-x: hidden;
-            background: #000;
           }
           
-          /* Enhanced backdrop blur support */
-          .backdrop-blur-xl {
-            backdrop-filter: blur(24px);
-            -webkit-backdrop-filter: blur(24px);
-          }
-          
-          /* Mobile responsiveness */
           @media (max-width: 1024px) {
-            .lg\:ml-96 {
-              margin-left: 0 !important;
+            .lg\:translate-x-0 {
+              transform: translateX(0) !important;
             }
-          }
-          
-          /* Enhanced text shadows */
-          .text-shadow-md {
-            text-shadow: 0 4px 8px rgba(0,0,0,0.6);
-          }
-          
-          .drop-shadow-lg {
-            filter: drop-shadow(0 10px 8px rgba(0,0,0,0.4));
-          }
-          
-          /* Cosmic glow effects */
-          .cosmic-glow {
-            animation: cosmicPulse 4s ease-in-out infinite;
           }
         `}</style>
       </div>
