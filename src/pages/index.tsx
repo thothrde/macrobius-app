@@ -489,7 +489,7 @@ export default function MacrobiusCulturalApp() {
 
           {activeSection === 'ai-learning' && (
             <div id="ai-learning">
-              <PersonalizedLearningPathsComplete language={currentLang} />
+              <PersonalizedLearningPathsComplete />
             </div>
           )}
 
