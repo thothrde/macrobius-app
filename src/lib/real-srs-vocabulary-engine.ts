@@ -2,9 +2,10 @@
  * Real SRS (Spaced Repetition System) Vocabulary Engine
  * Authentic algorithms for Latin vocabulary training with Oracle Cloud integration
  * NO MOCK SYSTEMS - Real AI-powered spaced repetition
+ * FIXED: Error #70 - Import Error - Use MacrobiusAPI instead of enhancedApiClient
  */
 
-import { enhancedApiClient } from './enhanced-api-client-with-fallback';
+import { MacrobiusAPI } from './enhanced-api-client-with-fallback';
 
 // Real SRS Algorithm Constants (based on research)
 const SRS_CONSTANTS = {
@@ -96,12 +97,12 @@ export interface SRSCard {
 export class RealSRSEngine {
   private userId: string;
   private language: 'de' | 'en' | 'la';
-  private apiClient: typeof enhancedApiClient;
+  private apiClient: typeof MacrobiusAPI;
 
   constructor(userId: string, language: 'de' | 'en' | 'la' = 'de') {
     this.userId = userId;
     this.language = language;
-    this.apiClient = enhancedApiClient;
+    this.apiClient = MacrobiusAPI;
   }
 
   /**
@@ -146,13 +147,14 @@ export class RealSRSEngine {
   /**
    * Process review result and update SRS parameters
    * Real algorithm processing - no mock responses
+   * FIXED: Use MacrobiusAPI instead of enhancedApiClient
    */
   async processReview(cardId: string, quality: number, responseTime: number): Promise<SRSResult> {
     try {
-      // Get current card state from Oracle Cloud
-      const cardData = await this.apiClient.get(`/api/srs/cards/${cardId}`);
+      // Get current card state from Oracle Cloud using MacrobiusAPI
+      const cardResponse = await this.apiClient.vocabulary.srs(this.userId, 'get_card', cardId);
       
-      const card: SRSCard = cardData.data;
+      const card: SRSCard = cardResponse.data;
       const isCorrect = quality >= 3;
       
       // Update SRS parameters with real calculations
@@ -188,8 +190,8 @@ export class RealSRSEngine {
         masteryLevel = 'learning';
       }
       
-      // Save to Oracle Cloud
-      await this.apiClient.put(`/api/srs/cards/${cardId}`, updatedCard);
+      // Save to Oracle Cloud using MacrobiusAPI
+      await this.apiClient.vocabulary.superMemoAlgorithm(this.userId, cardId, quality);
       
       // Calculate retention rate
       const retention = Math.min(1, updatedCard.memoryStrength * (quality / 5));
@@ -225,19 +227,13 @@ export class RealSRSEngine {
   /**
    * Get cards due for review
    * Real scheduling algorithm - no mock due dates
+   * FIXED: Use MacrobiusAPI instead of enhancedApiClient
    */
   async getDueCards(limit: number = 20): Promise<SRSCard[]> {
     try {
-      const response = await this.apiClient.get('/api/srs/due-cards', {
-        params: {
-          userId: this.userId,
-          language: this.language,
-          limit,
-          dueDate: new Date().toISOString()
-        }
-      });
+      const response = await this.apiClient.vocabulary.srs(this.userId, 'get_due_cards', undefined);
       
-      return response.data.cards || [];
+      return response.data?.cards || [];
       
     } catch (error) {
       console.error('Error getting due cards:', error);
@@ -248,17 +244,17 @@ export class RealSRSEngine {
   /**
    * Add new vocabulary words to SRS system
    * Real word selection from 1,401 authentic passages
+   * FIXED: Use MacrobiusAPI instead of enhancedApiClient
    */
   async addNewWords(culturalTheme?: string, count: number = 10): Promise<SRSCard[]> {
     try {
-      const response = await this.apiClient.post('/api/srs/add-words', {
-        userId: this.userId,
-        language: this.language,
+      const response = await this.apiClient.vocabulary.createPersonalizedDeck(this.userId, {
         culturalTheme,
-        count
+        count,
+        language: this.language
       });
       
-      return response.data.cards || [];
+      return response.data?.cards || [];
       
     } catch (error) {
       console.error('Error adding new words:', error);
@@ -269,6 +265,7 @@ export class RealSRSEngine {
   /**
    * Get vocabulary statistics
    * Real analytics from user performance data
+   * FIXED: Use MacrobiusAPI instead of enhancedApiClient
    */
   async getStatistics(): Promise<{
     totalWords: number;
@@ -282,14 +279,19 @@ export class RealSRSEngine {
     streakDays: number;
   }> {
     try {
-      const response = await this.apiClient.get('/api/srs/statistics', {
-        params: {
-          userId: this.userId,
-          language: this.language
-        }
-      });
+      const response = await this.apiClient.vocabulary.getVocabularyStatistics();
       
-      return response.data;
+      return {
+        totalWords: response.data?.totalWords || 0,
+        wordsLearning: response.data?.wordsLearning || 0,
+        wordsYoung: response.data?.wordsYoung || 0,
+        wordsMature: response.data?.wordsMature || 0,
+        wordsMastered: response.data?.wordsMastered || 0,
+        dailyReviews: response.data?.dailyReviews || 0,
+        accuracy: response.data?.accuracy || 0,
+        averageResponseTime: response.data?.averageResponseTime || 0,
+        streakDays: response.data?.streakDays || 0
+      };
       
     } catch (error) {
       console.error('Error getting SRS statistics:', error);
@@ -309,6 +311,7 @@ export class RealSRSEngine {
 }
 
 // Real SRS Initialization Function
+// FIXED: Use MacrobiusAPI instead of enhancedApiClient
 export const initializeVocabulary = async (options: {
   userId: string;
   language: 'de' | 'en' | 'la';
@@ -328,15 +331,28 @@ export const initializeVocabulary = async (options: {
     const srsEngine = new RealSRSEngine(userId, language);
     
     // Get initial vocabulary from Oracle Cloud (1,401 authentic passages)
-    const response = await enhancedApiClient.post('/api/vocabulary/initialize', {
-      userId,
-      language,
-      difficulty,
-      culturalThemes,
-      initialWordCount
-    });
+    const response = await MacrobiusAPI.vocabulary.getVocabularyWords(difficulty, initialWordCount);
     
-    const initialWords = response.data.words;
+    const initialWords: VocabularyWord[] = response.data?.words?.map((word: any) => ({
+      id: word.id?.toString() || '',
+      latin: word.latin_word || '',
+      german: word.german_translation || '',
+      english: word.english_translation || '',
+      culturalTheme: word.cultural_theme || '',
+      difficulty: word.difficulty_rating || 1,
+      frequency: word.frequency || 1,
+      macrobiusPassage: word.passages_found?.[0]?.latin_text || '',
+      grammaticalInfo: {
+        type: word.part_of_speech || '',
+        gender: word.gender,
+        case: word.case,
+        number: word.number,
+        tense: word.tense
+      },
+      etymology: word.etymology || '',
+      modernUsage: word.modern_cognates?.join(', ') || '',
+      memoryAids: word.usage_examples || []
+    })) || [];
     
     // Create initial SRS cards
     const cards = initialWords.map((word: VocabularyWord) => ({
@@ -353,12 +369,17 @@ export const initializeVocabulary = async (options: {
       memoryStrength: 0
     }));
     
-    // Save to Oracle Cloud
-    await enhancedApiClient.post('/api/srs/cards/batch', { cards });
+    // Save to Oracle Cloud using MacrobiusAPI
+    await MacrobiusAPI.vocabulary.createPersonalizedDeck(userId, {
+      cards,
+      language,
+      difficulty,
+      culturalThemes
+    });
     
     return {
       success: true,
-      message: `Vocabulary initialized with ${initialWords.length} words`,
+      message: `Vocabulary initialized with ${initialWords.length} words from authentic Macrobius passages`,
       srsEngine,
       initialWords
     };
@@ -375,6 +396,7 @@ export const initializeVocabulary = async (options: {
 };
 
 // Real Vocabulary Session Starter
+// FIXED: Use MacrobiusAPI instead of enhancedApiClient
 export const startVocabularySession = async (options: {
   userId: string;
   language: 'de' | 'en' | 'la';
@@ -422,8 +444,15 @@ export const startVocabularySession = async (options: {
       }
     };
     
-    // Save session to Oracle Cloud
-    await enhancedApiClient.post('/api/vocabulary/sessions', session);
+    // Save session to Oracle Cloud using MacrobiusAPI
+    await MacrobiusAPI.analytics.updateQuizPerformance({
+      userId,
+      sessionId: session.id,
+      sessionType,
+      culturalTheme,
+      timestamp: session.startTime.getTime(),
+      type: 'vocabulary_session_start'
+    });
     
     return {
       success: true,
@@ -465,3 +494,67 @@ export const startVocabularySession = async (options: {
 
 // Export SRS Engine as default
 export default RealSRSEngine;
+
+/**
+ * Convenience function to replace mock SRS systems
+ * Use this in components to transition from mock to real AI
+ */
+export async function performVocabularyTraining(
+  userId: string,
+  language: 'de' | 'en' | 'la' = 'de',
+  options?: {
+    sessionType?: 'review' | 'learning' | 'reinforcement';
+    culturalTheme?: string;
+    maxCards?: number;
+  }
+): Promise<{
+  success: boolean;
+  session: VocabularySession;
+  dueCards: SRSCard[];
+  newWords: VocabularyWord[];
+}> {
+  return startVocabularySession({
+    userId,
+    language,
+    sessionType: options?.sessionType || 'review',
+    culturalTheme: options?.culturalTheme,
+    maxCards: options?.maxCards || 20
+  });
+}
+
+/**
+ * Real SRS review processing
+ * FIXED: Use MacrobiusAPI for authentic spaced repetition
+ */
+export async function processVocabularyReview(
+  userId: string,
+  cardId: string,
+  quality: number,
+  responseTime: number,
+  language: 'de' | 'en' | 'la' = 'de'
+): Promise<SRSResult> {
+  const srsEngine = new RealSRSEngine(userId, language);
+  return srsEngine.processReview(cardId, quality, responseTime);
+}
+
+/**
+ * Get vocabulary statistics with real analytics
+ * FIXED: Use MacrobiusAPI for authentic performance data
+ */
+export async function getVocabularyStatistics(
+  userId: string,
+  language: 'de' | 'en' | 'la' = 'de'
+): Promise<{
+  totalWords: number;
+  wordsLearning: number;
+  wordsYoung: number;
+  wordsMature: number;
+  wordsMastered: number;
+  dailyReviews: number;
+  accuracy: number;
+  averageResponseTime: number;
+  streakDays: number;
+}> {
+  const srsEngine = new RealSRSEngine(userId, language);
+  return srsEngine.getStatistics();
+}
