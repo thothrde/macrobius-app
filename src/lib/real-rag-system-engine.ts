@@ -4,7 +4,7 @@
  * Connects to Oracle Cloud backend with 1,401 authentic Latin passages
  */
 
-import { enhancedApiClient } from './enhanced-api-client-with-fallback';
+import { MacrobiusAPI } from './enhanced-api-client-with-fallback';
 
 export interface RAGQuery {
   question: string;
@@ -53,7 +53,7 @@ export interface RAGContext {
 class RealRAGSystemEngine {
   private baseUrl: string;
   private contexts: Map<string, RAGContext> = new Map();
-  private apiClient = enhancedApiClient;
+  private apiClient = MacrobiusAPI;
 
   constructor() {
     this.baseUrl = 'http://152.70.184.232:8080';
