@@ -199,34 +199,39 @@ class RealGrammarAnalysisEngine {
       }
       
       // Perform comprehensive grammatical analysis
-      const response = await this.apiClient.post('/api/grammar/analyze-sentence', {
-        text: request.text,
-        analysisOptions: {
-          includeAnalysis: request.includeAnalysis,
-          includeSyntax: request.includeSyntax,
-          includeRhetoric: request.includeRhetoric,
-          includeCultural: request.includeCultural,
-          userLevel: request.userLevel,
-          focus: request.focus
-        },
-        enhancedProcessing: true,
-        macrobiusContext: true // Use Macrobius-specific linguistic patterns
+      const response = await this.apiClient.request('/api/grammar/analyze-sentence', {
+        method: 'POST',
+        body: {
+          text: request.text,
+          analysisOptions: {
+            includeAnalysis: request.includeAnalysis,
+            includeSyntax: request.includeSyntax,
+            includeRhetoric: request.includeRhetoric,
+            includeCultural: request.includeCultural,
+            userLevel: request.userLevel,
+            focus: request.focus
+          },
+          enhancedProcessing: true,
+          macrobiusContext: true // Use Macrobius-specific linguistic patterns
+        }
       });
       
+      const responseData = (response as any).data;
+      
       // Process tokenization and word-level analysis
-      const wordAnalyses = await this.processWordAnalyses(response.data.word_analyses);
+      const wordAnalyses = await this.processWordAnalyses(responseData.word_analyses);
       
       // Generate syntax tree
-      const syntaxTree = await this.generateSyntaxTree(response.data.dependencies, wordAnalyses);
+      const syntaxTree = await this.generateSyntaxTree(responseData.dependencies, wordAnalyses);
       
       // Extract rhetorical devices
       const rhetoricalDevices = request.includeRhetoric 
-        ? await this.extractRhetoricalDevices(request.text, response.data.rhetoric)
+        ? await this.extractRhetoricalDevices(request.text, responseData.rhetoric)
         : [];
       
       // Get cultural context
       const culturalContext = request.includeCultural
-        ? await this.extractCulturalContext(request.text, response.data.cultural_analysis)
+        ? await this.extractCulturalContext(request.text, responseData.cultural_analysis)
         : { theme: '', historicalBackground: '', literarySignificance: '' };
       
       // Calculate difficulty metrics
@@ -237,8 +242,8 @@ class RealGrammarAnalysisEngine {
       
       const analysis: SentenceAnalysis = {
         sentence: request.text,
-        passageId: response.data.passage_id,
-        tokenization: response.data.tokens,
+        passageId: responseData.passage_id,
+        tokenization: responseData.tokens,
         wordAnalyses,
         syntaxTree,
         rhetoricalDevices,
@@ -296,59 +301,64 @@ class RealGrammarAnalysisEngine {
    * Generate a single exercise from passage content
    */
   private async generateSingleExercise(params: any): Promise<GrammarExercise> {
-    const response = await this.apiClient.post('/api/grammar/generate-exercise', {
-      exerciseType: params.exerciseType,
-      passage: {
-        id: params.passage.id,
-        content: params.passage.content,
-        culturalTheme: params.passage.culturalTheme
-      },
-      targetConcepts: params.focusConcepts,
-      difficulty: params.difficulty,
-      userLevel: params.progressContext?.currentLevel || 'intermediate',
-      personalization: {
-        weakAreas: params.progressContext?.weakAreas || [],
-        masteredConcepts: params.progressContext?.masteredConcepts || []
+    const response = await this.apiClient.request('/api/grammar/generate-exercise', {
+      method: 'POST',
+      body: {
+        exerciseType: params.exerciseType,
+        passage: {
+          id: params.passage.id,
+          content: params.passage.content,
+          culturalTheme: params.passage.culturalTheme
+        },
+        targetConcepts: params.focusConcepts,
+        difficulty: params.difficulty,
+        userLevel: params.progressContext?.currentLevel || 'intermediate',
+        personalization: {
+          weakAreas: params.progressContext?.weakAreas || [],
+          masteredConcepts: params.progressContext?.masteredConcepts || []
+        }
       }
     });
     
+    const responseData = (response as any).data;
+    
     // Generate pedagogical hints
     const hints = await this.generatePedagogicalHints(
-      response.data.exercise_content,
+      responseData.exercise_content,
       params.focusConcepts,
       params.difficulty
     );
     
     // Identify common mistakes
     const commonMistakes = await this.identifyCommonMistakes(
-      response.data.exercise_content,
+      responseData.exercise_content,
       params.exerciseType
     );
     
     return {
       id: `exercise_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
       type: params.exerciseType,
-      title: response.data.title,
-      instruction: response.data.instruction,
+      title: responseData.title,
+      instruction: responseData.instruction,
       content: {
-        text: response.data.content.text,
-        targetWords: response.data.content.target_words,
-        blanks: response.data.content.blanks
+        text: responseData.content.text,
+        targetWords: responseData.content.target_words,
+        blanks: responseData.content.blanks
       },
       solution: {
-        answer: response.data.solution.answer,
-        explanation: response.data.solution.explanation,
-        alternativeAnswers: response.data.solution.alternatives
+        answer: responseData.solution.answer,
+        explanation: responseData.solution.explanation,
+        alternativeAnswers: responseData.solution.alternatives
       },
       hints,
       difficulty: params.difficulty,
-      learningObjectives: response.data.learning_objectives,
+      learningObjectives: responseData.learning_objectives,
       source: {
         passageId: params.passage.id,
         culturalTheme: params.passage.culturalTheme,
         citation: `${params.passage.workType} ${params.passage.bookNumber}.${params.passage.chapterNumber}`
       },
-      relatedConcepts: response.data.related_concepts,
+      relatedConcepts: responseData.related_concepts,
       commonMistakes
     };
   }
@@ -365,21 +375,26 @@ class RealGrammarAnalysisEngine {
       }
       
       // Generate lesson structure
-      const response = await this.apiClient.post('/api/grammar/create-lesson', {
-        topic,
-        difficulty,
-        contentSource: 'macrobius_corpus',
-        includeAuthentic: true,
-        includeCultural: true,
-        adaptiveContent: true
+      const response = await this.apiClient.request('/api/grammar/create-lesson', {
+        method: 'POST',
+        body: {
+          topic,
+          difficulty,
+          contentSource: 'macrobius_corpus',
+          includeAuthentic: true,
+          includeCultural: true,
+          adaptiveContent: true
+        }
       });
+      
+      const responseData = (response as any).data;
       
       // Generate authentic examples from Macrobius passages
       const examples = await this.generateAuthenticExamples(topic, difficulty);
       
       // Create exercises for each section
       const sections = await Promise.all(
-        response.data.sections.map(async (section: any) => ({
+        responseData.sections.map(async (section: any) => ({
           title: section.title,
           content: section.content,
           examples: examples.filter((ex: any) => ex.relevantToSection === section.title),
@@ -399,13 +414,13 @@ class RealGrammarAnalysisEngine {
       
       const lesson: GrammarLesson = {
         id: `lesson_${topic}_${difficulty}`,
-        title: response.data.title,
-        description: response.data.description,
+        title: responseData.title,
+        description: responseData.description,
         difficulty,
-        prerequisites: response.data.prerequisites,
-        learningObjectives: response.data.learning_objectives,
+        prerequisites: responseData.prerequisites,
+        learningObjectives: responseData.learning_objectives,
         sections,
-        assessmentCriteria: response.data.assessment_criteria,
+        assessmentCriteria: responseData.assessment_criteria,
         culturalConnections
       };
       
@@ -431,32 +446,37 @@ class RealGrammarAnalysisEngine {
     improvementSuggestions: string[];
   }> {
     try {
-      const response = await this.apiClient.post('/api/grammar/evaluate-response', {
-        exerciseId,
-        userResponse,
-        userId,
-        evaluationCriteria: {
-          accuracy: 0.4,
-          understanding: 0.3,
-          explanation: 0.3
-        },
-        provideDetailedFeedback: true
+      const response = await this.apiClient.request('/api/grammar/evaluate-response', {
+        method: 'POST',
+        body: {
+          exerciseId,
+          userResponse,
+          userId,
+          evaluationCriteria: {
+            accuracy: 0.4,
+            understanding: 0.3,
+            explanation: 0.3
+          },
+          provideDetailedFeedback: true
+        }
       });
+      
+      const responseData = (response as any).data;
       
       // Update user progress
       await this.updateUserProgress(userId, {
         exerciseId,
-        performance: response.data.score,
-        conceptsTested: response.data.concepts_tested,
-        mistakes: response.data.mistakes
+        performance: responseData.score,
+        conceptsTested: responseData.concepts_tested,
+        mistakes: responseData.mistakes
       });
       
       return {
-        isCorrect: response.data.is_correct,
-        score: response.data.score,
-        feedback: response.data.feedback,
-        detailedAnalysis: response.data.detailed_analysis,
-        improvementSuggestions: response.data.improvement_suggestions
+        isCorrect: responseData.is_correct,
+        score: responseData.score,
+        feedback: responseData.feedback,
+        detailedAnalysis: responseData.detailed_analysis,
+        improvementSuggestions: responseData.improvement_suggestions
       };
       
     } catch (error) {
@@ -478,19 +498,24 @@ class RealGrammarAnalysisEngine {
     try {
       const progress = await this.getUserProgress(userId);
       
-      const response = await this.apiClient.post('/api/grammar/personalized-study-plan', {
-        userId,
-        currentProgress: progress,
-        learningPreferences: {
-          preferredDifficulty: progress.currentLevel,
-          weakAreas: progress.weakAreas.map(area => area.concept),
-          studyTimeAvailable: 30 // minutes per day
+      const response = await this.apiClient.request('/api/grammar/personalized-study-plan', {
+        method: 'POST',
+        body: {
+          userId,
+          currentProgress: progress,
+          learningPreferences: {
+            preferredDifficulty: progress.currentLevel,
+            weakAreas: progress.weakAreas.map(area => area.concept),
+            studyTimeAvailable: 30 // minutes per day
+          }
         }
       });
       
+      const responseData = (response as any).data;
+      
       // Generate recommended lessons
       const recommendedLessons = await Promise.all(
-        response.data.recommended_topics.map((topic: string) => 
+        responseData.recommended_topics.map((topic: string) => 
           this.createGrammarLesson(topic, progress.currentLevel)
         )
       );
@@ -509,8 +534,8 @@ class RealGrammarAnalysisEngine {
         currentLevel: progress.currentLevel,
         recommendedLessons,
         priorityExercises,
-        weeklyGoals: response.data.weekly_goals,
-        estimatedTimeToComplete: response.data.estimated_completion_time
+        weeklyGoals: responseData.weekly_goals,
+        estimatedTimeToComplete: responseData.estimated_completion_time
       };
       
     } catch (error) {
@@ -552,18 +577,23 @@ class RealGrammarAnalysisEngine {
    * Generate syntax tree representation
    */
   private async generateSyntaxTree(dependencies: any[], wordAnalyses: LatinGrammarAnalysis[]) {
-    const response = await this.apiClient.post('/api/grammar/generate-syntax-tree', {
-      dependencies,
-      wordAnalyses: wordAnalyses.map(w => ({
-        word: w.word,
-        pos: w.partOfSpeech,
-        role: w.syntacticRole
-      }))
+    const response = await this.apiClient.request('/api/grammar/generate-syntax-tree', {
+      method: 'POST',
+      body: {
+        dependencies,
+        wordAnalyses: wordAnalyses.map(w => ({
+          word: w.word,
+          pos: w.partOfSpeech,
+          role: w.syntacticRole
+        }))
+      }
     });
     
+    const responseData = (response as any).data;
+    
     return {
-      structure: response.data.tree_structure,
-      clauses: response.data.clauses.map((clause: any) => ({
+      structure: responseData.tree_structure,
+      clauses: responseData.clauses.map((clause: any) => ({
         type: clause.type,
         words: clause.words,
         function: clause.function
@@ -575,14 +605,19 @@ class RealGrammarAnalysisEngine {
    * Extract rhetorical devices from text
    */
   private async extractRhetoricalDevices(text: string, rhetoricData: any) {
-    const response = await this.apiClient.post('/api/grammar/extract-rhetoric', {
-      text,
-      rhetoricData,
-      includeClassical: true,
-      macrobiusSpecific: true
+    const response = await this.apiClient.request('/api/grammar/extract-rhetoric', {
+      method: 'POST',
+      body: {
+        text,
+        rhetoricData,
+        includeClassical: true,
+        macrobiusSpecific: true
+      }
     });
     
-    return response.data.devices.map((device: any) => ({
+    const responseData = (response as any).data;
+    
+    return responseData.devices.map((device: any) => ({
       device: device.name,
       location: device.location,
       explanation: device.explanation,
@@ -594,17 +629,22 @@ class RealGrammarAnalysisEngine {
    * Extract cultural context
    */
   private async extractCulturalContext(text: string, culturalData: any) {
-    const response = await this.apiClient.post('/api/grammar/cultural-context', {
-      text,
-      culturalData,
-      includeHistorical: true,
-      includeLiterary: true
+    const response = await this.apiClient.request('/api/grammar/cultural-context', {
+      method: 'POST',
+      body: {
+        text,
+        culturalData,
+        includeHistorical: true,
+        includeLiterary: true
+      }
     });
     
+    const responseData = (response as any).data;
+    
     return {
-      theme: response.data.theme,
-      historicalBackground: response.data.historical_background,
-      literarySignificance: response.data.literary_significance
+      theme: responseData.theme,
+      historicalBackground: responseData.historical_background,
+      literarySignificance: responseData.literary_significance
     };
   }
 
@@ -628,14 +668,19 @@ class RealGrammarAnalysisEngine {
    * Generate learning points from analysis
    */
   private async generateLearningPoints(wordAnalyses: LatinGrammarAnalysis[], syntaxTree: any, userLevel: string) {
-    const response = await this.apiClient.post('/api/grammar/learning-points', {
-      wordAnalyses: wordAnalyses.slice(0, 10), // Limit for API efficiency
-      syntaxTree,
-      userLevel,
-      maxPoints: 5
+    const response = await this.apiClient.request('/api/grammar/learning-points', {
+      method: 'POST',
+      body: {
+        wordAnalyses: wordAnalyses.slice(0, 10), // Limit for API efficiency
+        syntaxTree,
+        userLevel,
+        maxPoints: 5
+      }
     });
     
-    return response.data.learning_points.map((point: any) => ({
+    const responseData = (response as any).data;
+    
+    return responseData.learning_points.map((point: any) => ({
       concept: point.concept,
       explanation: point.explanation,
       examples: point.examples,
@@ -650,8 +695,10 @@ class RealGrammarAnalysisEngine {
     }
     
     try {
-      const response = await this.apiClient.get(`/api/grammar/user-progress/${userId}`);
-      const progress = response.data;
+      const response = await this.apiClient.request(`/api/grammar/user-progress/${userId}`, {
+        method: 'GET'
+      });
+      const progress = (response as any).data;
       this.userProgress.set(userId, progress);
       return progress;
     } catch (error) {
@@ -670,16 +717,19 @@ class RealGrammarAnalysisEngine {
   }
   
   private async selectOptimalPassages(request: ExerciseGenerationRequest, progress?: GrammarProgress) {
-    const response = await this.apiClient.post('/api/grammar/select-passages', {
-      topic: request.topic,
-      difficulty: request.difficulty,
-      count: request.count,
-      culturalPreference: request.passagePreference,
-      avoidTopics: request.avoidTopics,
-      userProgress: progress
+    const response = await this.apiClient.request('/api/grammar/select-passages', {
+      method: 'POST',
+      body: {
+        topic: request.topic,
+        difficulty: request.difficulty,
+        count: request.count,
+        culturalPreference: request.passagePreference,
+        avoidTopics: request.avoidTopics,
+        userProgress: progress
+      }
     });
     
-    return response.data.passages;
+    return (response as any).data.passages;
   }
   
   private difficultyToNumber(difficulty: string): number {
