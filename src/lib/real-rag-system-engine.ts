@@ -211,7 +211,7 @@ class RealRAGSystemEngine {
    * Extract cultural insights from passages
    */
   private async extractCulturalInsights(passages: any[], language: string): Promise<string[]> {
-    const themes = [...new Set(passages.map(p => p.culturalTheme))];
+    const themes = Array.from(new Set(passages.map(p => p.culturalTheme)));
     const insights: string[] = [];
     
     for (const theme of themes.slice(0, 2)) {
@@ -330,8 +330,8 @@ class RealRAGSystemEngine {
       return this.generateFallbackResponse(query, new Error('No passages')).answer;
     }
     
-    const themes = [...new Set(passages.map(p => p.culturalTheme))];
-    const works = [...new Set(passages.map(p => p.workType))];
+    const themes = Array.from(new Set(passages.map(p => p.culturalTheme)));
+    const works = Array.from(new Set(passages.map(p => p.workType)));
     
     const fallbackTexts = {
       de: `Basierend auf ${passages.length} Passagen aus ${works.join(' und ')} zu den Themen ${themes.join(', ')}, hier ist eine Antwort auf Ihre Frage: ${query.question}`,
@@ -346,8 +346,8 @@ class RealRAGSystemEngine {
    * Generate fallback related questions
    */
   private generateFallbackRelatedQuestions(query: RAGQuery, passages: any[]): string[] {
-    const themes = [...new Set(passages.map(p => p.culturalTheme))];
-    const works = [...new Set(passages.map(p => p.workType))];
+    const themes = Array.from(new Set(passages.map(p => p.culturalTheme)));
+    const works = Array.from(new Set(passages.map(p => p.workType)));
     
     const questionTemplates = {
       de: [
@@ -374,7 +374,7 @@ class RealRAGSystemEngine {
    * Generate fallback cultural insights
    */
   private generateFallbackInsights(passages: any[], language: string): string[] {
-    const themes = [...new Set(passages.map(p => p.culturalTheme))];
+    const themes = Array.from(new Set(passages.map(p => p.culturalTheme)));
     
     const insightTemplates = {
       de: themes.map(theme => `${theme} in der römischen Kultur zeigt wichtige Aspekte des antiken Lebens.`),
