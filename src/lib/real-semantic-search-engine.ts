@@ -3,6 +3,7 @@
  * Replaces all mock semantic search with genuine vector similarity calculations
  * Connects to Oracle Cloud backend for authentic Latin text processing
  * FIXED: Error #67 - API Method Integration - Replace ALL generic HTTP methods with proper MacrobiusAPI calls
+ * FIXED: Error #68 - Type Mismatch - Correct SearchFilters interface usage in getContext()
  */
 
 import { MacrobiusAPI } from './enhanced-api-client-with-fallback';
@@ -309,15 +310,19 @@ class RealSemanticSearchEngine {
 
   /**
    * Get surrounding context for passages
-   * FIXED: Use passages API instead of generic GET
+   * FIXED: Error #68 - Use proper SearchFilters interface properties
    */
   private async getContext(result: any) {
     try {
-      // Use the passages API to get context
-      const response = await this.apiClient.passages.searchPassages(result.id, {
-        includeContext: true,
-        contextBefore: 100,
-        contextAfter: 100
+      // Use the passages API with proper SearchFilters interface
+      const contextQuery = `${result.workType} ${result.bookNumber}.${result.chapterNumber}`;
+      const response = await this.apiClient.passages.searchPassages(contextQuery, {
+        work_type: result.workType,
+        book_number: result.bookNumber,
+        chapter_number: result.chapterNumber,
+        cultural_theme: result.culturalTheme,
+        sort_by: 'relevance',
+        limit: 1
       });
 
       const passage = response.data?.passages?.[0];
