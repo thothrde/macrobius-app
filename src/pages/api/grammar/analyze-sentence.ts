@@ -411,7 +411,7 @@ class LatinGrammarAnalyzer {
     return {
       identifiedPatterns: patterns,
       stylistics: {
-        register: sentence.length > 50 ? 'formal' : 'neutral',
+        register: sentence.length > 50 ? 'formal' : 'informal',
         literaryDevices: patterns.length > 2 ? ['complex syntax'] : [],
         rhetoricalFeatures: words.some(w => w.morphology.case === 'vocative') ? ['direct address'] : []
       },
