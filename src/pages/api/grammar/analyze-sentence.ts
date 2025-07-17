@@ -247,9 +247,9 @@ class LatinGrammarAnalyzer {
       }
     };
 
-    // Analyze verbs
-    if (this.LATIN_MORPHOLOGY.verbs[lowerWord]) {
-      const verbData = this.LATIN_MORPHOLOGY.verbs[lowerWord];
+    // Analyze verbs - Fixed: Use 'in' operator for proper type safety
+    if (lowerWord in this.LATIN_MORPHOLOGY.verbs) {
+      const verbData = this.LATIN_MORPHOLOGY.verbs[lowerWord as keyof typeof this.LATIN_MORPHOLOGY.verbs];
       analysis = {
         ...analysis,
         lemma: verbData.lemma,
@@ -273,9 +273,9 @@ class LatinGrammarAnalyzer {
       };
     }
     
-    // Analyze nouns
-    else if (this.LATIN_MORPHOLOGY.nouns[lowerWord]) {
-      const nounData = this.LATIN_MORPHOLOGY.nouns[lowerWord];
+    // Analyze nouns - Fixed: Use 'in' operator for proper type safety
+    else if (lowerWord in this.LATIN_MORPHOLOGY.nouns) {
+      const nounData = this.LATIN_MORPHOLOGY.nouns[lowerWord as keyof typeof this.LATIN_MORPHOLOGY.nouns];
       analysis = {
         ...analysis,
         lemma: lowerWord,
