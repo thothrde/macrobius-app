@@ -145,7 +145,7 @@ function generateIntelligentFallback(
     }
   };
 
-  // Difficulty-based question pools
+  // Difficulty-based question pools with all question types
   const questionPools = {
     beginner: {
       'multiple-choice': {
@@ -178,6 +178,72 @@ function generateIntelligentFallback(
             { id: "d", text: "Mercatura", isCorrect: false, explanation: "Negotia cessabant." }
           ],
           explanation: "Saturnalia nota erant propter commutationem munerum et inversionem socialem."
+        }
+      },
+      'grammar': {
+        de: {
+          question: "Welcher Kasus wird für das direkte Objekt im Lateinischen verwendet?",
+          options: [
+            { id: "a", text: "Akkusativ", isCorrect: true, explanation: "Der Akkusativ ist der Kasus des direkten Objekts." },
+            { id: "b", text: "Nominativ", isCorrect: false, explanation: "Der Nominativ ist der Kasus des Subjekts." },
+            { id: "c", text: "Genitiv", isCorrect: false, explanation: "Der Genitiv zeigt Besitz oder Zugehörigkeit an." },
+            { id: "d", text: "Dativ", isCorrect: false, explanation: "Der Dativ ist der Kasus des indirekten Objekts." }
+          ],
+          explanation: "Der Akkusativ kennzeichnet das direkte Objekt der Handlung."
+        },
+        en: {
+          question: "Which case is used for the direct object in Latin?",
+          options: [
+            { id: "a", text: "Accusative", isCorrect: true, explanation: "The accusative case marks the direct object." },
+            { id: "b", text: "Nominative", isCorrect: false, explanation: "The nominative case marks the subject." },
+            { id: "c", text: "Genitive", isCorrect: false, explanation: "The genitive case shows possession or relationship." },
+            { id: "d", text: "Dative", isCorrect: false, explanation: "The dative case marks the indirect object." }
+          ],
+          explanation: "The accusative case identifies the direct object of the action."
+        },
+        la: {
+          question: "Quis casus adhibetur pro obiecto directo in lingua Latina?",
+          options: [
+            { id: "a", text: "Accusativus", isCorrect: true, explanation: "Accusativus casus obiectum directum significat." },
+            { id: "b", text: "Nominativus", isCorrect: false, explanation: "Nominativus casus subiectum significat." },
+            { id: "c", text: "Genitivus", isCorrect: false, explanation: "Genitivus casus possessionem vel relationem ostendit." },
+            { id: "d", text: "Dativus", isCorrect: false, explanation: "Dativus casus obiectum indirectum significat." }
+          ],
+          explanation: "Accusativus casus obiectum directum actionis identificat."
+        }
+      },
+      'translation': {
+        de: {
+          question: "Übersetzen Sie: 'Puella librum legit'",
+          correctAnswer: "Das Mädchen liest das Buch",
+          explanation: "Eine einfache lateinische Sentence mit Subjekt-Objekt-Verb Struktur."
+        },
+        en: {
+          question: "Translate: 'Puella librum legit'",
+          correctAnswer: "The girl reads the book",
+          explanation: "A simple Latin sentence with Subject-Object-Verb structure."
+        },
+        la: {
+          question: "Vertite: 'Puella librum legit'",
+          correctAnswer: "Puella librum legit",
+          explanation: "Sententia simplex Latina cum structura Subiectum-Obiectum-Verbum."
+        }
+      },
+      'fill-blank': {
+        de: {
+          question: "Füllen Sie die Lücke: 'Homo sapiens _____ animal rationale.'",
+          correctAnswer: "est",
+          explanation: "'Est' ist die 3. Person Singular von 'esse' (sein)."
+        },
+        en: {
+          question: "Fill in the blank: 'Homo sapiens _____ animal rationale.'",
+          correctAnswer: "est",
+          explanation: "'Est' is the 3rd person singular of 'esse' (to be)."
+        },
+        la: {
+          question: "Complete lacunam: 'Homo sapiens _____ animal rationale.'",
+          correctAnswer: "est",
+          explanation: "'Est' tertia persona singularis verbi 'esse'."
         }
       }
     },
@@ -213,6 +279,72 @@ function generateIntelligentFallback(
           ],
           explanation: "Macrobius mediator vitalis erat eruditionis classicae in Antiquitate Sera."
         }
+      },
+      'grammar': {
+        de: {
+          question: "Was ist ein Ablativus Absolutus?",
+          options: [
+            { id: "a", text: "Eine unabhängige Partizipialkonstruktion", isCorrect: true, explanation: "Der Ablativus Absolutus ist grammatisch unabhängig vom Hauptsatz." },
+            { id: "b", text: "Ein abhängiger Genitiv", isCorrect: false, explanation: "Der Ablativus Absolutus steht im Ablativ, nicht im Genitiv." },
+            { id: "c", text: "Ein Akkusativ mit Infinitiv", isCorrect: false, explanation: "Das ist eine andere lateinische Konstruktion." },
+            { id: "d", text: "Ein Vokativ", isCorrect: false, explanation: "Der Vokativ ist der Anredefall." }
+          ],
+          explanation: "Der Ablativus Absolutus drückt Nebenumstände aus."
+        },
+        en: {
+          question: "What is an Ablativus Absolutus?",
+          options: [
+            { id: "a", text: "An independent participial construction", isCorrect: true, explanation: "The Ablativus Absolutus is grammatically independent from the main clause." },
+            { id: "b", text: "A dependent genitive", isCorrect: false, explanation: "The Ablativus Absolutus uses ablative case, not genitive." },
+            { id: "c", text: "An accusative with infinitive", isCorrect: false, explanation: "That's a different Latin construction." },
+            { id: "d", text: "A vocative", isCorrect: false, explanation: "The vocative is the case of address." }
+          ],
+          explanation: "The Ablativus Absolutus expresses attendant circumstances."
+        },
+        la: {
+          question: "Quid est Ablativus Absolutus?",
+          options: [
+            { id: "a", text: "Constructio participialis independens", isCorrect: true, explanation: "Ablativus Absolutus grammatice independens est a sententia principali." },
+            { id: "b", text: "Genitivus dependens", isCorrect: false, explanation: "Ablativus Absolutus casu ablativo, non genitivo utitur." },
+            { id: "c", text: "Accusativus cum infinitivo", isCorrect: false, explanation: "Haec alia constructio Latina est." },
+            { id: "d", text: "Vocativus", isCorrect: false, explanation: "Vocativus casus allocutionis est." }
+          ],
+          explanation: "Ablativus Absolutus circumstantias concomitantes exprimit."
+        }
+      },
+      'translation': {
+        de: {
+          question: "Übersetzen Sie: 'Caesar Gallos vicit'",
+          correctAnswer: "Caesar besiegte die Gallier",
+          explanation: "Perfekt von 'vincere' mit Akkusativobjekt."
+        },
+        en: {
+          question: "Translate: 'Caesar Gallos vicit'",
+          correctAnswer: "Caesar conquered the Gauls",
+          explanation: "Perfect tense of 'vincere' with accusative object."
+        },
+        la: {
+          question: "Vertite: 'Caesar Gallos vicit'",
+          correctAnswer: "Caesar Gallos vicit",
+          explanation: "Tempus perfectum verbi 'vincere' cum obiecto accusativo."
+        }
+      },
+      'fill-blank': {
+        de: {
+          question: "Ergänzen Sie: 'Magistri _____ docent.' (Die Lehrer lehren die Schüler)",
+          correctAnswer: "discipulos",
+          explanation: "'Discipulos' ist Akkusativ Plural von 'discipulus'."
+        },
+        en: {
+          question: "Complete: 'Magistri _____ docent.' (The teachers teach the students)",
+          correctAnswer: "discipulos",
+          explanation: "'Discipulos' is accusative plural of 'discipulus'."
+        },
+        la: {
+          question: "Complete: 'Magistri _____ docent.' (Magistri discipulos docent)",
+          correctAnswer: "discipulos",
+          explanation: "'Discipulos' accusativus pluralis nominis 'discipulus'."
+        }
       }
     },
     advanced: {
@@ -246,6 +378,72 @@ function generateIntelligentFallback(
             { id: "d", text: "Per methodos empiricas", isCorrect: false, explanation: "Accessus Macrobii metaphysicus et allegoricus est." }
           ],
           explanation: "Commentarium Macrobii familiaritatem profundam cum metaphysica et cosmologia Neoplantonica ostendit."
+        }
+      },
+      'grammar': {
+        de: {
+          question: "Was ist der Unterschied zwischen Gerundium und Gerundivum?",
+          options: [
+            { id: "a", text: "Gerundium ist ein Verbalsubstantiv, Gerundivum ein Verbaladjektiv", isCorrect: true, explanation: "Gerundium fungiert als Substantiv, Gerundivum als Adjektiv mit passiver Bedeutung." },
+            { id: "b", text: "Beide sind identisch", isCorrect: false, explanation: "Sie haben unterschiedliche grammatische Funktionen." },
+            { id: "c", text: "Gerundivum ist nur im Plural", isCorrect: false, explanation: "Gerundivum kann in allen Numeri stehen." },
+            { id: "d", text: "Gerundium ist nur im Nominativ", isCorrect: false, explanation: "Gerundium kann in verschiedenen Kasus stehen." }
+          ],
+          explanation: "Gerundium und Gerundivum sind verschiedene Verbalformen mit unterschiedlichen Funktionen."
+        },
+        en: {
+          question: "What is the difference between Gerund and Gerundive?",
+          options: [
+            { id: "a", text: "Gerund is a verbal noun, Gerundive is a verbal adjective", isCorrect: true, explanation: "Gerund functions as a noun, Gerundive as an adjective with passive meaning." },
+            { id: "b", text: "Both are identical", isCorrect: false, explanation: "They have different grammatical functions." },
+            { id: "c", text: "Gerundive is only plural", isCorrect: false, explanation: "Gerundive can be in all numbers." },
+            { id: "d", text: "Gerund is only nominative", isCorrect: false, explanation: "Gerund can be in various cases." }
+          ],
+          explanation: "Gerund and Gerundive are different verbal forms with distinct functions."
+        },
+        la: {
+          question: "Quid est discrimen inter Gerundium et Gerundivum?",
+          options: [
+            { id: "a", text: "Gerundium est nomen verbale, Gerundivum adjectivum verbale", isCorrect: true, explanation: "Gerundium ut nomen, Gerundivum ut adjectivum cum significatione passiva fungitur." },
+            { id: "b", text: "Ambo identica sunt", isCorrect: false, explanation: "Diversas functiones grammaticas habent." },
+            { id: "c", text: "Gerundivum solum plurale est", isCorrect: false, explanation: "Gerundivum in omnibus numeris esse potest." },
+            { id: "d", text: "Gerundium solum nominativum est", isCorrect: false, explanation: "Gerundium in variis casibus esse potest." }
+          ],
+          explanation: "Gerundium et Gerundivum formae verbales diversae sunt cum functionibus distinctis."
+        }
+      },
+      'translation': {
+        de: {
+          question: "Übersetzen Sie: 'Urbe capta, cives fugerunt'",
+          correctAnswer: "Nachdem die Stadt erobert worden war, flohen die Bürger",
+          explanation: "Ablativus Absolutus mit perfektischem Partizip Passiv."
+        },
+        en: {
+          question: "Translate: 'Urbe capta, cives fugerunt'",
+          correctAnswer: "After the city was captured, the citizens fled",
+          explanation: "Ablativus Absolutus with perfect passive participle."
+        },
+        la: {
+          question: "Vertite: 'Urbe capta, cives fugerunt'",
+          correctAnswer: "Urbe capta, cives fugerunt",
+          explanation: "Ablativus Absolutus cum participio perfecto passivo."
+        }
+      },
+      'fill-blank': {
+        de: {
+          question: "Ergänzen Sie: 'Orator, _____ eloquentia nota erat, ad senatum locutus est.' (dessen)",
+          correctAnswer: "cuius",
+          explanation: "'Cuius' ist Genitiv Singular des Relativpronomens 'qui'."
+        },
+        en: {
+          question: "Complete: 'Orator, _____ eloquentia nota erat, ad senatum locutus est.' (whose)",
+          correctAnswer: "cuius",
+          explanation: "'Cuius' is genitive singular of the relative pronoun 'qui'."
+        },
+        la: {
+          question: "Complete: 'Orator, _____ eloquentia nota erat, ad senatum locutus est.' (cuius)",
+          correctAnswer: "cuius",
+          explanation: "'Cuius' genitivus singularis pronominis relativi 'qui'."
         }
       }
     }
@@ -322,6 +520,7 @@ function generateIntelligentFallback(
     type: questionType,
     question: selectedPool.question,
     options: selectedPool.options,
+    correctAnswer: selectedPool.correctAnswer,
     explanation: selectedPool.explanation,
     difficulty,
     culturalContext: request.culturalTheme ? 
