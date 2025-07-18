@@ -407,7 +407,7 @@ const translations = {
   }
 };
 
-export default function MacrobiusProgressiveReadingTIER3Complete({ language }: ProgressiveReadingSectionProps) {
+function MacrobiusProgressiveReadingTIER3Complete({ language }: ProgressiveReadingSectionProps) {
   // Core State Management
   const [currentSession, setCurrentSession] = useState<ReadingSession | null>(null);
   const [readingProgression, setReadingProgression] = useState<ReadingProgression | null>(null);
@@ -895,7 +895,7 @@ export default function MacrobiusProgressiveReadingTIER3Complete({ language }: P
       </div>
     </section>
   );
-};
+}
 
 // Export both named and default for compatibility
 export { MacrobiusProgressiveReadingTIER3Complete };
