@@ -1,0 +1,176 @@
+{
+  "name": "Macrobius - Antike Weisheit für die moderne Welt",
+  "short_name": "Macrobius",
+  "description": "Eine antike Flaschenpost - Eine Nachricht aus der Antike an die Zukunft. Entdecken Sie die Saturnalia und kosmischen Weisheiten des Macrobius mit modernster KI-Technologie.",
+  "version": "2.0.0",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#0a0d1f",
+  "theme_color": "#fbbf24",
+  "scope": "/",
+  "lang": "de",
+  "dir": "ltr",
+  "categories": [
+    "education",
+    "reference",
+    "utilities",
+    "productivity"
+  ],
+  "keywords": [
+    "Macrobius",
+    "Antike",
+    "Latein",
+    "Bildung",
+    "KI",
+    "Saturnalia",
+    "Kosmos",
+    "Philosophie"
+  ],
+  "icons": [
+    {
+      "src": "/icon-72x72.png",
+      "sizes": "72x72",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-96x96.png",
+      "sizes": "96x96",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-128x128.png",
+      "sizes": "128x128",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-144x144.png",
+      "sizes": "144x144",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-152x152.png",
+      "sizes": "152x152",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-384x384.png",
+      "sizes": "384x384",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/screenshot-desktop.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "platform": "wide",
+      "label": "Macrobius Desktop Ansicht"
+    },
+    {
+      "src": "/screenshot-mobile.png",
+      "sizes": "390x844",
+      "type": "image/png",
+      "platform": "narrow",
+      "label": "Macrobius Mobile Ansicht"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Textsuche",
+      "short_name": "Suche",
+      "description": "Durchsuchen Sie die Macrobius-Texte",
+      "url": "/?section=search",
+      "icons": [
+        {
+          "src": "/icon-96x96.png",
+          "sizes": "96x96",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "KI-Tutor",
+      "short_name": "Tutor",
+      "description": "Lernen Sie mit dem KI-Tutor",
+      "url": "/?section=ai-tutor",
+      "icons": [
+        {
+          "src": "/icon-96x96.png",
+          "sizes": "96x96",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "Quiz",
+      "short_name": "Quiz",
+      "description": "Testen Sie Ihr Wissen",
+      "url": "/?section=quiz",
+      "icons": [
+        {
+          "src": "/icon-96x96.png",
+          "sizes": "96x96",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "Kosmos",
+      "short_name": "Kosmos",
+      "description": "Erkunden Sie den antiken Kosmos",
+      "url": "/?section=cosmos",
+      "icons": [
+        {
+          "src": "/icon-96x96.png",
+          "sizes": "96x96",
+          "type": "image/png"
+        }
+      ]
+    }
+  ],
+  "related_applications": [],
+  "prefer_related_applications": false,
+  "edge_side_panel": {
+    "preferred_width": 480
+  },
+  "launch_handler": {
+    "client_mode": "focus-existing"
+  },
+  "protocol_handlers": [],
+  "file_handlers": [],
+  "share_target": {
+    "action": "/share",
+    "method": "POST",
+    "enctype": "multipart/form-data",
+    "params": {
+      "title": "title",
+      "text": "text",
+      "url": "url",
+      "files": [
+        {
+          "name": "file",
+          "accept": ["text/plain", ".txt"]
+        }
+      ]
+    }
+  }
+}
