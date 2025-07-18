@@ -250,13 +250,18 @@ export default function MacrobiusResearchToolsTIER3Complete({ language }: Resear
         const mockCorpusData: MacrobiusPassage[] = [
           {
             id: '1',
-            latin_text: 'Magna sapientia antiquorum philosophorum in his libris continetur, unde multi eruditi viri doctrinam hauserunt.',
-            work_type: 'Saturnalia',
-            book_number: 1,
-            chapter_number: 6,
-            section_number: 1,
+            text: 'Magna sapientia antiquorum philosophorum in his libris continetur, unde multi eruditi viri doctrinam hauserunt.',
+            source: 'Saturnalia I.6.1',
+            work: 'Saturnalia',
+            book: 1,
+            chapter: 6,
+            section: 1,
             cultural_theme: 'Philosophy',
-            modern_relevance: 'Understanding the continuity of philosophical wisdom across generations'
+            modern_relevance: 'Understanding the continuity of philosophical wisdom across generations',
+            word_count: 15,
+            character_count: 127,
+            difficulty_level: 3,
+            created_at: new Date().toISOString()
           }
           // Add more mock data...
         ];
