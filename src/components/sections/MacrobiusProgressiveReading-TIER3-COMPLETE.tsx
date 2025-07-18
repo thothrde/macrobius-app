@@ -394,7 +394,8 @@ const translations = {
     advancedScaffolding: 'Erweiterte Lernunterstützung Aktiv',
     adaptiveDifficulty: 'Adaptive Schwierigkeits-Engine',
     comprehensiveAssessment: 'Umfassendes Bewertungssystem',
-    personalizedProgression: 'Personalisierter Lernpfad'
+    personalizedProgression: 'Personalisierter Lernpfad',
+    analyzingPassage: 'Analysiere Textpassage-Schwierigkeit...',
   },
   la: {
     title: 'Systema Lectionis Progressivae',
@@ -403,7 +404,8 @@ const translations = {
     advancedScaffolding: 'Supportum Provectum Activum',
     adaptiveDifficulty: 'Machina Difficultatis Adaptabilis',
     comprehensiveAssessment: 'Systema Aestimationis Comprehensivum',
-    personalizedProgression: 'Iter Progressionis Personale'
+    personalizedProgression: 'Iter Progressionis Personale',
+    analyzingPassage: 'Difficultates passus analysans...',
   }
 };
 
