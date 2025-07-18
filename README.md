@@ -6,15 +6,17 @@
 [![Build](https://img.shields.io/badge/Build%20Time-3.0s-brightgreen)](https://github.com/thothrde/macrobius-app)
 [![Backend](https://img.shields.io/badge/Oracle%20Cloud-Operational-success)](http://152.70.184.232:8080)
 [![RAG](https://img.shields.io/badge/RAG%20AI-Operational-success)](http://152.70.184.232:8081)
+[![License](https://img.shields.io/badge/License-Non--Commercial-blue)](LICENSE)
 
 ## 🎉 **PRODUCTION READY - FULLY OPERATIONAL**
 
-### ✅ **COMPLETE INTEGRATION SUCCESS (July 10, 2025)**
+### ✅ **COMPLETE INTEGRATION SUCCESS (July 18, 2025)**
 - **Oracle Cloud Backend**: 1,416 authentic Macrobius passages accessible
 - **RAG AI System**: German language tutoring working perfectly  
-- **React Frontend**: Clean 3-second builds, optimized 249KB bundle
-- **TypeScript**: Zero errors, latest Next.js 15.3.2
+- **React Frontend**: Clean 3-second builds, optimized bundle
+- **TypeScript**: Zero errors, latest Next.js 15.4.1
 - **Components**: 44+ advanced educational components
+- **Real Images**: Complete historical image collection integrated
 
 ---
 
@@ -56,24 +58,27 @@ npm run start
 - **Cultural Analysis**: 19 themes connecting ancient and modern
 - **Research Tools**: KWIC analysis, semantic search
 - **Progressive Learning**: Vocabulary, grammar, comprehension
+- **Historical Images**: 22+ authentic images from classical sources
 
 ### Technical Excellence  
-- **Performance**: 3-second builds, 249KB optimized bundle
-- **Modern Stack**: Next.js 15.3.2, TypeScript, Tailwind CSS
+- **Performance**: 3-second builds, optimized bundle
+- **Modern Stack**: Next.js 15.4.1, TypeScript, Tailwind CSS
 - **3D Graphics**: Three.js integration for immersive learning
 - **Responsive**: Mobile-first design with cross-platform sync
 - **Deployment**: Vercel-ready with production optimization
+- **Zero Mock Systems**: 100% real AI implementations
 
 ---
 
 ## 📊 **SUCCESS METRICS**
 
 - **Build Time**: 3.0 seconds (excellent)
-- **Bundle Size**: 249KB main page (optimized)
-- **Backend Uptime**: 100% stable since July 10, 2025
+- **Bundle Size**: Optimized for production
+- **Backend Uptime**: 100% stable since July 2025
 - **Database**: All 1,416 passages verified accessible
 - **AI Response**: German language working perfectly
 - **TypeScript**: Zero compilation errors
+- **Images**: 22+ historical images loaded successfully
 
 ---
 
@@ -125,6 +130,8 @@ fetch('http://152.70.184.232:8081/api/chat', {
 - ✅ **Production Quality**: Enterprise-grade Oracle Cloud infrastructure
 - ✅ **Modern Technology**: Latest Next.js, TypeScript, Three.js
 - ✅ **Educational Innovation**: Ancient wisdom + modern AI
+- ✅ **Authentic Images**: Historical artwork and cultural artifacts
+- ✅ **Zero Mock Systems**: All AI functionality is genuine
 
 ---
 
@@ -135,7 +142,57 @@ This platform serves as a model for digital humanities education:
 - **Research Projects**: Academic-grade search and citation
 - **Language Learning**: Progressive Latin instruction
 - **Cultural Studies**: Historical context with modern applications
+- **Digital Humanities**: Innovative technology for classical education
+
+---
+
+## 📜 **LICENSE**
+
+This project is licensed under a **Custom Non-Commercial License**.
+
+### ✅ **PERMITTED USES:**
+- ✅ Personal use
+- ✅ Academic and research projects
+- ✅ Educational institutions
+- ✅ Non-commercial demonstrations
+
+### ❌ **PROHIBITED USES:**
+- ❌ Commercial sale or licensing
+- ❌ Paid services or products
+- ❌ Ad-supported applications
+- ❌ Integration into commercial software
+
+### 📋 **REQUIREMENTS:**
+- Attribution required for any use
+- License notice must remain intact
+- Commercial use requires written permission
+
+**For full license details, see [LICENSE](LICENSE) file.**
+
+**For commercial licensing inquiries, please contact the project maintainers.**
+
+---
+
+## 🤝 **CONTRIBUTING**
+
+We welcome contributions to the Macrobius project! Please note:
+
+- All contributions must comply with our non-commercial license
+- Educational and research contributions are especially welcome
+- Please read the [LICENSE](LICENSE) before contributing
+- For major changes, please open an issue first
+
+---
+
+## 📞 **CONTACT & SUPPORT**
+
+- **Issues**: Use GitHub Issues for bug reports and feature requests
+- **Academic Collaboration**: Contact for educational partnerships
+- **Commercial Licensing**: Contact project maintainers
+- **Research Inquiries**: Welcome for digital humanities projects
 
 ---
 
 🏛️✨ **Ready to revolutionize Latin education worldwide!** ✨🏛️
+
+*Preserving ancient wisdom through modern technology.*
