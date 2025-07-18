@@ -1,9 +1,9 @@
 /**
- * 🏛️ MACROBIUS - ENHANCED VISUAL DESIGN v9.0
- * 🎨 INSPIRED BY: Old backup's sophisticated visual appearance
- * ✨ ENHANCED: Background, animations, navigation, typography
- * 🚀 PROFESSIONAL: Production-ready with elegant design
- * 🎆 BEAUTIFUL: Complete visual transformation
+ * 🏛️ MACROBIUS - ENHANCED VISUAL DESIGN v10.0
+ * 🎨 SOPHISTICATED: Enhanced image gallery with rich modal system
+ * ✅ PRESERVED: All working translations, no mock systems, no placeholders
+ * 🚀 PRODUCTION: Professional visual design with working functionality
+ * 🎆 BEAUTIFUL: Sophisticated layout inspired by old backup
  */
 
 import React, { useState, useCallback, useEffect } from 'react';
@@ -28,6 +28,10 @@ import AICulturalAnalysisSection from '../components/sections/AICulturalAnalysis
 import PersonalizedLearningPathsComplete from '../components/sections/PersonalizedLearningPaths-COMPLETE';
 import AITutoringSystemComplete from '../components/sections/AITutoringSystemSection-COMPLETE';
 import KIRAGAssistentSection from '../components/sections/KIRAGAssistentSection';
+
+// Enhanced Image System
+import ImageModal from '../components/ui/ImageModal';
+import { getImagesBySection, ImageInfo } from '../data/imageData';
 
 // Language Context
 import { useLanguage, Language } from '../contexts/LanguageContext';
@@ -70,6 +74,10 @@ export default function MacrobiusCulturalApp() {
   const [showAboutModal, setShowAboutModal] = useState(false);
   const [showRomeModal, setShowRomeModal] = useState(false);
   const [showTychoModal, setShowTychoModal] = useState(false);
+  
+  // Image modal states
+  const [selectedImage, setSelectedImage] = useState<ImageInfo | null>(null);
+  const [showImageModal, setShowImageModal] = useState(false);
 
   // Safe translation function
   const safeT = useCallback((key: string): string => {
@@ -89,6 +97,19 @@ export default function MacrobiusCulturalApp() {
     setActiveSection(section);
     setAstrolabeRotation(prev => prev + 45);
   };
+
+  // Enhanced image handling
+  const handleImageClick = useCallback((imageInfo: ImageInfo) => {
+    setSelectedImage(imageInfo);
+    setShowImageModal(true);
+  }, []);
+
+  const handleImageModalClose = useCallback(() => {
+    setShowImageModal(false);
+    setTimeout(() => {
+      setSelectedImage(null);
+    }, 300);
+  }, []);
 
   // Enhanced continuous astrolabe rotation
   useEffect(() => {
@@ -124,12 +145,12 @@ export default function MacrobiusCulturalApp() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      {/* 🌌 ENHANCED EVENING SKY BACKGROUND - INSPIRED BY OLD BACKUP */}
+      {/* 🌌 ENHANCED EVENING SKY BACKGROUND */}
       <div className="min-h-screen relative overflow-x-hidden" style={{
         background: 'linear-gradient(135deg, #0f0f23 0%, #1a1a2e 15%, #16213e 30%, #0d1b2a 50%, #0c1821 70%, #0a0e1a 100%)'
       }}>
         
-        {/* ✨ ENHANCED MOVING STARFIELD - INSPIRED BY OLD BACKUP */}
+        {/* ✨ ENHANCED MOVING STARFIELD */}
         <div className="fixed inset-0 z-0">
           {/* Static twinkling stars */}
           {[...Array(30)].map((_, i) => (
@@ -145,7 +166,7 @@ export default function MacrobiusCulturalApp() {
             />
           ))}
           
-          {/* Larger colored stars - ENHANCED */}
+          {/* Larger colored stars */}
           {[...Array(15)].map((_, i) => (
             <div
               key={`large-star-${i}`}
@@ -162,7 +183,7 @@ export default function MacrobiusCulturalApp() {
             />
           ))}
           
-          {/* Moving shooting stars - ENHANCED */}
+          {/* Moving shooting stars */}
           {[...Array(5)].map((_, i) => (
             <div
               key={`moving-star-${i}`}
@@ -177,7 +198,7 @@ export default function MacrobiusCulturalApp() {
           ))}
         </div>
 
-        {/* 🧭 ENHANCED ROTATING ASTROLABE - INSPIRED BY OLD BACKUP */}
+        {/* 🧭 ENHANCED ROTATING ASTROLABE */}
         <div className="fixed inset-0 z-1 flex items-center justify-center pointer-events-none">
           <motion.div 
             className="opacity-40"
@@ -207,7 +228,7 @@ export default function MacrobiusCulturalApp() {
           </motion.div>
         </div>
 
-        {/* 🌟 ENHANCED FLOATING MACROBIUS CIRCLE - INSPIRED BY OLD BACKUP */}
+        {/* 🌟 ENHANCED FLOATING MACROBIUS CIRCLE */}
         {activeSection === 'hero' && (
           <motion.div 
             className="fixed top-16 left-1/2 transform -translate-x-1/2 z-20 pointer-events-none"
@@ -234,7 +255,7 @@ export default function MacrobiusCulturalApp() {
           </motion.div>
         )}
 
-        {/* 🌍 ENHANCED LANGUAGE SELECTOR - INSPIRED BY OLD BACKUP */}
+        {/* 🌍 ENHANCED LANGUAGE SELECTOR */}
         <div className="fixed top-4 right-4 z-50">
           <div className="bg-white/10 backdrop-blur-md rounded-lg border border-white/20 p-2">
             <div className="flex space-x-1">
@@ -255,7 +276,7 @@ export default function MacrobiusCulturalApp() {
           </div>
         </div>
 
-        {/* 🧭 ENHANCED PROFESSIONAL NAVIGATION - INSPIRED BY OLD BACKUP */}
+        {/* 🧭 ENHANCED PROFESSIONAL NAVIGATION */}
         <nav className="fixed top-4 left-4 z-50">
           <div className="bg-white/10 backdrop-blur-md rounded-xl p-4 border border-white/20">
             <div className="flex flex-col space-y-2">
@@ -288,7 +309,7 @@ export default function MacrobiusCulturalApp() {
                 </button>
               ))}
               
-              {/* AI Systems - ENHANCED with TIER-COMPLETE indicators */}
+              {/* AI Systems */}
               <div className="border-t border-white/20 pt-2 mt-2">
                 <p className="text-yellow-200/60 text-xs px-2 mb-2 uppercase tracking-wider font-bold">
                   {safeT('nav.ai_systems')}
@@ -342,7 +363,7 @@ export default function MacrobiusCulturalApp() {
         {/* 🎨 MAIN CONTENT */}
         <main className="relative z-10">
           
-          {/* 🎆 ENHANCED HERO SECTION - INSPIRED BY OLD BACKUP */}
+          {/* 🎆 ENHANCED HERO SECTION WITH SOPHISTICATED IMAGE GALLERY */}
           {activeSection === 'hero' && (
             <section className="min-h-screen flex items-center justify-center px-4" style={{ paddingTop: '200px' }}>
               <div className="text-center max-w-7xl mx-auto">
@@ -375,7 +396,7 @@ export default function MacrobiusCulturalApp() {
                     </p>
                   </div>
 
-                  {/* 🖼️ ENHANCED IMAGE GALLERY - INSPIRED BY OLD BACKUP */}
+                  {/* 🖼️ SOPHISTICATED IMAGE GALLERY */}
                   <div className="mb-8">
                     <div className="flex items-center justify-center space-x-3 mb-6">
                       <ImageIcon className="w-6 h-6 text-yellow-300" />
@@ -387,7 +408,7 @@ export default function MacrobiusCulturalApp() {
                     
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
                       
-                      {/* Enhanced Rome Image */}
+                      {/* Enhanced Rome Image with sophisticated hover effects */}
                       <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
@@ -396,7 +417,7 @@ export default function MacrobiusCulturalApp() {
                       >
                         <motion.div
                           className="relative group cursor-pointer overflow-hidden rounded-xl border-2 border-orange-400/60 shadow-2xl"
-                          whileHover={{ scale: 1.02, y: -8 }}
+                          whileHover={{ scale: 1.02, y: -8, rotateX: 2 }}
                           whileTap={{ scale: 0.98 }}
                           onClick={() => setShowRomeModal(true)}
                         >
@@ -408,20 +429,20 @@ export default function MacrobiusCulturalApp() {
                             className="w-full h-64 object-cover object-center transition-transform duration-500 group-hover:scale-110"
                           />
                           
-                          <div className="absolute bottom-0 left-0 right-0 bg-black/60 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                            <div className="p-4">
-                              <h3 className="text-white font-bold text-xl mb-1">{safeT('image.rome.title')}</h3>
-                              <p className="text-white/95 text-sm">{safeT('image.rome.subtitle')}</p>
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                            <div className="absolute bottom-0 left-0 right-0 p-6">
+                              <h3 className="text-white font-bold text-xl mb-2">{safeT('image.rome.title')}</h3>
+                              <p className="text-white/95 text-sm leading-relaxed">{safeT('image.rome.subtitle')}</p>
                             </div>
                           </div>
                           
-                          <div className="absolute top-2 right-2 bg-white/20 backdrop-blur-sm rounded-full p-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                            <Maximize className="w-4 h-4 text-white" />
+                          <div className="absolute top-3 right-3 bg-white/20 backdrop-blur-sm rounded-full p-2 opacity-0 group-hover:opacity-100 transition-all duration-300 group-hover:scale-110">
+                            <Maximize className="w-5 h-5 text-white" />
                           </div>
                         </motion.div>
                       </motion.div>
                       
-                      {/* Enhanced Macrobius Portrait */}
+                      {/* Enhanced Macrobius Portrait with sophisticated animations */}
                       <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
@@ -429,7 +450,7 @@ export default function MacrobiusCulturalApp() {
                       >
                         <motion.div
                           className="relative group cursor-pointer overflow-hidden rounded-xl border-2 border-yellow-400/60 shadow-xl"
-                          whileHover={{ scale: 1.02, y: -5 }}
+                          whileHover={{ scale: 1.02, y: -5, rotateY: 2 }}
                           whileTap={{ scale: 0.98 }}
                           onClick={() => setShowAboutModal(true)}
                         >
@@ -438,23 +459,23 @@ export default function MacrobiusCulturalApp() {
                             alt={safeT('image.macrobius.title')}
                             width={400}
                             height={500}
-                            className="w-full h-80 object-contain"
+                            className="w-full h-80 object-contain transition-transform duration-500 group-hover:scale-110"
                           />
                           
-                          <div className="absolute inset-0 bg-gradient-to-t from-yellow-900/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                            <div className="absolute bottom-0 left-0 right-0 p-4">
-                              <h3 className="text-white font-bold text-lg mb-1">{safeT('image.macrobius.title')}</h3>
-                              <p className="text-white/90 text-sm">{safeT('image.macrobius.subtitle')}</p>
+                          <div className="absolute inset-0 bg-gradient-to-t from-yellow-900/90 via-yellow-900/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                            <div className="absolute bottom-0 left-0 right-0 p-6">
+                              <h3 className="text-white font-bold text-lg mb-2">{safeT('image.macrobius.title')}</h3>
+                              <p className="text-white/95 text-sm leading-relaxed">{safeT('image.macrobius.subtitle')}</p>
                             </div>
                           </div>
                           
-                          <div className="absolute top-2 right-2 bg-white/20 backdrop-blur-sm rounded-full p-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                            <Maximize className="w-4 h-4 text-white" />
+                          <div className="absolute top-3 right-3 bg-white/20 backdrop-blur-sm rounded-full p-2 opacity-0 group-hover:opacity-100 transition-all duration-300 group-hover:scale-110">
+                            <Maximize className="w-5 h-5 text-white" />
                           </div>
                         </motion.div>
                       </motion.div>
 
-                      {/* Enhanced Tycho & Pontanus */}
+                      {/* Enhanced Tycho & Pontanus with sophisticated effects */}
                       <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
@@ -462,7 +483,7 @@ export default function MacrobiusCulturalApp() {
                       >
                         <motion.div
                           className="relative group cursor-pointer overflow-hidden rounded-xl border-2 border-blue-400/60 shadow-xl"
-                          whileHover={{ scale: 1.02, y: -5 }}
+                          whileHover={{ scale: 1.02, y: -5, rotateX: -2 }}
                           whileTap={{ scale: 0.98 }}
                           onClick={() => setShowTychoModal(true)}
                         >
@@ -471,18 +492,18 @@ export default function MacrobiusCulturalApp() {
                             alt={safeT('image.tycho.title')}
                             width={400}
                             height={500}
-                            className="w-full h-80 object-contain"
+                            className="w-full h-80 object-contain transition-transform duration-500 group-hover:scale-110"
                           />
                           
-                          <div className="absolute inset-0 bg-gradient-to-t from-blue-900/90 via-blue-600/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                            <div className="absolute bottom-4 left-4 right-4">
-                              <h3 className="text-white font-bold text-lg mb-1">{safeT('image.tycho.title')}</h3>
-                              <p className="text-white/90 text-sm">{safeT('image.tycho.subtitle')}</p>
+                          <div className="absolute inset-0 bg-gradient-to-t from-blue-900/90 via-blue-900/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                            <div className="absolute bottom-0 left-0 right-0 p-6">
+                              <h3 className="text-white font-bold text-lg mb-2">{safeT('image.tycho.title')}</h3>
+                              <p className="text-white/95 text-sm leading-relaxed">{safeT('image.tycho.subtitle')}</p>
                             </div>
                           </div>
                           
-                          <div className="absolute top-2 right-2 bg-white/20 backdrop-blur-sm rounded-full p-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                            <Maximize className="w-4 h-4 text-white" />
+                          <div className="absolute top-3 right-3 bg-white/20 backdrop-blur-sm rounded-full p-2 opacity-0 group-hover:opacity-100 transition-all duration-300 group-hover:scale-110">
+                            <Maximize className="w-5 h-5 text-white" />
                           </div>
                         </motion.div>
                       </motion.div>
@@ -587,7 +608,15 @@ export default function MacrobiusCulturalApp() {
           )}
         </main>
 
-        {/* 🖼️ ENHANCED ABOUT MODAL - INSPIRED BY OLD BACKUP */}
+        {/* 🖼️ ENHANCED IMAGE MODAL */}
+        <ImageModal
+          imageInfo={selectedImage}
+          isOpen={showImageModal}
+          onClose={handleImageModalClose}
+          language={currentLang}
+        />
+
+        {/* 🖼️ ENHANCED ABOUT MODAL */}
         <AnimatePresence>
           {showAboutModal && (
             <motion.div
@@ -665,7 +694,7 @@ export default function MacrobiusCulturalApp() {
           )}
         </AnimatePresence>
 
-        {/* 🎨 ENHANCED CSS STYLES - INSPIRED BY OLD BACKUP */}
+        {/* 🎨 ENHANCED CSS STYLES */}
         <style jsx global>{`
           .line-clamp-2 {
             display: -webkit-box;
@@ -711,6 +740,12 @@ export default function MacrobiusCulturalApp() {
           
           body {
             overflow-x: hidden;
+          }
+
+          /* Enhanced image gallery hover effects */
+          .image-gallery-item:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.25);
           }
         `}</style>
       </div>
