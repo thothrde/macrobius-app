@@ -45,7 +45,7 @@ import {
   HelpCircle,
   BookOpenCheck,
   GraduationCap,
-  Binoculars,
+  Search,
   Network,
   Tag,
   Cpu,
