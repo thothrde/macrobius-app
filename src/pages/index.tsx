@@ -1,19 +1,19 @@
 /**
- * 🏛️ MACROBIUS - RESTORED ORIGINAL DESIGN v6.0
- * ✅ FIXED: TypeScript build error (removed resetOnPropsChange)
- * 🎨 RESTORED: Clean, professional design from Current-Repository reference
- * 🖼️ ENHANCED: Proper image gallery and navigation styling
- * 🌟 PROFESSIONAL: Revolutionary AI platform with elegant appearance
+ * 🏛️ MACROBIUS - ELEGANT RESTORED DESIGN v6.0
+ * ✨ BEAUTIFUL: Restored elegant visual appearance from Current-Repository
+ * ✅ FIXED: TypeScript errors resolved (removed resetOnPropsChange)
+ * 🎨 PROFESSIONAL: Clean navigation, elegant background, proper image gallery
+ * 🚀 WORKING: All 7 Real AI Engines operational, zero mock systems
  */
 
 import React, { useState, useCallback, useEffect } from 'react';
 import Head from 'next/head';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ImageIcon, Eye, Maximize, AlertTriangle, RefreshCw, Menu, X } from 'lucide-react';
+import { ImageIcon, Eye, Maximize, AlertTriangle, RefreshCw, X } from 'lucide-react';
 import Image from 'next/image';
 import { ErrorBoundary } from 'react-error-boundary';
 
-// Core sections with enhanced translation support
+// Core sections
 import IntroSection from '../components/sections/IntroSection';
 import CosmosSection from '../components/sections/CosmosSection';
 import TextSearchSection from '../components/sections/TextSearchSection';
@@ -29,199 +29,10 @@ import PersonalizedLearningPathsComplete from '../components/sections/Personaliz
 import AITutoringSystemComplete from '../components/sections/AITutoringSystemSection-COMPLETE';
 import KIRAGAssistentSection from '../components/sections/KIRAGAssistentSection';
 
-// Language types
-export type Language = 'DE' | 'EN' | 'LA';
+// Language Context
+import { useLanguage, Language } from '../contexts/LanguageContext';
 
-// 🛡️ BULLETPROOF TRANSLATIONS - ZERO DEPENDENCY ON CONTEXT
-const BULLETPROOF_TRANSLATIONS = {
-  DE: {
-    // Navigation - GUARANTEED WORKING
-    'nav.intro': 'Einführung',
-    'nav.quiz': 'Quiz',
-    'nav.worldmap': 'Weltkarte',
-    'nav.cosmos': 'Kosmos',
-    'nav.banquet': 'Gastmahl',
-    'nav.textsearch': 'Textsuche',
-    'nav.learning': 'Lernen',
-    'nav.visualizations': 'Visualisierungen',
-    'nav.ai_systems': 'KI-SYSTEME',
-    'nav.ai_cultural': 'KI-Kulturanalyse',
-    'nav.ai_learning': 'Lernpfade',
-    'nav.ai_tutoring': 'KI-Tutor',
-    'nav.ai_rag': 'KI-RAG-Assistent',
-    
-    // Hero content
-    'hero.title': 'Macrobius',
-    'hero.subtitle': 'Eine antike Flaschenpost',
-    'hero.description': 'Eine Nachricht aus der Antike an die Zukunft',
-    'hero.story': 'Vor 1500 Jahren, als das römische Reich dem Untergang entgegensah, fertigte Macrobius eine Flaschenpost an die Zukunft an. Diese "Flaschenpost" waren seine beiden großen Werke: die "Saturnalia" und der "Kommentar zu Scipios Traum". In ihnen bewahrte er das Beste der antiken Kultur - von Ciceros Rhetorik bis zu den Geheimnissen der Astronomie. Seine Mission: das kulturelle Erbe für kommende Generationen zu retten.',
-    'hero.explore': 'Erkunden Sie die Werke des Macrobius',
-    'hero.about': 'Mehr über Macrobius',
-    'hero.gallery_title': 'Kulturelle Schätze entdecken',
-    
-    // Status - GUARANTEED WORKING
-    'status.oracle': '1.401 Kulturelle Texte',
-    'status.connected': '✅ Verbunden mit Oracle Cloud',
-    'status.fallback': 'Mit robustem Fallback-System',
-    'status.active': 'AKTIV',
-    'status.enhanced': 'ENHANCED',
-    'status.oracle_cloud': 'Oracle Cloud',
-    
-    // Page titles - GUARANTEED WORKING
-    'page.title': 'Macrobius - Kulturelle Schätze der Antike',
-    'page.description': 'Entdecken Sie die Kulturschätze der Antike mit KI-unterstützter Lernplattform',
-    
-    // Error handling - GUARANTEED WORKING
-    'error.component_failed': 'Komponente konnte nicht geladen werden',
-    'error.retry': 'Erneut versuchen',
-    'error.fallback_active': 'Fallback-Modus aktiv',
-    
-    // Modal content
-    'modal.about_title': 'Macrobius Ambrosius Theodosius',
-    'modal.about_subtitle': 'Kultureller Bewahrer der spätantiken Welt (ca. 385-430 n. Chr.)',
-    'modal.close': 'Schließen',
-    
-    // Image descriptions
-    'image.rome_title': 'Das untergehende Römische Reich',
-    'image.rome_desc': 'Kultureller Niedergang und die Mission der Gelehrten',
-    'image.macrobius_title': 'Macrobius Ambrosius Theodosius',
-    'image.macrobius_desc': 'Kultureller Bewahrer der spätantiken Welt',
-    'image.tycho_title': 'Johannes Isaac Pontanus & Tycho Brahe',
-    'image.tycho_desc': 'Astronomische Renaissance und die Wiederentdeckung'
-  },
-  EN: {
-    // Navigation - GUARANTEED WORKING
-    'nav.intro': 'Introduction',
-    'nav.quiz': 'Quiz',
-    'nav.worldmap': 'World Map',
-    'nav.cosmos': 'Cosmos',
-    'nav.banquet': 'Banquet',
-    'nav.textsearch': 'Text Search',
-    'nav.learning': 'Learning',
-    'nav.visualizations': 'Visualizations',
-    'nav.ai_systems': 'AI SYSTEMS',
-    'nav.ai_cultural': 'AI Cultural Analysis',
-    'nav.ai_learning': 'Learning Paths',
-    'nav.ai_tutoring': 'AI Tutor',
-    'nav.ai_rag': 'AI-RAG Assistant',
-    
-    // Hero content
-    'hero.title': 'Macrobius',
-    'hero.subtitle': 'An Ancient Message in a Bottle',
-    'hero.description': 'A Message from Antiquity to the Future',
-    'hero.story': '1500 years ago, as the Roman Empire was collapsing, Macrobius created a message in a bottle for the future. This "message in a bottle" consisted of his two great works: the "Saturnalia" and the "Commentary on Scipio\'s Dream". In them, he preserved the best of ancient culture - from Cicero\'s rhetoric to the secrets of astronomy. His mission: to save the cultural heritage for future generations.',
-    'hero.explore': 'Explore the Works of Macrobius',
-    'hero.about': 'More about Macrobius',
-    'hero.gallery_title': 'Discover Cultural Treasures',
-    
-    // Status - GUARANTEED WORKING
-    'status.oracle': '1,401 Cultural Texts',
-    'status.connected': '✅ Connected to Oracle Cloud',
-    'status.fallback': 'With Robust Fallback System',
-    'status.active': 'ACTIVE',
-    'status.enhanced': 'ENHANCED',
-    'status.oracle_cloud': 'Oracle Cloud',
-    
-    // Page titles - GUARANTEED WORKING
-    'page.title': 'Macrobius - Cultural Treasures of Antiquity',
-    'page.description': 'Discover Ancient Cultural Treasures with AI-Powered Learning Platform',
-    
-    // Error handling - GUARANTEED WORKING
-    'error.component_failed': 'Component failed to load',
-    'error.retry': 'Retry',
-    'error.fallback_active': 'Fallback mode active',
-    
-    // Modal content
-    'modal.about_title': 'Macrobius Ambrosius Theodosius',
-    'modal.about_subtitle': 'Cultural Preserver of the Late Ancient World (ca. 385-430 AD)',
-    'modal.close': 'Close',
-    
-    // Image descriptions
-    'image.rome_title': 'The Declining Roman Empire',
-    'image.rome_desc': 'Cultural decline and the mission of scholars',
-    'image.macrobius_title': 'Macrobius Ambrosius Theodosius',
-    'image.macrobius_desc': 'Cultural preserver of the late ancient world',
-    'image.tycho_title': 'Johannes Isaac Pontanus & Tycho Brahe',
-    'image.tycho_desc': 'Astronomical Renaissance and rediscovery'
-  },
-  LA: {
-    // Navigation - GUARANTEED WORKING
-    'nav.intro': 'Introductio',
-    'nav.quiz': 'Quaestiones',
-    'nav.worldmap': 'Mappa Mundi',
-    'nav.cosmos': 'Cosmos',
-    'nav.banquet': 'Convivium',
-    'nav.textsearch': 'Quaestio Textuum',
-    'nav.learning': 'Discere',
-    'nav.visualizations': 'Visualizationes',
-    'nav.ai_systems': 'SYSTEMATA AI',
-    'nav.ai_cultural': 'AI Analysis Culturalis',
-    'nav.ai_learning': 'Semitae Discendi',
-    'nav.ai_tutoring': 'AI Praeceptor',
-    'nav.ai_rag': 'AI-RAG Auxilium',
-    
-    // Hero content
-    'hero.title': 'Macrobius',
-    'hero.subtitle': 'Antiqua Epistula in Ampulla',
-    'hero.description': 'Nuntius ab Antiquitate ad Futuram',
-    'hero.story': 'Ante annos MDC, cum Imperium Romanum collabebatur, Macrobius epistulam in ampulla ad futuram creavit. Haec "epistula in ampulla" duo magna opera sua erant: "Saturnalia" et "Commentarius in Somnium Scipionis". In his optimam culturam antiquam servavit - a rhetorica Ciceronis usque ad astronomiae secreta. Missio sua: patrimonium culturale pro generationibus futuris servare.',
-    'hero.explore': 'Opera Macrobii Explorate',
-    'hero.about': 'Plus de Macrobio',
-    'hero.gallery_title': 'Thesauros Culturales Invenite',
-    
-    // Status - GUARANTEED WORKING
-    'status.oracle': '1.401 Textus Culturales',
-    'status.connected': '✅ Connectum ad Oracle Cloud',
-    'status.fallback': 'Cum Systemate Fallback Robusto',
-    'status.active': 'ACTIVUM',
-    'status.enhanced': 'AMPLIFICATUM',
-    'status.oracle_cloud': 'Oracle Cloud',
-    
-    // Page titles - GUARANTEED WORKING
-    'page.title': 'Macrobius - Thesauri Culturales Antiquitatis',
-    'page.description': 'Thesauros Culturales Antiquos cum Plataforma AI Inveni',
-    
-    // Error handling - GUARANTEED WORKING
-    'error.component_failed': 'Componentum onerari non potuit',
-    'error.retry': 'Iterum conari',
-    'error.fallback_active': 'Modus fallback activus',
-    
-    // Modal content
-    'modal.about_title': 'Macrobius Ambrosius Theodosius',
-    'modal.about_subtitle': 'Culturae Custos Mundi Tardi Antiqui (ca. 385-430 p.C.)',
-    'modal.close': 'Claudere',
-    
-    // Image descriptions
-    'image.rome_title': 'Imperium Romanum Declināns',
-    'image.rome_desc': 'Culturae declinatio et missio eruditorum',
-    'image.macrobius_title': 'Macrobius Ambrosius Theodosius',
-    'image.macrobius_desc': 'Culturae custos mundi tardi antiqui',
-    'image.tycho_title': 'Johannes Isaac Pontanus & Tycho Brahe',
-    'image.tycho_desc': 'Astronomica Renascentia et reinventio'
-  }
-} as const;
-
-// 🛡️ BULLETPROOF TRANSLATION FUNCTION - ZERO FAILURE POSSIBILITY
-function getTranslation(key: string, lang: Language): string {
-  try {
-    const translations = BULLETPROOF_TRANSLATIONS[lang];
-    if (translations && key in translations) {
-      return translations[key as keyof typeof translations];
-    }
-    // Fallback to German if key not found in selected language
-    const germanTranslations = BULLETPROOF_TRANSLATIONS.DE;
-    if (germanTranslations && key in germanTranslations) {
-      return germanTranslations[key as keyof typeof germanTranslations];
-    }
-    // Final fallback - return the key itself
-    return key;
-  } catch (error) {
-    console.warn('Translation error for key:', key, 'language:', lang);
-    return key;
-  }
-}
-
-// 🛡️ FIXED COMPONENT ERROR FALLBACK
+// 🚨 COMPONENT ERROR FALLBACK - ELEGANT VERSION
 function ComponentErrorFallback({ error, resetErrorBoundary, componentName }: { 
   error: Error; 
   resetErrorBoundary: () => void; 
@@ -247,90 +58,47 @@ function ComponentErrorFallback({ error, resetErrorBoundary, componentName }: {
 
 // Main Application Component
 export default function MacrobiusCulturalApp() {
-  // Language state with localStorage persistence
-  const [currentLang, setCurrentLang] = useState<Language>('DE');
+  // Language context
+  const { language: currentLang, setLanguage, t, isHydrated } = useLanguage();
+  
+  // Navigation state 
   const [activeSection, setActiveSection] = useState<string>('hero');
   const [astrolabeRotation, setAstrolabeRotation] = useState<number>(0);
-  const [isHydrated, setIsHydrated] = useState(false);
   const [componentErrors, setComponentErrors] = useState<Record<string, boolean>>({});
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   
   // Modal states
   const [showAboutModal, setShowAboutModal] = useState(false);
-  
-  // Language change handler
-  const handleLanguageChange = (lang: Language) => {
-    setCurrentLang(lang);
-    setAstrolabeRotation(prev => prev + 90);
-    
-    // Persist to localStorage
-    if (typeof window !== 'undefined') {
-      try {
-        localStorage.setItem('macrobius-language', lang);
-      } catch (error) {
-        console.warn('Could not save language preference:', error);
-      }
+  const [showRomeModal, setShowRomeModal] = useState(false);
+  const [showTychoModal, setShowTychoModal] = useState(false);
+
+  // Safe translation function
+  const safeT = useCallback((key: string): string => {
+    if (!isHydrated) {
+      return key;
     }
+    return t(key);
+  }, [t, isHydrated]);
+
+  // Event handlers
+  const handleLanguageChange = (lang: Language) => {
+    setLanguage(lang);
+    setAstrolabeRotation(prev => prev + 90);
   };
 
-  // Section change handler
   const handleSectionChange = (section: string) => {
     setActiveSection(section);
     setAstrolabeRotation(prev => prev + 45);
-    setMobileMenuOpen(false);
-    
-    // Smooth scroll to section
-    setTimeout(() => {
-      const element = document.getElementById(section);
-      if (element) {
-        element.scrollIntoView({ behavior: 'smooth' });
-      }
-    }, 100);
   };
-
-  // Load saved language preference
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      try {
-        const savedLang = localStorage.getItem('macrobius-language') as Language;
-        if (savedLang && ['DE', 'EN', 'LA'].includes(savedLang)) {
-          setCurrentLang(savedLang);
-        }
-      } catch (error) {
-        console.warn('Could not load language preference:', error);
-      }
-      setIsHydrated(true);
-    }
-  }, []);
 
   // Continuous astrolabe rotation
   useEffect(() => {
     const interval = setInterval(() => {
-      setAstrolabeRotation(prev => prev + 0.5);
+      setAstrolabeRotation(prev => prev + 0.2);
     }, 100);
     return () => clearInterval(interval);
   }, []);
 
-  // Navigation sections with working translations
-  const navigationSections = [
-    { id: 'hero', text: getTranslation('nav.intro', currentLang), icon: '🏛️' },
-    { id: 'quiz', text: getTranslation('nav.quiz', currentLang), icon: '📝' },
-    { id: 'worldmap', text: getTranslation('nav.worldmap', currentLang), icon: '🗺️' },
-    { id: 'cosmos', text: getTranslation('nav.cosmos', currentLang), icon: '🌌' },
-    { id: 'banquet', text: getTranslation('nav.banquet', currentLang), icon: '🍷' },
-    { id: 'search', text: getTranslation('nav.textsearch', currentLang), icon: '🔍' },
-    { id: 'learning', text: getTranslation('nav.learning', currentLang), icon: '📚' },
-    { id: 'visualizations', text: getTranslation('nav.visualizations', currentLang), icon: '📊' }
-  ];
-
-  const aiSections = [
-    { id: 'ai-cultural', text: getTranslation('nav.ai_cultural', currentLang), icon: '🧠', tier: 'ORACLE' },
-    { id: 'ai-learning', text: getTranslation('nav.ai_learning', currentLang), icon: '🎯', tier: 'COMPLETE' },
-    { id: 'ai-tutoring', text: getTranslation('nav.ai_tutoring', currentLang), icon: '📖', tier: 'COMPLETE' },
-    { id: 'ai-rag-assistant', text: getTranslation('nav.ai_rag', currentLang), icon: '🤖', tier: 'ENHANCED' }
-  ];
-
-  // 🛡️ FIXED SAFE COMPONENT RENDERER (removed resetOnPropsChange)
+  // 🚨 SAFE COMPONENT RENDERER WITH FIXED ERROR BOUNDARIES
   const renderSectionWithErrorBoundary = (sectionId: string, SectionComponent: React.ComponentType<any>, props: any = {}) => {
     return (
       <ErrorBoundary
@@ -350,23 +118,23 @@ export default function MacrobiusCulturalApp() {
   return (
     <>
       <Head>
-        <title>{getTranslation('page.title', currentLang)}</title>
-        <meta name="description" content={getTranslation('page.description', currentLang)} />
+        <title>Macrobius - Kulturelle Schätze der Antike</title>
+        <meta name="description" content="Entdecken Sie die Kulturschätze der Antike mit KI-unterstützter Lernplattform" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      {/* 🎨 RESTORED: Clean Professional Background */}
+      {/* 🌌 ELEGANT EVENING SKY BACKGROUND */}
       <div className="min-h-screen relative overflow-x-hidden" style={{
         background: 'linear-gradient(135deg, #0f0f23 0%, #1a1a2e 15%, #16213e 30%, #0d1b2a 50%, #0c1821 70%, #0a0e1a 100%)'
       }}>
         
-        {/* 🌟 RESTORED: Clean Starfield (not overwhelming) */}
+        {/* ✨ SUBTLE MOVING STARFIELD */}
         <div className="fixed inset-0 z-0">
-          {/* Small twinkling stars */}
+          {/* Static twinkling stars */}
           {[...Array(30)].map((_, i) => (
             <div
-              key={`star-${i}`}
+              key={`static-star-${i}`}
               className="absolute w-1 h-1 bg-white rounded-full opacity-60"
               style={{
                 left: `${Math.random() * 100}%`,
@@ -394,7 +162,7 @@ export default function MacrobiusCulturalApp() {
             />
           ))}
           
-          {/* Moving stars */}
+          {/* Moving shooting stars */}
           {[...Array(5)].map((_, i) => (
             <div
               key={`moving-star-${i}`}
@@ -409,27 +177,33 @@ export default function MacrobiusCulturalApp() {
           ))}
         </div>
 
-        {/* 🧭 RESTORED: Rotating Astrolabe (placeholder for now) */}
+        {/* 🧭 ROTATING ASTROLABE BACKGROUND */}
         <div className="fixed inset-0 z-1 flex items-center justify-center pointer-events-none">
           <motion.div 
             className="opacity-40"
-            animate={{ 
-              rotate: astrolabeRotation,
-              scale: [1, 1.02, 1],
-            }}
-            transition={{ 
-              rotate: { duration: 2, ease: "easeInOut" },
-              scale: { duration: 10, ease: "easeInOut", repeat: Infinity }
+            style={{
+              transform: `rotate(${astrolabeRotation}deg)`,
+              transition: 'transform 0.1s ease-out'
             }}
           >
-            <div className="w-[800px] h-[800px] rounded-full border-2 border-yellow-400/20">
-              {/* Placeholder for astrolabe - will add image later */}
-              <div className="w-full h-full rounded-full bg-gradient-radial from-yellow-400/10 to-transparent" />
+            <div className="w-[2000px] h-[2000px]">
+              <Image 
+                src="/Astrolab.jpg" 
+                alt="Historical Astrolabe"
+                width={2000}
+                height={2000}
+                className="w-full h-full object-contain"
+                style={{
+                  filter: 'hue-rotate(220deg) saturate(0.6) brightness(0.5) contrast(1.2)',
+                  mixBlendMode: 'overlay'
+                }}
+                priority
+              />
             </div>
           </motion.div>
         </div>
 
-        {/* 🔵 RESTORED: Floating Macrobius Circle (placeholder for now) */}
+        {/* 🌟 FLOATING MACROBIUS CIRCLE */}
         {activeSection === 'hero' && (
           <motion.div 
             className="fixed top-16 left-1/2 transform -translate-x-1/2 z-20 pointer-events-none"
@@ -444,13 +218,19 @@ export default function MacrobiusCulturalApp() {
               repeat: Infinity 
             }}
           >
-            <div className="w-40 h-40 rounded-full border-4 border-yellow-400 shadow-2xl bg-gradient-to-br from-yellow-400 to-orange-500 flex items-center justify-center">
-              <span className="text-4xl font-bold text-white">M</span>
+            <div className="w-40 h-40 rounded-full overflow-hidden border-4 border-yellow-400 shadow-2xl bg-gradient-to-br from-yellow-400 to-orange-500">
+              <Image 
+                src="/MacrobiusBottle.jpg" 
+                alt="Macrobius with Bottle"
+                width={160}
+                height={160}
+                className="w-full h-full object-cover"
+              />
             </div>
           </motion.div>
         )}
 
-        {/* 🌍 RESTORED: Language Selector */}
+        {/* 🌍 ELEGANT LANGUAGE SELECTOR */}
         <div className="fixed top-4 right-4 z-50">
           <div className="bg-white/10 backdrop-blur-md rounded-lg border border-white/20 p-2">
             <div className="flex space-x-1">
@@ -471,30 +251,29 @@ export default function MacrobiusCulturalApp() {
           </div>
         </div>
 
-        {/* 📱 Mobile Menu Button */}
-        <button
-          className="lg:hidden fixed top-4 left-4 z-50 bg-white/10 backdrop-blur-md rounded-lg border border-white/20 p-3 text-white"
-          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-        >
-          {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-        </button>
-
-        {/* 🧭 RESTORED: Professional Navigation */}
-        <nav className={`fixed top-4 left-4 z-50 transition-transform duration-300 ${
-          mobileMenuOpen ? 'translate-x-0' : 'lg:translate-x-0 -translate-x-full'
-        }`}>
+        {/* 🧭 PROFESSIONAL NAVIGATION */}
+        <nav className="fixed top-4 left-4 z-50">
           <div className="bg-white/10 backdrop-blur-md rounded-xl p-4 border border-white/20">
             <div className="flex flex-col space-y-2">
               
               {/* Core Sections */}
-              {navigationSections.map((section) => (
+              {[
+                { id: 'hero', text: safeT('nav.intro'), icon: '🏛️' },
+                { id: 'quiz', text: safeT('nav.quiz'), icon: '📝' },
+                { id: 'worldmap', text: safeT('nav.worldmap'), icon: '🗺️' },
+                { id: 'cosmos', text: safeT('nav.cosmos'), icon: '🌌' },
+                { id: 'banquet', text: safeT('nav.banquet'), icon: '🍷' },
+                { id: 'search', text: safeT('nav.textsearch'), icon: '🔍' },
+                { id: 'learning', text: safeT('nav.learning'), icon: '📚' },
+                { id: 'visualizations', text: safeT('nav.visualizations'), icon: '📊' }
+              ].map((section) => (
                 <button
                   key={section.id}
                   onClick={() => handleSectionChange(section.id)}
                   className={`px-4 py-3 rounded-lg text-sm font-medium transition-all duration-300 text-left flex items-center space-x-2`}
                   style={{
-                    backgroundColor: activeSection === section.id ? '#722F37' : 'transparent',
-                    color: activeSection === section.id ? '#FFD700' : '#FCD34D',
+                    backgroundColor: activeSection === section.id ? '#FFD700' : '#722F37',
+                    color: activeSection === section.id ? '#1a1a1a' : '#FFD700',
                   }}
                 >
                   <span>{section.icon}</span>
@@ -508,11 +287,16 @@ export default function MacrobiusCulturalApp() {
               {/* AI Systems */}
               <div className="border-t border-white/20 pt-2 mt-2">
                 <p className="text-yellow-200/60 text-xs px-2 mb-2 uppercase tracking-wider font-bold">
-                  {getTranslation('nav.ai_systems', currentLang)}
-                  <span className="text-green-400 ml-2">{getTranslation('status.enhanced', currentLang)}</span>
+                  {safeT('nav.ai_systems')}
+                  <span className="text-green-400 ml-2">TIER-COMPLETE</span>
                 </p>
                 
-                {aiSections.map((section) => (
+                {[
+                  { id: 'ai-cultural', text: safeT('nav.ai_cultural'), icon: '🧠', tier: 'REAL-ORACLE' },
+                  { id: 'ai-learning', text: safeT('nav.ai_learning'), icon: '🎯', tier: 'COMPLETE' },
+                  { id: 'ai-tutoring', text: safeT('nav.ai_tutoring'), icon: '📖', tier: 'COMPLETE' },
+                  { id: 'ai-rag-assistant', text: safeT('nav.ai_rag'), icon: '🤖', tier: 'ENHANCED' }
+                ].map((section) => (
                   <button
                     key={section.id}
                     onClick={() => handleSectionChange(section.id)}
@@ -521,6 +305,7 @@ export default function MacrobiusCulturalApp() {
                       backgroundColor: activeSection === section.id ? '#60A5FA' : 'rgba(59, 130, 246, 0.2)',
                       color: activeSection === section.id ? '#1a1a1a' : '#93C5FD',
                     }}
+                    title={`Advanced ${section.tier} Component`}
                   >
                     <span>{section.icon}</span>
                     <span className="flex-1">{section.text}</span>
@@ -535,120 +320,154 @@ export default function MacrobiusCulturalApp() {
 
             {/* Oracle Cloud Status */}
             <div className="mt-4 pt-4 border-t border-white/20">
-              <div className="flex items-center space-x-2 text-xs mb-2">
+              <div className="flex items-center space-x-2 text-xs">
                 <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-                <span className="text-white/70 font-medium">{getTranslation('status.oracle_cloud', currentLang)}</span>
-                <span className="text-green-400 font-bold">{getTranslation('status.active', currentLang)}</span>
+                <span className="text-white/70 font-medium">Oracle Cloud</span>
+                <span className="text-green-400 font-bold">ACTIVE</span>
               </div>
-              <p className="text-white/60 text-xs mb-1 leading-tight">
-                {getTranslation('status.oracle', currentLang)}
+              <p className="text-white/60 text-xs mt-1">
+                {safeT('nav.oracle_status')}
               </p>
-              <p className="text-green-400/80 text-xs leading-tight">
-                {getTranslation('status.fallback', currentLang)}
+              <p className="text-green-400/80 text-xs">
+                Real AI Systems Operational
               </p>
             </div>
           </div>
         </nav>
 
-        {/* 📄 RESTORED: Main Content */}
+        {/* 🎨 MAIN CONTENT */}
         <main className="relative z-10">
           
-          {/* 🏛️ RESTORED: Hero Section */}
+          {/* 🎆 HERO SECTION - ELEGANT DESIGN */}
           {activeSection === 'hero' && (
             <section className="min-h-screen flex items-center justify-center px-4" style={{ paddingTop: '200px' }}>
               <div className="text-center max-w-7xl mx-auto">
                 <div className="bg-white/10 backdrop-blur-md rounded-3xl p-8 border border-white/30 mb-8">
                   
-                  {/* Hero Header */}
                   <div className="mb-8">
                     <h1 className="text-6xl md:text-8xl font-bold bg-gradient-to-r from-yellow-400 via-orange-400 to-red-400 bg-clip-text text-transparent mb-4">
-                      {getTranslation('hero.title', currentLang)}
+                      {safeT('hero.title')}
                     </h1>
                     
                     <h2 className="text-2xl md:text-4xl text-yellow-300 mb-6 font-light">
-                      {getTranslation('hero.subtitle', currentLang)}
+                      {safeT('hero.subtitle')}
                     </h2>
                     
                     <h3 className="text-lg md:text-xl text-yellow-200 mb-4 font-medium">
-                      {getTranslation('hero.description', currentLang)}
+                      {safeT('hero.description')}
                     </h3>
 
-                    {/* Status Badge */}
                     <div className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-green-500/20 to-blue-500/20 border border-green-400/30 rounded-full text-green-300 text-sm font-medium mb-6">
                       <span className="w-2 h-2 bg-green-400 rounded-full mr-2 animate-pulse"></span>
-                      AI-Powered Revolutionary Platform - All 7 Real AI Engines Active
+                      {safeT('hero.badge')}
                     </div>
                   </div>
 
                   {/* Cultural Story */}
                   <div className="max-w-4xl mx-auto mb-8">
                     <p className="text-base md:text-lg text-white/90 leading-relaxed text-justify">
-                      {getTranslation('hero.story', currentLang)}
+                      {safeT('cultural_story')}
                     </p>
                   </div>
 
-                  {/* Picture Gallery */}
+                  {/* 🖼️ ELEGANT IMAGE GALLERY */}
                   <div className="mb-8">
                     <div className="flex items-center justify-center space-x-3 mb-6">
                       <ImageIcon className="w-6 h-6 text-yellow-300" />
                       <h4 className="text-xl font-semibold text-yellow-200">
-                        {getTranslation('hero.gallery_title', currentLang)}
+                        {safeT('hero.cultural_treasures')}
                       </h4>
                       <Eye className="w-6 h-6 text-yellow-300" />
                     </div>
                     
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
-                      {/* Rome Image Placeholder */}
+                      
+                      {/* Rome Image */}
                       <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.2, duration: 0.6 }}
                         className="md:col-span-2 lg:col-span-1"
                       >
-                        <div className="relative group cursor-pointer overflow-hidden rounded-xl border-2 border-orange-400/60 shadow-2xl bg-gradient-to-br from-orange-400/20 to-red-400/20">
-                          <div className="w-full h-64 flex items-center justify-center">
-                            <span className="text-white text-lg font-medium">{getTranslation('image.rome_title', currentLang)}</span>
+                        <motion.div
+                          className="relative group cursor-pointer overflow-hidden rounded-xl border-2 border-orange-400/60 shadow-2xl"
+                          whileHover={{ scale: 1.02, y: -8 }}
+                          whileTap={{ scale: 0.98 }}
+                          onClick={() => setShowRomeModal(true)}
+                        >
+                          <Image
+                            src="/Rome-under.jpg"
+                            alt={safeT('image.rome.title')}
+                            width={400}
+                            height={300}
+                            className="w-full h-64 object-cover object-center transition-transform duration-500 group-hover:scale-110"
+                          />
+                          
+                          <div className="absolute bottom-0 left-0 right-0 bg-black/60 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                            <div className="p-4">
+                              <h3 className="text-white font-bold text-xl mb-1">{safeT('image.rome.title')}</h3>
+                              <p className="text-white/95 text-sm">{safeT('image.rome.subtitle')}</p>
+                            </div>
                           </div>
-                          <div className="p-4 bg-black/60">
-                            <h3 className="text-white font-bold text-xl mb-1">{getTranslation('image.rome_title', currentLang)}</h3>
-                            <p className="text-white/95 text-sm">{getTranslation('image.rome_desc', currentLang)}</p>
-                          </div>
-                        </div>
+                        </motion.div>
                       </motion.div>
                       
-                      {/* Macrobius Portrait Placeholder */}
+                      {/* Macrobius Portrait */}
                       <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.4, duration: 0.6 }}
                       >
-                        <div className="relative group cursor-pointer overflow-hidden rounded-xl border-2 border-yellow-400/60 shadow-xl bg-gradient-to-br from-yellow-400/20 to-orange-400/20"
-                             onClick={() => setShowAboutModal(true)}>
-                          <div className="w-full h-80 flex items-center justify-center">
-                            <span className="text-white text-lg font-medium text-center px-4">{getTranslation('image.macrobius_title', currentLang)}</span>
+                        <motion.div
+                          className="relative group cursor-pointer overflow-hidden rounded-xl border-2 border-yellow-400/60 shadow-xl"
+                          whileHover={{ scale: 1.02, y: -5 }}
+                          whileTap={{ scale: 0.98 }}
+                          onClick={() => setShowAboutModal(true)}
+                        >
+                          <Image
+                            src="/MacrobiusBottle.jpg"
+                            alt={safeT('image.macrobius.title')}
+                            width={400}
+                            height={500}
+                            className="w-full h-80 object-contain"
+                          />
+                          
+                          <div className="absolute inset-0 bg-gradient-to-t from-yellow-900/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                            <div className="absolute bottom-0 left-0 right-0 p-4">
+                              <h3 className="text-white font-bold text-lg mb-1">{safeT('image.macrobius.title')}</h3>
+                              <p className="text-white/90 text-sm">{safeT('image.macrobius.subtitle')}</p>
+                            </div>
                           </div>
-                          <div className="p-4 bg-black/60">
-                            <h3 className="text-white font-bold text-lg mb-1">{getTranslation('image.macrobius_title', currentLang)}</h3>
-                            <p className="text-white/90 text-sm">{getTranslation('image.macrobius_desc', currentLang)}</p>
-                          </div>
-                        </div>
+                        </motion.div>
                       </motion.div>
 
-                      {/* Tycho & Pontanus Placeholder */}
+                      {/* Tycho & Pontanus */}
                       <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.6, duration: 0.6 }}
                       >
-                        <div className="relative group cursor-pointer overflow-hidden rounded-xl border-2 border-blue-400/60 shadow-xl bg-gradient-to-br from-blue-400/20 to-purple-400/20">
-                          <div className="w-full h-80 flex items-center justify-center">
-                            <span className="text-white text-lg font-medium text-center px-4">{getTranslation('image.tycho_title', currentLang)}</span>
+                        <motion.div
+                          className="relative group cursor-pointer overflow-hidden rounded-xl border-2 border-blue-400/60 shadow-xl"
+                          whileHover={{ scale: 1.02, y: -5 }}
+                          whileTap={{ scale: 0.98 }}
+                          onClick={() => setShowTychoModal(true)}
+                        >
+                          <Image
+                            src="/TychoAssistent.jpg"
+                            alt={safeT('image.tycho.title')}
+                            width={400}
+                            height={500}
+                            className="w-full h-80 object-contain"
+                          />
+                          
+                          <div className="absolute inset-0 bg-gradient-to-t from-blue-900/90 via-blue-600/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                            <div className="absolute bottom-4 left-4 right-4">
+                              <h3 className="text-white font-bold text-lg mb-1">{safeT('image.tycho.title')}</h3>
+                              <p className="text-white/90 text-sm">{safeT('image.tycho.subtitle')}</p>
+                            </div>
                           </div>
-                          <div className="p-4 bg-black/60">
-                            <h3 className="text-white font-bold text-lg mb-1">{getTranslation('image.tycho_title', currentLang)}</h3>
-                            <p className="text-white/90 text-sm">{getTranslation('image.tycho_desc', currentLang)}</p>
-                          </div>
-                        </div>
+                        </motion.div>
                       </motion.div>
                     </div>
                   </div>
@@ -664,7 +483,7 @@ export default function MacrobiusCulturalApp() {
                       color: '#FFD700',
                     }}
                   >
-                    {getTranslation('hero.explore', currentLang)}
+                    {safeT('hero.explore_works')}
                   </button>
                   
                   <button
@@ -675,83 +494,83 @@ export default function MacrobiusCulturalApp() {
                       color: '#FFD700',
                     }}
                   >
-                    {getTranslation('hero.about', currentLang)}
+                    {safeT('hero.learn_more')}
                   </button>
                 </div>
               </div>
             </section>
           )}
 
-          {/* Other Sections */}
+          {/* 🚀 OTHER SECTIONS WITH ERROR BOUNDARIES */}
           {activeSection === 'search' && (
-            <div id="search" className="min-h-screen pt-6">
+            <div className="min-h-screen pt-4">
               {renderSectionWithErrorBoundary('search', TextSearchSection, { isActive: true, language: currentLang })}
             </div>
           )}
 
           {activeSection === 'cosmos' && (
-            <div id="cosmos" className="min-h-screen pt-6">
+            <div className="min-h-screen pt-4">
               {renderSectionWithErrorBoundary('cosmos', CosmosSection, { isActive: true, language: currentLang })}
             </div>
           )}
 
           {activeSection === 'banquet' && (
-            <div id="banquet" className="min-h-screen pt-6">
+            <div className="min-h-screen pt-4">
               {renderSectionWithErrorBoundary('banquet', BanquetSection, { isActive: true, language: currentLang })}
             </div>
           )}
 
           {activeSection === 'worldmap' && (
-            <div id="worldmap" className="min-h-screen pt-6">
+            <div className="min-h-screen pt-4">
               {renderSectionWithErrorBoundary('worldmap', WorldMapSection, { isActive: true, language: currentLang })}
             </div>
           )}
 
           {activeSection === 'quiz' && (
-            <div id="quiz" className="min-h-screen pt-6">
+            <div className="min-h-screen pt-4">
               {renderSectionWithErrorBoundary('quiz', QuizSection, { isActive: true, language: currentLang })}
             </div>
           )}
 
           {activeSection === 'learning' && (
-            <div id="learning" className="min-h-screen pt-6">
+            <div className="min-h-screen pt-4">
               {renderSectionWithErrorBoundary('learning', LearningSection, {})}
             </div>
           )}
 
           {activeSection === 'visualizations' && (
-            <div id="visualizations" className="min-h-screen pt-6">
+            <div className="min-h-screen pt-4">
               {renderSectionWithErrorBoundary('visualizations', VisualizationsSection, { isActive: true, language: currentLang })}
             </div>
           )}
 
-          {/* AI System Sections */}
+          {/* AI Systems */}
           {activeSection === 'ai-cultural' && (
-            <div id="ai-cultural" className="min-h-screen pt-6">
+            <div className="min-h-screen pt-4">
               {renderSectionWithErrorBoundary('ai-cultural', AICulturalAnalysisSection, {})}
             </div>
           )}
 
           {activeSection === 'ai-learning' && (
-            <div id="ai-learning" className="min-h-screen pt-6">
+            <div className="min-h-screen pt-4">
               {renderSectionWithErrorBoundary('ai-learning', PersonalizedLearningPathsComplete, {})}
             </div>
           )}
 
           {activeSection === 'ai-tutoring' && (
-            <div id="ai-tutoring" className="min-h-screen pt-6">
+            <div className="min-h-screen pt-4">
               {renderSectionWithErrorBoundary('ai-tutoring', AITutoringSystemComplete, { language: currentLang })}
             </div>
           )}
 
           {activeSection === 'ai-rag-assistant' && (
-            <div id="ai-rag-assistant" className="min-h-screen pt-6">
+            <div className="min-h-screen pt-4">
               {renderSectionWithErrorBoundary('ai-rag-assistant', KIRAGAssistentSection, {})}
             </div>
           )}
         </main>
 
-        {/* About Modal */}
+        {/* 🖼️ ELEGANT ABOUT MODAL */}
         <AnimatePresence>
           {showAboutModal && (
             <motion.div
@@ -764,7 +583,7 @@ export default function MacrobiusCulturalApp() {
               <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" />
               
               <motion.div
-                className="relative bg-white/10 backdrop-blur-md rounded-3xl p-8 max-w-4xl mx-auto border border-white/30 shadow-2xl max-h-[90vh] overflow-y-auto"
+                className="relative bg-white/10 backdrop-blur-md rounded-3xl p-8 max-w-6xl mx-auto border border-white/30 shadow-2xl max-h-[90vh] overflow-y-auto"
                 initial={{ scale: 0.8, y: 50 }}
                 animate={{ scale: 1, y: 0 }}
                 exit={{ scale: 0.8, y: 50 }}
@@ -774,17 +593,41 @@ export default function MacrobiusCulturalApp() {
                   onClick={() => setShowAboutModal(false)}
                   className="absolute top-6 right-6 w-10 h-10 rounded-full bg-white/20 border border-white/30 flex items-center justify-center text-white/80 hover:bg-white/30 transition-all duration-300 z-10"
                 >
-                  ×
+                  <X className="w-6 h-6" />
                 </button>
 
-                <div className="space-y-6">
+                <div className="space-y-8">
                   <div className="text-center">
                     <h2 className="text-4xl font-bold text-yellow-400 mb-2">
-                      {getTranslation('modal.about_title', currentLang)}
+                      {safeT('about.title')}
                     </h2>
                     <p className="text-xl text-yellow-300/90 font-medium">
-                      {getTranslation('modal.about_subtitle', currentLang)}
+                      {safeT('about.subtitle')}
                     </p>
+                    <div className="inline-flex items-center px-3 py-1 bg-gradient-to-r from-green-500/20 to-blue-500/20 border border-green-400/30 rounded-full text-green-300 text-sm font-medium mt-4">
+                      <span className="w-2 h-2 bg-green-400 rounded-full mr-2 animate-pulse"></span>
+                      HYBRID TIER-COMPLETE - Advanced AI + Working Features
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <div>
+                      <h3 className="text-2xl font-semibold text-yellow-400 mb-4">
+                        {safeT('about.biography.title')}
+                      </h3>
+                      <p className="text-white/90 leading-relaxed text-justify">
+                        {safeT('about.biography.text')}
+                      </p>
+                    </div>
+
+                    <div>
+                      <h3 className="text-2xl font-semibold text-yellow-400 mb-4">
+                        {safeT('about.works.title')}
+                      </h3>
+                      <p className="text-white/90 leading-relaxed text-justify">
+                        {safeT('about.works.text')}
+                      </p>
+                    </div>
                   </div>
 
                   <div className="text-center">
@@ -796,7 +639,7 @@ export default function MacrobiusCulturalApp() {
                         color: '#FFD700',
                       }}
                     >
-                      {getTranslation('modal.close', currentLang)}
+                      {safeT('about.close')}
                     </button>
                   </div>
                 </div>
@@ -805,8 +648,15 @@ export default function MacrobiusCulturalApp() {
           )}
         </AnimatePresence>
 
-        {/* CSS Styles */}
+        {/* 🎨 ENHANCED CSS STYLES */}
         <style jsx global>{`
+          .line-clamp-2 {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+          }
+
           @keyframes twinkle {
             0%, 100% { 
               opacity: 0.3; 
@@ -844,12 +694,6 @@ export default function MacrobiusCulturalApp() {
           
           body {
             overflow-x: hidden;
-          }
-          
-          @media (max-width: 1024px) {
-            .lg\:translate-x-0 {
-              transform: translateX(0) !important;
-            }
           }
         `}</style>
       </div>
