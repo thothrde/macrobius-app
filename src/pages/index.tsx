@@ -1,9 +1,10 @@
 /**
- * 🏛️ MACROBIUS - PREMIUM VISUAL DESIGN ENHANCED
+ * 🏛️ MACROBIUS - PREMIUM VISUAL DESIGN ENHANCED (SSR FIXED)
  * ✅ PRESERVED: All working translations, real AI systems, error boundaries
  * 🎨 ENHANCED: Sophisticated premium visual design with advanced animations
  * 🚀 LUXURY: Professional-grade UI with cutting-edge visual effects
  * 💎 PREMIUM: Elite visual experience with sophisticated interactions
+ * 🔧 FIXED: Server-side rendering compatibility for Vercel deployment
  */
 
 import React, { useState, useCallback, useEffect } from 'react';
@@ -99,6 +100,7 @@ export default function MacrobiusCulturalApp() {
   const [astrolabeRotation, setAstrolabeRotation] = useState<number>(0);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [isNavHovered, setIsNavHovered] = useState(false);
+  const [isClient, setIsClient] = useState(false);
   
   // Modal states
   const [showAboutModal, setShowAboutModal] = useState(false);
@@ -109,14 +111,21 @@ export default function MacrobiusCulturalApp() {
   const [selectedImage, setSelectedImage] = useState<ImageInfo | null>(null);
   const [showImageModal, setShowImageModal] = useState(false);
 
-  // Mouse tracking for enhanced effects
+  // Client-side mounting check
   useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  // Mouse tracking for enhanced effects (client-side only)
+  useEffect(() => {
+    if (!isClient) return;
+    
     const handleMouseMove = (e: MouseEvent) => {
       setMousePosition({ x: e.clientX, y: e.clientY });
     };
     window.addEventListener('mousemove', handleMouseMove);
     return () => window.removeEventListener('mousemove', handleMouseMove);
-  }, []);
+  }, [isClient]);
 
   // Safe translation function
   const safeT = useCallback((key: string): string => {
@@ -170,6 +179,12 @@ export default function MacrobiusCulturalApp() {
     );
   };
 
+  // Get safe window width for animations
+  const getWindowWidth = () => {
+    if (!isClient || typeof window === 'undefined') return 1200; // fallback for SSR
+    return window.innerWidth;
+  };
+
   return (
     <>
       <Head>
@@ -184,13 +199,15 @@ export default function MacrobiusCulturalApp() {
         background: 'radial-gradient(ellipse at center top, #1a1a2e 0%, #16213e 25%, #0d1b2a 50%, #0c1821 75%, #0a0e1a 100%)'
       }}>
         
-        {/* Dynamic Mouse-Following Gradient */}
-        <div 
-          className="fixed inset-0 z-0 pointer-events-none opacity-30"
-          style={{
-            background: `radial-gradient(600px circle at ${mousePosition.x}px ${mousePosition.y}px, rgba(139, 69, 19, 0.15), rgba(218, 165, 32, 0.1), transparent 50%)`
-          }}
-        />
+        {/* Dynamic Mouse-Following Gradient (client-side only) */}
+        {isClient && (
+          <div 
+            className="fixed inset-0 z-0 pointer-events-none opacity-30"
+            style={{
+              background: `radial-gradient(600px circle at ${mousePosition.x}px ${mousePosition.y}px, rgba(139, 69, 19, 0.15), rgba(218, 165, 32, 0.1), transparent 50%)`
+            }}
+          />
+        )}
 
         {/* ENHANCED PREMIUM STARFIELD */}
         <div className="fixed inset-0 z-0">
@@ -244,8 +261,8 @@ export default function MacrobiusCulturalApp() {
             />
           ))}
           
-          {/* Shooting stars */}
-          {[...Array(3)].map((_, i) => (
+          {/* Shooting stars (client-side safe) */}
+          {isClient && [...Array(3)].map((_, i) => (
             <motion.div
               key={`shooting-star-${i}`}
               className="absolute w-2 h-0.5 bg-gradient-to-r from-cyan-300 to-transparent rounded-full"
@@ -254,7 +271,7 @@ export default function MacrobiusCulturalApp() {
                 top: `${20 + Math.random() * 60}%`,
               }}
               animate={{
-                x: [0, -window.innerWidth - 100],
+                x: [0, -(getWindowWidth() + 100)],
                 opacity: [0, 1, 0],
               }}
               transition={{
