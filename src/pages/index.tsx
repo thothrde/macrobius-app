@@ -1,9 +1,9 @@
 /**
- * 🏛️ MACROBIUS - RESTORED ORIGINAL SOPHISTICATED DESIGN WITH TIER-COMPLETE COMPONENTS
+ * 🏛️ MACROBIUS - ENHANCED WITH TIER3 COMPONENTS
  * ✅ PRESERVED: All working translations, no mock systems, no placeholders
- * 🎨 RESTORED: Original sophisticated night sky, left navigation, rotating astrolabe
- * 🚀 PRODUCTION: Original visual design with TIER-COMPLETE functionality
- * 🎆 BEAUTIFUL: Complete restoration with all advanced components
+ * 🎨 ENHANCED: Added sophisticated TIER3 Progressive Reading and Research Tools
+ * 🚀 PRODUCTION: Advanced visual design with comprehensive educational features
+ * 🎆 COMPLETE: Full integration of all sophisticated components
  */
 
 import React, { useState, useCallback, useEffect } from 'react';
@@ -34,6 +34,10 @@ import QuizSectionComplete from '../components/sections/QuizSection-SMART-GENERA
 import VocabularyTrainerComplete from '../components/sections/VocabularyTrainer-CORPUS-EXPANSION-COMPLETE';
 import GrammarExplainerComplete from '../components/sections/GrammarExplainer-TIER1-COMPLETE';
 import MacrobiusTextProcessorComplete from '../components/sections/MacrobiusTextProcessor-TIER2-COMPLETE';
+
+// ✨ NEW TIER3 COMPONENTS: Advanced Educational and Research Platforms
+import MacrobiusProgressiveReadingTIER3Complete from '../components/sections/MacrobiusProgressiveReading-TIER3-COMPLETE';
+import MacrobiusResearchToolsTIER3Complete from '../components/sections/MacrobiusResearchTools-TIER3-COMPLETE';
 
 // Language Context
 import { useLanguage, Language, getTranslation } from '../contexts/LanguageContext';
@@ -274,7 +278,7 @@ export default function MacrobiusCulturalApp() {
           </div>
         </div>
 
-        {/* LEFT-SIDE VERTICAL NAVIGATION - RESTORED WITH ALL TIER-COMPLETE COMPONENTS */}
+        {/* LEFT-SIDE VERTICAL NAVIGATION - ENHANCED WITH TIER3 COMPONENTS */}
         <nav className="fixed top-4 left-4 z-50">
           <div className="bg-white/10 backdrop-blur-md rounded-xl p-4 border border-white/20">
             <div className="flex flex-col space-y-2">
@@ -334,6 +338,36 @@ export default function MacrobiusCulturalApp() {
                     <span>{section.icon}</span>
                     <span className="flex-1 text-xs">{section.text}</span>
                     <span className="text-green-400 text-xs font-bold">{section.tier.split('-')[0]}</span>
+                    {componentErrors[section.id] && (
+                      <AlertTriangle className="w-3 h-3 text-red-400" />
+                    )}
+                  </button>
+                ))}
+              </div>
+              
+              {/* ✨ NEW: TIER3 Advanced Research & Education Platform */}
+              <div className="border-t border-white/20 pt-2 mt-2">
+                <p className="text-purple-200/60 text-xs px-2 mb-2 uppercase tracking-wider font-bold">
+                  TIER3 Plattform
+                  <span className="text-purple-400 ml-2">FORTGESCHRITTEN</span>
+                </p>
+                {[
+                  { id: 'progressive-reading', text: 'Progressives Lesen', icon: '📚', tier: 'TIER3' },
+                  { id: 'research-tools', text: 'Forschungstools', icon: '🔬', tier: 'TIER3' }
+                ].map((section) => (
+                  <button
+                    key={section.id}
+                    onClick={() => handleSectionChange(section.id)}
+                    className={`w-full px-3 py-2 rounded-lg text-xs font-medium transition-all duration-300 text-left flex items-center space-x-2 mb-1`}
+                    style={{
+                      backgroundColor: activeSection === section.id ? '#9333EA' : 'rgba(147, 51, 234, 0.2)',
+                      color: activeSection === section.id ? '#ffffff' : '#C4B5FD',
+                    }}
+                    title={`Advanced ${section.tier} Educational Platform`}
+                  >
+                    <span>{section.icon}</span>
+                    <span className="flex-1 text-xs">{section.text}</span>
+                    <span className="text-purple-400 text-xs font-bold">{section.tier}</span>
                     {componentErrors[section.id] && (
                       <AlertTriangle className="w-3 h-3 text-red-400" />
                     )}
@@ -621,6 +655,19 @@ export default function MacrobiusCulturalApp() {
           {activeSection === 'text-processor' && (
             <div className="min-h-screen pt-4">
               {renderSectionWithErrorBoundary('text-processor', MacrobiusTextProcessorComplete, { language: currentLang })}
+            </div>
+          )}
+
+          {/* ✨ NEW: TIER3 Advanced Components */}
+          {activeSection === 'progressive-reading' && (
+            <div className="min-h-screen pt-4">
+              {renderSectionWithErrorBoundary('progressive-reading', MacrobiusProgressiveReadingTIER3Complete, { language: currentLang })}
+            </div>
+          )}
+
+          {activeSection === 'research-tools' && (
+            <div className="min-h-screen pt-4">
+              {renderSectionWithErrorBoundary('research-tools', MacrobiusResearchToolsTIER3Complete, { language: currentLang })}
             </div>
           )}
         </main>
