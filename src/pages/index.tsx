@@ -1,10 +1,9 @@
 /**
- * 🏛️ MACROBIUS - PREMIUM VISUAL DESIGN ENHANCED (SSR FIXED)
+ * 🏛️ MACROBIUS - CLASSICAL DESIGN RESTORATION
  * ✅ PRESERVED: All working translations, real AI systems, error boundaries
- * 🎨 ENHANCED: Sophisticated premium visual design with advanced animations
- * 🚀 LUXURY: Professional-grade UI with cutting-edge visual effects
- * 💎 PREMIUM: Elite visual experience with sophisticated interactions
- * 🔧 FIXED: Server-side rendering compatibility for Vercel deployment
+ * 🎨 RESTORED: Original classical layout with centered circular frame
+ * 🌌 CLASSICAL: Night sky background, moving stars, elegant navigation
+ * 🔄 PERFECT: Exact match to original sophisticated design
  */
 
 import React, { useState, useCallback, useEffect } from 'react';
@@ -194,32 +193,23 @@ export default function MacrobiusCulturalApp() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      {/* PREMIUM EVENING SKY BACKGROUND WITH ADVANCED EFFECTS */}
-      <div className="min-h-screen relative overflow-x-hidden" style={{
-        background: 'radial-gradient(ellipse at center top, #1a1a2e 0%, #16213e 25%, #0d1b2a 50%, #0c1821 75%, #0a0e1a 100%)'
+      {/* CLASSICAL NIGHT SKY BACKGROUND - FULL PAGE */}
+      <div className="min-h-screen relative overflow-hidden" style={{
+        background: 'linear-gradient(180deg, #0a0e1a 0%, #1a1a2e 20%, #16213e 40%, #0d1b2a 60%, #0c1821 80%, #0a0e1a 100%)'
       }}>
         
-        {/* Dynamic Mouse-Following Gradient (client-side only) */}
-        {isClient && (
-          <div 
-            className="fixed inset-0 z-0 pointer-events-none opacity-30"
-            style={{
-              background: `radial-gradient(600px circle at ${mousePosition.x}px ${mousePosition.y}px, rgba(139, 69, 19, 0.15), rgba(218, 165, 32, 0.1), transparent 50%)`
-            }}
-          />
-        )}
-
-        {/* ENHANCED PREMIUM STARFIELD */}
+        {/* CLASSICAL STARFIELD - ENHANCED DENSITY */}
         <div className="fixed inset-0 z-0">
-          {/* Premium twinkling stars with varied sizes */}
-          {[...Array(50)].map((_, i) => (
+          {/* Classical twinkling stars - increased density */}
+          {[...Array(60)].map((_, i) => (
             <motion.div
-              key={`premium-star-${i}`}
+              key={`classical-star-${i}`}
               className={`absolute rounded-full ${
-                i % 4 === 0 ? 'w-1 h-1 bg-yellow-300' :
-                i % 4 === 1 ? 'w-0.5 h-0.5 bg-blue-200' :
-                i % 4 === 2 ? 'w-1.5 h-1.5 bg-purple-300' : 
-                'w-0.5 h-0.5 bg-white'
+                i % 5 === 0 ? 'w-1.5 h-1.5 bg-yellow-200' :
+                i % 5 === 1 ? 'w-1 h-1 bg-blue-100' :
+                i % 5 === 2 ? 'w-0.5 h-0.5 bg-white' :
+                i % 5 === 3 ? 'w-1 h-1 bg-purple-200' : 
+                'w-0.5 h-0.5 bg-yellow-100'
               }`}
               style={{
                 left: `${Math.random() * 100}%`,
@@ -227,33 +217,10 @@ export default function MacrobiusCulturalApp() {
               }}
               animate={{
                 opacity: [0.3, 1, 0.3],
-                scale: [0.8, 1.2, 0.8],
+                scale: [0.8, 1.3, 0.8],
               }}
               transition={{
-                duration: 3 + Math.random() * 4,
-                ease: "easeInOut",
-                repeat: Infinity,
-                delay: Math.random() * 2,
-              }}
-            />
-          ))}
-          
-          {/* Premium constellation patterns */}
-          {[...Array(8)].map((_, i) => (
-            <motion.div
-              key={`constellation-${i}`}
-              className="absolute w-3 h-3 rounded-full bg-gradient-to-r from-yellow-300 to-orange-400 opacity-80"
-              style={{
-                left: `${15 + Math.random() * 70}%`,
-                top: `${15 + Math.random() * 70}%`,
-              }}
-              animate={{
-                opacity: [0.5, 1, 0.5],
-                scale: [1, 1.5, 1],
-                rotate: [0, 180, 360],
-              }}
-              transition={{
-                duration: 8 + Math.random() * 4,
+                duration: 2 + Math.random() * 4,
                 ease: "easeInOut",
                 repeat: Infinity,
                 delay: Math.random() * 3,
@@ -261,56 +228,75 @@ export default function MacrobiusCulturalApp() {
             />
           ))}
           
-          {/* Shooting stars (client-side safe) */}
-          {isClient && [...Array(3)].map((_, i) => (
+          {/* Classical constellation stars */}
+          {[...Array(12)].map((_, i) => (
             <motion.div
-              key={`shooting-star-${i}`}
-              className="absolute w-2 h-0.5 bg-gradient-to-r from-cyan-300 to-transparent rounded-full"
+              key={`constellation-${i}`}
+              className="absolute w-2 h-2 rounded-full bg-gradient-to-r from-yellow-200 to-orange-200 opacity-90"
               style={{
-                right: '-20px',
+                left: `${20 + Math.random() * 60}%`,
                 top: `${20 + Math.random() * 60}%`,
               }}
               animate={{
-                x: [0, -(getWindowWidth() + 100)],
-                opacity: [0, 1, 0],
+                opacity: [0.6, 1, 0.6],
+                scale: [1, 1.4, 1],
               }}
               transition={{
-                duration: 3 + Math.random() * 2,
+                duration: 6 + Math.random() * 3,
+                ease: "easeInOut",
+                repeat: Infinity,
+                delay: Math.random() * 4,
+              }}
+            />
+          ))}
+          
+          {/* MOVING STARS - RIGHT TO LEFT (as requested) */}
+          {isClient && [...Array(4)].map((_, i) => (
+            <motion.div
+              key={`moving-star-${i}`}
+              className="absolute w-1.5 h-1.5 bg-gradient-to-r from-cyan-200 via-white to-transparent rounded-full"
+              style={{
+                right: '-30px',
+                top: `${15 + Math.random() * 70}%`,
+              }}
+              animate={{
+                x: [0, -(getWindowWidth() + 150)],
+                opacity: [0, 0.8, 1, 0.8, 0],
+                scale: [0.5, 1, 1.2, 1, 0.5]
+              }}
+              transition={{
+                duration: 8 + Math.random() * 4,
                 ease: "linear",
                 repeat: Infinity,
-                delay: Math.random() * 10 + 5,
+                delay: Math.random() * 15 + 3,
               }}
             />
           ))}
         </div>
 
-        {/* PREMIUM ROTATING ASTROLABE WITH ADVANCED EFFECTS */}
+        {/* CLASSICAL ASTROLABIUM BACKGROUND - FULL PAGE */}
         <div className="fixed inset-0 z-1 flex items-center justify-center pointer-events-none">
           <motion.div 
-            className="relative"
+            className="relative opacity-25"
             animate={{ 
               rotate: astrolabeRotation,
-              scale: [1, 1.02, 1],
+              scale: [1, 1.01, 1],
             }}
             transition={{ 
-              rotate: { duration: 3, ease: "easeInOut" },
-              scale: { duration: 15, ease: "easeInOut", repeat: Infinity }
+              rotate: { duration: 4, ease: "easeInOut" },
+              scale: { duration: 20, ease: "easeInOut", repeat: Infinity }
             }}
           >
-            {/* Glow effect behind astrolabe */}
-            <div className="absolute inset-0 bg-gradient-to-r from-yellow-400/10 via-orange-400/5 to-yellow-400/10 rounded-full blur-3xl scale-110" />
-            
-            <div className="w-[2200px] h-[2200px] relative">
+            <div className="w-[2400px] h-[2400px] relative">
               <Image 
                 src="/Astrolab.jpg" 
                 alt="Historical Astrolabe"
-                width={2200}
-                height={2200}
+                width={2400}
+                height={2400}
                 className="w-full h-full object-contain"
                 style={{
-                  filter: 'hue-rotate(240deg) saturate(0.7) brightness(0.4) contrast(1.3)',
-                  mixBlendMode: 'overlay',
-                  opacity: 0.6
+                  filter: 'hue-rotate(220deg) saturate(0.5) brightness(0.3) contrast(1.1)',
+                  mixBlendMode: 'overlay'
                 }}
                 priority
               />
@@ -318,42 +304,40 @@ export default function MacrobiusCulturalApp() {
           </motion.div>
         </div>
 
-        {/* PREMIUM FLOATING MACROBIUS CIRCLE WITH ENHANCED EFFECTS */}
+        {/* SMALL CIRCULAR MACROBIUS AT TOP (as requested) */}
         {activeSection === 'hero' && (
           <motion.div 
-            className="fixed top-20 left-1/2 transform -translate-x-1/2 z-20 pointer-events-none"
+            className="fixed top-16 left-1/2 transform -translate-x-1/2 z-20 pointer-events-none"
             animate={{ 
-              y: [0, -20, 0],
-              x: [0, -10, 10, 0],
-              rotate: [0, 3, -3, 0]
+              y: [0, -12, 0],
+              x: [0, -6, 6, 0],
+              rotate: [0, 2, -2, 0]
             }}
             transition={{ 
-              duration: 10,
+              duration: 8,
               ease: "easeInOut", 
               repeat: Infinity 
             }}
           >
-            {/* Enhanced glow effects */}
-            <div className="absolute inset-0 bg-gradient-to-r from-yellow-400/30 to-orange-400/30 rounded-full blur-2xl scale-150 animate-pulse" />
-            <div className="absolute inset-0 bg-gradient-to-r from-yellow-300/20 to-red-400/20 rounded-full blur-xl scale-125" />
+            {/* Classical glow */}
+            <div className="absolute inset-0 bg-gradient-to-r from-yellow-300/20 to-orange-300/20 rounded-full blur-xl scale-150 animate-pulse" />
             
-            <div className="relative w-48 h-48 rounded-full overflow-hidden border-4 border-gradient-to-r from-yellow-400 via-orange-400 to-red-400 shadow-2xl">
-              <div className="absolute inset-0 bg-gradient-to-br from-yellow-400/20 to-orange-500/20" />
+            {/* CIRCULAR MACROBIUS (not square) */}
+            <div className="relative w-32 h-32 rounded-full overflow-hidden border-3 border-yellow-400/60 shadow-xl bg-gradient-to-br from-yellow-400/10 to-orange-400/10">
               <Image 
                 src="/MacrobiusBottle.jpg" 
                 alt="Macrobius with Bottle"
-                width={192}
-                height={192}
+                width={128}
+                height={128}
                 className="w-full h-full object-cover"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-transparent via-transparent to-yellow-400/10" />
             </div>
             
-            {/* Orbiting particles */}
-            {[...Array(6)].map((_, i) => (
+            {/* Subtle orbiting effect */}
+            {[...Array(4)].map((_, i) => (
               <motion.div
-                key={`particle-${i}`}
-                className="absolute w-2 h-2 bg-yellow-400 rounded-full"
+                key={`orbit-${i}`}
+                className="absolute w-1 h-1 bg-yellow-300 rounded-full"
                 style={{
                   left: '50%',
                   top: '50%',
@@ -361,49 +345,48 @@ export default function MacrobiusCulturalApp() {
                 }}
                 animate={{
                   rotate: [0, 360],
-                  x: [0, 120 * Math.cos(i * Math.PI / 3)],
-                  y: [0, 120 * Math.sin(i * Math.PI / 3)],
-                  opacity: [0.5, 1, 0.5]
+                  x: [0, 80 * Math.cos(i * Math.PI / 2)],
+                  y: [0, 80 * Math.sin(i * Math.PI / 2)],
+                  opacity: [0.3, 0.8, 0.3]
                 }}
                 transition={{
-                  duration: 8 + i,
+                  duration: 6 + i,
                   ease: "linear",
                   repeat: Infinity,
-                  delay: i * 1.3
+                  delay: i * 1.5
                 }}
               />
             ))}
           </motion.div>
         )}
 
-        {/* PREMIUM LANGUAGE SELECTOR */}
+        {/* CLASSICAL LANGUAGE SELECTOR - TOP RIGHT */}
         <motion.div 
-          className="fixed top-6 right-6 z-50"
+          className="fixed top-4 right-4 z-50"
           whileHover={{ scale: 1.05 }}
         >
           <div className="relative">
-            {/* Glow effect */}
-            <div className="absolute inset-0 bg-gradient-to-r from-blue-500/20 to-purple-500/20 rounded-2xl blur-xl" />
+            <div className="absolute inset-0 bg-gradient-to-r from-blue-500/15 to-purple-500/15 rounded-xl blur-lg" />
             
-            <div className="relative bg-white/5 backdrop-blur-2xl rounded-2xl border border-white/10 p-3 shadow-2xl">
-              <div className="flex space-x-2">
+            <div className="relative bg-white/5 backdrop-blur-xl rounded-xl border border-white/10 p-2 shadow-xl">
+              <div className="flex space-x-1">
                 {(['DE', 'EN', 'LA'] as const).map((lang) => (
                   <motion.button
                     key={lang}
                     onClick={() => handleLanguageChange(lang)}
-                    className={`relative px-4 py-2 rounded-xl text-sm font-bold transition-all duration-500 overflow-hidden ${
+                    className={`relative px-3 py-1.5 rounded-lg text-sm font-bold transition-all duration-300 overflow-hidden ${
                       currentLang === lang
-                        ? 'text-gray-900 shadow-lg'
+                        ? 'text-gray-900 shadow-md'
                         : 'text-white/70 hover:text-white hover:bg-white/10'
                     }`}
-                    whileHover={{ scale: 1.1, y: -2 }}
+                    whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                   >
                     {currentLang === lang && (
                       <motion.div
-                        className="absolute inset-0 bg-gradient-to-r from-yellow-400 via-orange-400 to-yellow-400"
+                        className="absolute inset-0 bg-gradient-to-r from-yellow-400 to-orange-400"
                         layoutId="languageBackground"
-                        transition={{ type: "spring", duration: 0.6 }}
+                        transition={{ type: "spring", duration: 0.5 }}
                       />
                     )}
                     <span className="relative z-10">{lang}</span>
@@ -414,32 +397,32 @@ export default function MacrobiusCulturalApp() {
           </div>
         </motion.div>
 
-        {/* PREMIUM LEFT-SIDE NAVIGATION WITH SOPHISTICATED DESIGN */}
+        {/* CLASSICAL NAVIGATION - TOP LEFT VERTICAL BAR (as requested) */}
         <motion.nav 
-          className="fixed top-6 left-6 z-50 max-h-[calc(100vh-3rem)] overflow-y-auto"
+          className="fixed top-4 left-4 z-50 max-h-[calc(100vh-2rem)] overflow-y-auto"
           onHoverStart={() => setIsNavHovered(true)}
           onHoverEnd={() => setIsNavHovered(false)}
-          whileHover={{ scale: 1.02 }}
+          whileHover={{ scale: 1.01 }}
         >
           <div className="relative">
-            {/* Enhanced glow effects */}
-            <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 via-blue-500/5 to-purple-500/10 rounded-3xl blur-2xl" />
-            <div className={`absolute inset-0 bg-gradient-to-r from-blue-400/5 to-purple-400/5 rounded-3xl transition-opacity duration-500 ${isNavHovered ? 'opacity-100' : 'opacity-0'}`} />
+            {/* Classical glow effects */}
+            <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 via-purple-500/5 to-blue-500/10 rounded-2xl blur-xl" />
+            <div className={`absolute inset-0 bg-gradient-to-r from-blue-400/5 to-purple-400/5 rounded-2xl transition-opacity duration-300 ${isNavHovered ? 'opacity-100' : 'opacity-0'}`} />
             
-            <div className="relative bg-white/5 backdrop-blur-3xl rounded-3xl p-6 border border-white/10 shadow-2xl min-w-[280px]">
-              {/* Crown icon for premium feel */}
-              <div className="flex items-center justify-center mb-6">
+            <div className="relative bg-white/5 backdrop-blur-2xl rounded-2xl p-4 border border-white/10 shadow-xl min-w-[260px]">
+              {/* Classical header */}
+              <div className="flex items-center justify-center mb-4">
                 <motion.div
-                  animate={{ rotate: [0, 5, -5, 0] }}
-                  transition={{ duration: 4, repeat: Infinity }}
+                  animate={{ rotate: [0, 3, -3, 0] }}
+                  transition={{ duration: 6, repeat: Infinity }}
                 >
-                  <Crown className="w-8 h-8 text-yellow-400" />
+                  <Crown className="w-6 h-6 text-yellow-400" />
                 </motion.div>
-                <span className="ml-3 text-yellow-400 font-bold text-lg">MACROBIUS</span>
+                <span className="ml-2 text-yellow-400 font-bold text-sm">MACROBIUS</span>
               </div>
               
-              <div className="space-y-3">
-                {/* Core Sections with enhanced styling */}
+              <div className="space-y-2">
+                {/* Core Sections */}
                 {[
                   { id: 'hero', text: safeT('nav.intro'), icon: '🏛️', gradient: 'from-amber-500 to-yellow-500' },
                   { id: 'quiz', text: safeT('nav.quiz'), icon: '📝', gradient: 'from-blue-500 to-cyan-500' },
@@ -453,187 +436,141 @@ export default function MacrobiusCulturalApp() {
                   <motion.button
                     key={section.id}
                     onClick={() => handleSectionChange(section.id)}
-                    className={`group relative w-full px-6 py-4 rounded-2xl text-sm font-semibold transition-all duration-500 text-left flex items-center space-x-3 overflow-hidden ${
-                      activeSection === section.id ? 'shadow-2xl' : 'hover:bg-white/5'
+                    className={`group relative w-full px-4 py-3 rounded-xl text-xs font-semibold transition-all duration-300 text-left flex items-center space-x-2 overflow-hidden ${
+                      activeSection === section.id ? 'shadow-lg' : 'hover:bg-white/5'
                     }`}
-                    whileHover={{ scale: 1.02, x: 5 }}
+                    whileHover={{ scale: 1.01, x: 3 }}
                     whileTap={{ scale: 0.98 }}
-                    initial={{ opacity: 0, x: -20 }}
+                    initial={{ opacity: 0, x: -15 }}
                     animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: index * 0.1 }}
+                    transition={{ delay: index * 0.05 }}
                   >
                     {activeSection === section.id && (
                       <motion.div
                         className={`absolute inset-0 bg-gradient-to-r ${section.gradient} opacity-80`}
                         layoutId="navBackground"
-                        transition={{ type: "spring", duration: 0.6 }}
+                        transition={{ type: "spring", duration: 0.4 }}
                       />
                     )}
                     
-                    <span className="relative z-10 text-2xl">{section.icon}</span>
-                    <span className={`relative z-10 flex-1 ${
+                    <span className="relative z-10 text-lg">{section.icon}</span>
+                    <span className={`relative z-10 flex-1 text-xs ${
                       activeSection === section.id ? 'text-white font-bold' : 'text-white/80 group-hover:text-white'
                     }`}>
                       {section.text}
                     </span>
                     
                     {componentErrors[section.id] && (
-                      <AlertTriangle className="relative z-10 w-4 h-4 text-red-400" />
-                    )}
-                    
-                    {activeSection === section.id && (
-                      <motion.div
-                        className="relative z-10"
-                        animate={{ rotate: [0, 180, 360] }}
-                        transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-                      >
-                        <Sparkles className="w-4 h-4 text-white" />
-                      </motion.div>
+                      <AlertTriangle className="relative z-10 w-3 h-3 text-red-400" />
                     )}
                   </motion.button>
                 ))}
                 
-                {/* Enhanced AI Systems Section */}
-                <div className="border-t border-white/10 pt-4 mt-4">
-                  <div className="flex items-center space-x-2 mb-4">
-                    <Star className="w-5 h-5 text-blue-400" />
+                {/* AI Systems Section */}
+                <div className="border-t border-white/10 pt-3 mt-3">
+                  <div className="flex items-center space-x-1 mb-3">
+                    <Star className="w-4 h-4 text-blue-400" />
                     <p className="text-blue-200/80 text-xs uppercase tracking-wider font-bold">
-                      {safeT('nav.ai_systems')}
+                      AI SYSTEMS
                     </p>
-                    <span className="text-green-400 text-xs font-bold bg-green-400/10 px-2 py-1 rounded-full border border-green-400/30">
-                      TIER-COMPLETE
+                    <span className="text-green-400 text-xs font-bold bg-green-400/10 px-1.5 py-0.5 rounded border border-green-400/30">
+                      COMPLETE
                     </span>
                   </div>
                   
                   {[
-                    { id: 'ai-cultural', text: safeT('nav.ai_cultural'), icon: '🧠', tier: 'ORACLE', gradient: 'from-cyan-500 to-blue-500' },
-                    { id: 'ai-learning', text: safeT('nav.ai_learning'), icon: '🎯', tier: 'COMPLETE', gradient: 'from-blue-500 to-indigo-500' },
-                    { id: 'ai-tutoring', text: safeT('nav.ai_tutoring'), icon: '📖', tier: 'COMPLETE', gradient: 'from-indigo-500 to-purple-500' },
-                    { id: 'ai-rag-assistant', text: safeT('nav.ai_rag'), icon: '🤖', tier: 'ENHANCED', gradient: 'from-purple-500 to-pink-500' },
-                    { id: 'vocabulary-trainer', text: 'Vokabeltrainer', icon: '📝', tier: 'CORPUS', gradient: 'from-pink-500 to-red-500' },
-                    { id: 'grammar-explainer', text: 'Grammatik', icon: '📖', tier: 'TIER1', gradient: 'from-red-500 to-orange-500' },
-                    { id: 'text-processor', text: 'Textprozessor', icon: '🔍', tier: 'TIER2', gradient: 'from-orange-500 to-yellow-500' }
+                    { id: 'ai-cultural', text: safeT('nav.ai_cultural'), icon: '🧠', tier: 'ORACLE' },
+                    { id: 'ai-learning', text: safeT('nav.ai_learning'), icon: '🎯', tier: 'COMPLETE' },
+                    { id: 'ai-tutoring', text: safeT('nav.ai_tutoring'), icon: '📖', tier: 'COMPLETE' },
+                    { id: 'ai-rag-assistant', text: safeT('nav.ai_rag'), icon: '🤖', tier: 'ENHANCED' },
+                    { id: 'vocabulary-trainer', text: 'Vokabeltrainer', icon: '📝', tier: 'CORPUS' },
+                    { id: 'grammar-explainer', text: 'Grammatik', icon: '📖', tier: 'TIER1' },
+                    { id: 'text-processor', text: 'Textprozessor', icon: '🔍', tier: 'TIER2' }
                   ].map((section, index) => (
                     <motion.button
                       key={section.id}
                       onClick={() => handleSectionChange(section.id)}
-                      className={`group relative w-full px-4 py-3 rounded-xl text-xs font-medium transition-all duration-500 text-left flex items-center space-x-3 mb-2 overflow-hidden ${
-                        activeSection === section.id ? 'shadow-xl' : 'hover:bg-white/3'
+                      className={`group relative w-full px-3 py-2 rounded-lg text-xs font-medium transition-all duration-300 text-left flex items-center space-x-2 mb-1 overflow-hidden ${
+                        activeSection === section.id ? 'bg-blue-500/20 shadow-md' : 'hover:bg-white/3'
                       }`}
-                      whileHover={{ scale: 1.02, x: 3 }}
+                      whileHover={{ scale: 1.01, x: 2 }}
                       whileTap={{ scale: 0.98 }}
-                      initial={{ opacity: 0, x: -15 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: 0.8 + index * 0.05 }}
                     >
-                      {activeSection === section.id && (
-                        <motion.div
-                          className={`absolute inset-0 bg-gradient-to-r ${section.gradient} opacity-70`}
-                          layoutId="aiNavBackground"
-                          transition={{ type: "spring", duration: 0.6 }}
-                        />
-                      )}
-                      
-                      <span className="relative z-10 text-lg">{section.icon}</span>
-                      <span className={`relative z-10 flex-1 text-xs ${
-                        activeSection === section.id ? 'text-white font-bold' : 'text-blue-200/80 group-hover:text-blue-200'
+                      <span className="text-sm">{section.icon}</span>
+                      <span className={`flex-1 text-xs ${
+                        activeSection === section.id ? 'text-blue-100 font-semibold' : 'text-blue-200/80 group-hover:text-blue-200'
                       }`}>
                         {section.text}
                       </span>
-                      <span className="relative z-10 text-green-400 text-xs font-bold bg-green-400/10 px-1.5 py-0.5 rounded border border-green-400/30">
+                      <span className="text-green-400 text-xs font-bold bg-green-400/10 px-1 py-0.5 rounded border border-green-400/30">
                         {section.tier}
                       </span>
-                      
-                      {componentErrors[section.id] && (
-                        <AlertTriangle className="relative z-10 w-3 h-3 text-red-400" />
-                      )}
                     </motion.button>
                   ))}
                 </div>
                 
-                {/* Enhanced TIER3 Platform Section */}
-                <div className="border-t border-white/10 pt-4 mt-4">
-                  <div className="flex items-center space-x-2 mb-4">
-                    <Crown className="w-5 h-5 text-purple-400" />
+                {/* TIER3 Platform Section */}
+                <div className="border-t border-white/10 pt-3 mt-3">
+                  <div className="flex items-center space-x-1 mb-3">
+                    <Crown className="w-4 h-4 text-purple-400" />
                     <p className="text-purple-200/80 text-xs uppercase tracking-wider font-bold">
-                      TIER3 PLATTFORM
+                      TIER3
                     </p>
-                    <span className="text-purple-400 text-xs font-bold bg-purple-400/10 px-2 py-1 rounded-full border border-purple-400/30">
-                      FORTGESCHRITTEN
-                    </span>
                   </div>
                   
                   {[
-                    { id: 'progressive-reading', text: 'Progressives Lesen', icon: '📚', tier: 'TIER3', gradient: 'from-purple-600 to-violet-600' },
-                    { id: 'research-tools', text: 'Forschungstools', icon: '🔬', tier: 'TIER3', gradient: 'from-violet-600 to-purple-600' }
+                    { id: 'progressive-reading', text: 'Progressives Lesen', icon: '📚', tier: 'TIER3' },
+                    { id: 'research-tools', text: 'Forschungstools', icon: '🔬', tier: 'TIER3' }
                   ].map((section, index) => (
                     <motion.button
                       key={section.id}
                       onClick={() => handleSectionChange(section.id)}
-                      className={`group relative w-full px-4 py-3 rounded-xl text-xs font-medium transition-all duration-500 text-left flex items-center space-x-3 mb-2 overflow-hidden ${
-                        activeSection === section.id ? 'shadow-xl' : 'hover:bg-white/3'
+                      className={`group relative w-full px-3 py-2 rounded-lg text-xs font-medium transition-all duration-300 text-left flex items-center space-x-2 mb-1 overflow-hidden ${
+                        activeSection === section.id ? 'bg-purple-500/20 shadow-md' : 'hover:bg-white/3'
                       }`}
-                      whileHover={{ scale: 1.02, x: 3 }}
+                      whileHover={{ scale: 1.01, x: 2 }}
                       whileTap={{ scale: 0.98 }}
-                      initial={{ opacity: 0, x: -15 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: 1.5 + index * 0.1 }}
                     >
-                      {activeSection === section.id && (
-                        <motion.div
-                          className={`absolute inset-0 bg-gradient-to-r ${section.gradient} opacity-80`}
-                          layoutId="tier3NavBackground"
-                          transition={{ type: "spring", duration: 0.6 }}
-                        />
-                      )}
-                      
-                      <span className="relative z-10 text-lg">{section.icon}</span>
-                      <span className={`relative z-10 flex-1 text-xs ${
-                        activeSection === section.id ? 'text-white font-bold' : 'text-purple-200/80 group-hover:text-purple-200'
+                      <span className="text-sm">{section.icon}</span>
+                      <span className={`flex-1 text-xs ${
+                        activeSection === section.id ? 'text-purple-100 font-semibold' : 'text-purple-200/80 group-hover:text-purple-200'
                       }`}>
                         {section.text}
                       </span>
-                      <span className="relative z-10 text-purple-400 text-xs font-bold bg-purple-400/10 px-1.5 py-0.5 rounded border border-purple-400/30">
+                      <span className="text-purple-400 text-xs font-bold bg-purple-400/10 px-1 py-0.5 rounded border border-purple-400/30">
                         {section.tier}
                       </span>
-                      
-                      {componentErrors[section.id] && (
-                        <AlertTriangle className="relative z-10 w-3 h-3 text-red-400" />
-                      )}
                     </motion.button>
                   ))}
                 </div>
               </div>
 
-              {/* Enhanced Oracle Cloud Status */}
+              {/* Oracle Cloud Status */}
               <motion.div 
-                className="mt-6 pt-6 border-t border-white/10"
+                className="mt-4 pt-4 border-t border-white/10"
                 animate={{ 
                   boxShadow: [
-                    '0 0 20px rgba(34, 197, 94, 0.2)',
-                    '0 0 30px rgba(34, 197, 94, 0.4)',
-                    '0 0 20px rgba(34, 197, 94, 0.2)'
+                    '0 0 15px rgba(34, 197, 94, 0.2)',
+                    '0 0 25px rgba(34, 197, 94, 0.4)',
+                    '0 0 15px rgba(34, 197, 94, 0.2)'
                   ]
                 }}
                 transition={{ duration: 3, repeat: Infinity }}
               >
-                <div className="bg-green-500/10 border border-green-400/30 rounded-2xl p-4">
-                  <div className="flex items-center space-x-3 mb-2">
+                <div className="bg-green-500/10 border border-green-400/30 rounded-xl p-3">
+                  <div className="flex items-center space-x-2 mb-1">
                     <motion.div 
-                      className="w-3 h-3 bg-green-400 rounded-full"
+                      className="w-2 h-2 bg-green-400 rounded-full"
                       animate={{ scale: [1, 1.2, 1], opacity: [1, 0.7, 1] }}
                       transition={{ duration: 2, repeat: Infinity }}
                     />
-                    <span className="text-white font-bold text-sm">Oracle Cloud</span>
-                    <span className="text-green-400 font-bold text-xs bg-green-400/10 px-2 py-1 rounded border border-green-400/30">
-                      TIER-COMPLETE
+                    <span className="text-white font-semibold text-xs">Oracle Cloud</span>
+                    <span className="text-green-400 font-bold text-xs bg-green-400/10 px-1.5 py-0.5 rounded border border-green-400/30">
+                      COMPLETE
                     </span>
                   </div>
                   <p className="text-white/70 text-xs leading-relaxed">
                     {safeT('nav.oracle_status')}
-                  </p>
-                  <p className="text-green-400/90 text-xs font-semibold mt-1">
-                    Real AI Systems Operational
                   </p>
                 </div>
               </motion.div>
@@ -641,323 +578,252 @@ export default function MacrobiusCulturalApp() {
           </div>
         </motion.nav>
 
-        {/* MAIN CONTENT WITH ENHANCED TRANSITIONS */}
+        {/* MAIN CONTENT */}
         <main className="relative z-10">
-          {/* PREMIUM HERO SECTION */}
+          {/* CLASSICAL HERO SECTION - CENTERED FRAME LAYOUT */}
           {activeSection === 'hero' && (
             <motion.section 
-              className="min-h-screen flex items-center justify-center px-6"
-              style={{ paddingTop: '240px' }}
+              className="min-h-screen flex items-center justify-center px-4"
+              style={{ paddingTop: '140px' }}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ duration: 1.2 }}
+              transition={{ duration: 1 }}
             >
-              <div className="text-center max-w-8xl mx-auto">
-                {/* Premium main card with advanced effects */}
-                <motion.div 
-                  className="relative"
-                  initial={{ scale: 0.9, y: 50 }}
-                  animate={{ scale: 1, y: 0 }}
-                  transition={{ duration: 1, delay: 0.3 }}
-                >
-                  {/* Multiple glow layers */}
-                  <div className="absolute inset-0 bg-gradient-to-r from-yellow-400/10 via-orange-400/5 to-red-400/10 rounded-[3rem] blur-3xl scale-110" />
-                  <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 via-blue-500/3 to-purple-500/5 rounded-[3rem] blur-2xl" />
+              {/* CLASSICAL CENTERED CIRCULAR FRAME */}
+              <div className="relative max-w-4xl mx-auto">
+                {/* Astrolabe-inspired circular frame */}
+                <div className="relative">
+                  {/* Outer glow ring */}
+                  <div className="absolute inset-0 rounded-full border-2 border-yellow-400/30 blur-sm scale-105" />
+                  <div className="absolute inset-0 rounded-full border border-yellow-300/20 blur-md scale-110" />
                   
-                  <div className="relative bg-white/5 backdrop-blur-3xl rounded-[3rem] p-12 border border-white/10 shadow-2xl">
-                    {/* Premium title section */}
+                  {/* Main circular frame */}
+                  <div className="relative bg-white/5 backdrop-blur-2xl rounded-full p-12 border-2 border-yellow-400/40 shadow-2xl">
+                    {/* Classical title section */}
                     <motion.div 
-                      className="mb-12"
-                      initial={{ opacity: 0, y: 30 }}
+                      className="text-center mb-8"
+                      initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 1, delay: 0.6 }}
+                      transition={{ duration: 1, delay: 0.3 }}
                     >
                       <motion.h1 
-                        className="text-7xl md:text-9xl font-black mb-6 tracking-tight"
+                        className="text-5xl md:text-7xl font-black mb-4 tracking-tight"
                         style={{
-                          background: 'linear-gradient(135deg, #FFD700 0%, #FFA500 25%, #FF6347 50%, #FF4500 75%, #DC143C 100%)',
+                          background: 'linear-gradient(135deg, #FFD700 0%, #FFA500 50%, #FF6347 100%)',
                           WebkitBackgroundClip: 'text',
                           WebkitTextFillColor: 'transparent',
-                          filter: 'drop-shadow(0 0 30px rgba(255, 215, 0, 0.3))'
+                          filter: 'drop-shadow(0 0 20px rgba(255, 215, 0, 0.3))'
                         }}
-                        animate={{ 
-                          textShadow: [
-                            '0 0 20px rgba(255, 215, 0, 0.5)',
-                            '0 0 40px rgba(255, 215, 0, 0.8)',
-                            '0 0 20px rgba(255, 215, 0, 0.5)'
-                          ]
-                        }}
-                        transition={{ duration: 4, repeat: Infinity }}
                       >
                         Macrobius
                       </motion.h1>
                       
                       <motion.h2 
-                        className="text-3xl md:text-5xl text-yellow-300 mb-8 font-light leading-relaxed"
+                        className="text-2xl md:text-3xl text-yellow-300 mb-4 font-light"
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
-                        transition={{ duration: 1, delay: 0.8 }}
+                        transition={{ duration: 1, delay: 0.5 }}
                       >
                         {safeT('hero.subtitle')}
                       </motion.h2>
                       
                       <motion.h3 
-                        className="text-xl md:text-2xl text-yellow-200/90 mb-6 font-medium leading-relaxed max-w-4xl mx-auto"
+                        className="text-lg md:text-xl text-yellow-200/90 mb-4 font-medium max-w-2xl mx-auto"
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
-                        transition={{ duration: 1, delay: 1 }}
+                        transition={{ duration: 1, delay: 0.7 }}
                       >
                         {safeT('hero.description')}
                       </motion.h3>
 
-                      {/* Premium TIER-COMPLETE Badge */}
+                      {/* TIER-COMPLETE Badge */}
                       <motion.div 
-                        className="inline-flex items-center px-6 py-3 rounded-2xl text-sm font-bold mb-8 relative overflow-hidden"
+                        className="inline-flex items-center px-4 py-2 rounded-xl text-sm font-bold mb-6"
                         style={{
                           background: 'linear-gradient(135deg, rgba(34, 197, 94, 0.2) 0%, rgba(59, 130, 246, 0.2) 100%)',
-                          border: '2px solid rgba(34, 197, 94, 0.3)'
+                          border: '1px solid rgba(34, 197, 94, 0.3)'
                         }}
                         initial={{ scale: 0 }}
                         animate={{ scale: 1 }}
-                        transition={{ type: "spring", duration: 0.8, delay: 1.2 }}
-                        whileHover={{ scale: 1.05 }}
+                        transition={{ type: "spring", duration: 0.6, delay: 0.9 }}
                       >
-                        <div className="absolute inset-0 bg-gradient-to-r from-green-400/10 to-blue-400/10 opacity-0 hover:opacity-100 transition-opacity duration-500" />
                         <motion.div
-                          className="w-3 h-3 bg-green-400 rounded-full mr-3"
+                          className="w-2 h-2 bg-green-400 rounded-full mr-2"
                           animate={{ scale: [1, 1.2, 1], opacity: [1, 0.7, 1] }}
                           transition={{ duration: 2, repeat: Infinity }}
                         />
-                        <span className="text-green-300 relative z-10">
-                          HYBRID TIER-COMPLETE - Advanced Components + Working Features
+                        <span className="text-green-300">
+                          TIER-COMPLETE - Advanced Components + Working Features
                         </span>
                       </motion.div>
                     </motion.div>
 
-                    {/* Enhanced Cultural Story */}
+                    {/* CLASSICAL CENTRAL IMAGE GRID - EXACTLY LIKE ORIGINAL */}
                     <motion.div 
-                      className="max-w-5xl mx-auto mb-12"
+                      className="mb-8"
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 1, delay: 1.4 }}
+                      transition={{ duration: 1, delay: 1.1 }}
                     >
-                      <div className="bg-white/5 backdrop-blur-xl rounded-3xl p-8 border border-white/10">
-                        <p className="text-lg md:text-xl text-white/90 leading-relaxed text-justify font-light">
+                      <div className="grid grid-cols-2 gap-4 max-w-2xl mx-auto">
+                        {/* Rome Image - Top Left */}
+                        <motion.div
+                          className="relative group cursor-pointer overflow-hidden rounded-xl shadow-lg"
+                          whileHover={{ scale: 1.02, y: -3 }}
+                          whileTap={{ scale: 0.98 }}
+                          onClick={() => setShowRomeModal(true)}
+                        >
+                          <Image
+                            src="/Rome-under.jpg"
+                            alt={safeT('image.rome.title')}
+                            width={300}
+                            height={200}
+                            className="w-full h-32 object-cover transition-all duration-500 group-hover:scale-110 group-hover:brightness-110"
+                          />
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                            <div className="absolute bottom-0 left-0 right-0 p-3">
+                              <h3 className="text-white font-bold text-sm">{safeT('image.rome.title')}</h3>
+                            </div>
+                          </div>
+                          <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                            <Maximize className="w-4 h-4 text-white" />
+                          </div>
+                        </motion.div>
+                        
+                        {/* Tycho & Pontanus - Top Right */}
+                        <motion.div
+                          className="relative group cursor-pointer overflow-hidden rounded-xl shadow-lg"
+                          whileHover={{ scale: 1.02, y: -3 }}
+                          whileTap={{ scale: 0.98 }}
+                          onClick={() => setShowPontanusModal(true)}
+                        >
+                          <Image
+                            src="/TychoAssistent.jpg"
+                            alt={safeT('image.tycho.title')}
+                            width={300}
+                            height={200}
+                            className="w-full h-32 object-contain bg-gradient-to-br from-blue-50 to-purple-50 transition-all duration-500 group-hover:scale-110"
+                          />
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                            <div className="absolute bottom-0 left-0 right-0 p-3">
+                              <h3 className="text-white font-bold text-sm">{safeT('image.tycho.title')}</h3>
+                            </div>
+                          </div>
+                          <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                            <Maximize className="w-4 h-4 text-white" />
+                          </div>
+                        </motion.div>
+                        
+                        {/* Ancient Drawing - Bottom Left */}
+                        <motion.div
+                          className="relative group cursor-pointer overflow-hidden rounded-xl shadow-lg"
+                          whileHover={{ scale: 1.02, y: -3 }}
+                          whileTap={{ scale: 0.98 }}
+                          onClick={() => setShowAboutModal(true)}
+                        >
+                          <Image
+                            src="/MacrobiusBottle.jpg"
+                            alt="Ancient Drawing"
+                            width={300}
+                            height={200}
+                            className="w-full h-32 object-contain bg-gradient-to-br from-yellow-50 to-orange-50 transition-all duration-500 group-hover:scale-110"
+                          />
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                            <div className="absolute bottom-0 left-0 right-0 p-3">
+                              <h3 className="text-white font-bold text-sm">Ancient Manuscript</h3>
+                            </div>
+                          </div>
+                          <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                            <Maximize className="w-4 h-4 text-white" />
+                          </div>
+                        </motion.div>
+                        
+                        {/* Book Collection - Bottom Right */}
+                        <motion.div
+                          className="relative group cursor-pointer overflow-hidden rounded-xl shadow-lg bg-gradient-to-br from-amber-100 to-orange-100 p-4 flex items-center justify-center"
+                          whileHover={{ scale: 1.02, y: -3 }}
+                          whileTap={{ scale: 0.98 }}
+                          onClick={() => setShowAboutModal(true)}
+                        >
+                          <div className="text-center">
+                            <h3 className="text-amber-800 font-bold text-sm mb-2">Opera Macrobii</h3>
+                            <p className="text-amber-700 text-xs">Saturnalia & Commentarii</p>
+                          </div>
+                          <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                            <Eye className="w-4 h-4 text-amber-700" />
+                          </div>
+                        </motion.div>
+                      </div>
+                    </motion.div>
+
+                    {/* CLASSICAL CULTURAL STORY */}
+                    <motion.div 
+                      className="mb-8"
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 1, delay: 1.3 }}
+                    >
+                      <div className="bg-white/5 backdrop-blur-xl rounded-2xl p-6 border border-white/10 max-w-3xl mx-auto">
+                        <p className="text-base md:text-lg text-white/90 leading-relaxed text-justify">
                           {safeT('cultural_story')}
                         </p>
                       </div>
                     </motion.div>
 
-                    {/* Enhanced Picture Gallery */}
+                    {/* CLASSICAL ACTION BUTTONS */}
                     <motion.div 
-                      className="mb-12"
-                      initial={{ opacity: 0, y: 30 }}
+                      className="flex flex-col sm:flex-row gap-4 justify-center items-center"
+                      initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 1, delay: 1.6 }}
+                      transition={{ duration: 1, delay: 1.5 }}
                     >
-                      <div className="flex items-center justify-center space-x-4 mb-8">
-                        <motion.div
-                          animate={{ rotate: [0, 360] }}
-                          transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-                        >
-                          <ImageIcon className="w-8 h-8 text-yellow-300" />
-                        </motion.div>
-                        <h4 className="text-2xl font-bold text-yellow-200">
-                          {safeT('hero.cultural_treasures')}
-                        </h4>
-                        <motion.div
-                          animate={{ scale: [1, 1.2, 1] }}
-                          transition={{ duration: 3, repeat: Infinity }}
-                        >
-                          <Eye className="w-8 h-8 text-yellow-300" />
-                        </motion.div>
-                      </div>
+                      <motion.button
+                        onClick={() => handleSectionChange('banquet')}
+                        className="group relative px-8 py-3 text-lg font-bold rounded-xl transition-all duration-300 shadow-lg overflow-hidden"
+                        style={{
+                          background: 'linear-gradient(135deg, #722F37 0%, #8B4513 100%)',
+                          border: '2px solid #FFD700'
+                        }}
+                        whileHover={{ scale: 1.05, y: -2 }}
+                        whileTap={{ scale: 0.95 }}
+                      >
+                        <div className="absolute inset-0 bg-gradient-to-r from-yellow-400/20 to-orange-400/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                        <span className="relative z-10 text-yellow-400 group-hover:text-yellow-300">
+                          {safeT('hero.explore_works')}
+                        </span>
+                      </motion.button>
                       
-                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
-                        {/* Enhanced Rome Image */}
-                        <motion.div
-                          initial={{ opacity: 0, y: 30 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          transition={{ delay: 1.8, duration: 0.8 }}
-                          className="md:col-span-2 lg:col-span-1"
-                        >
-                          <motion.div
-                            className="relative group cursor-pointer overflow-hidden rounded-3xl shadow-2xl"
-                            style={{
-                              border: '3px solid transparent',
-                              background: 'linear-gradient(135deg, rgba(255, 165, 0, 0.8), rgba(255, 69, 0, 0.8)) border-box',
-                            }}
-                            whileHover={{ scale: 1.03, y: -10, rotateY: 5 }}
-                            whileTap={{ scale: 0.98 }}
-                            onClick={() => setShowRomeModal(true)}
-                          >
-                            {/* Glow effect */}
-                            <div className="absolute inset-0 bg-gradient-to-r from-orange-400/20 to-red-400/20 rounded-3xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                            
-                            <Image
-                              src="/Rome-under.jpg"
-                              alt={safeT('image.rome.title')}
-                              width={500}
-                              height={350}
-                              className="w-full h-72 object-cover object-center transition-all duration-700 group-hover:scale-110 group-hover:brightness-110"
-                            />
-                            
-                            <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500">
-                              <div className="absolute bottom-0 left-0 right-0 p-8">
-                                <h3 className="text-white font-bold text-2xl mb-3">{safeT('image.rome.title')}</h3>
-                                <p className="text-white/95 text-sm leading-relaxed">{safeT('image.rome.subtitle')}</p>
-                              </div>
-                            </div>
-                            
-                            <motion.div 
-                              className="absolute top-4 right-4 bg-white/10 backdrop-blur-md rounded-2xl p-3 opacity-0 group-hover:opacity-100 transition-all duration-500"
-                              whileHover={{ scale: 1.2, rotate: 180 }}
-                            >
-                              <Maximize className="w-6 h-6 text-white" />
-                            </motion.div>
-                          </motion.div>
-                        </motion.div>
-                        
-                        {/* Enhanced Macrobius Portrait */}
-                        <motion.div
-                          initial={{ opacity: 0, y: 30 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          transition={{ delay: 2, duration: 0.8 }}
-                        >
-                          <motion.div
-                            className="relative group cursor-pointer overflow-hidden rounded-3xl shadow-2xl"
-                            style={{
-                              border: '3px solid transparent',
-                              background: 'linear-gradient(135deg, rgba(255, 215, 0, 0.8), rgba(255, 140, 0, 0.8)) border-box',
-                            }}
-                            whileHover={{ scale: 1.03, y: -8, rotateY: -5 }}
-                            whileTap={{ scale: 0.98 }}
-                            onClick={() => setShowAboutModal(true)}
-                          >
-                            <div className="absolute inset-0 bg-gradient-to-r from-yellow-400/20 to-orange-400/20 rounded-3xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                            
-                            <Image
-                              src="/MacrobiusBottle.jpg"
-                              alt={safeT('image.macrobius.title')}
-                              width={500}
-                              height={600}
-                              className="w-full h-80 object-contain transition-all duration-700 group-hover:scale-110 group-hover:brightness-110"
-                            />
-                            
-                            <div className="absolute inset-0 bg-gradient-to-t from-yellow-900/90 via-yellow-900/40 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500">
-                              <div className="absolute bottom-0 left-0 right-0 p-8">
-                                <h3 className="text-white font-bold text-xl mb-3">{safeT('image.macrobius.title')}</h3>
-                                <p className="text-white/95 text-sm leading-relaxed">{safeT('image.macrobius.subtitle')}</p>
-                              </div>
-                            </div>
-                            
-                            <motion.div 
-                              className="absolute top-4 right-4 bg-white/10 backdrop-blur-md rounded-2xl p-3 opacity-0 group-hover:opacity-100 transition-all duration-500"
-                              whileHover={{ scale: 1.2, rotate: 180 }}
-                            >
-                              <Maximize className="w-6 h-6 text-white" />
-                            </motion.div>
-                          </motion.div>
-                        </motion.div>
-
-                        {/* Enhanced Tycho & Pontanus */}
-                        <motion.div
-                          initial={{ opacity: 0, y: 30 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          transition={{ delay: 2.2, duration: 0.8 }}
-                        >
-                          <motion.div
-                            className="relative group cursor-pointer overflow-hidden rounded-3xl shadow-2xl"
-                            style={{
-                              border: '3px solid transparent',
-                              background: 'linear-gradient(135deg, rgba(59, 130, 246, 0.8), rgba(147, 51, 234, 0.8)) border-box',
-                            }}
-                            whileHover={{ scale: 1.03, y: -8, rotateY: 5 }}
-                            whileTap={{ scale: 0.98 }}
-                            onClick={() => setShowPontanusModal(true)}
-                          >
-                            <div className="absolute inset-0 bg-gradient-to-r from-blue-400/20 to-purple-400/20 rounded-3xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                            
-                            <Image
-                              src="/TychoAssistent.jpg"
-                              alt={safeT('image.tycho.title')}
-                              width={500}
-                              height={600}
-                              className="w-full h-80 object-contain transition-all duration-700 group-hover:scale-110 group-hover:brightness-110"
-                            />
-                            
-                            <div className="absolute inset-0 bg-gradient-to-t from-blue-900/90 via-blue-900/50 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500">
-                              <div className="absolute bottom-0 left-0 right-0 p-8">
-                                <h3 className="text-white font-bold text-xl mb-3">{safeT('image.tycho.title')}</h3>
-                                <p className="text-white/95 text-sm leading-relaxed">{safeT('image.tycho.subtitle')}</p>
-                              </div>
-                            </div>
-                            
-                            <motion.div 
-                              className="absolute top-4 right-4 bg-white/10 backdrop-blur-md rounded-2xl p-3 opacity-0 group-hover:opacity-100 transition-all duration-500"
-                              whileHover={{ scale: 1.2, rotate: 180 }}
-                            >
-                              <Maximize className="w-6 h-6 text-white" />
-                            </motion.div>
-                          </motion.div>
-                        </motion.div>
-                      </div>
+                      <motion.button
+                        onClick={() => setShowAboutModal(true)}
+                        className="group relative px-8 py-3 text-lg font-bold rounded-xl transition-all duration-300 shadow-lg overflow-hidden"
+                        style={{
+                          background: 'linear-gradient(135deg, #722F37 0%, #8B4513 100%)',
+                          border: '2px solid #FFD700'
+                        }}
+                        whileHover={{ scale: 1.05, y: -2 }}
+                        whileTap={{ scale: 0.95 }}
+                      >
+                        <div className="absolute inset-0 bg-gradient-to-r from-yellow-400/20 to-orange-400/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                        <span className="relative z-10 text-yellow-400 group-hover:text-yellow-300">
+                          {safeT('hero.learn_more')}
+                        </span>
+                      </motion.button>
                     </motion.div>
                   </div>
-                </motion.div>
-
-                {/* Premium Action Buttons */}
-                <motion.div 
-                  className="flex flex-col sm:flex-row gap-6 justify-center items-center mt-12"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 1, delay: 2.4 }}
-                >
-                  <motion.button
-                    onClick={() => handleSectionChange('banquet')}
-                    className="group relative px-10 py-5 text-xl font-bold rounded-2xl transition-all duration-500 shadow-2xl overflow-hidden"
-                    style={{
-                      background: 'linear-gradient(135deg, #722F37 0%, #8B4513 50%, #722F37 100%)',
-                      border: '2px solid #FFD700'
-                    }}
-                    whileHover={{ scale: 1.05, y: -5 }}
-                    whileTap={{ scale: 0.95 }}
-                  >
-                    <div className="absolute inset-0 bg-gradient-to-r from-yellow-400/20 to-orange-400/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                    <span className="relative z-10 text-yellow-400 group-hover:text-yellow-300">
-                      {safeT('hero.explore_works')}
-                    </span>
-                  </motion.button>
-                  
-                  <motion.button
-                    onClick={() => setShowAboutModal(true)}
-                    className="group relative px-10 py-5 text-xl font-bold rounded-2xl transition-all duration-500 shadow-2xl overflow-hidden"
-                    style={{
-                      background: 'linear-gradient(135deg, #722F37 0%, #8B4513 50%, #722F37 100%)',
-                      border: '2px solid #FFD700'
-                    }}
-                    whileHover={{ scale: 1.05, y: -5 }}
-                    whileTap={{ scale: 0.95 }}
-                  >
-                    <div className="absolute inset-0 bg-gradient-to-r from-yellow-400/20 to-orange-400/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                    <span className="relative z-10 text-yellow-400 group-hover:text-yellow-300">
-                      {safeT('hero.learn_more')}
-                    </span>
-                  </motion.button>
-                </motion.div>
+                </div>
               </div>
             </motion.section>
           )}
 
-          {/* ALL OTHER SECTIONS WITH ENHANCED TRANSITIONS */}
+          {/* ALL OTHER SECTIONS WITH TRANSITIONS */}
           <AnimatePresence mode="wait">
             {activeSection === 'search' && (
               <motion.div 
-                className="min-h-screen pt-6"
+                className="min-h-screen pt-4"
                 initial={{ opacity: 0, x: 50 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -50 }}
-                transition={{ duration: 0.6 }}
+                transition={{ duration: 0.5 }}
               >
                 {renderSectionWithErrorBoundary('search', TextSearchSection, { isActive: true, t: tAdapter, language: currentLang as 'DE' | 'EN' | 'LA' })}
               </motion.div>
@@ -965,11 +831,11 @@ export default function MacrobiusCulturalApp() {
 
             {activeSection === 'cosmos' && (
               <motion.div 
-                className="min-h-screen pt-6"
+                className="min-h-screen pt-4"
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.95 }}
-                transition={{ duration: 0.6 }}
+                transition={{ duration: 0.5 }}
               >
                 {renderSectionWithErrorBoundary('cosmos', CosmosSection, { isActive: true, t: tAdapter, language: currentLang as 'DE' | 'EN' | 'LA' })}
               </motion.div>
@@ -977,11 +843,11 @@ export default function MacrobiusCulturalApp() {
 
             {activeSection === 'banquet' && (
               <motion.div 
-                className="min-h-screen pt-6"
+                className="min-h-screen pt-4"
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -30 }}
-                transition={{ duration: 0.6 }}
+                transition={{ duration: 0.5 }}
               >
                 {renderSectionWithErrorBoundary('banquet', BanquetSection, { isActive: true, t: tAdapter, language: currentLang as 'DE' | 'EN' | 'LA' })}
               </motion.div>
@@ -989,11 +855,11 @@ export default function MacrobiusCulturalApp() {
 
             {activeSection === 'worldmap' && (
               <motion.div 
-                className="min-h-screen pt-6"
+                className="min-h-screen pt-4"
                 initial={{ opacity: 0, rotateY: 15 }}
                 animate={{ opacity: 1, rotateY: 0 }}
                 exit={{ opacity: 0, rotateY: -15 }}
-                transition={{ duration: 0.6 }}
+                transition={{ duration: 0.5 }}
               >
                 {renderSectionWithErrorBoundary('worldmap', WorldMapSection, { isActive: true, t: tAdapter, language: currentLang as 'DE' | 'EN' | 'LA' })}
               </motion.div>
@@ -1001,11 +867,11 @@ export default function MacrobiusCulturalApp() {
 
             {activeSection === 'quiz' && (
               <motion.div 
-                className="min-h-screen pt-6"
+                className="min-h-screen pt-4"
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 1.1 }}
-                transition={{ duration: 0.6 }}
+                transition={{ duration: 0.5 }}
               >
                 {renderSectionWithErrorBoundary('quiz', QuizSectionComplete, { isActive: true, language: currentLang })}
               </motion.div>
@@ -1013,11 +879,11 @@ export default function MacrobiusCulturalApp() {
 
             {activeSection === 'learning' && (
               <motion.div 
-                className="min-h-screen pt-6"
+                className="min-h-screen pt-4"
                 initial={{ opacity: 0, x: -50 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: 50 }}
-                transition={{ duration: 0.6 }}
+                transition={{ duration: 0.5 }}
               >
                 {renderSectionWithErrorBoundary('learning', LearningSection, {})}
               </motion.div>
@@ -1025,24 +891,24 @@ export default function MacrobiusCulturalApp() {
 
             {activeSection === 'visualizations' && (
               <motion.div 
-                className="min-h-screen pt-6"
+                className="min-h-screen pt-4"
                 initial={{ opacity: 0, y: 50 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -50 }}
-                transition={{ duration: 0.6 }}
+                transition={{ duration: 0.5 }}
               >
                 {renderSectionWithErrorBoundary('visualizations', VisualizationsSection, { isActive: true, t: tAdapter, language: currentLang as 'DE' | 'EN' | 'LA' })}
               </motion.div>
             )}
 
-            {/* AI SYSTEMS WITH ENHANCED ANIMATIONS */}
+            {/* AI SYSTEMS */}
             {activeSection === 'ai-cultural' && (
               <motion.div 
-                className="min-h-screen pt-6"
+                className="min-h-screen pt-4"
                 initial={{ opacity: 0, rotateX: 15 }}
                 animate={{ opacity: 1, rotateX: 0 }}
                 exit={{ opacity: 0, rotateX: -15 }}
-                transition={{ duration: 0.7 }}
+                transition={{ duration: 0.6 }}
               >
                 {renderSectionWithErrorBoundary('ai-cultural', AICulturalAnalysisSection, {})}
               </motion.div>
@@ -1050,11 +916,11 @@ export default function MacrobiusCulturalApp() {
 
             {activeSection === 'ai-learning' && (
               <motion.div 
-                className="min-h-screen pt-6"
+                className="min-h-screen pt-4"
                 initial={{ opacity: 0, scale: 0.8, rotateY: 20 }}
                 animate={{ opacity: 1, scale: 1, rotateY: 0 }}
                 exit={{ opacity: 0, scale: 1.2, rotateY: -20 }}
-                transition={{ duration: 0.8 }}
+                transition={{ duration: 0.7 }}
               >
                 {renderSectionWithErrorBoundary('ai-learning', PersonalizedLearningPathsComplete, { language: currentLang })}
               </motion.div>
@@ -1062,11 +928,11 @@ export default function MacrobiusCulturalApp() {
 
             {activeSection === 'ai-tutoring' && (
               <motion.div 
-                className="min-h-screen pt-6"
+                className="min-h-screen pt-4"
                 initial={{ opacity: 0, x: 100, rotateZ: 5 }}
                 animate={{ opacity: 1, x: 0, rotateZ: 0 }}
                 exit={{ opacity: 0, x: -100, rotateZ: -5 }}
-                transition={{ duration: 0.7 }}
+                transition={{ duration: 0.6 }}
               >
                 {renderSectionWithErrorBoundary('ai-tutoring', AITutoringSystemComplete, { language: currentLang })}
               </motion.div>
@@ -1074,11 +940,11 @@ export default function MacrobiusCulturalApp() {
 
             {activeSection === 'ai-rag-assistant' && (
               <motion.div 
-                className="min-h-screen pt-6"
+                className="min-h-screen pt-4"
                 initial={{ opacity: 0, y: 100, scale: 0.9 }}
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 exit={{ opacity: 0, y: -100, scale: 1.1 }}
-                transition={{ duration: 0.8 }}
+                transition={{ duration: 0.7 }}
               >
                 {renderSectionWithErrorBoundary('ai-rag-assistant', KIRAGAssistentSection, {})}
               </motion.div>
@@ -1086,11 +952,11 @@ export default function MacrobiusCulturalApp() {
 
             {activeSection === 'vocabulary-trainer' && (
               <motion.div 
-                className="min-h-screen pt-6"
+                className="min-h-screen pt-4"
                 initial={{ opacity: 0, rotateY: 30, x: 50 }}
                 animate={{ opacity: 1, rotateY: 0, x: 0 }}
                 exit={{ opacity: 0, rotateY: -30, x: -50 }}
-                transition={{ duration: 0.7 }}
+                transition={{ duration: 0.6 }}
               >
                 {renderSectionWithErrorBoundary('vocabulary-trainer', VocabularyTrainerComplete, { language: currentLang })}
               </motion.div>
@@ -1098,11 +964,11 @@ export default function MacrobiusCulturalApp() {
 
             {activeSection === 'grammar-explainer' && (
               <motion.div 
-                className="min-h-screen pt-6"
+                className="min-h-screen pt-4"
                 initial={{ opacity: 0, scale: 0.7, rotateX: 20 }}
                 animate={{ opacity: 1, scale: 1, rotateX: 0 }}
                 exit={{ opacity: 0, scale: 1.3, rotateX: -20 }}
-                transition={{ duration: 0.8 }}
+                transition={{ duration: 0.7 }}
               >
                 {renderSectionWithErrorBoundary('grammar-explainer', GrammarExplainerComplete, { language: currentLang })}
               </motion.div>
@@ -1110,24 +976,24 @@ export default function MacrobiusCulturalApp() {
 
             {activeSection === 'text-processor' && (
               <motion.div 
-                className="min-h-screen pt-6"
+                className="min-h-screen pt-4"
                 initial={{ opacity: 0, y: -50, rotateZ: 10 }}
                 animate={{ opacity: 1, y: 0, rotateZ: 0 }}
                 exit={{ opacity: 0, y: 50, rotateZ: -10 }}
-                transition={{ duration: 0.7 }}
+                transition={{ duration: 0.6 }}
               >
                 {renderSectionWithErrorBoundary('text-processor', MacrobiusTextProcessorComplete, { language: currentLang })}
               </motion.div>
             )}
 
-            {/* TIER3 COMPONENTS WITH PREMIUM ANIMATIONS */}
+            {/* TIER3 COMPONENTS */}
             {activeSection === 'progressive-reading' && (
               <motion.div 
-                className="min-h-screen pt-6"
+                className="min-h-screen pt-4"
                 initial={{ opacity: 0, scale: 0.6, rotateY: 45 }}
                 animate={{ opacity: 1, scale: 1, rotateY: 0 }}
                 exit={{ opacity: 0, scale: 1.4, rotateY: -45 }}
-                transition={{ duration: 1 }}
+                transition={{ duration: 0.8 }}
               >
                 {renderSectionWithErrorBoundary('progressive-reading', MacrobiusProgressiveReadingTIER3Complete, { language: currentLang })}
               </motion.div>
@@ -1135,11 +1001,11 @@ export default function MacrobiusCulturalApp() {
 
             {activeSection === 'research-tools' && (
               <motion.div 
-                className="min-h-screen pt-6"
+                className="min-h-screen pt-4"
                 initial={{ opacity: 0, x: -100, y: 50, rotateX: 30 }}
                 animate={{ opacity: 1, x: 0, y: 0, rotateX: 0 }}
                 exit={{ opacity: 0, x: 100, y: -50, rotateX: -30 }}
-                transition={{ duration: 1 }}
+                transition={{ duration: 0.8 }}
               >
                 {renderSectionWithErrorBoundary('research-tools', MacrobiusResearchToolsTIER3Complete, { language: currentLang })}
               </motion.div>
@@ -1155,127 +1021,84 @@ export default function MacrobiusCulturalApp() {
           language={currentLang}
         />
 
-        {/* PREMIUM ABOUT MODAL */}
+        {/* CLASSICAL ABOUT MODAL */}
         <AnimatePresence>
           {showAboutModal && (
             <motion.div
-              className="fixed inset-0 z-50 flex items-center justify-center p-6"
+              className="fixed inset-0 z-50 flex items-center justify-center p-4"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setShowAboutModal(false)}
             >
-              <div className="absolute inset-0 bg-black/90 backdrop-blur-xl" />
+              <div className="absolute inset-0 bg-black/80 backdrop-blur-xl" />
               
               <motion.div
-                className="relative max-w-7xl mx-auto max-h-[90vh] overflow-y-auto"
-                initial={{ scale: 0.7, y: 100, rotateX: 15 }}
-                animate={{ scale: 1, y: 0, rotateX: 0 }}
-                exit={{ scale: 0.7, y: 100, rotateX: 15 }}
-                transition={{ type: "spring", duration: 0.8 }}
+                className="relative max-w-5xl mx-auto max-h-[85vh] overflow-y-auto"
+                initial={{ scale: 0.8, y: 50 }}
+                animate={{ scale: 1, y: 0 }}
+                exit={{ scale: 0.8, y: 50 }}
+                transition={{ type: "spring", duration: 0.6 }}
                 onClick={(e) => e.stopPropagation()}
               >
-                {/* Glow effects */}
-                <div className="absolute inset-0 bg-gradient-to-r from-yellow-400/10 via-orange-400/5 to-red-400/10 rounded-[4rem] blur-3xl" />
-                <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 via-blue-500/3 to-purple-500/5 rounded-[4rem] blur-2xl" />
-                
-                <div className="relative bg-white/5 backdrop-blur-3xl rounded-[4rem] p-12 border border-white/10 shadow-2xl">
+                <div className="relative bg-white/5 backdrop-blur-2xl rounded-3xl p-8 border border-white/10 shadow-2xl">
                   <motion.button
                     onClick={() => setShowAboutModal(false)}
-                    className="absolute top-8 right-8 w-12 h-12 rounded-2xl bg-white/10 border border-white/20 flex items-center justify-center text-white/80 hover:bg-white/20 transition-all duration-500 z-10 group"
+                    className="absolute top-6 right-6 w-10 h-10 rounded-xl bg-white/10 border border-white/20 flex items-center justify-center text-white/80 hover:bg-white/20 transition-all duration-300 z-10"
                     whileHover={{ scale: 1.1, rotate: 90 }}
                     whileTap={{ scale: 0.9 }}
                   >
-                    <X className="w-6 h-6 group-hover:rotate-180 transition-transform duration-500" />
+                    <X className="w-5 h-5" />
                   </motion.button>
 
-                  <div className="space-y-12">
-                    <motion.div 
-                      className="text-center"
-                      initial={{ opacity: 0, y: 30 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.3 }}
-                    >
-                      <h2 className="text-5xl font-black text-yellow-400 mb-4 tracking-tight">
+                  <div className="space-y-8">
+                    <div className="text-center">
+                      <h2 className="text-4xl font-black text-yellow-400 mb-3">
                         {safeT('about.title')}
                       </h2>
-                      <p className="text-2xl text-yellow-300/90 font-light leading-relaxed">
+                      <p className="text-xl text-yellow-300/90 font-light">
                         {safeT('about.subtitle')}
                       </p>
-                      <motion.div 
-                        className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-green-500/20 to-blue-500/20 border border-green-400/30 rounded-2xl text-green-300 text-lg font-bold mt-6"
-                        animate={{ 
-                          boxShadow: [
-                            '0 0 20px rgba(34, 197, 94, 0.3)',
-                            '0 0 40px rgba(34, 197, 94, 0.6)',
-                            '0 0 20px rgba(34, 197, 94, 0.3)'
-                          ]
-                        }}
-                        transition={{ duration: 3, repeat: Infinity }}
-                      >
-                        <motion.span 
-                          className="w-3 h-3 bg-green-400 rounded-full mr-3"
-                          animate={{ scale: [1, 1.2, 1], opacity: [1, 0.7, 1] }}
-                          transition={{ duration: 2, repeat: Infinity }}
-                        />
-                        HYBRID TIER-COMPLETE - Advanced AI + Working Features
-                      </motion.div>
-                    </motion.div>
-
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-                      <motion.div
-                        initial={{ opacity: 0, x: -30 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: 0.5 }}
-                        className="bg-white/5 backdrop-blur-xl rounded-3xl p-8 border border-white/10"
-                      >
-                        <h3 className="text-3xl font-bold text-yellow-400 mb-6 flex items-center">
-                          <Crown className="w-8 h-8 mr-3 text-yellow-400" />
-                          {safeT('about.biography.title')}
-                        </h3>
-                        <p className="text-white/90 leading-relaxed text-justify text-lg">
-                          {safeT('about.biography.text')}
-                        </p>
-                      </motion.div>
-
-                      <motion.div
-                        initial={{ opacity: 0, x: 30 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: 0.7 }}
-                        className="bg-white/5 backdrop-blur-xl rounded-3xl p-8 border border-white/10"
-                      >
-                        <h3 className="text-3xl font-bold text-yellow-400 mb-6 flex items-center">
-                          <Star className="w-8 h-8 mr-3 text-yellow-400" />
-                          {safeT('about.works.title')}
-                        </h3>
-                        <p className="text-white/90 leading-relaxed text-justify text-lg">
-                          {safeT('about.works.text')}
-                        </p>
-                      </motion.div>
                     </div>
 
-                    <motion.div 
-                      className="text-center"
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.9 }}
-                    >
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                      <div className="bg-white/5 backdrop-blur-xl rounded-2xl p-6 border border-white/10">
+                        <h3 className="text-2xl font-bold text-yellow-400 mb-4 flex items-center">
+                          <Crown className="w-6 h-6 mr-2 text-yellow-400" />
+                          {safeT('about.biography.title')}
+                        </h3>
+                        <p className="text-white/90 leading-relaxed text-justify">
+                          {safeT('about.biography.text')}
+                        </p>
+                      </div>
+
+                      <div className="bg-white/5 backdrop-blur-xl rounded-2xl p-6 border border-white/10">
+                        <h3 className="text-2xl font-bold text-yellow-400 mb-4 flex items-center">
+                          <Star className="w-6 h-6 mr-2 text-yellow-400" />
+                          {safeT('about.works.title')}
+                        </h3>
+                        <p className="text-white/90 leading-relaxed text-justify">
+                          {safeT('about.works.text')}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="text-center">
                       <motion.button
                         onClick={() => setShowAboutModal(false)}
-                        className="group relative px-12 py-5 rounded-2xl font-bold text-xl transition-all duration-500 shadow-2xl overflow-hidden"
+                        className="px-8 py-3 rounded-xl font-bold text-lg transition-all duration-300 shadow-lg"
                         style={{
-                          background: 'linear-gradient(135deg, #722F37 0%, #8B4513 50%, #722F37 100%)',
+                          background: 'linear-gradient(135deg, #722F37 0%, #8B4513 100%)',
                           border: '2px solid #FFD700'
                         }}
-                        whileHover={{ scale: 1.05, y: -3 }}
+                        whileHover={{ scale: 1.05, y: -2 }}
                         whileTap={{ scale: 0.95 }}
                       >
-                        <div className="absolute inset-0 bg-gradient-to-r from-yellow-400/20 to-orange-400/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                        <span className="relative z-10 text-yellow-400 group-hover:text-yellow-300">
+                        <span className="text-yellow-400">
                           {safeT('about.close')}
                         </span>
                       </motion.button>
-                    </motion.div>
+                    </div>
                   </div>
                 </div>
               </motion.div>
@@ -1283,44 +1106,8 @@ export default function MacrobiusCulturalApp() {
           )}
         </AnimatePresence>
 
-        {/* PREMIUM CSS STYLES */}
+        {/* CLASSICAL CSS STYLES */}
         <style jsx global>{`
-          .line-clamp-2 {
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-          }
-
-          @keyframes twinkle {
-            0%, 100% { 
-              opacity: 0.2; 
-              transform: scale(0.8) rotate(0deg); 
-            }
-            50% { 
-              opacity: 1; 
-              transform: scale(1.2) rotate(180deg); 
-            }
-          }
-
-          @keyframes moveRightToLeft {
-            0% { 
-              transform: translateX(0) scale(0.5);
-              opacity: 0; 
-            }
-            10% { 
-              opacity: 0.8;
-              transform: scale(1);
-            }
-            90% { 
-              opacity: 0.6;
-            }
-            100% { 
-              transform: translateX(calc(-100vw - 50px)) scale(0.5);
-              opacity: 0; 
-            }
-          }
-
           html {
             scroll-behavior: smooth;
           }
@@ -1330,19 +1117,19 @@ export default function MacrobiusCulturalApp() {
             background: #0a0e1a;
           }
 
-          /* Custom scrollbar */
+          /* Classical scrollbar */
           ::-webkit-scrollbar {
-            width: 8px;
+            width: 6px;
           }
 
           ::-webkit-scrollbar-track {
             background: rgba(255, 255, 255, 0.1);
-            border-radius: 4px;
+            border-radius: 3px;
           }
 
           ::-webkit-scrollbar-thumb {
             background: linear-gradient(135deg, #FFD700, #FFA500);
-            border-radius: 4px;
+            border-radius: 3px;
           }
 
           ::-webkit-scrollbar-thumb:hover {
