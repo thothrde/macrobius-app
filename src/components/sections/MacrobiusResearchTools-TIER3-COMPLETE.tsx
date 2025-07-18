@@ -52,7 +52,6 @@ import {
   List,
   PieChart,
   LineChart,
-  Scatter,
   Hash,
   Link,
   Globe,
