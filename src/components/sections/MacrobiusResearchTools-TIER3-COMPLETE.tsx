@@ -73,7 +73,7 @@ import {
   Workflow,
   Gauge,
   TreePine,
-  Route,
+  Router,
   Map,
   Navigation,
   Telescope
