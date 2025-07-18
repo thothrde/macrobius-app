@@ -437,9 +437,9 @@ function MacrobiusProgressiveReadingTIER3Complete({ language }: ProgressiveReadi
 
   // 📊 **PASSAGE DIFFICULTY ANALYSIS**
   const analyzePassageDifficulty = useCallback((passage: MacrobiusPassage): PassageDifficulty => {
-    // Comprehensive difficulty analysis
-    const sentences = passage.latin_text.split(/[.!?]+/).filter(s => s.trim());
-    const words = passage.latin_text.split(/\s+/).filter(w => w.trim());
+    // Comprehensive difficulty analysis using correct property names
+    const sentences = passage.text.split(/[.!?]+/).filter(s => s.trim());
+    const words = passage.text.split(/\s+/).filter(w => w.trim());
     const avgSentenceLength = words.length / sentences.length;
     
     // Mock sophisticated analysis (in real implementation, this would use NLP)
@@ -449,7 +449,7 @@ function MacrobiusProgressiveReadingTIER3Complete({ language }: ProgressiveReadi
     const overallDifficulty = Math.round((vocabularyComplexity + grammaticalComplexity + culturalSophistication) / 3);
     
     const difficulty: PassageDifficulty = {
-      id: passage.id?.toString() || 'passage_1',
+      id: passage.id.toString(),
       passage,
       difficulty_metrics: {
         overall_difficulty: overallDifficulty,
@@ -546,37 +546,52 @@ function MacrobiusProgressiveReadingTIER3Complete({ language }: ProgressiveReadi
         });
       }, 200);
       
-      // Mock passage data (in real implementation, would fetch from backend)
+      // Mock passage data (using correct interface properties)
       const mockPassages: MacrobiusPassage[] = [
         {
-          id: 1,
-          work_type: 'Saturnalia',
-          book_number: 1,
-          chapter_number: 2,
-          section_number: 3,
-          latin_text: 'Sole oriente, convivae surrexerunt et ad convivium se paraverunt. Macrobius de consuetudine cenae Romanae scribit, quomodo antiqui patres familias hospitibus honorem praebuerint. In talibus conviviis, non solum cibus, sed etiam sapientia communicatur.',
+          id: '1',
+          text: 'Sole oriente, convivae surrexerunt et ad convivium se paraverunt. Macrobius de consuetudine cenae Romanae scribit, quomodo antiqui patres familias hospitibus honorem praebuerint. In talibus conviviis, non solum cibus, sed etiam sapientia communicatur.',
+          source: 'Saturnalia',
+          book: 1,
+          chapter: 2,
+          section: 3,
+          work: 'Saturnalia',
           cultural_theme: 'Social Customs',
-          modern_relevance: 'Understanding ancient hospitality practices informs modern social dining etiquette'
+          modern_relevance: 'Understanding ancient hospitality practices informs modern social dining etiquette',
+          word_count: 45,
+          character_count: 280,
+          difficulty_level: 5,
+          created_at: new Date().toISOString()
         },
         {
-          id: 2,
-          work_type: 'Saturnalia',
-          book_number: 2,
-          chapter_number: 1,
-          section_number: 5,
-          latin_text: 'Philosophi inter se de natura virtutis disputabant. Quid est virtus? Quid est sapientia? Haec quaestiones antiquissimae sunt et semper homines vexaverunt. Stoici dicunt virtutem esse summum bonum.',
+          id: '2',
+          text: 'Philosophi inter se de natura virtutis disputabant. Quid est virtus? Quid est sapientia? Haec quaestiones antiquissimae sunt et semper homines vexaverunt. Stoici dicunt virtutem esse summum bonum.',
+          source: 'Saturnalia',
+          book: 2,
+          chapter: 1,
+          section: 5,
+          work: 'Saturnalia',
           cultural_theme: 'Philosophy',
-          modern_relevance: 'Ancient philosophical discussions continue to influence modern ethical thinking'
+          modern_relevance: 'Ancient philosophical discussions continue to influence modern ethical thinking',
+          word_count: 38,
+          character_count: 220,
+          difficulty_level: 7,
+          created_at: new Date().toISOString()
         },
         {
-          id: 3,
-          work_type: 'Commentarii',
-          book_number: 1,
-          chapter_number: 3,
-          section_number: 2,
-          latin_text: 'Astronomia Romana multum a Graecis mutuata est. Stellae et planetae nominibus deorum ornati sunt. Mars, Venus, Mercurius - omnes hi dei caelestes in firmamento lucent et mortales de fato admonent.',
+          id: '3',
+          text: 'Astronomia Romana multum a Graecis mutuata est. Stellae et planetae nominibus deorum ornati sunt. Mars, Venus, Mercurius - omnes hi dei caelestes in firmamento lucent et mortales de fato admonent.',
+          source: 'Commentarii',
+          book: 1,
+          chapter: 3,
+          section: 2,
+          work: 'Commentarii',
           cultural_theme: 'Astronomy',
-          modern_relevance: 'Roman astronomical knowledge laid foundations for medieval and modern astronomy'
+          modern_relevance: 'Roman astronomical knowledge laid foundations for medieval and modern astronomy',
+          word_count: 42,
+          character_count: 250,
+          difficulty_level: 6,
+          created_at: new Date().toISOString()
         }
       ];
       
