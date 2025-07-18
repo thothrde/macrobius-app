@@ -3,6 +3,7 @@
  * ✅ WORKING: Comprehensive translation support
  * ✅ STABLE: Zero dependency failures
  * ✅ COMPLETE: DE/EN/LA language support
+ * 🔧 FIXED: TypeScript export type issue resolved
  */
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
@@ -235,4 +236,5 @@ export const getTranslation = (key: string, lang: Language): string => {
   }
 };
 
-export { Language };
+// 🔧 FIXED: Use 'export type' for type-only exports when isolatedModules is enabled
+export type { Language };
