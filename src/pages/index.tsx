@@ -1,8 +1,8 @@
 /**
- * 🏛️ MACROBIUS - ELEGANT RESTORED DESIGN v6.0
- * ✨ BEAUTIFUL: Restored elegant visual appearance from Current-Repository
- * ✅ FIXED: TypeScript errors resolved (removed resetOnPropsChange)
- * 🎨 PROFESSIONAL: Clean navigation, elegant background, proper image gallery
+ * 🏛️ MACROBIUS - EMERGENCY IMAGE FIX v7.0
+ * ✅ FIXED: Missing images causing visual breakdown
+ * 🔧 SOLUTION: Fallback system + online CDN images + elegant degradation
+ * 🎆 BEAUTIFUL: Restored visual design with proper fallbacks
  * 🚀 WORKING: All 7 Real AI Engines operational, zero mock systems
  */
 
@@ -31,6 +31,75 @@ import KIRAGAssistentSection from '../components/sections/KIRAGAssistentSection'
 
 // Language Context
 import { useLanguage, Language } from '../contexts/LanguageContext';
+
+// 🖼️ IMAGE CONFIGURATION WITH FALLBACKS
+const IMAGE_CONFIG = {
+  astrolabe: {
+    src: '/Astrolab.jpg',
+    fallback: 'https://images.unsplash.com/photo-1446776877081-d282a0f896e2?w=800&h=800&fit=crop&crop=center',
+    alt: 'Historical Astrolabe'
+  },
+  macrobius: {
+    src: '/MacrobiusBottle.jpg', 
+    fallback: 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=400&fit=crop&crop=center',
+    alt: 'Macrobius with Bottle'
+  },
+  rome: {
+    src: '/Rome-under.jpg',
+    fallback: 'https://images.unsplash.com/photo-1552832230-c0197dd311b5?w=600&h=400&fit=crop&crop=center',
+    alt: 'Declining Roman Empire'
+  },
+  tycho: {
+    src: '/TychoAssistent.jpg',
+    fallback: 'https://images.unsplash.com/photo-1543699936-c29ed494c63d?w=400&h=500&fit=crop&crop=center',
+    alt: 'Tycho Brahe & Pontanus'
+  }
+};
+
+// 🔧 SAFE IMAGE COMPONENT WITH FALLBACK
+const SafeImage: React.FC<{
+  config: typeof IMAGE_CONFIG[keyof typeof IMAGE_CONFIG];
+  width: number;
+  height: number;
+  className?: string;
+  style?: React.CSSProperties;
+  priority?: boolean;
+}> = ({ config, width, height, className, style, priority = false }) => {
+  const [imageError, setImageError] = useState(false);
+  const [imageLoaded, setImageLoaded] = useState(false);
+
+  return (
+    <div className={`relative ${className}`} style={style}>
+      {!imageLoaded && (
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-900/50 to-purple-900/50 animate-pulse flex items-center justify-center">
+          <div className="text-white/60 text-center">
+            <ImageIcon className="w-8 h-8 mx-auto mb-2" />
+            <p className="text-sm">Loading...</p>
+          </div>
+        </div>
+      )}
+      
+      <Image
+        src={imageError ? config.fallback : config.src}
+        alt={config.alt}
+        width={width}
+        height={height}
+        className={`${className} transition-opacity duration-500 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
+        style={style}
+        priority={priority}
+        onLoad={() => setImageLoaded(true)}
+        onError={() => {
+          if (!imageError) {
+            setImageError(true);
+            setImageLoaded(false);
+          } else {
+            setImageLoaded(true);
+          }
+        }}
+      />
+    </div>
+  );
+};
 
 // 🚨 COMPONENT ERROR FALLBACK - ELEGANT VERSION
 function ComponentErrorFallback({ error, resetErrorBoundary, componentName }: { 
@@ -124,7 +193,7 @@ export default function MacrobiusCulturalApp() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      {/* 🌌 ELEGANT EVENING SKY BACKGROUND */}
+      {/* 🌌 ELEGANT EVENING SKY BACKGROUND - ENHANCED WITH FALLBACK */}
       <div className="min-h-screen relative overflow-x-hidden" style={{
         background: 'linear-gradient(135deg, #0f0f23 0%, #1a1a2e 15%, #16213e 30%, #0d1b2a 50%, #0c1821 70%, #0a0e1a 100%)'
       }}>
@@ -177,7 +246,7 @@ export default function MacrobiusCulturalApp() {
           ))}
         </div>
 
-        {/* 🧭 ROTATING ASTROLABE BACKGROUND */}
+        {/* 🧭 ROTATING ASTROLABE BACKGROUND - FIXED WITH FALLBACK */}
         <div className="fixed inset-0 z-1 flex items-center justify-center pointer-events-none">
           <motion.div 
             className="opacity-40"
@@ -187,9 +256,8 @@ export default function MacrobiusCulturalApp() {
             }}
           >
             <div className="w-[2000px] h-[2000px]">
-              <Image 
-                src="/Astrolab.jpg" 
-                alt="Historical Astrolabe"
+              <SafeImage 
+                config={IMAGE_CONFIG.astrolabe}
                 width={2000}
                 height={2000}
                 className="w-full h-full object-contain"
@@ -203,7 +271,7 @@ export default function MacrobiusCulturalApp() {
           </motion.div>
         </div>
 
-        {/* 🌟 FLOATING MACROBIUS CIRCLE */}
+        {/* 🌟 FLOATING MACROBIUS CIRCLE - FIXED WITH FALLBACK */}
         {activeSection === 'hero' && (
           <motion.div 
             className="fixed top-16 left-1/2 transform -translate-x-1/2 z-20 pointer-events-none"
@@ -219,9 +287,8 @@ export default function MacrobiusCulturalApp() {
             }}
           >
             <div className="w-40 h-40 rounded-full overflow-hidden border-4 border-yellow-400 shadow-2xl bg-gradient-to-br from-yellow-400 to-orange-500">
-              <Image 
-                src="/MacrobiusBottle.jpg" 
-                alt="Macrobius with Bottle"
+              <SafeImage 
+                config={IMAGE_CONFIG.macrobius}
                 width={160}
                 height={160}
                 className="w-full h-full object-cover"
@@ -338,7 +405,7 @@ export default function MacrobiusCulturalApp() {
         {/* 🎨 MAIN CONTENT */}
         <main className="relative z-10">
           
-          {/* 🎆 HERO SECTION - ELEGANT DESIGN */}
+          {/* 🎆 HERO SECTION - ELEGANT DESIGN WITH FIXED IMAGES */}
           {activeSection === 'hero' && (
             <section className="min-h-screen flex items-center justify-center px-4" style={{ paddingTop: '200px' }}>
               <div className="text-center max-w-7xl mx-auto">
@@ -370,7 +437,7 @@ export default function MacrobiusCulturalApp() {
                     </p>
                   </div>
 
-                  {/* 🖼️ ELEGANT IMAGE GALLERY */}
+                  {/* 🖼️ ELEGANT IMAGE GALLERY - FIXED WITH FALLBACKS */}
                   <div className="mb-8">
                     <div className="flex items-center justify-center space-x-3 mb-6">
                       <ImageIcon className="w-6 h-6 text-yellow-300" />
@@ -382,7 +449,7 @@ export default function MacrobiusCulturalApp() {
                     
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
                       
-                      {/* Rome Image */}
+                      {/* Rome Image - FIXED WITH FALLBACK */}
                       <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
@@ -395,9 +462,8 @@ export default function MacrobiusCulturalApp() {
                           whileTap={{ scale: 0.98 }}
                           onClick={() => setShowRomeModal(true)}
                         >
-                          <Image
-                            src="/Rome-under.jpg"
-                            alt={safeT('image.rome.title')}
+                          <SafeImage
+                            config={IMAGE_CONFIG.rome}
                             width={400}
                             height={300}
                             className="w-full h-64 object-cover object-center transition-transform duration-500 group-hover:scale-110"
@@ -412,7 +478,7 @@ export default function MacrobiusCulturalApp() {
                         </motion.div>
                       </motion.div>
                       
-                      {/* Macrobius Portrait */}
+                      {/* Macrobius Portrait - FIXED WITH FALLBACK */}
                       <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
@@ -424,9 +490,8 @@ export default function MacrobiusCulturalApp() {
                           whileTap={{ scale: 0.98 }}
                           onClick={() => setShowAboutModal(true)}
                         >
-                          <Image
-                            src="/MacrobiusBottle.jpg"
-                            alt={safeT('image.macrobius.title')}
+                          <SafeImage
+                            config={IMAGE_CONFIG.macrobius}
                             width={400}
                             height={500}
                             className="w-full h-80 object-contain"
@@ -441,7 +506,7 @@ export default function MacrobiusCulturalApp() {
                         </motion.div>
                       </motion.div>
 
-                      {/* Tycho & Pontanus */}
+                      {/* Tycho & Pontanus - FIXED WITH FALLBACK */}
                       <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
@@ -453,9 +518,8 @@ export default function MacrobiusCulturalApp() {
                           whileTap={{ scale: 0.98 }}
                           onClick={() => setShowTychoModal(true)}
                         >
-                          <Image
-                            src="/TychoAssistent.jpg"
-                            alt={safeT('image.tycho.title')}
+                          <SafeImage
+                            config={IMAGE_CONFIG.tycho}
                             width={400}
                             height={500}
                             className="w-full h-80 object-contain"
