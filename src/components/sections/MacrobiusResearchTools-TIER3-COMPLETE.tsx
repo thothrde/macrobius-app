@@ -249,7 +249,7 @@ export default function MacrobiusResearchToolsTIER3Complete({ language }: Resear
         
         const mockCorpusData: MacrobiusPassage[] = [
           {
-            id: 1,
+            id: '1',
             latin_text: 'Magna sapientia antiquorum philosophorum in his libris continetur, unde multi eruditi viri doctrinam hauserunt.',
             work_type: 'Saturnalia',
             book_number: 1,
