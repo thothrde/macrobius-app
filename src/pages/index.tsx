@@ -1,9 +1,9 @@
 /**
- * 🏛️ MACROBIUS - RESTORED ORIGINAL SOPHISTICATED DESIGN
+ * 🏛️ MACROBIUS - RESTORED ORIGINAL SOPHISTICATED DESIGN WITH TIER-COMPLETE COMPONENTS
  * ✅ PRESERVED: All working translations, no mock systems, no placeholders
  * 🎨 RESTORED: Original sophisticated night sky, left navigation, rotating astrolabe
- * 🚀 PRODUCTION: Original visual design with working functionality
- * 🎆 BEAUTIFUL: Complete restoration of intended visual structure
+ * 🚀 PRODUCTION: Original visual design with TIER-COMPLETE functionality
+ * 🎆 BEAUTIFUL: Complete restoration with all advanced components
  */
 
 import React, { useState, useCallback, useEffect } from 'react';
@@ -17,20 +17,23 @@ import { ErrorBoundary } from 'react-error-boundary';
 import ImageModal from '../components/ui/ImageModal';
 import { getImagesBySection, ImageInfo } from '../data/imageData';
 
-// Oracle Cloud-integrated components
+// Oracle Cloud-integrated components - ENHANCED VERSIONS
 import CosmosSection from '../components/sections/CosmosSection';
 import TextSearchSection from '../components/sections/TextSearchSection';  
 import VisualizationsSection from '../components/sections/VisualizationsSection';
 import BanquetSection from '../components/sections/BanquetSection';
 import WorldMapSection from '../components/sections/WorldMapSection';
 import LearningSection from '../components/sections/LearningSection-enhanced-complete';
-import QuizSection from '../components/sections/QuizSection';
 
-// Advanced TIER-COMPLETE AI Systems Components
+// ✅ TIER-COMPLETE: Advanced AI Systems Components (COMPLETE VERSIONS)
 import AICulturalAnalysisSection from '../components/sections/AICulturalAnalysisSection';
 import PersonalizedLearningPathsComplete from '../components/sections/PersonalizedLearningPaths-COMPLETE';
 import AITutoringSystemComplete from '../components/sections/AITutoringSystemSection-COMPLETE';
 import KIRAGAssistentSection from '../components/sections/KIRAGAssistentSection';
+import QuizSectionComplete from '../components/sections/QuizSection-SMART-GENERATION-COMPLETE';
+import VocabularyTrainerComplete from '../components/sections/VocabularyTrainer-CORPUS-EXPANSION-COMPLETE';
+import GrammarExplainerComplete from '../components/sections/GrammarExplainer-TIER1-COMPLETE';
+import MacrobiusTextProcessorComplete from '../components/sections/MacrobiusTextProcessor-TIER2-COMPLETE';
 
 // Language Context
 import { useLanguage, Language, getTranslation } from '../contexts/LanguageContext';
@@ -271,7 +274,7 @@ export default function MacrobiusCulturalApp() {
           </div>
         </div>
 
-        {/* LEFT-SIDE VERTICAL NAVIGATION - RESTORED */}
+        {/* LEFT-SIDE VERTICAL NAVIGATION - RESTORED WITH ALL TIER-COMPLETE COMPONENTS */}
         <nav className="fixed top-4 left-4 z-50">
           <div className="bg-white/10 backdrop-blur-md rounded-xl p-4 border border-white/20">
             <div className="flex flex-col space-y-2">
@@ -303,7 +306,7 @@ export default function MacrobiusCulturalApp() {
                 </button>
               ))}
               
-              {/* AI Systems with TIER-COMPLETE indicators */}
+              {/* ✅ ENHANCED: AI Systems with TIER-COMPLETE indicators + ALL COMPLETE components */}
               <div className="border-t border-white/20 pt-2 mt-2">
                 <p className="text-yellow-200/60 text-xs px-2 mb-2 uppercase tracking-wider font-bold">
                   {safeT('nav.ai_systems')}
@@ -313,7 +316,10 @@ export default function MacrobiusCulturalApp() {
                   { id: 'ai-cultural', text: safeT('nav.ai_cultural'), icon: '🧠', tier: 'REAL-ORACLE' },
                   { id: 'ai-learning', text: safeT('nav.ai_learning'), icon: '🎯', tier: 'COMPLETE' },
                   { id: 'ai-tutoring', text: safeT('nav.ai_tutoring'), icon: '📖', tier: 'COMPLETE' },
-                  { id: 'ai-rag-assistant', text: safeT('nav.ai_rag'), icon: '🤖', tier: 'ENHANCED' }
+                  { id: 'ai-rag-assistant', text: safeT('nav.ai_rag'), icon: '🤖', tier: 'ENHANCED' },
+                  { id: 'vocabulary-trainer', text: 'Vokabeltrainer', icon: '📝', tier: 'CORPUS-COMPLETE' },
+                  { id: 'grammar-explainer', text: 'Grammatik', icon: '📖', tier: 'TIER1-COMPLETE' },
+                  { id: 'text-processor', text: 'Textprozessor', icon: '🔍', tier: 'TIER2-COMPLETE' }
                 ].map((section) => (
                   <button
                     key={section.id}
@@ -326,8 +332,8 @@ export default function MacrobiusCulturalApp() {
                     title={`Advanced ${section.tier} Component`}
                   >
                     <span>{section.icon}</span>
-                    <span className="flex-1">{section.text}</span>
-                    <span className="text-green-400 text-xs font-bold">{section.tier}</span>
+                    <span className="flex-1 text-xs">{section.text}</span>
+                    <span className="text-green-400 text-xs font-bold">{section.tier.split('-')[0]}</span>
                     {componentErrors[section.id] && (
                       <AlertTriangle className="w-3 h-3 text-red-400" />
                     )}
@@ -530,7 +536,7 @@ export default function MacrobiusCulturalApp() {
             </section>
           )}
 
-          {/* Other Sections with working functionality */}
+          {/* ✅ ENHANCED: Other Sections with TIER-COMPLETE versions where available */}
           {activeSection === 'search' && (
             <div className="min-h-screen pt-4">
               {renderSectionWithErrorBoundary('search', TextSearchSection, { isActive: true, t: tAdapter, language: currentLang as 'DE' | 'EN' | 'LA' })}
@@ -555,9 +561,10 @@ export default function MacrobiusCulturalApp() {
             </div>
           )}
 
+          {/* ✅ ENHANCED: Using TIER-COMPLETE QuizSection */}
           {activeSection === 'quiz' && (
             <div className="min-h-screen pt-4">
-              {renderSectionWithErrorBoundary('quiz', QuizSection, { isActive: true, language: currentLang })}
+              {renderSectionWithErrorBoundary('quiz', QuizSectionComplete, { isActive: true, language: currentLang })}
             </div>
           )}
 
@@ -573,7 +580,7 @@ export default function MacrobiusCulturalApp() {
             </div>
           )}
 
-          {/* AI Systems */}
+          {/* ✅ TIER-COMPLETE: AI Systems - All Advanced Versions */}
           {activeSection === 'ai-cultural' && (
             <div className="min-h-screen pt-4">
               {renderSectionWithErrorBoundary('ai-cultural', AICulturalAnalysisSection, {})}
@@ -595,6 +602,25 @@ export default function MacrobiusCulturalApp() {
           {activeSection === 'ai-rag-assistant' && (
             <div className="min-h-screen pt-4">
               {renderSectionWithErrorBoundary('ai-rag-assistant', KIRAGAssistentSection, {})}
+            </div>
+          )}
+
+          {/* ✅ NEW: Additional TIER-COMPLETE Components */}
+          {activeSection === 'vocabulary-trainer' && (
+            <div className="min-h-screen pt-4">
+              {renderSectionWithErrorBoundary('vocabulary-trainer', VocabularyTrainerComplete, { language: currentLang })}
+            </div>
+          )}
+
+          {activeSection === 'grammar-explainer' && (
+            <div className="min-h-screen pt-4">
+              {renderSectionWithErrorBoundary('grammar-explainer', GrammarExplainerComplete, { language: currentLang })}
+            </div>
+          )}
+
+          {activeSection === 'text-processor' && (
+            <div className="min-h-screen pt-4">
+              {renderSectionWithErrorBoundary('text-processor', MacrobiusTextProcessorComplete, { language: currentLang })}
             </div>
           )}
         </main>
