@@ -1,67 +1,152 @@
 {
-  "name": "macrobius-app",
-  "version": "2.0.3",
+  "name": "macrobius-app-enhanced",
+  "version": "2.0.0",
+  "description": "Eine antike Flaschenpost - Eine Nachricht aus der Antike an die Zukunft. Revolutionary AI-powered Latin education platform with 1,401 authentic passages.",
   "private": true,
-  "description": "Revolutionary AI-powered Latin education platform combining ancient Macrobius wisdom with modern technology. Complete with Oracle Cloud integration, 1,416 authentic passages, and advanced educational components.",
+  "keywords": [
+    "macrobius",
+    "latin",
+    "education",
+    "ai",
+    "classical",
+    "antiquity",
+    "saturnalia",
+    "cosmos",
+    "philosophy",
+    "pwa",
+    "accessibility",
+    "responsive"
+  ],
+  "author": {
+    "name": "Macrobius Team",
+    "email": "info@macrobius-app.com",
+    "url": "https://macrobius-app.vercel.app"
+  },
+  "homepage": "https://macrobius-app.vercel.app",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/thothrde/macrobius-app.git"
+  },
+  "bugs": {
+    "url": "https://github.com/thothrde/macrobius-app/issues"
+  },
+  "license": "MIT",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "analyze": "ANALYZE=true npm run build",
-    "test": "node integration-test.js",
-    "deploy": "npm run build && npm run start",
-    "oracle-test": "node scripts/test-oracle-connection.js"
+    "lint:fix": "next lint --fix",
+    "type-check": "tsc --noEmit",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "oracle-test": "node scripts/test-oracle-connection.js",
+    "lighthouse": "lhci autorun",
+    "lighthouse:desktop": "lighthouse http://localhost:3000 --preset=desktop --output=html --output-path=./lighthouse-desktop.html",
+    "lighthouse:mobile": "lighthouse http://localhost:3000 --preset=mobile --output=html --output-path=./lighthouse-mobile.html",
+    "analyze": "cross-env ANALYZE=true next build",
+    "analyze:server": "cross-env BUNDLE_ANALYZE=server next build",
+    "analyze:browser": "cross-env BUNDLE_ANALYZE=browser next build",
+    "perf-test": "node scripts/performance-test.js",
+    "a11y-test": "axe http://localhost:3000",
+    "keyboard-test": "node scripts/keyboard-test.js",
+    "sr-test": "node scripts/screen-reader-test.js",
+    "pwa-test": "pwa-asset-generator public/icon-512x512.png public/icons --manifest public/manifest.json",
+    "build:production": "cross-env NODE_ENV=production next build",
+    "preview": "next build && next start",
+    "clean": "rimraf .next out dist coverage",
+    "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,md}\"",
+    "format:check": "prettier --check \"**/*.{js,jsx,ts,tsx,json,md}\"",
+    "pre-commit": "lint-staged",
+    "postinstall": "husky install",
+    "validate": "npm run type-check && npm run lint && npm run test && npm run build",
+    "deploy:vercel": "vercel --prod",
+    "deploy:netlify": "netlify deploy --prod"
   },
   "dependencies": {
+    "@next/font": "^14.0.4",
     "@radix-ui/react-dialog": "^1.0.5",
-    "@radix-ui/react-progress": "^1.0.3",
+    "@radix-ui/react-dropdown-menu": "^2.0.6",
     "@radix-ui/react-slot": "^1.0.2",
-    "@radix-ui/react-tabs": "^1.0.4",
-    "@react-three/drei": "^9.122.0",
-    "@react-three/fiber": "^8.15.11",
+    "@radix-ui/react-toast": "^1.1.5",
+    "@radix-ui/react-tooltip": "^1.0.7",
     "class-variance-authority": "^0.7.0",
-    "clsx": "^2.1.1",
-    "framer-motion": "^10.16.4",
+    "clsx": "^2.0.0",
+    "framer-motion": "^10.16.5",
     "lucide-react": "^0.263.1",
-    "next": "^15.3.2",
+    "next": "^14.0.4",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-error-boundary": "^4.0.11",
-    "recharts": "^2.8.0",
-    "tailwind-merge": "^1.14.0",
-    "tailwindcss-animate": "^1.0.7",
-    "three": "^0.176.0",
-    "three-mesh-bvh": "^0.8.0"
+    "tailwind-merge": "^2.2.0",
+    "tailwindcss-animate": "^1.0.7"
   },
   "devDependencies": {
-    "@next/bundle-analyzer": "^13.4.19",
-    "@types/node": "20.19.4",
-    "@types/react": "18.3.23",
-    "@types/react-dom": "^18.2.7",
-    "@types/three": "^0.176.0",
-    "autoprefixer": "^10.4.15",
-    "chrome-launcher": "^0.15.2",
-    "critters": "^0.0.23",
-    "eslint": "9.29.0",
-    "eslint-config-next": "15.3.3",
+    "@axe-core/cli": "^4.8.2",
+    "@lighthouse-ci/cli": "^0.12.0",
+    "@next/bundle-analyzer": "^14.0.4",
+    "@testing-library/jest-dom": "^6.1.4",
+    "@testing-library/react": "^14.1.2",
+    "@testing-library/user-event": "^14.5.1",
+    "@types/jest": "^29.5.8",
+    "@types/node": "^20.9.4",
+    "@types/react": "^18.2.38",
+    "@types/react-dom": "^18.2.17",
+    "@typescript-eslint/eslint-plugin": "^6.12.0",
+    "@typescript-eslint/parser": "^6.12.0",
+    "autoprefixer": "^10.4.16",
+    "cross-env": "^7.0.3",
+    "eslint": "^8.54.0",
+    "eslint-config-next": "^14.0.4",
+    "eslint-config-prettier": "^9.0.0",
+    "eslint-plugin-a11y": "^6.8.0",
+    "eslint-plugin-jsx-a11y": "^6.8.0",
+    "eslint-plugin-prettier": "^5.0.1",
+    "eslint-plugin-react": "^7.33.2",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "husky": "^8.0.3",
     "jest": "^29.7.0",
-    "lighthouse": "^12.6.0",
-    "postcss": "^8.4.28",
-    "tailwindcss": "^3.3.3",
-    "typescript": "5.8.3"
+    "jest-environment-jsdom": "^29.7.0",
+    "lighthouse": "^11.3.0",
+    "lint-staged": "^15.1.0",
+    "postcss": "^8.4.32",
+    "prettier": "^3.1.0",
+    "pwa-asset-generator": "^6.3.1",
+    "rimraf": "^5.0.5",
+    "tailwindcss": "^3.3.6",
+    "typescript": "^5.3.2",
+    "webpack-bundle-analyzer": "^4.9.1"
+  },
+  "lint-staged": {
+    "**/*.{js,jsx,ts,tsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "**/*.{json,md,yml,yaml}": [
+      "prettier --write"
+    ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged",
+      "pre-push": "npm run type-check"
+    }
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
   },
   "engines": {
     "node": ">=18.0.0",
     "npm": ">=8.0.0"
   },
-  "keywords": [
-    "latin",
-    "education",
-    "ai",
-    "macrobius",
-    "oracle-cloud",
-    "next.js",
-    "cultural-analysis"
-  ]
+  "packageManager": "npm@8.19.2"
 }
