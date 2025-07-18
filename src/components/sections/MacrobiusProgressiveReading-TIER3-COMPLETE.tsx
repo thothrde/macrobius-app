@@ -83,7 +83,7 @@ import {
   Book,
   Library,
   Gauge,
-  Route,
+  Router,
   Map,
   Navigation,
   Compass as CompassIcon,
@@ -862,7 +862,7 @@ export default function MacrobiusProgressiveReadingTIER3Complete({ language }: P
               color: 'from-green-500 to-emerald-500'
             },
             {
-              icon: Route,
+              icon: Router,
               title: 'Progression Paths',
               description: 'Personalized learning journeys adapted to your skills, goals, and learning preferences',
               color: 'from-purple-500 to-pink-500'
