@@ -235,6 +235,3 @@ export const getTranslation = (key: string, lang: Language): string => {
     return key;
   }
 };
-
-// 🔧 FIXED: Use 'export type' for type-only exports when isolatedModules is enabled
-export type { Language };
