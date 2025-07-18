@@ -76,7 +76,7 @@ import {
   Router,
   Map,
   Navigation,
-  Telescope
+  Scope
 } from 'lucide-react';
 
 interface ResearchToolsProps {
@@ -306,7 +306,7 @@ export default function MacrobiusResearchToolsTIER3Complete({ language }: Resear
             <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
               {t.title}
             </h1>
-            <Telescope className="h-10 w-10 text-indigo-600" />
+            <Scope className="h-10 w-10 text-indigo-600" />
           </div>
           
           <p className="text-xl text-indigo-700 max-w-4xl mx-auto">
