@@ -170,7 +170,9 @@ const EnhancedMobileDrawer: React.FC<EnhancedMobileDrawerProps> = ({
             size="sm"
             onClick={onClose}
             icon={<X className="w-4 h-4" />}
-          />
+          >
+            
+          </EnhancedClassicalButton>
         </div>
         
         {/* Enhanced Content */}
@@ -395,7 +397,9 @@ const EnhancedMobileCarousel: React.FC<EnhancedMobileCarouselProps> = ({
             icon={<ChevronLeft className="w-5 h-5" />}
             className="absolute left-4 top-1/2 transform -translate-y-1/2 z-10"
             glow
-          />
+          >
+            
+          </EnhancedClassicalButton>
           
           <EnhancedClassicalButton
             variant="cosmic"
@@ -405,7 +409,9 @@ const EnhancedMobileCarousel: React.FC<EnhancedMobileCarouselProps> = ({
             icon={<ChevronRight className="w-5 h-5" />}
             className="absolute right-4 top-1/2 transform -translate-y-1/2 z-10"
             glow
-          />
+          >
+            
+          </EnhancedClassicalButton>
         </>
       )}
       
