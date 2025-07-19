@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, Suspense } from 'react';
-import { useLanguage } from '@/contexts/LanguageContext';
+import { useLanguage, Language } from '@/contexts/LanguageContext';
 import { cn } from '@/lib/utils';
 import ClassicalMacrobiusLayout from '@/components/ui/ClassicalMacrobiusLayout';
 
@@ -17,6 +17,27 @@ try {
   EnhancedLoadingSpinner = () => <div className="w-8 h-8 border-4 border-yellow-400 border-t-transparent rounded-full animate-spin" />;
   EnhancedErrorBoundary = ({ children }: any) => <div>{children}</div>;
 }
+
+// 🔧 **LANGUAGE CONVERSION UTILITIES**
+// Convert lowercase to uppercase Language format
+const convertToLanguage = (lang: 'de' | 'en' | 'la'): Language => {
+  switch(lang) {
+    case 'de': return 'DE';
+    case 'en': return 'EN';
+    case 'la': return 'LA';
+    default: return 'EN';
+  }
+};
+
+// Convert uppercase Language to lowercase format
+const convertFromLanguage = (lang: Language): 'de' | 'en' | 'la' => {
+  switch(lang) {
+    case 'DE': return 'de';
+    case 'EN': return 'en';
+    case 'LA': return 'la';
+    default: return 'en';
+  }
+};
 
 // 🎯 **UNIFIED PROP INTERFACES FOR COMPONENT COMPATIBILITY**
 interface UnifiedComponentProps {
@@ -336,6 +357,13 @@ const ClassicalMacrobiusApp: React.FC = () => {
   const [currentSection, setCurrentSection] = useState('intro');
   const [isLoading, setIsLoading] = useState(true);
   
+  // 🔧 **FIXED: Language Conversion Wrapper**
+  // Wrapper function to handle language format conversion
+  const handleLanguageChange = (lang: 'de' | 'en' | 'la') => {
+    const convertedLang = convertToLanguage(lang);
+    setLanguage(convertedLang);
+  };
+  
   // Enhanced Loading State
   useEffect(() => {
     const initializeApp = async () => {
@@ -429,7 +457,7 @@ const ClassicalMacrobiusApp: React.FC = () => {
       navigationItems={navigationItems}
       contentSections={contentSections}
       currentSection={currentSection}
-      onLanguageChange={setLanguage}
+      onLanguageChange={handleLanguageChange}
     >
       {currentSection !== 'intro' && renderCurrentSection()}
     </ClassicalMacrobiusLayout>
