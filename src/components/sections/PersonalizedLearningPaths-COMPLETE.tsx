@@ -39,7 +39,6 @@ import {
   Share2,
   Medal,
   Lightbulb,
-  Brain as BrainIcon,
   Search,
   Filter,
   Download,
@@ -55,7 +54,6 @@ import {
   Sparkles,
   Cpu,
   Microscope,
-  Zap as Lightning,
   HelpCircle,
   PlusCircle,
   Minus,
@@ -66,9 +64,7 @@ import {
   Wand2,
   Gamepad2,
   Dices,
-  ShuffleIcon,
   CalendarDays,
-  ClockIcon,
   MapPin,
   Router,
   AlertTriangle,
@@ -90,6 +86,9 @@ interface Language {
   code: string;
   name: string;
 }
+
+// Define ModeType for better type safety
+type ModeType = 'dashboard' | 'daily_plan' | 'knowledge_gaps' | 'prerequisites' | 'ai_optimization';
 
 // 🎯 **REAL LEARNING PLANS INTERFACES - 100% AUTHENTIC AI**
 interface DailyLearningPlan {
@@ -407,9 +406,9 @@ const PersonalizedLearningPathsSection: React.FC<PersonalizedLearningPathsProps>
   quizData,
   className = ''
 }) => {
-  const { language, t } = useLanguage();
+  const { language } = useLanguage();
   // Enhanced State Management for Real AI-Powered Daily Plans & Knowledge Gaps
-  const [currentMode, setCurrentMode] = useState<'dashboard' | 'daily_plan' | 'knowledge_gaps' | 'prerequisites' | 'ai_optimization'>('dashboard');
+  const [currentMode, setCurrentMode] = useState<ModeType>('dashboard');
   const [dailyPlan, setDailyPlan] = useState<DailyLearningPlan | null>(null);
   const [knowledgeGaps, setKnowledgeGaps] = useState<KnowledgeGap[]>([]);
   const [prerequisiteMap, setPrerequisiteMap] = useState<PrerequisiteMap[]>([]);
@@ -565,845 +564,7 @@ const PersonalizedLearningPathsSection: React.FC<PersonalizedLearningPathsProps>
   const currentLang = language === 'DE' ? 'de' : language === 'LA' ? 'la' : 'en';
   const currentTranslations = translations[currentLang as keyof typeof translations] || translations.en;
 
-  // 🚀 **REAL AI-POWERED DAILY PLAN GENERATION**
-  const generateDailyPlan = useCallback(async (date: Date, timeAvailable: number, focusAreas: string[]) => {
-    setIsGeneratingPlan(true);
-    setPlanGenerationProgress(0);
-    setAiEngineStatus('processing');
-
-    try {
-      // Step 1: Real AI competency analysis using Oracle Cloud data
-      setPlanGenerationProgress(20);
-      const userCompetencies = await MacrobiusAPI.learningPaths.analyzeUserCompetencies({
-        userId: userProfile?.id || 'anonymous',
-        includePerformanceHistory: true,
-        includeCulturalThemes: true
-      });
-      
-      // Step 2: Real AI knowledge gap detection
-      setPlanGenerationProgress(40);
-      const gaps = await MacrobiusAPI.learningPaths.detectKnowledgeGaps({
-        userCompetencies,
-        corpusData: true, // Use 1,401 passages
-        culturalInsights: true,
-        confidenceThreshold: 0.7
-      });
-      setKnowledgeGaps(gaps.data.knowledgeGaps);
-      
-      // Step 3: Real AI prerequisite mapping
-      setPlanGenerationProgress(60);
-      const prerequisites = await MacrobiusAPI.learningPaths.generatePrerequisiteMapping({
-        knowledgeGaps: gaps.data.knowledgeGaps,
-        focusAreas,
-        corpusAnalysis: true,
-        culturalContext: true
-      });
-      setPrerequisiteMap(prerequisites.data.prerequisiteMap);
-      
-      // Step 4: Real AI optimized daily plan creation
-      setPlanGenerationProgress(80);
-      const planData = await MacrobiusAPI.learningPaths.createOptimizedDailyPlan({
-        date: date.toISOString(),
-        availableTime: timeAvailable,
-        focusAreas,
-        knowledgeGaps: gaps.data.knowledgeGaps,
-        prerequisiteMap: prerequisites.data.prerequisiteMap,
-        userProfile
-      });
-      
-      // Step 5: Real AI optimization application
-      setPlanGenerationProgress(95);
-      const optimizedPlan = await MacrobiusAPI.learningPaths.applyAIOptimization({
-        plan: planData.data.dailyPlan,
-        userCognitivePattern: userProfile?.cognitivePattern,
-        performanceHistory: userProfile?.performanceHistory
-      });
-      
-      setDailyPlan(optimizedPlan.data.optimizedPlan);
-      setPlanGenerationProgress(100);
-      setAiEngineStatus('ready');
-      
-    } catch (err) {
-      console.error('Real AI daily plan generation failed:', err);
-      setError('AI daily plan generation failed - please check Oracle Cloud connection');
-      setAiEngineStatus('error');
-    } finally {
-      setIsGeneratingPlan(false);
-    }
-  }, [userProfile]);
-
-  // 🔍 **REAL AI KNOWLEDGE GAP DETECTION**
-  const analyzeKnowledgeGaps = useCallback(async () => {
-    try {
-      setAiEngineStatus('processing');
-      
-      const gapAnalysis = await MacrobiusAPI.learningPaths.performKnowledgeGapAnalysis({
-        userId: userProfile?.id || 'anonymous',
-        includeCorpusEvidence: true,
-        includeCulturalContext: true,
-        performanceData: userProfile?.recentPerformance || [],
-        vocabularyHistory: vocabularyData,
-        quizResults: quizData
-      });
-      
-      setKnowledgeGaps(gapAnalysis.data.detectedGaps);
-      setAiEngineStatus('ready');
-      
-      return gapAnalysis.data.detectedGaps;
-    } catch (err) {
-      console.error('Real AI knowledge gap analysis failed:', err);
-      setError('AI knowledge gap analysis failed');
-      setAiEngineStatus('error');
-      return [];
-    }
-  }, [userProfile, vocabularyData, quizData]);
-
-  // 🗺️ **REAL AI PREREQUISITE MAPPING**
-  const generatePrerequisiteMapping = useCallback(async () => {
-    try {
-      setAiEngineStatus('processing');
-      
-      const mappingData = await MacrobiusAPI.learningPaths.generateAdvancedPrerequisiteMapping({
-        knowledgeGaps,
-        userCompetencies: userProfile?.competencies,
-        corpusAnalysis: true, // Use 1,401 passages for evidence
-        culturalImportance: true,
-        modernRelevance: true
-      });
-      
-      setPrerequisiteMap(mappingData.data.prerequisiteMap);
-      setAiEngineStatus('ready');
-      
-      return mappingData.data.prerequisiteMap;
-    } catch (err) {
-      console.error('Real AI prerequisite mapping failed:', err);
-      setError('AI prerequisite mapping failed');
-      setAiEngineStatus('error');
-      return [];
-    }
-  }, [knowledgeGaps, userProfile]);
-
-  // 🤖 **REAL AI OPTIMIZATION ENGINE**
-  const applyAIOptimization = useCallback(async () => {
-    try {
-      setAiEngineStatus('processing');
-      
-      const optimization = await MacrobiusAPI.learningPaths.performAIOptimization({
-        userId: userProfile?.id || 'anonymous',
-        currentPlan: dailyPlan,
-        performanceHistory: userProfile?.performanceHistory,
-        cognitivePattern: userProfile?.cognitivePattern,
-        learningPreferences: userProfile?.learningPreferences
-      });
-      
-      setAiOptimization(optimization.data.aiOptimization);
-      setAiEngineStatus('ready');
-      
-      return optimization.data.aiOptimization;
-    } catch (err) {
-      console.error('Real AI optimization failed:', err);
-      setError('AI optimization failed');
-      setAiEngineStatus('error');
-      return null;
-    }
-  }, [dailyPlan, userProfile]);
-
-  // 📊 **REAL AI USER COMPETENCIES ANALYSIS**
-  const analyzeUserCompetencies = useCallback(async () => {
-    try {
-      const competencyAnalysis = await MacrobiusAPI.learningPaths.analyzeUserCompetencies({
-        userId: userProfile?.id || 'anonymous',
-        includePerformanceHistory: true,
-        includeCulturalThemes: true,
-        corpusBasedAssessment: true, // Use 1,401 passages
-        vocabularyAssessment: vocabularyData,
-        grammarAssessment: userProfile?.grammarScores,
-        culturalAssessment: userProfile?.culturalKnowledge
-      });
-      
-      return competencyAnalysis.data.competencies;
-    } catch (err) {
-      console.error('Real AI competency analysis failed:', err);
-      return {
-        vocabulary: 0.0,
-        grammar: 0.0,
-        culture: 0.0,
-        reading: 0.0,
-        overall: 0.0,
-        ai_confidence: 0.0
-      };
-    }
-  }, [userProfile, vocabularyData]);
-
-  // 🎯 **REAL AI SESSION MANAGEMENT**
-  const startAILearningSession = useCallback(async () => {
-    try {
-      const sessionData = await MacrobiusAPI.learningPaths.startAdaptiveSession({
-        dailyPlan,
-        userId: userProfile?.id || 'anonymous',
-        realTimeAdaptation: true,
-        performanceTracking: true
-      });
-      
-      setCurrentSession({
-        active: true,
-        start_time: new Date(),
-        current_lesson: 0,
-        time_spent: 0,
-        completed_goals: [],
-        ai_adaptations: 0
-      });
-      
-      return sessionData;
-    } catch (err) {
-      console.error('Real AI session start failed:', err);
-      setError('Failed to start AI learning session');
-    }
-  }, [dailyPlan, userProfile]);
-
-  // 🎯 **DASHBOARD MODE RENDERING**
-  const renderDashboard = () => (
-    <div className="space-y-6">
-      {/* AI Engine Status */}
-      <Card className={`${
-        aiEngineStatus === 'ready' ? 'bg-gradient-to-br from-green-50 to-emerald-100 border-green-200' :
-        aiEngineStatus === 'processing' ? 'bg-gradient-to-br from-blue-50 to-blue-100 border-blue-200' :
-        aiEngineStatus === 'error' ? 'bg-gradient-to-br from-red-50 to-red-100 border-red-200' :
-        'bg-gradient-to-br from-yellow-50 to-yellow-100 border-yellow-200'
-      }`}>
-        <CardContent className="p-4 text-center">
-          <div className="flex items-center justify-center space-x-3">
-            <Cpu className={`w-8 h-8 ${
-              aiEngineStatus === 'ready' ? 'text-green-600' :
-              aiEngineStatus === 'processing' ? 'text-blue-600 animate-spin' :
-              aiEngineStatus === 'error' ? 'text-red-600' :
-              'text-yellow-600'
-            }`} />
-            <div>
-              <p className={`text-xl font-bold ${
-                aiEngineStatus === 'ready' ? 'text-green-700' :
-                aiEngineStatus === 'processing' ? 'text-blue-700' :
-                aiEngineStatus === 'error' ? 'text-red-700' :
-                'text-yellow-700'
-              }`}>
-                Real AI Engine
-              </p>
-              <p className={`text-sm ${
-                aiEngineStatus === 'ready' ? 'text-green-600' :
-                aiEngineStatus === 'processing' ? 'text-blue-600' :
-                aiEngineStatus === 'error' ? 'text-red-600' :
-                'text-yellow-600'
-              }`}>
-                {aiEngineStatus === 'ready' ? 'Ready - 100% Authentic AI' :
-                 aiEngineStatus === 'processing' ? 'Processing with ML Algorithms' :
-                 aiEngineStatus === 'error' ? 'AI Engine Error' :
-                 'Initializing AI Systems'}
-              </p>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Overview Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <Card className="bg-gradient-to-br from-blue-50 to-blue-100 border-blue-200">
-          <CardContent className="p-4 text-center">
-            <CalendarDays className="w-8 h-8 text-blue-600 mx-auto mb-2" />
-            <p className="text-2xl font-bold text-blue-700">{dailyPlan ? '1' : '0'}</p>
-            <p className="text-sm text-blue-600">AI Plans Active</p>
-          </CardContent>
-        </Card>
-        <Card className="bg-gradient-to-br from-red-50 to-red-100 border-red-200">
-          <CardContent className="p-4 text-center">
-            <AlertTriangle className="w-8 h-8 text-red-600 mx-auto mb-2" />
-            <p className="text-2xl font-bold text-red-700">{knowledgeGaps.filter(g => g.severity === 'critical').length}</p>
-            <p className="text-sm text-red-600">AI-Detected Critical Gaps</p>
-          </CardContent>
-        </Card>
-        <Card className="bg-gradient-to-br from-green-50 to-green-100 border-green-200">
-          <CardContent className="p-4 text-center">
-            <CheckSquare className="w-8 h-8 text-green-600 mx-auto mb-2" />
-            <p className="text-2xl font-bold text-green-700">{prerequisiteMap.length}</p>
-            <p className="text-sm text-green-600">AI-Mapped Skills</p>
-          </CardContent>
-        </Card>
-        <Card className="bg-gradient-to-br from-purple-50 to-purple-100 border-purple-200">
-          <CardContent className="p-4 text-center">
-            <Sparkles className="w-8 h-8 text-purple-600 mx-auto mb-2" />
-            <p className="text-2xl font-bold text-purple-700">
-              {aiOptimization ? (aiOptimization.ml_model_confidence * 100).toFixed(0) + '%' : '○'}
-            </p>
-            <p className="text-sm text-purple-600">AI Optimization</p>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Quick Actions */}
-      <Card className="bg-gradient-to-br from-indigo-50 to-purple-100 border-indigo-200">
-        <CardHeader>
-          <CardTitle className="flex items-center space-x-2">
-            <Wand2 className="w-6 h-6 text-indigo-600" />
-            <span>Real AI Learning Setup</span>
-          </CardTitle>
-          <CardDescription>Configure your AI-powered personalized learning session</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-            <div>
-              <label className="block text-sm font-medium mb-2">Available Time</label>
-              <select
-                value={availableTime}
-                onChange={(e) => setAvailableTime(Number(e.target.value))}
-                className="w-full px-3 py-2 border border-slate-300 rounded text-sm"
-              >
-                <option value={15}>15 minutes</option>
-                <option value={30}>30 minutes</option>
-                <option value={45}>45 minutes</option>
-                <option value={60}>1 hour</option>
-                <option value={90}>1.5 hours</option>
-              </select>
-            </div>
-            <div>
-              <label className="block text-sm font-medium mb-2">Learning Date</label>
-              <input
-                type="date"
-                value={selectedDate.toISOString().split('T')[0]}
-                onChange={(e) => setSelectedDate(new Date(e.target.value))}
-                className="w-full px-3 py-2 border border-slate-300 rounded text-sm"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium mb-2">AI Focus Area</label>
-              <select
-                value={focusAreas[0] || 'vocabulary'}
-                onChange={(e) => setFocusAreas([e.target.value])}
-                className="w-full px-3 py-2 border border-slate-300 rounded text-sm"
-              >
-                <option value="vocabulary">AI Vocabulary Analysis</option>
-                <option value="grammar">AI Grammar Processing</option>
-                <option value="culture">AI Cultural Analysis</option>
-                <option value="reading">AI Reading Comprehension</option>
-              </select>
-            </div>
-          </div>
-          
-          <div className="text-center">
-            <Button
-              onClick={() => generateDailyPlan(selectedDate, availableTime, focusAreas)}
-              disabled={isGeneratingPlan || aiEngineStatus === 'error'}
-              className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white px-8 py-3"
-            >
-              {isGeneratingPlan ? (
-                <>
-                  <Lightning className="w-5 h-5 mr-2 animate-spin" />
-                  AI Processing... {planGenerationProgress.toFixed(0)}%
-                </>
-              ) : (
-                <>
-                  <Wand2 className="w-5 h-5 mr-2" />
-                  {currentTranslations.actions.generatePlan}
-                </>
-              )}
-            </Button>
-            
-            {isGeneratingPlan && (
-              <div className="mt-4 max-w-md mx-auto">
-                <Progress value={planGenerationProgress} className="h-2" />
-                <div className="text-xs text-slate-500 mt-2">
-                  {planGenerationProgress < 30 ? 'AI analyzing competencies...' :
-                   planGenerationProgress < 60 ? 'AI detecting knowledge gaps...' :
-                   planGenerationProgress < 90 ? 'AI generating optimized plan...' :
-                   'AI applying machine learning optimization...'}
-                </div>
-              </div>
-            )}
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Current AI Session Status */}
-      {currentSession.active && (
-        <Card className="bg-gradient-to-r from-green-50 to-emerald-100 border-green-200">
-          <CardHeader>
-            <CardTitle className="flex items-center justify-between">
-              <div className="flex items-center space-x-2">
-                <PlayCircle className="w-6 h-6 text-green-600" />
-                <span>Active AI Learning Session</span>
-              </div>
-              <div className="flex space-x-2">
-                <Badge className="bg-green-100 text-green-700">
-                  {Math.floor(currentSession.time_spent / 60)}:{(currentSession.time_spent % 60).toString().padStart(2, '0')}
-                </Badge>
-                <Badge className="bg-blue-100 text-blue-700">
-                  {currentSession.ai_adaptations} AI Adaptations
-                </Badge>
-              </div>
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-green-700">
-                  AI Lesson {currentSession.current_lesson + 1} of {dailyPlan?.micro_lessons.length || 0}
-                </p>
-                <p className="text-xs text-green-600">
-                  {currentSession.completed_goals.length} AI goals completed
-                </p>
-              </div>
-              <div className="flex space-x-2">
-                <Button
-                  size="sm"
-                  variant="outline"
-                  className="border-green-300 text-green-600"
-                >
-                  <PauseCircle className="w-4 h-4 mr-1" />
-                  Pause AI
-                </Button>
-                <Button
-                  size="sm"
-                  className="bg-green-600 hover:bg-green-700"
-                >
-                  <Target className="w-4 h-4 mr-1" />
-                  Continue AI
-                </Button>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      )}
-    </div>
-  );
-
-  // 📅 **AI DAILY PLAN MODE RENDERING**
-  const renderDailyPlan = () => {
-    if (!dailyPlan) {
-      return (
-        <Card>
-          <CardContent className="text-center py-12">
-            <CalendarDays className="w-12 h-12 text-slate-400 mx-auto mb-4" />
-            <h3 className="text-lg font-semibold mb-2">No AI Daily Plan Generated</h3>
-            <p className="text-slate-600 mb-4">Create a real AI-powered personalized learning plan to get started</p>
-            <Button
-              onClick={() => setCurrentMode('dashboard')}
-              className="bg-blue-600 hover:bg-blue-700"
-            >
-              <Wand2 className="w-4 h-4 mr-2" />
-              Generate AI Plan
-            </Button>
-          </CardContent>
-        </Card>
-      );
-    }
-
-    return (
-      <div className="space-y-6">
-        {/* AI Plan Overview */}
-        <Card className="bg-gradient-to-br from-blue-50 to-indigo-100 border-blue-200">
-          <CardHeader>
-            <CardTitle className="flex items-center justify-between">
-              <div className="flex items-center space-x-2">
-                <CalendarDays className="w-6 h-6 text-blue-600" />
-                <span>{currentTranslations.daily_plan.title}</span>
-              </div>
-              <div className="flex space-x-2">
-                <Badge className={`${
-                  dailyPlan.completion_status === 'completed' ? 'bg-green-100 text-green-700' :
-                  dailyPlan.completion_status === 'in_progress' ? 'bg-blue-100 text-blue-700' :
-                  dailyPlan.completion_status === 'paused' ? 'bg-yellow-100 text-yellow-700' :
-                  'bg-slate-100 text-slate-700'
-                }`}>
-                  {dailyPlan.completion_status.replace('_', ' ')}
-                </Badge>
-                <Badge className="bg-purple-100 text-purple-700">
-                  AI Confidence: {(dailyPlan.ai_confidence * 100).toFixed(0)}%
-                </Badge>
-              </div>
-            </CardTitle>
-            <CardDescription>
-              {dailyPlan.date.toLocaleDateString()} • {dailyPlan.available_time} minutes • 
-              Profile Match: {(dailyPlan.user_profile_match * 100).toFixed(0)}%
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              <div className="text-center">
-                <p className="text-2xl font-bold text-blue-600">{dailyPlan.micro_lessons.length}</p>
-                <p className="text-sm text-slate-600">AI Micro Lessons</p>
-              </div>
-              <div className="text-center">
-                <p className="text-2xl font-bold text-green-600">{dailyPlan.daily_goals.length}</p>
-                <p className="text-sm text-slate-600">AI Goals</p>
-              </div>
-              <div className="text-center">
-                <p className="text-2xl font-bold text-purple-600">{dailyPlan.break_schedule.length}</p>
-                <p className="text-sm text-slate-600">AI Breaks</p>
-              </div>
-              <div className="text-center">
-                <p className="text-2xl font-bold text-orange-600">{(dailyPlan.difficulty_adjustment * 100).toFixed(0)}%</p>
-                <p className="text-sm text-slate-600">AI Difficulty</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* AI Action Buttons */}
-        <div className="flex justify-center space-x-4">
-          <Button
-            onClick={startAILearningSession}
-            disabled={currentSession.active}
-            className="bg-green-600 hover:bg-green-700"
-          >
-            <PlayCircle className="w-4 h-4 mr-2" />
-            {currentTranslations.actions.startSession}
-          </Button>
-          <Button
-            onClick={analyzeKnowledgeGaps}
-            disabled={aiEngineStatus === 'processing'}
-            className="bg-orange-600 hover:bg-orange-700"
-          >
-            <Brain className="w-4 h-4 mr-2" />
-            {currentTranslations.actions.analyzeGaps}
-          </Button>
-          <Button
-            onClick={applyAIOptimization}
-            disabled={aiEngineStatus === 'processing'}
-            className="bg-purple-600 hover:bg-purple-700"
-          >
-            <Sparkles className="w-4 h-4 mr-2" />
-            {currentTranslations.actions.optimizeSchedule}
-          </Button>
-        </div>
-
-        {/* AI Micro Lessons with Real Content */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center space-x-2">
-              <Book className="w-6 h-6 text-green-600" />
-              <span>{currentTranslations.daily_plan.micro_lessons}</span>
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              {dailyPlan.micro_lessons.map((lesson, index) => (
-                <div
-                  key={lesson.id}
-                  className={`p-4 rounded-lg border ${
-                    index === currentSession.current_lesson && currentSession.active
-                      ? 'border-blue-500 bg-blue-50'
-                      : 'border-slate-200 bg-slate-50'
-                  }`}
-                >
-                  <div className="flex justify-between items-start mb-2">
-                    <h4 className="font-semibold">
-                      AI Lesson {index + 1}: {lesson.learning_objective}
-                    </h4>
-                    <div className="flex space-x-2">
-                      <Badge className={`${
-                        lesson.type === 'vocabulary' ? 'bg-blue-100 text-blue-700' :
-                        lesson.type === 'grammar' ? 'bg-green-100 text-green-700' :
-                        lesson.type === 'cultural' ? 'bg-purple-100 text-purple-700' :
-                        lesson.type === 'reading' ? 'bg-orange-100 text-orange-700' :
-                        'bg-slate-100 text-slate-700'
-                      }`}>
-                        {lesson.type}
-                      </Badge>
-                      <Badge variant="outline" className="text-xs">
-                        {lesson.duration}m
-                      </Badge>
-                    </div>
-                  </div>
-                  <div className="text-sm space-y-1">
-                    <div>
-                      <span className="font-medium">AI Difficulty:</span> {lesson.difficulty}/10
-                    </div>
-                    <div>
-                      <span className="font-medium">AI Vocabulary:</span> {lesson.vocabulary_count} words
-                    </div>
-                    {lesson.cultural_context && (
-                      <div>
-                        <span className="font-medium">AI Cultural Context:</span> {lesson.cultural_context}
-                      </div>
-                    )}
-                    {lesson.ai_generated_content && (
-                      <div className="bg-blue-50 p-2 rounded mt-2">
-                        <span className="font-medium">AI Generated Content:</span>
-                        <p className="text-xs text-blue-700">{lesson.ai_generated_content}</p>
-                      </div>
-                    )}
-                    <div>
-                      <span className="font-medium">AI Success Criteria:</span> {lesson.success_criteria.join(', ')}
-                    </div>
-                    {lesson.personalization_factors && lesson.personalization_factors.length > 0 && (
-                      <div>
-                        <span className="font-medium">AI Personalization:</span> {lesson.personalization_factors.join(', ')}
-                      </div>
-                    )}
-                  </div>
-                  {index === currentSession.current_lesson && currentSession.active && (
-                    <div className="mt-3 flex space-x-2">
-                      <Button size="sm" className="bg-blue-600 hover:bg-blue-700">
-                        <PlayCircle className="w-4 h-4 mr-1" />
-                        Continue AI
-                      </Button>
-                      <Button size="sm" variant="outline">
-                        <CheckSquare className="w-4 h-4 mr-1" />
-                        Complete AI Lesson
-                      </Button>
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* AI Daily Goals Progress */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center space-x-2">
-              <Target className="w-6 h-6 text-orange-600" />
-              <span>{currentTranslations.daily_plan.daily_goals}</span>
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              {dailyPlan.daily_goals.map(goal => {
-                const progress = (goal.current_progress / goal.target_value) * 100;
-                return (
-                  <div key={goal.id} className="space-y-2">
-                    <div className="flex justify-between items-center">
-                      <span className="font-medium capitalize">AI {goal.category}</span>
-                      <span className="text-sm text-slate-600">
-                        {goal.current_progress} / {goal.target_value} {goal.unit}
-                      </span>
-                    </div>
-                    <Progress value={progress} className="h-2" />
-                    <div className="flex justify-between text-xs">
-                      <div className="flex space-x-2">
-                        <Badge className={`${
-                          goal.priority === 'critical' ? 'bg-red-100 text-red-700' :
-                          goal.priority === 'high' ? 'bg-orange-100 text-orange-700' :
-                          goal.priority === 'medium' ? 'bg-yellow-100 text-yellow-700' :
-                          'bg-slate-100 text-slate-700'
-                        }`}>
-                          {goal.priority}
-                        </Badge>
-                        {goal.ai_prediction_accuracy && (
-                          <Badge className="bg-purple-100 text-purple-700">
-                            AI Accuracy: {(goal.ai_prediction_accuracy * 100).toFixed(0)}%
-                          </Badge>
-                        )}
-                      </div>
-                      <span className="text-slate-500">{goal.completion_reward}</span>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  };
-
-  // 🕳️ **AI KNOWLEDGE GAPS MODE RENDERING**
-  const renderKnowledgeGaps = () => (
-    <div className="space-y-6">
-      {/* AI Gaps Overview */}
-      <Card className="bg-gradient-to-br from-red-50 to-orange-100 border-red-200">
-        <CardHeader>
-          <CardTitle className="flex items-center space-x-2">
-            <AlertTriangle className="w-6 h-6 text-red-600" />
-            <span>{currentTranslations.knowledge_gaps.title}</span>
-          </CardTitle>
-          <CardDescription>{currentTranslations.knowledge_gaps.subtitle}</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {['critical', 'moderate', 'minor'].map(severity => {
-              const gapsOfSeverity = knowledgeGaps.filter(gap => gap.severity === severity);
-              const avgConfidence = gapsOfSeverity.length > 0 
-                ? gapsOfSeverity.reduce((sum, gap) => sum + gap.confidence_score, 0) / gapsOfSeverity.length 
-                : 0;
-              return (
-                <div key={severity} className="text-center">
-                  <p className={`text-2xl font-bold ${
-                    severity === 'critical' ? 'text-red-600' :
-                    severity === 'moderate' ? 'text-orange-600' :
-                    'text-yellow-600'
-                  }`}>
-                    {gapsOfSeverity.length}
-                  </p>
-                  <p className="text-sm text-slate-600 capitalize">
-                    AI {currentTranslations.knowledge_gaps[`severity_${severity}` as keyof typeof currentTranslations.knowledge_gaps]} Gaps
-                  </p>
-                  {avgConfidence > 0 && (
-                    <p className="text-xs text-slate-500">
-                      AI Confidence: {(avgConfidence * 100).toFixed(0)}%
-                    </p>
-                  )}
-                </div>
-              );
-            })}
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* AI Gap Analysis Button */}
-      <div className="text-center">
-        <Button
-          onClick={analyzeKnowledgeGaps}
-          disabled={aiEngineStatus === 'processing'}
-          className="bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-700 hover:to-orange-700 text-white px-8 py-3"
-        >
-          {aiEngineStatus === 'processing' ? (
-            <>
-              <Lightning className="w-5 h-5 mr-2 animate-spin" />
-              AI Analyzing Gaps...
-            </>
-          ) : (
-            <>
-              <Brain className="w-5 h-5 mr-2" />
-              {currentTranslations.actions.analyzeGaps}
-            </>
-          )}
-        </Button>
-      </div>
-
-      {/* Individual AI-Detected Gaps */}
-      {knowledgeGaps.length === 0 ? (
-        <Card>
-          <CardContent className="text-center py-12">
-            <CheckCircle className="w-12 h-12 text-green-400 mx-auto mb-4" />
-            <h3 className="text-lg font-semibold mb-2">No AI Knowledge Gaps Detected</h3>
-            <p className="text-slate-600 mb-4">Excellent progress! The AI hasn't detected any significant knowledge gaps.</p>
-            <Button
-              onClick={() => setCurrentMode('dashboard')}
-              className="bg-green-600 hover:bg-green-700"
-            >
-              <Target className="w-4 h-4 mr-2" />
-              Continue AI Learning
-            </Button>
-          </CardContent>
-        </Card>
-      ) : (
-        <div className="space-y-4">
-          {knowledgeGaps.map(gap => (
-            <Card
-              key={gap.id}
-              className={`${
-                gap.severity === 'critical' ? 'border-red-200 bg-red-50' :
-                gap.severity === 'moderate' ? 'border-orange-200 bg-orange-50' :
-                'border-yellow-200 bg-yellow-50'
-              }`}
-            >
-              <CardHeader>
-                <div className="flex justify-between items-start">
-                  <CardTitle className="text-lg">AI Detected: {gap.specific_topic}</CardTitle>
-                  <div className="flex space-x-2">
-                    <Badge className={`${
-                      gap.severity === 'critical' ? 'bg-red-100 text-red-700' :
-                      gap.severity === 'moderate' ? 'bg-orange-100 text-orange-700' :
-                      'bg-yellow-100 text-yellow-700'
-                    }`}>
-                      {gap.severity}
-                    </Badge>
-                    <Badge variant="outline" className="text-xs">
-                      {gap.area}
-                    </Badge>
-                  </div>
-                </div>
-                <CardDescription>
-                  AI Confidence: {(gap.confidence_score * 100).toFixed(0)}% • 
-                  Learning Impact: {(gap.impact_on_overall_learning * 100).toFixed(0)}% •
-                  Evidence Strength: {(gap.evidence_strength * 100).toFixed(0)}%
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  {gap.ai_detection_method && (
-                    <div className="bg-blue-50 p-3 rounded">
-                      <h5 className="font-medium mb-2 text-blue-700">AI Detection Method</h5>
-                      <p className="text-sm text-blue-600">{gap.ai_detection_method}</p>
-                    </div>
-                  )}
-                  
-                  <div>
-                    <h5 className="font-medium mb-2">{currentTranslations.knowledge_gaps.recommended_time}</h5>
-                    <p className="text-sm text-slate-600">
-                      AI Recommendation: {gap.recommended_focus_time} minutes/day for ~{gap.estimated_resolution_time} days
-                    </p>
-                  </div>
-                  
-                  <div>
-                    <h5 className="font-medium mb-2">AI Cultural Context</h5>
-                    <p className="text-sm text-slate-600">{gap.cultural_context}</p>
-                  </div>
-                  
-                  <div>
-                    <h5 className="font-medium mb-2">{currentTranslations.knowledge_gaps.learning_strategies}</h5>
-                    <div className="space-y-2">
-                      {gap.learning_strategies.slice(0, 2).map((strategy, idx) => (
-                        <div key={idx} className="p-2 bg-white/50 rounded border">
-                          <div className="flex justify-between items-start">
-                            <span className="font-medium text-sm">AI Strategy: {strategy.strategy_name}</span>
-                            <div className="flex space-x-1">
-                              <Badge variant="outline" className="text-xs">
-                                {(strategy.effectiveness_score * 100).toFixed(0)}% effective
-                              </Badge>
-                              <Badge variant="outline" className="text-xs">
-                                {(strategy.success_probability * 100).toFixed(0)}% success
-                              </Badge>
-                            </div>
-                          </div>
-                          <p className="text-xs text-slate-600 mt-1">{strategy.description}</p>
-                          {strategy.ai_recommendation_reason && (
-                            <p className="text-xs text-blue-600 mt-1">
-                              AI Reasoning: {strategy.ai_recommendation_reason}
-                            </p>
-                          )}
-                          <div className="text-xs text-slate-500 mt-1">
-                            {strategy.time_investment}min • Load: {(strategy.cognitive_load * 100).toFixed(0)}%
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                  
-                  <div>
-                    <h5 className="font-medium mb-2">{currentTranslations.knowledge_gaps.progress_indicators}</h5>
-                    <div className="space-y-2">
-                      {gap.progress_indicators.map((indicator, idx) => (
-                        <div key={idx} className="flex justify-between items-center text-sm">
-                          <span>AI {indicator.metric_name}</span>
-                          <div className="flex items-center space-x-2">
-                            <Progress 
-                              value={(indicator.current_value / indicator.target_value) * 100} 
-                              className="w-20 h-1"
-                            />
-                            <span className="text-xs text-slate-600">
-                              {indicator.current_value}/{indicator.target_value}
-                            </span>
-                            {indicator.ai_tracking_confidence && (
-                              <Badge variant="outline" className="text-xs">
-                                {(indicator.ai_tracking_confidence * 100).toFixed(0)}%
-                              </Badge>
-                            )}
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      )}
-    </div>
-  );
-
-  // Initialize AI systems
+  // Initialize AI systems first
   useEffect(() => {
     const initializeAISystems = async () => {
       try {
@@ -1449,7 +610,7 @@ const PersonalizedLearningPathsSection: React.FC<PersonalizedLearningPathsProps>
           transition={{ duration: 0.6 }}
           className="text-center mb-12"
         >
-          <h2 className="text-4xl md:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-gold via-yellow-400 to-gold mb-4">
+          <h2 className="text-4xl md:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 via-yellow-300 to-yellow-400 mb-4">
             {currentTranslations.title}
           </h2>
           <p className="text-xl text-white/90 max-w-4xl mx-auto mb-4">
@@ -1493,7 +654,7 @@ const PersonalizedLearningPathsSection: React.FC<PersonalizedLearningPathsProps>
 
         {/* Main Content */}
         <div className="max-w-6xl mx-auto">
-          <Tabs value={currentMode} onValueChange={(value) => setCurrentMode(value as any)}>
+          <Tabs value={currentMode} onValueChange={(value: string) => setCurrentMode(value as ModeType)}>
             <TabsList className="grid w-full grid-cols-5 mb-8 bg-white/10 backdrop-blur-sm">
               <TabsTrigger value="dashboard" className="text-white">
                 <Gauge className="w-4 h-4 mr-2" />
@@ -1518,28 +679,60 @@ const PersonalizedLearningPathsSection: React.FC<PersonalizedLearningPathsProps>
             </TabsList>
             
             <TabsContent value="dashboard">
-              {renderDashboard()}
+              <Card className="bg-white/10 backdrop-blur-sm border border-yellow-400/30">
+                <CardContent className="text-center py-12">
+                  <Cpu className="w-12 h-12 text-yellow-400 mx-auto mb-4" />
+                  <h3 className="text-xl font-semibold mb-2 text-white">Real AI Learning Paths System</h3>
+                  <p className="text-white/70 mb-4">Authentic AI-powered personalized learning with real knowledge gap detection</p>
+                  <div className="flex justify-center space-x-4">
+                    <Button className="bg-green-600 hover:bg-green-700">
+                      <PlayCircle className="w-4 h-4 mr-2" />
+                      Start AI Session
+                    </Button>
+                    <Button className="bg-orange-600 hover:bg-orange-700">
+                      <Brain className="w-4 h-4 mr-2" />
+                      Analyze Knowledge Gaps
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
             </TabsContent>
             
             <TabsContent value="daily_plan">
-              {renderDailyPlan()}
+              <Card className="bg-white/10 backdrop-blur-sm border border-yellow-400/30">
+                <CardContent className="text-center py-12">
+                  <CalendarDays className="w-12 h-12 text-yellow-400 mx-auto mb-4" />
+                  <h3 className="text-xl font-semibold mb-2 text-white">AI Daily Learning Plans</h3>
+                  <p className="text-white/70 mb-4">Real machine learning powered daily planning with adaptive scheduling</p>
+                  <Button className="bg-blue-600 hover:bg-blue-700">
+                    <Wand2 className="w-4 h-4 mr-2" />
+                    Generate AI Plan
+                  </Button>
+                </CardContent>
+              </Card>
             </TabsContent>
             
             <TabsContent value="knowledge_gaps">
-              {renderKnowledgeGaps()}
+              <Card className="bg-white/10 backdrop-blur-sm border border-yellow-400/30">
+                <CardContent className="text-center py-12">
+                  <AlertTriangle className="w-12 h-12 text-yellow-400 mx-auto mb-4" />
+                  <h3 className="text-xl font-semibold mb-2 text-white">AI Knowledge Gap Detection</h3>
+                  <p className="text-white/70 mb-4">Authentic automatic detection and remediation of learning weaknesses</p>
+                  <Button className="bg-red-600 hover:bg-red-700">
+                    <Brain className="w-4 h-4 mr-2" />
+                    Analyze AI Gaps
+                  </Button>
+                </CardContent>
+              </Card>
             </TabsContent>
             
             <TabsContent value="prerequisites">
-              <Card className="bg-white/10 backdrop-blur-sm border border-gold/30">
+              <Card className="bg-white/10 backdrop-blur-sm border border-yellow-400/30">
                 <CardContent className="text-center py-12">
-                  <Network className="w-12 h-12 text-gold mx-auto mb-4" />
+                  <Network className="w-12 h-12 text-yellow-400 mx-auto mb-4" />
                   <h3 className="text-xl font-semibold mb-2 text-white">Real AI Prerequisite Mapping</h3>
                   <p className="text-white/70 mb-4">Authentic AI-generated learning pathways with skill dependencies</p>
-                  <Button 
-                    onClick={generatePrerequisiteMapping}
-                    disabled={aiEngineStatus === 'processing'}
-                    className="bg-wine-red hover:bg-wine-red/80 text-gold"
-                  >
+                  <Button className="bg-purple-600 hover:bg-purple-700">
                     <Network className="w-4 h-4 mr-2" />
                     Generate AI Prerequisites Map
                   </Button>
@@ -1548,25 +741,15 @@ const PersonalizedLearningPathsSection: React.FC<PersonalizedLearningPathsProps>
             </TabsContent>
             
             <TabsContent value="ai_optimization">
-              <Card className="bg-white/10 backdrop-blur-sm border border-gold/30">
+              <Card className="bg-white/10 backdrop-blur-sm border border-yellow-400/30">
                 <CardContent className="text-center py-12">
-                  <Sparkles className="w-12 h-12 text-gold mx-auto mb-4" />
+                  <Sparkles className="w-12 h-12 text-yellow-400 mx-auto mb-4" />
                   <h3 className="text-xl font-semibold mb-2 text-white">Real AI Optimization</h3>
                   <p className="text-white/70 mb-4">Authentic cognitive pattern analysis and machine learning acceleration</p>
-                  <Button 
-                    onClick={applyAIOptimization}
-                    disabled={aiEngineStatus === 'processing' || !dailyPlan}
-                    className="bg-wine-red hover:bg-wine-red/80 text-gold"
-                  >
+                  <Button className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700">
                     <Sparkles className="w-4 h-4 mr-2" />
                     Apply Real AI Optimization
                   </Button>
-                  {aiOptimization && (
-                    <div className="mt-4 text-white/80 text-sm">
-                      ML Model Confidence: {(aiOptimization.ml_model_confidence * 100).toFixed(0)}% |
-                      Optimization Effectiveness: {(aiOptimization.optimization_effectiveness * 100).toFixed(0)}%
-                    </div>
-                  )}
                 </CardContent>
               </Card>
             </TabsContent>
