@@ -67,7 +67,7 @@ interface UserProgress {
 }
 
 const GrammarExplainerTier1Complete: React.FC = () => {
-  const { language, translations } = useLanguage();
+  const { language } = useLanguage();
   
   // State Management
   const [currentMode, setCurrentMode] = useState<GrammarMode>('overview');
