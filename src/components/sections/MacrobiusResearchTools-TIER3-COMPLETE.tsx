@@ -28,59 +28,22 @@ import {
   BarChart3, 
   Network, 
   Download, 
-  Filter, 
   Database,
   Microscope,
   Brain,
   Target,
   TrendingUp,
-  Activity,
-  FileText,
-  Layers,
-  Compass,
-  Sparkles,
-  BookOpen,
-  Eye,
-  Star,
-  Copy,
-  Share2,
-  Settings,
-  HelpCircle,
-  ChevronDown,
-  ChevronUp,
-  Grid,
-  List,
-  PieChart,
-  LineChart,
-  Hash,
-  Link,
-  Globe,
-  Calendar,
-  Clock,
-  User,
-  Users,
-  Award,
-  Flame,
-  Zap,
-  Lightbulb,
   Cpu,
   Code,
-  FileOutput,
-  TableProperties,
-  ScanLine,
-  Radar,
-  GitBranch,
-  Workflow,
-  Gauge,
-  TreePine,
-  Router,
-  Map,
-  Navigation
+  FileOutput
 } from 'lucide-react';
 
 interface ResearchToolsProps {
   language: string;
 }
+
+// Define TabType for better type safety
+type TabType = 'kwic' | 'collocation' | 'frequency' | 'patterns' | 'diachronic' | 'export';
 
 // 🔍 **KWIC (KEY WORD IN CONTEXT) INTERFACES**
 interface KWICEntry {
@@ -223,7 +186,7 @@ const translations = {
 
 export default function MacrobiusResearchToolsTIER3Complete({ language }: ResearchToolsProps) {
   // Core State Management
-  const [activeTab, setActiveTab] = useState<'kwic' | 'collocation' | 'frequency' | 'patterns' | 'diachronic' | 'export'>('kwic');
+  const [activeTab, setActiveTab] = useState<TabType>('kwic');
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [analysisProgress, setAnalysisProgress] = useState(0);
   const [corpusData, setCorpusData] = useState<MacrobiusPassage[]>([]);
@@ -343,7 +306,7 @@ export default function MacrobiusResearchToolsTIER3Complete({ language }: Resear
         </motion.div>
 
         {/* Research Interface with Tabs */}
-        <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as any)} className="w-full">
+        <Tabs value={activeTab} onValueChange={(value: string) => setActiveTab(value as TabType)} className="w-full">
           <TabsList className="grid w-full grid-cols-6 bg-white/80 backdrop-blur-sm border border-indigo-200">
             <TabsTrigger value="kwic" className="flex items-center space-x-2">
               <Search className="h-4 w-4" />
