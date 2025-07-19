@@ -372,9 +372,14 @@ const ClassicalMacrobiusApp: React.FC = () => {
     
     const Component = section.component;
     
+    // 🔧 **FIXED: Proper Language Type Handling**
+    // Get language code properly from LanguageContext
+    const languageCode = typeof language === 'string' ? language : (language?.code || 'de');
+    const languageName = languageCode === 'de' ? 'Deutsch' : languageCode === 'en' ? 'English' : 'Latina';
+    
     // Unified props for all components
     const unifiedProps = {
-      language: { code: language, name: language === 'de' ? 'Deutsch' : language === 'en' ? 'English' : 'Latina' },
+      language: { code: languageCode, name: languageName },
       vocabularyData: null,
       userProfile: null,
       isActive: true
@@ -406,10 +411,12 @@ const ClassicalMacrobiusApp: React.FC = () => {
           
           <div className="space-y-4">
             <h1 className="text-3xl md:text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-amber-500">
-              {language === 'de' ? 'Lade Macrobius...' : language === 'en' ? 'Loading Macrobius...' : 'Macrobius Carrico...'}
+              {(typeof language === 'string' ? language : language?.code) === 'de' ? 'Lade Macrobius...' : 
+               (typeof language === 'string' ? language : language?.code) === 'en' ? 'Loading Macrobius...' : 'Macrobius Carrico...'}
             </h1>
             <p className="text-lg text-white/70">
-              {language === 'de' ? 'Bereite die antike Weisheit vor...' : language === 'en' ? 'Preparing ancient wisdom...' : 'Sapientiam antiquam paro...'}
+              {(typeof language === 'string' ? language : language?.code) === 'de' ? 'Bereite die antike Weisheit vor...' : 
+               (typeof language === 'string' ? language : language?.code) === 'en' ? 'Preparing ancient wisdom...' : 'Sapientiam antiquam paro...'}
             </p>
           </div>
           
