@@ -7,6 +7,13 @@ import { Download, Wifi, WifiOff, Smartphone, Monitor, X } from 'lucide-react';
 import EnhancedClassicalButton from './EnhancedClassicalButton';
 import EnhancedClassicalCard from './EnhancedClassicalCard';
 
+// Extended ServiceWorkerRegistration interface for Background Sync
+interface ExtendedServiceWorkerRegistration extends ServiceWorkerRegistration {
+  sync?: {
+    register(tag: string): Promise<void>;
+  };
+}
+
 // Enhanced PWA Install Prompt
 interface EnhancedPWAInstallProps {
   onInstall?: () => void;
@@ -370,13 +377,21 @@ const EnhancedBackgroundSync: React.FC<EnhancedBackgroundSyncProps> = ({
   const [showStatus, setShowStatus] = useState(false);
   
   const triggerSync = useCallback(async () => {
+    // Check for Background Sync support with proper type handling
     if ('serviceWorker' in navigator && 'sync' in window.ServiceWorkerRegistration.prototype) {
       try {
         setSyncStatus('syncing');
         setShowStatus(true);
         
         const registration = await navigator.serviceWorker.ready;
-        await registration.sync.register('background-sync');
+        const extendedRegistration = registration as ExtendedServiceWorkerRegistration;
+        
+        // Use optional chaining and proper error handling for experimental API
+        if (extendedRegistration.sync) {
+          await extendedRegistration.sync.register('background-sync');
+        } else {
+          throw new Error('Background Sync not supported');
+        }
         
         // Simulate sync completion
         setTimeout(() => {
@@ -395,6 +410,19 @@ const EnhancedBackgroundSync: React.FC<EnhancedBackgroundSyncProps> = ({
           setSyncStatus('idle');
         }, 3000);
       }
+    } else {
+      // Fallback for browsers without Background Sync support
+      setSyncStatus('syncing');
+      setShowStatus(true);
+      
+      // Simulate manual sync
+      setTimeout(() => {
+        setSyncStatus('success');
+        setTimeout(() => {
+          setShowStatus(false);
+          setSyncStatus('idle');
+        }, 2000);
+      }, 1500);
     }
   }, []);
   
