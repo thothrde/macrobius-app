@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, Suspense } from 'react';
+import dynamic from 'next/dynamic';
 import { useLanguage, Language } from '@/contexts/LanguageContext';
 import { cn } from '@/lib/utils';
 import ClassicalMacrobiusLayout from '@/components/ui/ClassicalMacrobiusLayout';
@@ -29,16 +30,6 @@ const convertToLanguage = (lang: 'de' | 'en' | 'la'): Language => {
   }
 };
 
-// Convert uppercase Language to lowercase format
-const convertFromLanguage = (lang: Language): 'de' | 'en' | 'la' => {
-  switch(lang) {
-    case 'DE': return 'de';
-    case 'EN': return 'en';
-    case 'LA': return 'la';
-    default: return 'en';
-  }
-};
-
 // 🎯 **UNIFIED PROP INTERFACES FOR COMPONENT COMPATIBILITY**
 interface UnifiedComponentProps {
   language?: any;
@@ -47,189 +38,107 @@ interface UnifiedComponentProps {
   isActive?: boolean;
 }
 
-// 🔧 **FIXED: SSR-SAFE COMPONENT LOADING**
-// Static import mapping for SSR compatibility
-const getQuizComponent = () => {
-  const QuizWrapper: React.FC<UnifiedComponentProps> = (props) => {
-    const [Component, setComponent] = useState<React.ComponentType<any> | null>(null);
-    const [isLoading, setIsLoading] = useState(true);
-    const [isClient, setIsClient] = useState(false);
+// 🔧 **NEXT.JS DYNAMIC IMPORTS WITH SSR DISABLED**
+// Loading fallback component
+const LoadingFallback = () => (
+  <div className="min-h-[400px] flex items-center justify-center">
+    <EnhancedLoadingSpinner />
+  </div>
+);
 
-    // Ensure client-side only
-    useEffect(() => {
-      setIsClient(true);
-    }, []);
+// Fallback components for SSR
+const QuizFallback = () => (
+  <div className="text-center py-12">
+    <h2 className="text-3xl font-bold text-white mb-6">Interaktive Quiz</h2>
+    <p className="text-white/80 mb-8">Testen Sie Ihr Wissen über Macrobius und die antike Kultur</p>
+    <div className="bg-gradient-to-br from-blue-500/10 to-purple-500/10 border border-blue-400/30 rounded-lg p-6">
+      <p className="text-white/90">KI-generierte Quizfragen basierend auf authentischen Texten...</p>
+      <div className="mt-4">
+        <EnhancedLoadingSpinner />
+      </div>
+    </div>
+  </div>
+);
 
-    useEffect(() => {
-      if (!isClient) return;
-      
-      const loadComponent = async () => {
-        try {
-          // Try TIER-COMPLETE version first with static import
-          const { default: TierComponent } = await import('@/components/sections/QuizSection-SMART-GENERATION-COMPLETE');
-          setComponent(() => TierComponent);
-        } catch (error) {
-          try {
-            // Fallback to basic version
-            const { default: BasicComponent } = await import('@/components/sections/QuizSection');
-            setComponent(() => BasicComponent);
-          } catch (fallbackError) {
-            // Final fallback component
-            setComponent(() => () => (
-              <div className="text-center py-12">
-                <h2 className="text-3xl font-bold text-white mb-6">Interaktive Quiz</h2>
-                <p className="text-white/80 mb-8">Testen Sie Ihr Wissen über Macrobius und die antike Kultur</p>
-                <div className="bg-gradient-to-br from-blue-500/10 to-purple-500/10 border border-blue-400/30 rounded-lg p-6">
-                  <p className="text-white/90">KI-generierte Quizfragen basierend auf authentischen Texten...</p>
-                </div>
-              </div>
-            ));
+const TextSearchFallback = () => (
+  <div className="text-center py-12">
+    <h2 className="text-3xl font-bold text-white mb-6">Textsuche</h2>
+    <p className="text-white/80 mb-8">Durchsuchen Sie das komplette Macrobius-Korpus</p>
+    <div className="bg-gradient-to-br from-teal-500/10 to-cyan-500/10 border border-teal-400/30 rounded-lg p-6">
+      <p className="text-white/90">KI-gestützte semantische Suche durch 1.401 authentische Textpassagen...</p>
+      <div className="mt-4">
+        <EnhancedLoadingSpinner />
+      </div>
+    </div>
+  </div>
+);
+
+// 🎯 **CLIENT-ONLY DYNAMIC COMPONENTS**
+// Quiz component with tier fallback logic
+const DynamicQuizComponent = dynamic(
+  () => import('@/components/sections/QuizSection-SMART-GENERATION-COMPLETE')
+    .then(mod => ({
+      default: (props: UnifiedComponentProps) => {
+        const mappedProps = {
+          language: props.language || { code: 'de', name: 'Deutsch' },
+          vocabularyData: props.vocabularyData,
+          userProfile: props.userProfile,
+        };
+        return React.createElement(mod.default, mappedProps);
+      }
+    }))
+    .catch(() => 
+      import('@/components/sections/QuizSection')
+        .then(mod => ({
+          default: (props: UnifiedComponentProps) => {
+            const mappedProps = {
+              isActive: props.isActive !== false,
+              language: typeof props.language === 'object' ? props.language.code?.toUpperCase() || 'DE' : 'DE',
+            };
+            return React.createElement(mod.default, mappedProps);
           }
-        } finally {
-          setIsLoading(false);
-        }
-      };
+        }))
+        .catch(() => ({ default: QuizFallback }))
+    ),
+  {
+    ssr: false,
+    loading: LoadingFallback
+  }
+);
 
-      loadComponent();
-    }, [isClient]);
-
-    // SSR fallback
-    if (!isClient) {
-      return (
-        <div className="text-center py-12">
-          <h2 className="text-3xl font-bold text-white mb-6">Interaktive Quiz</h2>
-          <p className="text-white/80 mb-8">Testen Sie Ihr Wissen über Macrobius und die antike Kultur</p>
-          <div className="bg-gradient-to-br from-blue-500/10 to-purple-500/10 border border-blue-400/30 rounded-lg p-6">
-            <p className="text-white/90">Lade Quiz-System...</p>
-          </div>
-        </div>
-      );
-    }
-
-    if (isLoading) {
-      return (
-        <div className="min-h-[400px] flex items-center justify-center">
-          <EnhancedLoadingSpinner />
-        </div>
-      );
-    }
-
-    if (!Component) {
-      return (
-        <div className="text-center py-12">
-          <h2 className="text-3xl font-bold text-white mb-6">Quiz Loading Error</h2>
-          <p className="text-white/80">Unable to load quiz component</p>
-        </div>
-      );
-    }
-
-    // Map props appropriately for each component type
-    const mappedProps = {
-      // For TIER-COMPLETE components
-      language: props.language || { code: 'de', name: 'Deutsch' },
-      vocabularyData: props.vocabularyData,
-      userProfile: props.userProfile,
-      // For basic components
-      isActive: props.isActive !== false, // Default to true unless explicitly false
-    };
-
-    return <Component {...mappedProps} />;
-  };
-
-  return QuizWrapper;
-};
-
-const getTextSearchComponent = () => {
-  const TextSearchWrapper: React.FC<UnifiedComponentProps> = (props) => {
-    const [Component, setComponent] = useState<React.ComponentType<any> | null>(null);
-    const [isLoading, setIsLoading] = useState(true);
-    const [isClient, setIsClient] = useState(false);
-
-    // Ensure client-side only
-    useEffect(() => {
-      setIsClient(true);
-    }, []);
-
-    useEffect(() => {
-      if (!isClient) return;
-      
-      const loadComponent = async () => {
-        try {
-          // Try TIER-COMPLETE version first with static import
-          const { default: TierComponent } = await import('@/components/sections/MacrobiusTextProcessor-TIER2-COMPLETE');
-          setComponent(() => TierComponent);
-        } catch (error) {
-          try {
-            // Fallback to basic version
-            const { default: BasicComponent } = await import('@/components/sections/TextSearchSection');
-            setComponent(() => BasicComponent);
-          } catch (fallbackError) {
-            // Final fallback component
-            setComponent(() => () => (
-              <div className="text-center py-12">
-                <h2 className="text-3xl font-bold text-white mb-6">Textsuche</h2>
-                <p className="text-white/80 mb-8">Durchsuchen Sie das komplette Macrobius-Korpus</p>
-                <div className="bg-gradient-to-br from-teal-500/10 to-cyan-500/10 border border-teal-400/30 rounded-lg p-6">
-                  <p className="text-white/90">KI-gestützte semantische Suche durch 1.401 authentische Textpassagen...</p>
-                </div>
-              </div>
-            ));
+// TextSearch component with tier fallback logic
+const DynamicTextSearchComponent = dynamic(
+  () => import('@/components/sections/MacrobiusTextProcessor-TIER2-COMPLETE')
+    .then(mod => ({
+      default: (props: UnifiedComponentProps) => {
+        const mappedProps = {
+          language: props.language || { code: 'de', name: 'Deutsch' },
+          vocabularyData: props.vocabularyData,
+          userProfile: props.userProfile,
+        };
+        return React.createElement(mod.default, mappedProps);
+      }
+    }))
+    .catch(() => 
+      import('@/components/sections/TextSearchSection')
+        .then(mod => ({
+          default: (props: UnifiedComponentProps) => {
+            const mappedProps = {
+              isActive: props.isActive !== false,
+              language: typeof props.language === 'object' ? props.language.code?.toUpperCase() || 'DE' : 'DE',
+            };
+            return React.createElement(mod.default, mappedProps);
           }
-        } finally {
-          setIsLoading(false);
-        }
-      };
+        }))
+        .catch(() => ({ default: TextSearchFallback }))
+    ),
+  {
+    ssr: false,
+    loading: LoadingFallback
+  }
+);
 
-      loadComponent();
-    }, [isClient]);
-
-    // SSR fallback
-    if (!isClient) {
-      return (
-        <div className="text-center py-12">
-          <h2 className="text-3xl font-bold text-white mb-6">Textsuche</h2>
-          <p className="text-white/80 mb-8">Durchsuchen Sie das komplette Macrobius-Korpus</p>
-          <div className="bg-gradient-to-br from-teal-500/10 to-cyan-500/10 border border-teal-400/30 rounded-lg p-6">
-            <p className="text-white/90">Lade Suchsystem...</p>
-          </div>
-        </div>
-      );
-    }
-
-    if (isLoading) {
-      return (
-        <div className="min-h-[400px] flex items-center justify-center">
-          <EnhancedLoadingSpinner />
-        </div>
-      );
-    }
-
-    if (!Component) {
-      return (
-        <div className="text-center py-12">
-          <h2 className="text-3xl font-bold text-white mb-6">Search Loading Error</h2>
-          <p className="text-white/80">Unable to load search component</p>
-        </div>
-      );
-    }
-
-    // Map props appropriately for each component type
-    const mappedProps = {
-      // For TIER-COMPLETE components
-      language: props.language || { code: 'de', name: 'Deutsch' },
-      vocabularyData: props.vocabularyData,
-      userProfile: props.userProfile,
-      // For basic components
-      isActive: props.isActive !== false, // Default to true unless explicitly false
-    };
-
-    return <Component {...mappedProps} />;
-  };
-
-  return TextSearchWrapper;
-};
-
-// Section Components (with SSR-safe loading)
+// 📚 **SECTION COMPONENTS WITH SSR-SAFE LOADING**
 const IntroSection = React.lazy(() => 
   import('@/components/sections/IntroSection').catch(() => 
     ({ default: () => (
@@ -248,15 +157,14 @@ const IntroSection = React.lazy(() =>
   )
 );
 
-// Fixed QuizSection with SSR-safe loading
-const QuizSection = React.lazy(() => 
-  Promise.resolve({ default: getQuizComponent() })
-);
+// Wrapper components for dynamic imports
+const QuizSection: React.FC<UnifiedComponentProps> = (props) => {
+  return <DynamicQuizComponent {...props} />;
+};
 
-// Fixed TextSearchSection with SSR-safe loading
-const TextSearchSection = React.lazy(() => 
-  Promise.resolve({ default: getTextSearchComponent() })
-);
+const TextSearchSection: React.FC<UnifiedComponentProps> = (props) => {
+  return <DynamicTextSearchComponent {...props} />;
+};
 
 const WorldMapSection = React.lazy(() => 
   import('@/components/sections/WorldMapSection').catch(() => 
@@ -510,11 +418,7 @@ const ClassicalMacrobiusApp: React.FC = () => {
     };
     
     return (
-      <Suspense fallback={
-        <div className="min-h-[400px] flex items-center justify-center">
-          <EnhancedLoadingSpinner />
-        </div>
-      }>
+      <Suspense fallback={<LoadingFallback />}>
         <Component {...unifiedProps} />
       </Suspense>
     );
