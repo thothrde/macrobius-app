@@ -47,7 +47,7 @@ const EnhancedClassicalLayout: React.FC<EnhancedClassicalLayoutProps> = ({
   enableScrollToTop = true,
   className
 }) => {
-  const { language, translations } = useLanguage();
+  const { language } = useLanguage();
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [sectionProgress, setSectionProgress] = useState(0);
   
@@ -235,18 +235,18 @@ const EnhancedClassicalLayout: React.FC<EnhancedClassicalLayoutProps> = ({
                   </span>
                 </div>
                 <p className="text-white/70 leading-relaxed">
-                  {language === 'de' && 'Eine antike Flaschenpost - Eine Nachricht aus der Antike an die Zukunft'}
-                  {language === 'en' && 'An Ancient Message in a Bottle - A Message from Antiquity to the Future'}
-                  {language === 'la' && 'Antiqua Epistula in Vitro - Nuntius ab Antiquitate ad Futurum'}
+                  {language === 'DE' && 'Eine antike Flaschenpost - Eine Nachricht aus der Antike an die Zukunft'}
+                  {language === 'EN' && 'An Ancient Message in a Bottle - A Message from Antiquity to the Future'}
+                  {language === 'LA' && 'Antiqua Epistula in Vitro - Nuntius ab Antiquitate ad Futurum'}
                 </p>
               </div>
               
               {/* Links Column */}
               <div className="space-y-4">
                 <h3 className="text-lg font-semibold text-yellow-400">
-                  {language === 'de' && 'Entdecken'}
-                  {language === 'en' && 'Explore'}
-                  {language === 'la' && 'Explorare'}
+                  {language === 'DE' && 'Entdecken'}
+                  {language === 'EN' && 'Explore'}
+                  {language === 'LA' && 'Explorare'}
                 </h3>
                 <div className="space-y-2">
                   {defaultNavigationItems.slice(0, 4).map((item) => (
@@ -255,7 +255,7 @@ const EnhancedClassicalLayout: React.FC<EnhancedClassicalLayoutProps> = ({
                       onClick={item.onClick}
                       className="block text-white/70 hover:text-yellow-400 transition-colors duration-300"
                     >
-                      {item.label[language]}
+                      {item.label[language.toLowerCase() as 'de' | 'en' | 'la']}
                     </button>
                   ))}
                 </div>
@@ -264,9 +264,9 @@ const EnhancedClassicalLayout: React.FC<EnhancedClassicalLayoutProps> = ({
               {/* Features Column */}
               <div className="space-y-4">
                 <h3 className="text-lg font-semibold text-yellow-400">
-                  {language === 'de' && 'Funktionen'}
-                  {language === 'en' && 'Features'}
-                  {language === 'la' && 'Functiones'}
+                  {language === 'DE' && 'Funktionen'}
+                  {language === 'EN' && 'Features'}
+                  {language === 'LA' && 'Functiones'}
                 </h3>
                 <div className="space-y-2">
                   {defaultNavigationItems.slice(4).map((item) => (
@@ -275,7 +275,7 @@ const EnhancedClassicalLayout: React.FC<EnhancedClassicalLayoutProps> = ({
                       onClick={item.onClick}
                       className="block text-white/70 hover:text-yellow-400 transition-colors duration-300"
                     >
-                      {item.label[language]}
+                      {item.label[language.toLowerCase() as 'de' | 'en' | 'la']}
                     </button>
                   ))}
                 </div>
@@ -285,9 +285,9 @@ const EnhancedClassicalLayout: React.FC<EnhancedClassicalLayoutProps> = ({
             {/* Copyright */}
             <div className="mt-8 pt-8 border-t border-yellow-400/20 text-center text-white/60">
               <p>
-                {language === 'de' && '© 2025 Macrobius App - Klassische Bildung für die moderne Welt'}
-                {language === 'en' && '© 2025 Macrobius App - Classical Education for the Modern World'}
-                {language === 'la' && '© 2025 Macrobius App - Educatio Classica pro Mundo Moderno'}
+                {language === 'DE' && '© 2025 Macrobius App - Klassische Bildung für die moderne Welt'}
+                {language === 'EN' && '© 2025 Macrobius App - Classical Education for the Modern World'}
+                {language === 'LA' && '© 2025 Macrobius App - Educatio Classica pro Mundo Moderno'}
               </p>
             </div>
           </div>
@@ -304,9 +304,9 @@ const EnhancedClassicalLayout: React.FC<EnhancedClassicalLayoutProps> = ({
             pulse
             className="fixed bottom-6 right-6 z-50 animate-fade-in-enhanced"
           >
-            {language === 'de' && 'Nach oben'}
-            {language === 'en' && 'To Top'}
-            {language === 'la' && 'Sursum'}
+            {language === 'DE' && 'Nach oben'}
+            {language === 'EN' && 'To Top'}
+            {language === 'LA' && 'Sursum'}
           </EnhancedClassicalButton>
         )}
         
