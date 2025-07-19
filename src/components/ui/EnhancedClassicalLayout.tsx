@@ -170,11 +170,11 @@ const EnhancedClassicalLayout: React.FC<EnhancedClassicalLayoutProps> = ({
           enableParticles={bgProps.enableParticles}
           starDensity={bgProps.starDensity}
           className="absolute inset-0"
-        />
-        
-        <div className="relative z-10 container mx-auto px-4 py-12">
-          {section.component}
-        </div>
+        >
+          <div className="relative z-10 container mx-auto px-4 py-12">
+            {section.component}
+          </div>
+        </EnhancedCosmicBackground>
       </section>
     );
   };
