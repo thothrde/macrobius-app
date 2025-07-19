@@ -236,7 +236,9 @@ const EnhancedTextToSpeech: React.FC<EnhancedTextToSpeechProps> = ({
           onClick={speak}
           icon={<Volume2 className="w-4 h-4" />}
           aria-label="Text vorlesen"
-        />
+        >
+          {""}
+        </EnhancedClassicalButton>
       ) : (
         <div className="flex items-center gap-1">
           {isPaused ? (
@@ -246,7 +248,9 @@ const EnhancedTextToSpeech: React.FC<EnhancedTextToSpeechProps> = ({
               onClick={resume}
               icon={<Play className="w-4 h-4" />}
               aria-label="Wiedergabe fortsetzen"
-            />
+            >
+              {""}
+            </EnhancedClassicalButton>
           ) : (
             <EnhancedClassicalButton
               variant="tertiary"
@@ -254,7 +258,9 @@ const EnhancedTextToSpeech: React.FC<EnhancedTextToSpeechProps> = ({
               onClick={pause}
               icon={<Pause className="w-4 h-4" />}
               aria-label="Wiedergabe pausieren"
-            />
+            >
+              {""}
+            </EnhancedClassicalButton>
           )}
           
           <EnhancedClassicalButton
@@ -263,7 +269,9 @@ const EnhancedTextToSpeech: React.FC<EnhancedTextToSpeechProps> = ({
             onClick={stop}
             icon={<VolumeX className="w-4 h-4" />}
             aria-label="Wiedergabe stoppen"
-          />
+          >
+            {""}
+          </EnhancedClassicalButton>
         </div>
       )}
     </div>
@@ -382,7 +390,9 @@ const EnhancedAccessibilityPanel: React.FC<EnhancedAccessibilityPanelProps> = ({
               onClick={onClose}
               icon={<Eye className="w-4 h-4" />}
               aria-label="Panel schließen"
-            />
+            >
+              {""}
+            </EnhancedClassicalButton>
           </div>
           
           {/* Font Size */}
