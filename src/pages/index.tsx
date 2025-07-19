@@ -18,82 +18,77 @@ try {
   EnhancedErrorBoundary = ({ children }: any) => <div>{children}</div>;
 }
 
-// 🎯 **UNIFIED PROP INTERFACES FOR QUIZ COMPATIBILITY**
-interface UnifiedQuizProps {
+// 🎯 **UNIFIED PROP INTERFACES FOR COMPONENT COMPATIBILITY**
+interface UnifiedComponentProps {
   language?: any;
   vocabularyData?: any;
   userProfile?: any;
   isActive?: boolean;
 }
 
-// Quiz Component Wrapper for Unified Props
-const QuizComponentWrapper: React.FC<UnifiedQuizProps> = (props) => {
-  // Try to load TIER-COMPLETE version first, then fallback
-  const [QuizComponent, setQuizComponent] = useState<React.ComponentType<any> | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+// Unified Component Wrapper Factory
+const createUnifiedWrapper = (tierCompleteImport: string, basicImport: string, fallbackContent: React.ReactNode) => {
+  const UnifiedWrapper: React.FC<UnifiedComponentProps> = (props) => {
+    const [Component, setComponent] = useState<React.ComponentType<any> | null>(null);
+    const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    const loadQuizComponent = async () => {
-      try {
-        // Try TIER-COMPLETE version first
-        const smartComponent = await import('@/components/sections/QuizSection-SMART-GENERATION-COMPLETE');
-        setQuizComponent(() => smartComponent.default);
-      } catch (error) {
+    useEffect(() => {
+      const loadComponent = async () => {
         try {
-          // Fallback to basic version
-          const basicComponent = await import('@/components/sections/QuizSection');
-          setQuizComponent(() => basicComponent.default);
-        } catch (fallbackError) {
-          // Final fallback component
-          setQuizComponent(() => () => (
-            <div className="text-center py-12">
-              <h2 className="text-3xl font-bold text-white mb-6">Interaktive Quiz</h2>
-              <p className="text-white/80 mb-8">Testen Sie Ihr Wissen über Macrobius und die antike Kultur</p>
-              <div className="bg-gradient-to-br from-blue-500/10 to-purple-500/10 border border-blue-400/30 rounded-lg p-6">
-                <p className="text-white/90">KI-generierte Quizfragen basierend auf authentischen Texten...</p>
-              </div>
-            </div>
-          ));
+          // Try TIER-COMPLETE version first
+          const tierComponent = await import(tierCompleteImport);
+          setComponent(() => tierComponent.default);
+        } catch (error) {
+          try {
+            // Fallback to basic version
+            const basicComponent = await import(basicImport);
+            setComponent(() => basicComponent.default);
+          } catch (fallbackError) {
+            // Final fallback component
+            setComponent(() => () => fallbackContent);
+          }
+        } finally {
+          setIsLoading(false);
         }
-      } finally {
-        setIsLoading(false);
-      }
+      };
+
+      loadComponent();
+    }, []);
+
+    if (isLoading) {
+      return (
+        <div className="min-h-[400px] flex items-center justify-center">
+          <EnhancedLoadingSpinner />
+        </div>
+      );
+    }
+
+    if (!Component) {
+      return (
+        <div className="text-center py-12">
+          <h2 className="text-3xl font-bold text-white mb-6">Component Loading Error</h2>
+          <p className="text-white/80">Unable to load component</p>
+        </div>
+      );
+    }
+
+    // Map props appropriately for each component type
+    const mappedProps = {
+      // For TIER-COMPLETE components
+      language: props.language || { code: 'de', name: 'Deutsch' },
+      vocabularyData: props.vocabularyData,
+      userProfile: props.userProfile,
+      // For basic components
+      isActive: props.isActive !== false, // Default to true unless explicitly false
     };
 
-    loadQuizComponent();
-  }, []);
-
-  if (isLoading) {
-    return (
-      <div className="min-h-[400px] flex items-center justify-center">
-        <EnhancedLoadingSpinner />
-      </div>
-    );
-  }
-
-  if (!QuizComponent) {
-    return (
-      <div className="text-center py-12">
-        <h2 className="text-3xl font-bold text-white mb-6">Quiz Loading Error</h2>
-        <p className="text-white/80">Unable to load quiz component</p>
-      </div>
-    );
-  }
-
-  // Map props appropriately for each component type
-  const mappedProps = {
-    // For TIER-COMPLETE component
-    language: props.language || { code: 'de', name: 'Deutsch' },
-    vocabularyData: props.vocabularyData,
-    userProfile: props.userProfile,
-    // For basic component
-    isActive: props.isActive !== false, // Default to true unless explicitly false
+    return <Component {...mappedProps} />;
   };
 
-  return <QuizComponent {...mappedProps} />;
+  return UnifiedWrapper;
 };
 
-// Section Components (with fallbacks)
+// Section Components (with unified wrappers)
 const IntroSection = React.lazy(() => 
   import('@/components/sections/IntroSection').catch(() => 
     ({ default: () => (
@@ -114,7 +109,36 @@ const IntroSection = React.lazy(() =>
 
 // Fixed QuizSection with unified props
 const QuizSection = React.lazy(() => 
-  Promise.resolve({ default: QuizComponentWrapper })
+  Promise.resolve({ 
+    default: createUnifiedWrapper(
+      '@/components/sections/QuizSection-SMART-GENERATION-COMPLETE',
+      '@/components/sections/QuizSection',
+      <div className="text-center py-12">
+        <h2 className="text-3xl font-bold text-white mb-6">Interaktive Quiz</h2>
+        <p className="text-white/80 mb-8">Testen Sie Ihr Wissen über Macrobius und die antike Kultur</p>
+        <div className="bg-gradient-to-br from-blue-500/10 to-purple-500/10 border border-blue-400/30 rounded-lg p-6">
+          <p className="text-white/90">KI-generierte Quizfragen basierend auf authentischen Texten...</p>
+        </div>
+      </div>
+    )
+  })
+);
+
+// Fixed TextSearchSection with unified props
+const TextSearchSection = React.lazy(() => 
+  Promise.resolve({ 
+    default: createUnifiedWrapper(
+      '@/components/sections/MacrobiusTextProcessor-TIER2-COMPLETE',
+      '@/components/sections/TextSearchSection',
+      <div className="text-center py-12">
+        <h2 className="text-3xl font-bold text-white mb-6">Textsuche</h2>
+        <p className="text-white/80 mb-8">Durchsuchen Sie das komplette Macrobius-Korpus</p>
+        <div className="bg-gradient-to-br from-teal-500/10 to-cyan-500/10 border border-teal-400/30 rounded-lg p-6">
+          <p className="text-white/90">KI-gestützte semantische Suche durch 1.401 authentische Textpassagen...</p>
+        </div>
+      </div>
+    )
+  })
 );
 
 const WorldMapSection = React.lazy(() => 
@@ -156,22 +180,6 @@ const BanquetSection = React.lazy(() =>
         </div>
       </div>
     ) })
-  )
-);
-
-const TextSearchSection = React.lazy(() => 
-  import('@/components/sections/MacrobiusTextProcessor-TIER2-COMPLETE').catch(() => 
-    import('@/components/sections/TextSearchSection').catch(() => 
-      ({ default: () => (
-        <div className="text-center py-12">
-          <h2 className="text-3xl font-bold text-white mb-6">Textsuche</h2>
-          <p className="text-white/80 mb-8">Durchsuchen Sie das komplette Macrobius-Korpus</p>
-          <div className="bg-gradient-to-br from-teal-500/10 to-cyan-500/10 border border-teal-400/30 rounded-lg p-6">
-            <p className="text-white/90">KI-gestützte semantische Suche durch 1.401 authentische Textpassagen...</p>
-          </div>
-        </div>
-      ) })
-    )
   )
 );
 
