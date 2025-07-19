@@ -171,7 +171,7 @@ const EnhancedMobileDrawer: React.FC<EnhancedMobileDrawerProps> = ({
             onClick={onClose}
             icon={<X className="w-4 h-4" />}
           >
-            
+            {""}
           </EnhancedClassicalButton>
         </div>
         
@@ -398,7 +398,7 @@ const EnhancedMobileCarousel: React.FC<EnhancedMobileCarouselProps> = ({
             className="absolute left-4 top-1/2 transform -translate-y-1/2 z-10"
             glow
           >
-            
+            {""}
           </EnhancedClassicalButton>
           
           <EnhancedClassicalButton
@@ -410,7 +410,7 @@ const EnhancedMobileCarousel: React.FC<EnhancedMobileCarouselProps> = ({
             className="absolute right-4 top-1/2 transform -translate-y-1/2 z-10"
             glow
           >
-            
+            {""}
           </EnhancedClassicalButton>
         </>
       )}
