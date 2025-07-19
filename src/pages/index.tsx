@@ -3,42 +3,139 @@
 import React, { useState, useEffect, Suspense } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { cn } from '@/lib/utils';
+import ClassicalMacrobiusLayout from '@/components/ui/ClassicalMacrobiusLayout';
 
 // Safe UI Components Import with Fallbacks
-let EnhancedCosmicBackground: React.ComponentType<any>;
-let EnhancedClassicalCard: React.ComponentType<any>;
-let EnhancedClassicalButton: React.ComponentType<any>;
 let EnhancedLoadingSpinner: React.ComponentType<any>;
 let EnhancedErrorBoundary: React.ComponentType<any>;
 
 try {
-  EnhancedCosmicBackground = require('@/components/ui/EnhancedCosmicBackground').default;
-  EnhancedClassicalCard = require('@/components/ui/EnhancedClassicalCard').default;
-  EnhancedClassicalButton = require('@/components/ui/EnhancedClassicalButton').default;
   EnhancedLoadingSpinner = require('@/components/ui/EnhancedLoadingStates').EnhancedLoadingSpinner;
   EnhancedErrorBoundary = require('@/components/ui/EnhancedErrorBoundary').default;
 } catch (error) {
   console.warn('Enhanced components not available, using fallbacks');
-  // Fallback to basic div components
-  EnhancedCosmicBackground = ({ children }: any) => <div className="min-h-screen bg-gradient-to-br from-gray-900 via-blue-900 to-purple-900">{children}</div>;
-  EnhancedClassicalCard = ({ children, className }: any) => <div className={cn("bg-white/10 backdrop-blur rounded-lg p-6", className)}>{children}</div>;
-  EnhancedClassicalButton = ({ children, onClick, className }: any) => <button onClick={onClick} className={cn("px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700", className)}>{children}</button>;
-  EnhancedLoadingSpinner = () => <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin" />;
+  EnhancedLoadingSpinner = () => <div className="w-8 h-8 border-4 border-yellow-400 border-t-transparent rounded-full animate-spin" />;
   EnhancedErrorBoundary = ({ children }: any) => <div>{children}</div>;
 }
 
 // Section Components (with fallbacks)
 const IntroSection = React.lazy(() => 
   import('@/components/sections/IntroSection').catch(() => 
-    ({ default: () => <div className="text-center py-20"><h1 className="text-4xl font-bold text-white mb-4">Willkommen bei Macrobius</h1><p className="text-xl text-white/80">Eine antike Flaschenpost - Eine Nachricht aus der Antike an die Zukunft</p></div> })
+    ({ default: () => (
+      <div className="text-center py-12">
+        <h2 className="text-3xl font-bold text-white mb-6">Willkommen bei Macrobius</h2>
+        <p className="text-xl text-white/80 mb-8 leading-relaxed">Eine antike Flaschenpost - Eine Nachricht aus der Antike an die Zukunft</p>
+        <div className="bg-gradient-to-br from-yellow-400/10 to-amber-500/10 border border-yellow-400/30 rounded-lg p-6">
+          <p className="text-white/90 leading-relaxed">
+            Entdecken Sie die Weisheit des Macrobius Ambrosius Theodosius, des großen spätantiken Gelehrten. 
+            Tauchen Sie ein in die Welt der Saturnalien und erforschen Sie antike Kultur, Astronomie und Philosophie 
+            mit modernsten KI-gestützten Lernwerkzeugen.
+          </p>
+        </div>
+      </div>
+    ) })
   )
 );
 
 const QuizSection = React.lazy(() => 
-  import('@/components/sections/QuizSection').catch(() => 
-    import('@/components/sections/QuizSection-SMART-GENERATION-COMPLETE').catch(() => 
-      ({ default: () => <div className="text-center py-20"><h2 className="text-3xl font-bold text-white">Quiz Section</h2><p className="text-white/80">Quiz coming soon...</p></div> })
+  import('@/components/sections/QuizSection-SMART-GENERATION-COMPLETE').catch(() => 
+    import('@/components/sections/QuizSection').catch(() => 
+      ({ default: () => (
+        <div className="text-center py-12">
+          <h2 className="text-3xl font-bold text-white mb-6">Interaktive Quiz</h2>
+          <p className="text-white/80 mb-8">Testen Sie Ihr Wissen über Macrobius und die antike Kultur</p>
+          <div className="bg-gradient-to-br from-blue-500/10 to-purple-500/10 border border-blue-400/30 rounded-lg p-6">
+            <p className="text-white/90">KI-generierte Quizfragen basierend auf authentischen Texten...</p>
+          </div>
+        </div>
+      ) })
     )
+  )
+);
+
+const WorldMapSection = React.lazy(() => 
+  import('@/components/sections/WorldMapSection').catch(() => 
+    ({ default: () => (
+      <div className="text-center py-12">
+        <h2 className="text-3xl font-bold text-white mb-6">Weltkarte</h2>
+        <p className="text-white/80 mb-8">Erkunden Sie die geographische Welt des Macrobius</p>
+        <div className="bg-gradient-to-br from-green-500/10 to-blue-500/10 border border-green-400/30 rounded-lg p-6">
+          <p className="text-white/90">Interaktive Darstellung historischer Orte und Konzepte...</p>
+        </div>
+      </div>
+    ) })
+  )
+);
+
+const CosmosSection = React.lazy(() => 
+  import('@/components/sections/CosmosSection').catch(() => 
+    ({ default: () => (
+      <div className="text-center py-12">
+        <h2 className="text-3xl font-bold text-white mb-6">Kosmos</h2>
+        <p className="text-white/80 mb-8">Entdecken Sie die antike Kosmologie und Astronomie</p>
+        <div className="bg-gradient-to-br from-purple-500/10 to-pink-500/10 border border-purple-400/30 rounded-lg p-6">
+          <p className="text-white/90">Visualisierung antiker astronomischer Konzepte...</p>
+        </div>
+      </div>
+    ) })
+  )
+);
+
+const BanquetSection = React.lazy(() => 
+  import('@/components/sections/BanquetSection').catch(() => 
+    ({ default: () => (
+      <div className="text-center py-12">
+        <h2 className="text-3xl font-bold text-white mb-6">Gastmahl</h2>
+        <p className="text-white/80 mb-8">Erleben Sie die berühmten Saturnalien-Gespräche</p>
+        <div className="bg-gradient-to-br from-orange-500/10 to-red-500/10 border border-orange-400/30 rounded-lg p-6">
+          <p className="text-white/90">Immersive Darstellung der antiken Symposium-Kultur...</p>
+        </div>
+      </div>
+    ) })
+  )
+);
+
+const TextSearchSection = React.lazy(() => 
+  import('@/components/sections/MacrobiusTextProcessor-TIER2-COMPLETE').catch(() => 
+    import('@/components/sections/TextSearchSection').catch(() => 
+      ({ default: () => (
+        <div className="text-center py-12">
+          <h2 className="text-3xl font-bold text-white mb-6">Textsuche</h2>
+          <p className="text-white/80 mb-8">Durchsuchen Sie das komplette Macrobius-Korpus</p>
+          <div className="bg-gradient-to-br from-teal-500/10 to-cyan-500/10 border border-teal-400/30 rounded-lg p-6">
+            <p className="text-white/90">KI-gestützte semantische Suche durch 1.401 authentische Textpassagen...</p>
+          </div>
+        </div>
+      ) })
+    )
+  )
+);
+
+const LearningSection = React.lazy(() => 
+  import('@/components/sections/LearningSection-enhanced-complete').catch(() => 
+    ({ default: () => (
+      <div className="text-center py-12">
+        <h2 className="text-3xl font-bold text-white mb-6">Lernen</h2>
+        <p className="text-white/80 mb-8">Personalisierte Lernpfade für Latein und antike Kultur</p>
+        <div className="bg-gradient-to-br from-emerald-500/10 to-green-500/10 border border-emerald-400/30 rounded-lg p-6">
+          <p className="text-white/90">Adaptive KI-Tutoring und Vokabeltraining...</p>
+        </div>
+      </div>
+    ) })
+  )
+);
+
+const VisualizationsSection = React.lazy(() => 
+  import('@/components/sections/VisualizationsSection').catch(() => 
+    ({ default: () => (
+      <div className="text-center py-12">
+        <h2 className="text-3xl font-bold text-white mb-6">Visualisierungen</h2>
+        <p className="text-white/80 mb-8">Datenvisualisierung und interaktive Analysen</p>
+        <div className="bg-gradient-to-br from-violet-500/10 to-purple-500/10 border border-violet-400/30 rounded-lg p-6">
+          <p className="text-white/90">Zeitleisten, Netzwerke und thematische Analysen...</p>
+        </div>
+      </div>
+    ) })
   )
 );
 
@@ -53,76 +150,159 @@ import {
   GraduationCap, 
   BarChart3,
   Sparkles,
-  Languages,
-  Eye,
-  Menu
+  MapPin,
+  BookOpen,
+  Wine,
+  User
 } from 'lucide-react';
 
-// Enhanced Section Configuration
-interface EnhancedSection {
+// Section Configuration
+interface AppSection {
   id: string;
   label: { de: string; en: string; la: string };
+  description: { de: string; en: string; la: string };
   icon: React.ReactNode;
   component: React.ComponentType;
 }
 
-const enhancedSections: EnhancedSection[] = [
+const appSections: AppSection[] = [
   {
     id: 'intro',
     label: { de: 'Einführung', en: 'Introduction', la: 'Introductio' },
-    icon: <Home className="w-5 h-5" />,
+    description: { 
+      de: 'Entdecken Sie die Welt des Macrobius',
+      en: 'Discover the world of Macrobius',
+      la: 'Mundum Macrobii explora'
+    },
+    icon: <Home className="w-8 h-8" />,
     component: IntroSection
   },
   {
     id: 'quiz',
     label: { de: 'Quiz', en: 'Quiz', la: 'Quaestiones' },
-    icon: <HelpCircle className="w-5 h-5" />,
+    description: { 
+      de: 'Interaktive Wissensprüfung',
+      en: 'Interactive knowledge testing',
+      la: 'Scientia interactiva probatio'
+    },
+    icon: <HelpCircle className="w-8 h-8" />,
     component: QuizSection
+  },
+  {
+    id: 'worldmap',
+    label: { de: 'Weltkarte', en: 'World Map', la: 'Mappa Mundi' },
+    description: { 
+      de: 'Geographische Exploration',
+      en: 'Geographical exploration',
+      la: 'Geographica exploratio'
+    },
+    icon: <Globe className="w-8 h-8" />,
+    component: WorldMapSection
+  },
+  {
+    id: 'cosmos',
+    label: { de: 'Kosmos', en: 'Cosmos', la: 'Cosmos' },
+    description: { 
+      de: 'Antike Astronomie und Kosmologie',
+      en: 'Ancient astronomy and cosmology',
+      la: 'Astronomia et cosmologia antiqua'
+    },
+    icon: <Star className="w-8 h-8" />,
+    component: CosmosSection
+  },
+  {
+    id: 'banquet',
+    label: { de: 'Gastmahl', en: 'Banquet', la: 'Convivium' },
+    description: { 
+      de: 'Die berühmten Saturnalien-Gespräche',
+      en: 'The famous Saturnalia conversations',
+      la: 'Celebres Saturnalium colloquia'
+    },
+    icon: <Wine className="w-8 h-8" />,
+    component: BanquetSection
+  },
+  {
+    id: 'textsearch',
+    label: { de: 'Textsuche', en: 'Text Search', la: 'Textus Quaerere' },
+    description: { 
+      de: 'KI-gestützte Korpus-Analyse',
+      en: 'AI-powered corpus analysis',
+      la: 'AI-adiuvata corporis analysis'
+    },
+    icon: <Search className="w-8 h-8" />,
+    component: TextSearchSection
+  },
+  {
+    id: 'learning',
+    label: { de: 'Lernen', en: 'Learning', la: 'Discere' },
+    description: { 
+      de: 'Personalisierte Bildungswege',
+      en: 'Personalized learning paths',
+      la: 'Personales viae discendi'
+    },
+    icon: <GraduationCap className="w-8 h-8" />,
+    component: LearningSection
+  },
+  {
+    id: 'visualizations',
+    label: { de: 'Visualisierungen', en: 'Visualizations', la: 'Visualizationes' },
+    description: { 
+      de: 'Datenanalyse und -darstellung',
+      en: 'Data analysis and visualization',
+      la: 'Data analysis et visualizatio'
+    },
+    icon: <BarChart3 className="w-8 h-8" />,
+    component: VisualizationsSection
   }
 ];
 
-// Enhanced Main App Component
-const EnhancedMacrobiusApp: React.FC = () => {
-  const { language, setLanguage, translations } = useLanguage();
+// Main App Component
+const ClassicalMacrobiusApp: React.FC = () => {
+  const { language, setLanguage } = useLanguage();
   
   // State Management
   const [currentSection, setCurrentSection] = useState('intro');
   const [isLoading, setIsLoading] = useState(true);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   
   // Enhanced Loading State
   useEffect(() => {
     const initializeApp = async () => {
       // Simulate app initialization
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      await new Promise(resolve => setTimeout(resolve, 2000));
       setIsLoading(false);
     };
     
     initializeApp();
   }, []);
   
-  // Enhanced Navigation Items
-  const navigationItems = enhancedSections.map(section => ({
+  // Navigation Items for Classical Layout
+  const navigationItems = appSections.map(section => ({
     id: section.id,
     label: section.label,
     icon: section.icon,
-    onClick: () => {
-      setCurrentSection(section.id);
-      setMobileMenuOpen(false);
-    },
+    onClick: () => setCurrentSection(section.id),
     active: currentSection === section.id
   }));
   
-  // Enhanced Section Rendering
+  // Content Sections for Grid Display
+  const contentSections = appSections.map(section => ({
+    id: section.id,
+    title: section.label,
+    description: section.description,
+    icon: section.icon,
+    onClick: () => setCurrentSection(section.id)
+  }));
+  
+  // Current Section Rendering
   const renderCurrentSection = () => {
-    const section = enhancedSections.find(s => s.id === currentSection);
+    const section = appSections.find(s => s.id === currentSection);
     if (!section) return null;
     
     const Component = section.component;
     
     return (
       <Suspense fallback={
-        <div className="min-h-screen flex items-center justify-center">
+        <div className="min-h-[400px] flex items-center justify-center">
           <EnhancedLoadingSpinner />
         </div>
       }>
@@ -134,9 +314,16 @@ const EnhancedMacrobiusApp: React.FC = () => {
   // Enhanced Loading Screen
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 via-blue-900 to-purple-900">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-950 via-purple-950 to-black">
         <div className="text-center space-y-8">
-          <EnhancedLoadingSpinner />
+          {/* Animated Macrobius Portrait */}
+          <div className="relative mx-auto">
+            <div className="w-32 h-32 rounded-full border-4 border-yellow-400 bg-gradient-to-br from-amber-900/80 to-yellow-900/80 backdrop-blur-sm flex items-center justify-center animate-pulse">
+              <User className="w-16 h-16 text-yellow-400" />
+            </div>
+            <div className="absolute -inset-4 rounded-full border border-yellow-400/30 animate-spin-slow" />
+          </div>
+          
           <div className="space-y-4">
             <h1 className="text-3xl md:text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-amber-500">
               {language === 'de' ? 'Lade Macrobius...' : language === 'en' ? 'Loading Macrobius...' : 'Macrobius Carrico...'}
@@ -145,143 +332,22 @@ const EnhancedMacrobiusApp: React.FC = () => {
               {language === 'de' ? 'Bereite die antike Weisheit vor...' : language === 'en' ? 'Preparing ancient wisdom...' : 'Sapientiam antiquam paro...'}
             </p>
           </div>
+          
+          <EnhancedLoadingSpinner />
         </div>
       </div>
     );
   }
   
   return (
-    <div className="min-h-screen overflow-hidden">
-      {/* Enhanced Cosmic Background */}
-      <EnhancedCosmicBackground>
-        {/* Enhanced Navigation */}
-        <nav className="sticky top-0 z-40 w-full bg-black/20 backdrop-blur-xl border-b border-yellow-400/30">
-          <div className="container mx-auto px-4">
-            <div className="flex items-center justify-between h-16">
-              {/* Logo/Brand */}
-              <div className="flex items-center gap-3">
-                <Sparkles className="w-8 h-8 text-yellow-400" />
-                <span className="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-amber-500">
-                  Macrobius
-                </span>
-              </div>
-              
-              {/* Desktop Navigation */}
-              <div className="hidden md:flex items-center gap-4">
-                {navigationItems.map((item) => (
-                  <button
-                    key={item.id}
-                    onClick={item.onClick}
-                    className={cn(
-                      "flex items-center gap-2 px-4 py-2 rounded-lg transition-all duration-300",
-                      {
-                        "bg-yellow-400/20 text-yellow-100 border border-yellow-400/40": item.active,
-                        "text-white/70 hover:text-white hover:bg-white/10": !item.active
-                      }
-                    )}
-                  >
-                    {item.icon}
-                    <span>{item.label[language]}</span>
-                  </button>
-                ))}
-                
-                {/* Language Selector */}
-                <div className="flex items-center gap-2">
-                  <button
-                    onClick={() => setLanguage('de')}
-                    className={cn("px-2 py-1 rounded text-sm", {
-                      "bg-yellow-400 text-black": language === 'de',
-                      "text-white/70 hover:text-white": language !== 'de'
-                    })}
-                  >
-                    DE
-                  </button>
-                  <button
-                    onClick={() => setLanguage('en')}
-                    className={cn("px-2 py-1 rounded text-sm", {
-                      "bg-yellow-400 text-black": language === 'en',
-                      "text-white/70 hover:text-white": language !== 'en'
-                    })}
-                  >
-                    EN
-                  </button>
-                  <button
-                    onClick={() => setLanguage('la')}
-                    className={cn("px-2 py-1 rounded text-sm", {
-                      "bg-yellow-400 text-black": language === 'la',
-                      "text-white/70 hover:text-white": language !== 'la'
-                    })}
-                  >
-                    LA
-                  </button>
-                </div>
-              </div>
-              
-              {/* Mobile Menu Toggle */}
-              <button
-                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                className="md:hidden p-2 rounded-lg text-white hover:bg-white/10"
-              >
-                <Menu className="w-6 h-6" />
-              </button>
-            </div>
-            
-            {/* Mobile Navigation */}
-            {mobileMenuOpen && (
-              <div className="md:hidden py-4 border-t border-yellow-400/30">
-                <div className="space-y-2">
-                  {navigationItems.map((item) => (
-                    <button
-                      key={item.id}
-                      onClick={item.onClick}
-                      className={cn(
-                        "w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-300 text-left",
-                        {
-                          "bg-yellow-400/20 text-yellow-100 border border-yellow-400/40": item.active,
-                          "text-white/70 hover:text-white hover:bg-white/10": !item.active
-                        }
-                      )}
-                    >
-                      {item.icon}
-                      <span>{item.label[language]}</span>
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
-          </div>
-        </nav>
-        
-        {/* Enhanced Main Content */}
-        <main className="relative z-10 pt-4" role="main">
-          <div className="container mx-auto px-4">
-            {renderCurrentSection()}
-          </div>
-        </main>
-        
-        {/* Enhanced Footer */}
-        <footer className="relative z-10 mt-20 border-t border-yellow-400/30 bg-black/20 backdrop-blur-xl">
-          <div className="container mx-auto px-4 py-8">
-            <div className="text-center">
-              <div className="flex items-center justify-center gap-3 mb-4">
-                <Sparkles className="w-6 h-6 text-yellow-400" />
-                <span className="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-amber-500">
-                  Macrobius
-                </span>
-              </div>
-              <p className="text-white/70">
-                {language === 'de' && 'Eine antike Flaschenpost - Eine Nachricht aus der Antike an die Zukunft'}
-                {language === 'en' && 'An Ancient Message in a Bottle - A Message from Antiquity to the Future'}
-                {language === 'la' && 'Antiqua Epistula in Vitro - Nuntius ab Antiquitate ad Futurum'}
-              </p>
-              <p className="text-white/60 text-sm mt-2">
-                © 2025 Macrobius App - Klassische Bildung für die moderne Welt
-              </p>
-            </div>
-          </div>
-        </footer>
-      </EnhancedCosmicBackground>
-    </div>
+    <ClassicalMacrobiusLayout
+      navigationItems={navigationItems}
+      contentSections={contentSections}
+      currentSection={currentSection}
+      onLanguageChange={setLanguage}
+    >
+      {currentSection !== 'intro' && renderCurrentSection()}
+    </ClassicalMacrobiusLayout>
   );
 };
 
@@ -289,7 +355,7 @@ const EnhancedMacrobiusApp: React.FC = () => {
 const EnhancedApp: React.FC = () => {
   return (
     <EnhancedErrorBoundary>
-      <EnhancedMacrobiusApp />
+      <ClassicalMacrobiusApp />
     </EnhancedErrorBoundary>
   );
 };
