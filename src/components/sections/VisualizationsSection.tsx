@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, LineChart, Line, Area, AreaChart } from 'recharts';
 import { TrendingUp, PieChart as PieChartIcon, BarChart3, Activity, Database, Eye, Download, Filter, Zap } from 'lucide-react';
 
 interface VisualizationsSectionProps {
@@ -182,14 +181,14 @@ const DIRECT_TRANSLATIONS = {
 
 // Demo data for visualizations
 const themeData = [
-  { name: 'Philosophie', passages: 189, color: '#8B5CF6' },
-  { name: 'Religion', passages: 156, color: '#06B6D4' },
-  { name: 'Astronomie', passages: 134, color: '#F59E0B' },
-  { name: 'Literatur', passages: 298, color: '#10B981' },
-  { name: 'Geschichte', passages: 178, color: '#EF4444' },
-  { name: 'Bildung', passages: 223, color: '#8B5CF6' },
-  { name: 'Rhetorik', passages: 112, color: '#F97316' },
-  { name: 'Naturwissenschaft', passages: 211, color: '#3B82F6' }
+  { name: 'Philosophie', passages: 189, color: '#8B5CF6', percentage: 13.5 },
+  { name: 'Religion', passages: 156, color: '#06B6D4', percentage: 11.1 },
+  { name: 'Astronomie', passages: 134, color: '#F59E0B', percentage: 9.6 },
+  { name: 'Literatur', passages: 298, color: '#10B981', percentage: 21.3 },
+  { name: 'Geschichte', passages: 178, color: '#EF4444', percentage: 12.7 },
+  { name: 'Bildung', passages: 223, color: '#8B5CF6', percentage: 15.9 },
+  { name: 'Rhetorik', passages: 112, color: '#F97316', percentage: 8.0 },
+  { name: 'Naturwissenschaft', passages: 211, color: '#3B82F6', percentage: 15.1 }
 ];
 
 const difficultyData = [
@@ -204,12 +203,12 @@ const worksData = [
 ];
 
 const timelineData = [
-  { year: 385, event: 'Geburt', type: 'personal', value: 1 },
-  { year: 410, event: 'Plünderung Roms', type: 'historical', value: 3 },
-  { year: 415, event: 'Saturnalia', type: 'work', value: 5 },
-  { year: 420, event: 'Commentarii', type: 'work', value: 4 },
-  { year: 430, event: 'Tod', type: 'personal', value: 2 },
-  { year: 476, event: 'Ende Westroms', type: 'historical', value: 3 }
+  { year: 385, event: 'Geburt', type: 'personal', value: 20 },
+  { year: 410, event: 'Plünderung Roms', type: 'historical', value: 60 },
+  { year: 415, event: 'Saturnalia', type: 'work', value: 100 },
+  { year: 420, event: 'Commentarii', type: 'work', value: 80 },
+  { year: 430, event: 'Tod', type: 'personal', value: 40 },
+  { year: 476, event: 'Ende Westroms', type: 'historical', value: 60 }
 ];
 
 function VisualizationsSection({ isActive, language = 'DE' }: VisualizationsSectionProps) {
@@ -230,6 +229,113 @@ function VisualizationsSection({ isActive, language = 'DE' }: VisualizationsSect
       setAnimationKey(prev => prev + 1);
       setIsLoading(false);
     }, 500);
+  };
+
+  // CSS-based Bar Chart Component
+  const CSSBarChart = ({ data }: { data: typeof themeData }) => {
+    const maxValue = Math.max(...data.map(d => d.passages));
+    
+    return (
+      <div className="space-y-4">
+        {data.map((item, index) => (
+          <motion.div
+            key={item.name}
+            className="flex items-center space-x-4"
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: index * 0.1 }}
+          >
+            <div className="w-24 text-right text-white/70 text-sm">
+              {item.name}
+            </div>
+            <div className="flex-1 relative">
+              <div className="bg-white/10 rounded-full h-8 relative overflow-hidden">
+                <motion.div
+                  className="h-full rounded-full flex items-center justify-end pr-3"
+                  style={{ backgroundColor: item.color }}
+                  initial={{ width: 0 }}
+                  animate={{ width: `${(item.passages / maxValue) * 100}%` }}
+                  transition={{ delay: index * 0.1 + 0.3, duration: 0.8 }}
+                >
+                  <span className="text-white text-sm font-semibold">
+                    {item.passages}
+                  </span>
+                </motion.div>
+              </div>
+            </div>
+          </motion.div>
+        ))}
+      </div>
+    );
+  };
+
+  // CSS-based Pie Chart Component
+  const CSSPieChart = ({ data }: { data: typeof difficultyData }) => {
+    return (
+      <div className="flex items-center justify-center">
+        <div className="relative w-64 h-64">
+          {/* Simple pie representation using rings */}
+          <div className="absolute inset-0 rounded-full border-8 border-green-500" 
+               style={{ borderWidth: '32px' }}></div>
+          <div className="absolute inset-8 rounded-full border-8 border-yellow-500" 
+               style={{ borderWidth: '24px' }}></div>
+          <div className="absolute inset-16 rounded-full border-8 border-red-500" 
+               style={{ borderWidth: '16px' }}></div>
+          
+          {/* Legend */}
+          <div className="absolute -right-24 top-0 space-y-3">
+            {data.map((item, index) => (
+              <motion.div
+                key={item.name}
+                className="flex items-center space-x-2"
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: index * 0.2 }}
+              >
+                <div 
+                  className="w-4 h-4 rounded-full"
+                  style={{ backgroundColor: item.color }}
+                ></div>
+                <span className="text-white text-sm">
+                  {item.name}: {item.percentage}%
+                </span>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  // CSS-based Area Chart Component
+  const CSSAreaChart = ({ data }: { data: typeof timelineData }) => {
+    const maxValue = Math.max(...data.map(d => d.value));
+    
+    return (
+      <div className="relative h-64">
+        <div className="flex items-end justify-between h-full space-x-2">
+          {data.map((item, index) => (
+            <motion.div
+              key={item.year}
+              className="flex-1 relative"
+              initial={{ height: 0 }}
+              animate={{ height: `${(item.value / maxValue) * 100}%` }}
+              transition={{ delay: index * 0.1, duration: 0.8 }}
+            >
+              <div className="bg-gradient-to-t from-purple-600 to-purple-400 rounded-t w-full h-full relative">
+                <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 text-white text-xs text-center">
+                  <div className="font-semibold">{item.year}</div>
+                  <div className="text-white/70">{item.event}</div>
+                </div>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+        
+        {/* X-axis line */}
+        <div className="absolute bottom-0 left-0 right-0 h-px bg-white/20"></div>
+      </div>
+    );
   };
 
   if (!isActive) return null;
@@ -370,46 +476,11 @@ function VisualizationsSection({ isActive, language = 'DE' }: VisualizationsSect
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -20 }}
                   transition={{ duration: 0.5 }}
-                  className="h-full"
+                  className="h-full flex items-center justify-center"
                 >
-                  {selectedViz === 'themes' && (
-                    <ResponsiveContainer width="100%" height="100%">
-                      <BarChart data={themeData}>
-                        <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
-                        <XAxis dataKey="name" stroke="rgba(255,255,255,0.7)" fontSize={12} />
-                        <YAxis stroke="rgba(255,255,255,0.7)" fontSize={12} />
-                        <Tooltip 
-                          contentStyle={{ backgroundColor: 'rgba(0,0,0,0.8)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: '8px' }}
-                          labelStyle={{ color: '#fff' }}
-                        />
-                        <Bar dataKey="passages" fill="#8B5CF6" radius={[4, 4, 0, 0]} />
-                      </BarChart>
-                    </ResponsiveContainer>
-                  )}
-                  
-                  {selectedViz === 'difficulty' && (
-                    <ResponsiveContainer width="100%" height="100%">
-                      <PieChart>
-                        <Pie
-                          data={difficultyData}
-                          cx="50%"
-                          cy="50%"
-                          labelLine={false}
-                          label={({ name, percentage }) => `${name}: ${percentage}%`}
-                          outerRadius={120}
-                          fill="#8884d8"
-                          dataKey="passages"
-                        >
-                          {difficultyData.map((entry, index) => (
-                            <Cell key={`cell-${index}`} fill={entry.color} />
-                          ))}
-                        </Pie>
-                        <Tooltip 
-                          contentStyle={{ backgroundColor: 'rgba(0,0,0,0.8)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: '8px' }}
-                        />
-                      </PieChart>
-                    </ResponsiveContainer>
-                  )}
+                  {selectedViz === 'themes' && <CSSBarChart data={themeData} />}
+                  {selectedViz === 'difficulty' && <CSSPieChart data={difficultyData} />}
+                  {selectedViz === 'timeline' && <CSSAreaChart data={timelineData} />}
                   
                   {selectedViz === 'works' && (
                     <div className="h-full flex items-center justify-center">
@@ -438,27 +509,6 @@ function VisualizationsSection({ isActive, language = 'DE' }: VisualizationsSect
                         ))}
                       </div>
                     </div>
-                  )}
-                  
-                  {selectedViz === 'timeline' && (
-                    <ResponsiveContainer width="100%" height="100%">
-                      <AreaChart data={timelineData}>
-                        <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
-                        <XAxis dataKey="year" stroke="rgba(255,255,255,0.7)" fontSize={12} />
-                        <YAxis stroke="rgba(255,255,255,0.7)" fontSize={12} />
-                        <Tooltip 
-                          contentStyle={{ backgroundColor: 'rgba(0,0,0,0.8)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: '8px' }}
-                          labelStyle={{ color: '#fff' }}
-                        />
-                        <Area type="monotone" dataKey="value" stroke="#8B5CF6" fill="url(#colorGradient)" strokeWidth={2} />
-                        <defs>
-                          <linearGradient id="colorGradient" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="5%" stopColor="#8B5CF6" stopOpacity={0.8}/>
-                            <stop offset="95%" stopColor="#8B5CF6" stopOpacity={0.1}/>
-                          </linearGradient>
-                        </defs>
-                      </AreaChart>
-                    </ResponsiveContainer>
                   )}
                 </motion.div>
               </AnimatePresence>
