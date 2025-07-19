@@ -190,6 +190,16 @@ const ClassicalNavigation: React.FC<{
 }> = ({ items, className }) => {
   const { language } = useLanguage();
   
+  // Helper function to convert uppercase language codes to lowercase
+  const getLanguageKey = (lang: string): 'de' | 'en' | 'la' => {
+    switch(lang) {
+      case 'DE': return 'de';
+      case 'EN': return 'en';
+      case 'LA': return 'la';
+      default: return 'en';
+    }
+  };
+  
   return (
     <nav className={cn("space-y-3", className)}>
       {items.map((item, index) => (
@@ -219,7 +229,7 @@ const ClassicalNavigation: React.FC<{
           })}>
             {item.icon}
           </div>
-          <span className="font-medium relative z-10 tracking-wide">{item.label[language]}</span>
+          <span className="font-medium relative z-10 tracking-wide">{item.label[getLanguageKey(language)]}</span>
           {item.active && (
             <div className="ml-auto relative z-10">
               <Sparkles className="w-5 h-5 text-yellow-400 animate-pulse" 
@@ -247,6 +257,16 @@ const ClassicalContentGrid: React.FC<{
   }>;
 }> = ({ sections }) => {
   const { language } = useLanguage();
+  
+  // Helper function to convert uppercase language codes to lowercase
+  const getLanguageKey = (lang: string): 'de' | 'en' | 'la' => {
+    switch(lang) {
+      case 'DE': return 'de';
+      case 'EN': return 'en';
+      case 'LA': return 'la';
+      default: return 'en';
+    }
+  };
   
   return (
     <div className="grid grid-cols-2 gap-8 h-full">
@@ -281,12 +301,12 @@ const ClassicalContentGrid: React.FC<{
             
             {/* Enhanced Title */}
             <h3 className="text-xl font-bold text-white mb-3 group-hover:text-yellow-100 transition-colors duration-500 tracking-wide">
-              {section.title[language]}
+              {section.title[getLanguageKey(language)]}
             </h3>
             
             {/* Enhanced Description */}
             <p className="text-white/80 text-sm leading-relaxed group-hover:text-white/95 transition-colors duration-500 max-w-xs">
-              {section.description[language]}
+              {section.description[getLanguageKey(language)]}
             </p>
           </div>
           
@@ -331,6 +351,16 @@ const ClassicalMacrobiusLayout: React.FC<ClassicalMacrobiusLayoutProps> = ({
 }) => {
   const { language } = useLanguage();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  // Helper function to convert uppercase language codes to lowercase
+  const getLanguageKey = (lang: string): 'de' | 'en' | 'la' => {
+    switch(lang) {
+      case 'DE': return 'de';
+      case 'EN': return 'en';
+      case 'LA': return 'la';
+      default: return 'en';
+    }
+  };
 
   return (
     <div className="min-h-screen relative overflow-hidden">
@@ -415,13 +445,13 @@ const ClassicalMacrobiusLayout: React.FC<ClassicalMacrobiusLayoutProps> = ({
                     className={cn(
                       "px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 relative overflow-hidden",
                       {
-                        "bg-gradient-to-r from-yellow-400 to-amber-500 text-black shadow-lg shadow-yellow-400/40 scale-110": language === lang,
-                        "text-white/80 hover:text-white hover:bg-white/15 border border-white/20 hover:border-white/40": language !== lang
+                        "bg-gradient-to-r from-yellow-400 to-amber-500 text-black shadow-lg shadow-yellow-400/40 scale-110": getLanguageKey(language) === lang,
+                        "text-white/80 hover:text-white hover:bg-white/15 border border-white/20 hover:border-white/40": getLanguageKey(language) !== lang
                       }
                     )}
                   >
                     {lang.toUpperCase()}
-                    {language === lang && (
+                    {getLanguageKey(language) === lang && (
                       <div className="absolute inset-0 bg-gradient-to-r from-yellow-400/20 to-amber-500/20 animate-pulse" />
                     )}
                   </button>
@@ -464,14 +494,14 @@ const ClassicalMacrobiusLayout: React.FC<ClassicalMacrobiusLayoutProps> = ({
                   {/* Enhanced Frame Header */}
                   <div className="text-center mb-10">
                     <h1 className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 via-amber-500 to-yellow-400 mb-4 tracking-wide">
-                      {language === 'de' && 'Macrobius - Klassische Bildung'}
-                      {language === 'en' && 'Macrobius - Classical Education'}
-                      {language === 'la' && 'Macrobius - Eruditio Classica'}
+                      {getLanguageKey(language) === 'de' && 'Macrobius - Klassische Bildung'}
+                      {getLanguageKey(language) === 'en' && 'Macrobius - Classical Education'}
+                      {getLanguageKey(language) === 'la' && 'Macrobius - Eruditio Classica'}
                     </h1>
                     <p className="text-white/80 text-lg leading-relaxed max-w-3xl mx-auto">
-                      {language === 'de' && 'Eine antike Flaschenpost - Eine Nachricht aus der Antike an die Zukunft'}
-                      {language === 'en' && 'An Ancient Message in a Bottle - A Message from Antiquity to the Future'}
-                      {language === 'la' && 'Antiqua Epistula in Vitro - Nuntius ab Antiquitate ad Futurum'}
+                      {getLanguageKey(language) === 'de' && 'Eine antike Flaschenpost - Eine Nachricht aus der Antike an die Zukunft'}
+                      {getLanguageKey(language) === 'en' && 'An Ancient Message in a Bottle - A Message from Antiquity to the Future'}
+                      {getLanguageKey(language) === 'la' && 'Antiqua Epistula in Vitro - Nuntius ab Antiquitate ad Futurum'}
                     </p>
                     
                     {/* Decorative Divider */}
