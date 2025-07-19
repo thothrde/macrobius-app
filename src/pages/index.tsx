@@ -18,6 +18,81 @@ try {
   EnhancedErrorBoundary = ({ children }: any) => <div>{children}</div>;
 }
 
+// 🎯 **UNIFIED PROP INTERFACES FOR QUIZ COMPATIBILITY**
+interface UnifiedQuizProps {
+  language?: any;
+  vocabularyData?: any;
+  userProfile?: any;
+  isActive?: boolean;
+}
+
+// Quiz Component Wrapper for Unified Props
+const QuizComponentWrapper: React.FC<UnifiedQuizProps> = (props) => {
+  // Try to load TIER-COMPLETE version first, then fallback
+  const [QuizComponent, setQuizComponent] = useState<React.ComponentType<any> | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const loadQuizComponent = async () => {
+      try {
+        // Try TIER-COMPLETE version first
+        const smartComponent = await import('@/components/sections/QuizSection-SMART-GENERATION-COMPLETE');
+        setQuizComponent(() => smartComponent.default);
+      } catch (error) {
+        try {
+          // Fallback to basic version
+          const basicComponent = await import('@/components/sections/QuizSection');
+          setQuizComponent(() => basicComponent.default);
+        } catch (fallbackError) {
+          // Final fallback component
+          setQuizComponent(() => () => (
+            <div className="text-center py-12">
+              <h2 className="text-3xl font-bold text-white mb-6">Interaktive Quiz</h2>
+              <p className="text-white/80 mb-8">Testen Sie Ihr Wissen über Macrobius und die antike Kultur</p>
+              <div className="bg-gradient-to-br from-blue-500/10 to-purple-500/10 border border-blue-400/30 rounded-lg p-6">
+                <p className="text-white/90">KI-generierte Quizfragen basierend auf authentischen Texten...</p>
+              </div>
+            </div>
+          ));
+        }
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadQuizComponent();
+  }, []);
+
+  if (isLoading) {
+    return (
+      <div className="min-h-[400px] flex items-center justify-center">
+        <EnhancedLoadingSpinner />
+      </div>
+    );
+  }
+
+  if (!QuizComponent) {
+    return (
+      <div className="text-center py-12">
+        <h2 className="text-3xl font-bold text-white mb-6">Quiz Loading Error</h2>
+        <p className="text-white/80">Unable to load quiz component</p>
+      </div>
+    );
+  }
+
+  // Map props appropriately for each component type
+  const mappedProps = {
+    // For TIER-COMPLETE component
+    language: props.language || { code: 'de', name: 'Deutsch' },
+    vocabularyData: props.vocabularyData,
+    userProfile: props.userProfile,
+    // For basic component
+    isActive: props.isActive !== false, // Default to true unless explicitly false
+  };
+
+  return <QuizComponent {...mappedProps} />;
+};
+
 // Section Components (with fallbacks)
 const IntroSection = React.lazy(() => 
   import('@/components/sections/IntroSection').catch(() => 
@@ -37,20 +112,9 @@ const IntroSection = React.lazy(() =>
   )
 );
 
+// Fixed QuizSection with unified props
 const QuizSection = React.lazy(() => 
-  import('@/components/sections/QuizSection-SMART-GENERATION-COMPLETE').catch(() => 
-    import('@/components/sections/QuizSection').catch(() => 
-      ({ default: () => (
-        <div className="text-center py-12">
-          <h2 className="text-3xl font-bold text-white mb-6">Interaktive Quiz</h2>
-          <p className="text-white/80 mb-8">Testen Sie Ihr Wissen über Macrobius und die antike Kultur</p>
-          <div className="bg-gradient-to-br from-blue-500/10 to-purple-500/10 border border-blue-400/30 rounded-lg p-6">
-            <p className="text-white/90">KI-generierte Quizfragen basierend auf authentischen Texten...</p>
-          </div>
-        </div>
-      ) })
-    )
-  )
+  Promise.resolve({ default: QuizComponentWrapper })
 );
 
 const WorldMapSection = React.lazy(() => 
@@ -162,7 +226,7 @@ interface AppSection {
   label: { de: string; en: string; la: string };
   description: { de: string; en: string; la: string };
   icon: React.ReactNode;
-  component: React.ComponentType;
+  component: React.ComponentType<any>;
 }
 
 const appSections: AppSection[] = [
@@ -293,12 +357,20 @@ const ClassicalMacrobiusApp: React.FC = () => {
     onClick: () => setCurrentSection(section.id)
   }));
   
-  // Current Section Rendering
+  // Current Section Rendering with Unified Props
   const renderCurrentSection = () => {
     const section = appSections.find(s => s.id === currentSection);
     if (!section) return null;
     
     const Component = section.component;
+    
+    // Unified props for all components
+    const unifiedProps = {
+      language: { code: language, name: language === 'de' ? 'Deutsch' : language === 'en' ? 'English' : 'Latina' },
+      vocabularyData: null,
+      userProfile: null,
+      isActive: true
+    };
     
     return (
       <Suspense fallback={
@@ -306,7 +378,7 @@ const ClassicalMacrobiusApp: React.FC = () => {
           <EnhancedLoadingSpinner />
         </div>
       }>
-        <Component />
+        <Component {...unifiedProps} />
       </Suspense>
     );
   };
