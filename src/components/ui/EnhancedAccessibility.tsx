@@ -298,7 +298,7 @@ const EnhancedAccessibilityPanel: React.FC<EnhancedAccessibilityPanelProps> = ({
   onClose,
   className
 }) => {
-  const { language, translations } = useLanguage();
+  const { language } = useLanguage();
   const [settings, setSettings] = useState<AccessibilitySettings>({
     fontSize: 100,
     contrast: false,
@@ -380,9 +380,9 @@ const EnhancedAccessibilityPanel: React.FC<EnhancedAccessibilityPanelProps> = ({
           {/* Header */}
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-xl font-bold text-cosmic-enhanced">
-              {language === 'de' && 'Barrierefreiheit'}
-              {language === 'en' && 'Accessibility'}
-              {language === 'la' && 'Accessibilitas'}
+              {language === 'DE' && 'Barrierefreiheit'}
+              {language === 'EN' && 'Accessibility'}
+              {language === 'LA' && 'Accessibilitas'}
             </h2>
             <EnhancedClassicalButton
               variant="tertiary"
@@ -398,9 +398,9 @@ const EnhancedAccessibilityPanel: React.FC<EnhancedAccessibilityPanelProps> = ({
           {/* Font Size */}
           <div className="space-y-4 mb-6">
             <label className="block text-sm font-semibold text-white/80">
-              {language === 'de' && 'Schriftgröße'}
-              {language === 'en' && 'Font Size'}
-              {language === 'la' && 'Magnitudo Litterarum'}
+              {language === 'DE' && 'Schriftgröße'}
+              {language === 'EN' && 'Font Size'}
+              {language === 'LA' && 'Magnitudo Litterarum'}
               : {settings.fontSize}%
             </label>
             <input
@@ -425,9 +425,9 @@ const EnhancedAccessibilityPanel: React.FC<EnhancedAccessibilityPanelProps> = ({
             {/* High Contrast */}
             <label className="flex items-center justify-between cursor-pointer">
               <span className="text-sm font-medium text-white/80">
-                {language === 'de' && 'Hoher Kontrast'}
-                {language === 'en' && 'High Contrast'}
-                {language === 'la' && 'Contraster Magnus'}
+                {language === 'DE' && 'Hoher Kontrast'}
+                {language === 'EN' && 'High Contrast'}
+                {language === 'LA' && 'Contraster Magnus'}
               </span>
               <button
                 type="button"
@@ -455,9 +455,9 @@ const EnhancedAccessibilityPanel: React.FC<EnhancedAccessibilityPanelProps> = ({
             {/* Reduced Motion */}
             <label className="flex items-center justify-between cursor-pointer">
               <span className="text-sm font-medium text-white/80">
-                {language === 'de' && 'Bewegungen reduzieren'}
-                {language === 'en' && 'Reduce Motion'}
-                {language === 'la' && 'Motus Reducere'}
+                {language === 'DE' && 'Bewegungen reduzieren'}
+                {language === 'EN' && 'Reduce Motion'}
+                {language === 'LA' && 'Motus Reducere'}
               </span>
               <button
                 type="button"
@@ -485,9 +485,9 @@ const EnhancedAccessibilityPanel: React.FC<EnhancedAccessibilityPanelProps> = ({
             {/* Text-to-Speech */}
             <label className="flex items-center justify-between cursor-pointer">
               <span className="text-sm font-medium text-white/80">
-                {language === 'de' && 'Text-zu-Sprache'}
-                {language === 'en' && 'Text-to-Speech'}
-                {language === 'la' && 'Textus ad Vocem'}
+                {language === 'DE' && 'Text-zu-Sprache'}
+                {language === 'EN' && 'Text-to-Speech'}
+                {language === 'LA' && 'Textus ad Vocem'}
               </span>
               <button
                 type="button"
@@ -520,9 +520,9 @@ const EnhancedAccessibilityPanel: React.FC<EnhancedAccessibilityPanelProps> = ({
               onClick={resetSettings}
               className="flex-1"
             >
-              {language === 'de' && 'Zurücksetzen'}
-              {language === 'en' && 'Reset'}
-              {language === 'la' && 'Restaurare'}
+              {language === 'DE' && 'Zurücksetzen'}
+              {language === 'EN' && 'Reset'}
+              {language === 'LA' && 'Restaurare'}
             </EnhancedClassicalButton>
             
             <EnhancedClassicalButton
@@ -530,9 +530,9 @@ const EnhancedAccessibilityPanel: React.FC<EnhancedAccessibilityPanelProps> = ({
               onClick={onClose}
               className="flex-1"
             >
-              {language === 'de' && 'Anwenden'}
-              {language === 'en' && 'Apply'}
-              {language === 'la' && 'Applicare'}
+              {language === 'DE' && 'Anwenden'}
+              {language === 'EN' && 'Apply'}
+              {language === 'LA' && 'Applicare'}
             </EnhancedClassicalButton>
           </div>
           
