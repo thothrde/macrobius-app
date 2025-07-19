@@ -4,6 +4,7 @@
  * ✅ STABLE: Zero dependency failures
  * ✅ COMPLETE: DE/EN/LA language support
  * 🔧 FIXED: TypeScript export type issue resolved
+ * 🔧 ADDED: Missing navigation translation keys
  */
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
@@ -29,6 +30,12 @@ const translations = {
     'nav.ai_modules': 'KI-Module',
     'nav.ai_rag': 'KI-RAG-Assistent',
     'nav.oracle_status': '1.401 Kulturelle Texte',
+    
+    // UI Elements
+    'menu': 'Menü',
+    'close': 'Schließen',
+    'open': 'Öffnen',
+    'toggle': 'Umschalten',
     
     // Hero Section
     'hero.title': 'Macrobius',
@@ -77,6 +84,12 @@ const translations = {
     'nav.ai_rag': 'AI-RAG Assistant',
     'nav.oracle_status': '1,401 Cultural Texts',
     
+    // UI Elements
+    'menu': 'Menu',
+    'close': 'Close',
+    'open': 'Open',
+    'toggle': 'Toggle',
+    
     // Hero Section
     'hero.title': 'Macrobius',
     'hero.subtitle': 'An Ancient Message in a Bottle',
@@ -123,6 +136,12 @@ const translations = {
     'nav.ai_modules': 'AI Moduli',
     'nav.ai_rag': 'AI-RAG Auxilium',
     'nav.oracle_status': '1.401 Textus Culturales',
+    
+    // UI Elements
+    'menu': 'Menu',
+    'close': 'Claude',
+    'open': 'Aperi',
+    'toggle': 'Commuta',
     
     // Hero Section
     'hero.title': 'Macrobius',

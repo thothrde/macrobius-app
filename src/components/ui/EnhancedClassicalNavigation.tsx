@@ -46,7 +46,7 @@ const EnhancedClassicalNavigation: React.FC<EnhancedClassicalNavigationProps> = 
   variant = 'horizontal',
   compact = false
 }) => {
-  const { language, translations } = useLanguage();
+  const { language, t } = useLanguage();
   const [isOpen, setIsOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const [scrolled, setScrolled] = useState(false);
@@ -151,7 +151,7 @@ const EnhancedClassicalNavigation: React.FC<EnhancedClassicalNavigationProps> = 
               "macrobius-text-shadow-enhanced": isActive
             }
           )}>
-            {item.label[language]}
+            {item.label[language.toLowerCase() as keyof typeof item.label]}
           </span>
           
           {/* Badge */}
@@ -211,7 +211,7 @@ const EnhancedClassicalNavigation: React.FC<EnhancedClassicalNavigationProps> = 
       className="lg:hidden"
       glow
     >
-      {isOpen ? translations.close : translations.menu}
+      {isOpen ? t('close') : t('menu')}
     </EnhancedClassicalButton>
   );
   
@@ -317,7 +317,7 @@ const EnhancedClassicalNavigation: React.FC<EnhancedClassicalNavigationProps> = 
                   "hover:glass-enhanced text-white/70 hover:text-white": currentSection !== item.id
                 }
               )}
-              title={item.label[language]}
+              title={item.label[language.toLowerCase() as keyof typeof item.label]}
             >
               <div className="relative">
                 {item.icon}
