@@ -15,241 +15,11 @@ import {
   XCircle,
   Star,
   TrendingUp,
-  Clock,
   Award,
-  Users,
-  Globe,
-  Sparkles,
-  Eye,
   Search,
-  Filter,
-  BarChart3,
-  PieChart,
-  Activity,
-  BookmarkPlus,
-  Download,
-  Share2,
   RefreshCw,
   Play,
-  Pause,
-  SkipForward,
-  Volume2,
-  Settings,
-  HelpCircle,
-  ChevronRight,
-  ChevronDown,
-  ArrowRight,
-  ArrowLeft,
-  Plus,
-  Minus,
-  RotateCcw,
-  Save,
-  Trash2,
-  Edit3,
-  Copy,
-  ExternalLink,
-  MessageSquare,
-  ThumbsUp,
-  ThumbsDown,
-  Flag,
-  Bookmark,
-  Heart,
-  Bell,
-  Calendar,
-  Database,
-  FileText,
-  Image,
-  Video,
-  Music,
-  Headphones,
-  Mic,
-  Camera,
-  Monitor,
-  Smartphone,
-  Tablet,
-  Laptop,
-  Mouse,
-  Keyboard,
-  Printer,
-  Wifi,
-  Bluetooth,
-  Battery,
-  Power,
-  Zap as Lightning,
-  Sun,
-  Moon,
-  Cloud,
-  CloudRain,
-  CloudSnow,
-  Wind,
-  Thermometer,
-  Umbrella,
-  Plane,
-  Car,
-  Train,
-  Bus,
-  Bike,
-  Ship,
-  Truck,
-  Rocket,
-  Home,
-  Building,
-  MapPin,
-  Navigation,
-  Compass,
-  Map,
-  Route,
-  Signpost,
-  Coffee,
-  Pizza,
-  ShoppingCart,
-  CreditCard,
-  DollarSign,
-  Euro,
-  PoundSterling,
-  Yen,
-  Bitcoin,
-  TrendingDown,
-  Lock,
-  Unlock,
-  Shield,
-  ShieldCheck,
-  Key,
-  UserCheck,
-  UserPlus,
-  UserMinus,
-  UserX,
-  Users as UsersIcon,
-  Crown,
-  Medal,
-  Trophy,
-  Gift,
-  PartyPopper,
-  Cake,
-  Flower,
-  TreePine,
-  Leaf,
-  Seed,
-  Apple,
-  Grape,
-  Cherry,
-  Strawberry,
-  Orange,
-  Banana,
-  Carrot,
-  Corn,
-  Wheat,
-  Fish,
-  Beef,
-  Egg,
-  Milk,
-  Cheese,
-  Bread,
-  Cookie,
-  IceCream,
-  Candy,
-  Wine,
-  Beer,
-  Martini,
-  Baby,
-  Child,
-  Adult,
-  Elderly,
-  Male,
-  Female,
-  Person,
-  People,
-  Family,
-  Couple,
-  Friends,
-  Dog,
-  Cat,
-  Bird,
-  Fish as FishIcon,
-  Rabbit,
-  Turtle,
-  Butterfly,
-  Bug,
-  Spider,
-  Ant,
-  Bee,
-  Ladybug,
-  Snail,
-  Worm,
-  Snake,
-  Lizard,
-  Frog,
-  Mouse as MouseIcon,
-  Rat,
-  Hamster,
-  Pig,
-  Cow,
-  Horse,
-  Sheep,
-  Goat,
-  Chicken,
-  Duck,
-  Turkey,
-  Penguin,
-  Eagle,
-  Owl,
-  Parrot,
-  Peacock,
-  Swan,
-  Crane,
-  Flamingo,
-  Hummingbird,
-  Robin,
-  Sparrow,
-  Crow,
-  Raven,
-  Vulture,
-  Hawk,
-  Falcon,
-  Kestrel,
-  Bat,
-  Wolf,
-  Fox,
-  Bear,
-  Panda,
-  Koala,
-  Kangaroo,
-  Elephant,
-  Rhino,
-  Hippo,
-  Giraffe,
-  Zebra,
-  Lion,
-  Tiger,
-  Leopard,
-  Cheetah,
-  Jaguar,
-  Lynx,
-  Bobcat,
-  Panther,
-  Cougar,
-  Deer,
-  Elk,
-  Moose,
-  Caribou,
-  Antelope,
-  Gazelle,
-  Ibex,
-  Bighorn,
-  Buffalo,
-  Bison,
-  Yak,
-  Camel,
-  Llama,
-  Alpaca,
-  Donkey,
-  Mule,
-  Pony,
-  Stallion,
-  Mare,
-  Foal,
-  Colt,
-  Filly
+  Trophy
 } from 'lucide-react';
 
 // Types for Grammar Explainer
@@ -478,7 +248,7 @@ const GrammarExplainerTier1Complete: React.FC = () => {
 
   // Render pattern card
   const renderPatternCard = (pattern: GrammarPattern) => (
-    <Card key={pattern.id} className="bg-white/10 backdrop-blur-sm border-white/20 hover:border-yellow-400/50 transition-all duration-300 cursor-pointer"
+    <Card key={pattern.id} className="classical-card hover:border-yellow-400/50 transition-all duration-300 cursor-pointer"
           onClick={() => setSelectedPattern(pattern.id)}>
       <CardContent className="p-6">
         <div className="flex justify-between items-start mb-4">
@@ -507,7 +277,7 @@ const GrammarExplainerTier1Complete: React.FC = () => {
             <h4 className="text-sm font-medium text-yellow-400 mb-2">Beispiele:</h4>
             {pattern.examples.slice(0, 1).map((example, idx) => (
               <div key={idx} className="bg-black/20 rounded p-3">
-                <p className="text-white font-medium">{example.latin}</p>
+                <p className="text-white font-medium ancient-text">{example.latin}</p>
                 <p className="text-gray-300 text-sm">{example.translation}</p>
                 <p className="text-yellow-400 text-xs mt-1">{example.analysis}</p>
               </div>
@@ -530,10 +300,10 @@ const GrammarExplainerTier1Complete: React.FC = () => {
     if (!currentExercise) {
       return (
         <div className="text-center py-12">
-          <BookOpen className="w-16 h-16 text-yellow-400 mx-auto mb-4" />
-          <h3 className="text-xl font-semibold text-white mb-4">Bereit für Übungen?</h3>
+          <BookOpen className="w-16 h-16 text-yellow-400 mx-auto mb-4 animate-float" />
+          <h3 className="text-xl font-semibold text-white mb-4 classical-heading">Bereit für Übungen?</h3>
           <p className="text-gray-300 mb-6">Teste dein Wissen mit interaktiven Grammatik-Übungen</p>
-          <Button onClick={startExercise} className="bg-yellow-400 hover:bg-yellow-500 text-black">
+          <Button onClick={startExercise} className="classical-button">
             <Play className="w-4 h-4 mr-2" />
             Übung starten
           </Button>
@@ -543,11 +313,11 @@ const GrammarExplainerTier1Complete: React.FC = () => {
 
     return (
       <div className="max-w-2xl mx-auto">
-        <Card className="bg-white/10 backdrop-blur-sm border-white/20">
+        <Card className="classical-card">
           <CardContent className="p-8">
             <div className="flex justify-between items-center mb-6">
               <div className="flex items-center gap-3">
-                <div className={`w-3 h-3 rounded-full ${
+                <div className={`w-3 h-3 rounded-full animate-pulse ${
                   currentExercise.difficulty === 'beginner' ? 'bg-green-400' :
                   currentExercise.difficulty === 'intermediate' ? 'bg-yellow-400' :
                   'bg-red-400'
@@ -571,7 +341,7 @@ const GrammarExplainerTier1Complete: React.FC = () => {
                     onClick={() => setExerciseAnswer(option)}
                     className={`w-full p-4 text-left rounded-lg border transition-all duration-200 ${
                       exerciseAnswer === option
-                        ? 'bg-yellow-400/20 border-yellow-400 text-white'
+                        ? 'bg-yellow-400/20 border-yellow-400 text-white shadow-golden'
                         : 'bg-white/5 border-white/20 text-gray-300 hover:bg-white/10'
                     }`}
                   >
@@ -586,7 +356,7 @@ const GrammarExplainerTier1Complete: React.FC = () => {
                   value={exerciseAnswer}
                   onChange={(e) => setExerciseAnswer(e.target.value)}
                   placeholder="Ihre Antwort..."
-                  className="w-full p-4 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:border-yellow-400 focus:outline-none"
+                  className="classical-input w-full"
                 />
               </div>
             )}
@@ -595,7 +365,7 @@ const GrammarExplainerTier1Complete: React.FC = () => {
               <Button
                 onClick={submitAnswer}
                 disabled={!exerciseAnswer || showExplanation}
-                className="bg-yellow-400 hover:bg-yellow-500 text-black flex-1"
+                className="classical-button flex-1"
               >
                 <CheckCircle className="w-4 h-4 mr-2" />
                 Antwort prüfen
@@ -619,7 +389,7 @@ const GrammarExplainerTier1Complete: React.FC = () => {
                         ? 'Richtig!' : 'Leider falsch'}
                     </p>
                     <p className="text-gray-300 mb-2">
-                      Korrekte Antwort: <span className="font-medium text-yellow-400">{currentExercise.correctAnswer}</span>
+                      Korrekte Antwort: <span className="font-medium text-yellow-400 ancient-text">{currentExercise.correctAnswer}</span>
                     </p>
                     <AlertDescription className="text-gray-300">
                       {currentExercise.explanation}
@@ -635,11 +405,11 @@ const GrammarExplainerTier1Complete: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-900 via-purple-900 to-indigo-900 p-6">
+    <div className="min-h-screen night-sky-bg p-6">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-white mb-4">
+          <h1 className="text-4xl font-bold classical-heading mb-4">
             Grammar Explainer - TIER 1 COMPLETE
           </h1>
           <p className="text-xl text-gray-300 max-w-3xl mx-auto">
@@ -649,31 +419,31 @@ const GrammarExplainerTier1Complete: React.FC = () => {
 
         {/* Stats Overview */}
         <div className="grid grid-cols-2 md:grid-cols-6 gap-4 mb-8">
-          <Card className="bg-white/10 backdrop-blur-sm border-white/20">
+          <Card className="classical-card">
             <CardContent className="p-4 text-center">
-              <TrendingUp className="w-6 h-6 text-green-400 mx-auto mb-2" />
+              <TrendingUp className="w-6 h-6 text-green-400 mx-auto mb-2 animate-pulse" />
               <p className="text-sm text-gray-300">Genauigkeit</p>
               <p className="text-lg font-semibold text-white">{stats.accuracy}%</p>
             </CardContent>
           </Card>
           
-          <Card className="bg-white/10 backdrop-blur-sm border-white/20">
+          <Card className="classical-card">
             <CardContent className="p-4 text-center">
-              <Award className="w-6 h-6 text-yellow-400 mx-auto mb-2" />
+              <Award className="w-6 h-6 text-yellow-400 mx-auto mb-2 animate-pulse-gold" />
               <p className="text-sm text-gray-300">Punkte</p>
               <p className="text-lg font-semibold text-white">{stats.totalPoints}</p>
             </CardContent>
           </Card>
           
-          <Card className="bg-white/10 backdrop-blur-sm border-white/20">
+          <Card className="classical-card">
             <CardContent className="p-4 text-center">
-              <Zap className="w-6 h-6 text-orange-400 mx-auto mb-2" />
+              <Zap className="w-6 h-6 text-orange-400 mx-auto mb-2 animate-twinkle" />
               <p className="text-sm text-gray-300">Serie</p>
               <p className="text-lg font-semibold text-white">{stats.currentStreak}</p>
             </CardContent>
           </Card>
           
-          <Card className="bg-white/10 backdrop-blur-sm border-white/20">
+          <Card className="classical-card">
             <CardContent className="p-4 text-center">
               <BookOpen className="w-6 h-6 text-blue-400 mx-auto mb-2" />
               <p className="text-sm text-gray-300">Muster</p>
@@ -681,7 +451,7 @@ const GrammarExplainerTier1Complete: React.FC = () => {
             </CardContent>
           </Card>
           
-          <Card className="bg-white/10 backdrop-blur-sm border-white/20">
+          <Card className="classical-card">
             <CardContent className="p-4 text-center">
               <Target className="w-6 h-6 text-purple-400 mx-auto mb-2" />
               <p className="text-sm text-gray-300">Übungen</p>
@@ -689,7 +459,7 @@ const GrammarExplainerTier1Complete: React.FC = () => {
             </CardContent>
           </Card>
           
-          <Card className="bg-white/10 backdrop-blur-sm border-white/20">
+          <Card className="classical-card">
             <CardContent className="p-4 text-center">
               <CheckCircle className="w-6 h-6 text-green-400 mx-auto mb-2" />
               <p className="text-sm text-gray-300">Richtig</p>
@@ -715,14 +485,14 @@ const GrammarExplainerTier1Complete: React.FC = () => {
                 Übungen
               </TabsTrigger>
               <TabsTrigger value="progress" className="text-white">
-                <BarChart3 className="w-4 h-4 mr-2" />
+                <Star className="w-4 h-4 mr-2" />
                 Fortschritt
               </TabsTrigger>
             </TabsList>
 
             <TabsContent value="overview" className="space-y-6">
               <div className="grid md:grid-cols-2 gap-6">
-                <Card className="bg-white/10 backdrop-blur-sm border-white/20">
+                <Card className="classical-card">
                   <CardContent className="p-6">
                     <h3 className="text-xl font-semibold text-white mb-4">Willkommen beim Grammar Explainer</h3>
                     <p className="text-gray-300 mb-4">
@@ -730,7 +500,7 @@ const GrammarExplainerTier1Complete: React.FC = () => {
                       analysiert authentische Texte und hilft Ihnen, grammatische Strukturen zu verstehen.
                     </p>
                     <div className="flex gap-3">
-                      <Button onClick={() => setCurrentMode('patterns')} className="bg-yellow-400 hover:bg-yellow-500 text-black">
+                      <Button onClick={() => setCurrentMode('patterns')} className="classical-button">
                         Muster erkunden
                       </Button>
                       <Button onClick={() => setCurrentMode('exercises')} variant="outline">
@@ -740,7 +510,7 @@ const GrammarExplainerTier1Complete: React.FC = () => {
                   </CardContent>
                 </Card>
                 
-                <Card className="bg-white/10 backdrop-blur-sm border-white/20">
+                <Card className="classical-card">
                   <CardContent className="p-6">
                     <h3 className="text-xl font-semibold text-white mb-4">Ihre Statistiken</h3>
                     <div className="space-y-3">
@@ -777,7 +547,7 @@ const GrammarExplainerTier1Complete: React.FC = () => {
                       placeholder="Muster suchen..."
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
-                      className="w-full pl-10 pr-4 py-2 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:border-yellow-400 focus:outline-none"
+                      className="classical-input w-full pl-10 pr-4 py-2"
                     />
                   </div>
                 </div>
@@ -785,7 +555,7 @@ const GrammarExplainerTier1Complete: React.FC = () => {
                   <select
                     value={difficultyFilter}
                     onChange={(e) => setDifficultyFilter(e.target.value)}
-                    className="px-4 py-2 bg-white/10 border border-white/20 rounded-lg text-white focus:border-yellow-400 focus:outline-none"
+                    className="classical-input px-4 py-2"
                   >
                     <option value="all">Alle Schwierigkeiten</option>
                     <option value="beginner">Anfänger</option>
@@ -815,7 +585,7 @@ const GrammarExplainerTier1Complete: React.FC = () => {
 
             <TabsContent value="progress" className="space-y-6">
               <div className="grid md:grid-cols-2 gap-6">
-                <Card className="bg-white/10 backdrop-blur-sm border-white/20">
+                <Card className="classical-card">
                   <CardContent className="p-6">
                     <h3 className="text-xl font-semibold text-white mb-4">Lernfortschritt</h3>
                     <div className="space-y-4">
@@ -848,12 +618,12 @@ const GrammarExplainerTier1Complete: React.FC = () => {
                   </CardContent>
                 </Card>
                 
-                <Card className="bg-white/10 backdrop-blur-sm border-white/20">
+                <Card className="classical-card">
                   <CardContent className="p-6">
                     <h3 className="text-xl font-semibold text-white mb-4">Erfolge</h3>
                     <div className="space-y-3">
                       <div className="flex items-center gap-3 p-3 bg-yellow-400/20 rounded-lg border border-yellow-400/30">
-                        <Trophy className="w-6 h-6 text-yellow-400" />
+                        <Trophy className="w-6 h-6 text-yellow-400 animate-pulse" />
                         <div>
                           <p className="text-white font-medium">Erste Schritte</p>
                           <p className="text-gray-300 text-sm">Erstes Muster gelernt</p>
@@ -862,7 +632,7 @@ const GrammarExplainerTier1Complete: React.FC = () => {
                       
                       {stats.currentStreak >= 5 && (
                         <div className="flex items-center gap-3 p-3 bg-orange-400/20 rounded-lg border border-orange-400/30">
-                          <Zap className="w-6 h-6 text-orange-400" />
+                          <Zap className="w-6 h-6 text-orange-400 animate-twinkle" />
                           <div>
                             <p className="text-white font-medium">Im Flow</p>
                             <p className="text-gray-300 text-sm">5 richtige Antworten in Folge</p>
@@ -872,7 +642,7 @@ const GrammarExplainerTier1Complete: React.FC = () => {
                       
                       {stats.totalPoints >= 100 && (
                         <div className="flex items-center gap-3 p-3 bg-purple-400/20 rounded-lg border border-purple-400/30">
-                          <Star className="w-6 h-6 text-purple-400" />
+                          <Star className="w-6 h-6 text-purple-400 animate-pulse-gold" />
                           <div>
                             <p className="text-white font-medium">Punktesammler</p>
                             <p className="text-gray-300 text-sm">100 Punkte erreicht</p>
