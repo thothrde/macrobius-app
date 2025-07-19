@@ -55,6 +55,9 @@ import {
 // ✅ Use consistent Language type from context
 type ComponentLanguage = 'DE' | 'EN' | 'LA';
 
+// Define VocabularyModeType for better type safety
+type VocabularyModeType = 'practice' | 'quiz' | 'review' | 'srs' | 'goals' | 'analytics' | 'social' | 'corpus';
+
 // 🎯 **REAL SRS INTERFACES - NO MORE MOCK DATA**
 interface RealSRSData {
   word_id: string;
@@ -231,7 +234,7 @@ const CORPUS_CATEGORIES = {
 
 const VocabularyTrainerSection: React.FC<VocabularyTrainerSectionProps> = ({ language }) => {
   // Real AI State Management
-  const [currentMode, setCurrentMode] = useState<'practice' | 'quiz' | 'review' | 'srs' | 'goals' | 'analytics' | 'social' | 'corpus'>('corpus');
+  const [currentMode, setCurrentMode] = useState<VocabularyModeType>('corpus');
   const [currentWord, setCurrentWord] = useState<MacrobiusVocabulary | null>(null);
   const [userAnswer, setUserAnswer] = useState<string>('');
   const [showAnswer, setShowAnswer] = useState<boolean>(false);
@@ -1154,7 +1157,7 @@ const VocabularyTrainerSection: React.FC<VocabularyTrainerSectionProps> = ({ lan
 
         {/* Main Content */}
         <div className="max-w-6xl mx-auto">
-          <Tabs value={currentMode} onValueChange={(value) => setCurrentMode(value as any)}>
+          <Tabs value={currentMode} onValueChange={(value: string) => setCurrentMode(value as VocabularyModeType)}>
             <TabsList className="grid w-full grid-cols-8 mb-8 bg-white/10 backdrop-blur-sm">
               <TabsTrigger value="corpus" className="text-white">
                 <Cpu className="w-4 h-4 mr-2" />
