@@ -49,6 +49,9 @@ interface Language {
   name: string;
 }
 
+// Define QuizModeType for better type safety
+type QuizModeType = 'setup' | 'active' | 'results' | 'analytics';
+
 // 🎯 **REAL AI QUIZ GENERATION INTERFACES**
 interface SmartQuizConfig {
   source_passages: string[]; // Real Oracle Cloud passage IDs
@@ -193,7 +196,7 @@ interface QuizSectionProps {
 
 const QuizSection: React.FC<QuizSectionProps> = ({ language, vocabularyData, userProfile }) => {
   // Enhanced State Management for Real AI Quiz Generation
-  const [quizMode, setQuizMode] = useState<'setup' | 'active' | 'results' | 'analytics'>('setup');
+  const [quizMode, setQuizMode] = useState<QuizModeType>('setup');
   const [selectedCategory, setSelectedCategory] = useState<string>('vocabulary_mastery');
   const [currentQuizSession, setCurrentQuizSession] = useState<SmartQuizSession | null>(null);
   const [quizConfig, setQuizConfig] = useState<SmartQuizConfig>({
@@ -1117,7 +1120,7 @@ const QuizSection: React.FC<QuizSectionProps> = ({ language, vocabularyData, use
 
         {/* Main Content */}
         <div className="max-w-5xl mx-auto">
-          <Tabs value={quizMode} onValueChange={(value) => setQuizMode(value as any)}>
+          <Tabs value={quizMode} onValueChange={(value: string) => setQuizMode(value as QuizModeType)}>
             <TabsList className="grid w-full grid-cols-4 mb-8 bg-white/10 backdrop-blur-sm">
               <TabsTrigger value="setup" className="text-white">
                 <Settings className="w-4 h-4 mr-2" />
