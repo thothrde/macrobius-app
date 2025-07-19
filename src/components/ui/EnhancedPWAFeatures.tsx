@@ -83,7 +83,7 @@ const EnhancedPWAInstall: React.FC<EnhancedPWAInstallProps> = ({
       // For iOS, show instructions
       if (platform === 'ios') {
         alert(
-          language === 'de' 
+          language === 'DE' 
             ? 'Um diese App zu installieren, tippen Sie auf das Teilen-Symbol und wählen "Zum Home-Bildschirm"'
             : 'To install this app, tap the share button and select "Add to Home Screen"'
         );
@@ -136,14 +136,14 @@ const EnhancedPWAInstall: React.FC<EnhancedPWAInstallProps> = ({
         <div className="flex-1 space-y-3">
           <div>
             <h3 className="font-semibold text-white mb-1">
-              {language === 'de' && 'App installieren'}
-              {language === 'en' && 'Install App'}
-              {language === 'la' && 'App Installare'}
+              {language === 'DE' && 'App installieren'}
+              {language === 'EN' && 'Install App'}
+              {language === 'LA' && 'App Installare'}
             </h3>
             <p className="text-sm text-white/70">
-              {language === 'de' && 'Installieren Sie Macrobius für eine bessere Erfahrung'}
-              {language === 'en' && 'Install Macrobius for a better experience'}
-              {language === 'la' && 'Macrobius installare pro meliore experientia'}
+              {language === 'DE' && 'Installieren Sie Macrobius für eine bessere Erfahrung'}
+              {language === 'EN' && 'Install Macrobius for a better experience'}
+              {language === 'LA' && 'Macrobius installare pro meliore experientia'}
             </p>
           </div>
           
@@ -154,9 +154,9 @@ const EnhancedPWAInstall: React.FC<EnhancedPWAInstallProps> = ({
               onClick={handleInstall}
               icon={<Download className="w-4 h-4" />}
             >
-              {language === 'de' && 'Installieren'}
-              {language === 'en' && 'Install'}
-              {language === 'la' && 'Installare'}
+              {language === 'DE' && 'Installieren'}
+              {language === 'EN' && 'Install'}
+              {language === 'LA' && 'Installare'}
             </EnhancedClassicalButton>
             
             <EnhancedClassicalButton
@@ -165,9 +165,9 @@ const EnhancedPWAInstall: React.FC<EnhancedPWAInstallProps> = ({
               onClick={handleDismiss}
               icon={<X className="w-4 h-4" />}
             >
-              {language === 'de' && 'Später'}
-              {language === 'en' && 'Later'}
-              {language === 'la' && 'Posterius'}
+              {language === 'DE' && 'Später'}
+              {language === 'EN' && 'Later'}
+              {language === 'LA' && 'Posterius'}
             </EnhancedClassicalButton>
           </div>
         </div>
@@ -236,18 +236,18 @@ const EnhancedOfflineStatus: React.FC<EnhancedOfflineStatusProps> = ({
           <>
             <Wifi className="w-5 h-5 text-green-400 animate-shimmer-enhanced" />
             <span className="text-sm font-medium text-white">
-              {language === 'de' && 'Verbindung wiederhergestellt'}
-              {language === 'en' && 'Connection restored'}
-              {language === 'la' && 'Connexio restaurata'}
+              {language === 'DE' && 'Verbindung wiederhergestellt'}
+              {language === 'EN' && 'Connection restored'}
+              {language === 'LA' && 'Connexio restaurata'}
             </span>
           </>
         ) : (
           <>
             <WifiOff className="w-5 h-5 text-red-400 animate-shimmer-enhanced" />
             <span className="text-sm font-medium text-white">
-              {language === 'de' && 'Offline-Modus aktiv'}
-              {language === 'en' && 'Offline mode active'}
-              {language === 'la' && 'Modus offline activus'}
+              {language === 'DE' && 'Offline-Modus aktiv'}
+              {language === 'EN' && 'Offline mode active'}
+              {language === 'LA' && 'Modus offline activus'}
             </span>
           </>
         )}
@@ -318,14 +318,14 @@ const EnhancedSWUpdate: React.FC<EnhancedSWUpdateProps> = ({
       <div className="space-y-3">
         <div>
           <h3 className="font-semibold text-white mb-1">
-            {language === 'de' && 'Update verfügbar'}
-            {language === 'en' && 'Update Available'}
-            {language === 'la' && 'Renovatio Disponibilis'}
+            {language === 'DE' && 'Update verfügbar'}
+            {language === 'EN' && 'Update Available'}
+            {language === 'LA' && 'Renovatio Disponibilis'}
           </h3>
           <p className="text-sm text-white/70">
-            {language === 'de' && 'Eine neue Version von Macrobius ist verfügbar'}
-            {language === 'en' && 'A new version of Macrobius is available'}
-            {language === 'la' && 'Nova versio Macrobii disponibilis est'}
+            {language === 'DE' && 'Eine neue Version von Macrobius ist verfügbar'}
+            {language === 'EN' && 'A new version of Macrobius is available'}
+            {language === 'LA' && 'Nova versio Macrobii disponibilis est'}
           </p>
         </div>
         
@@ -336,9 +336,9 @@ const EnhancedSWUpdate: React.FC<EnhancedSWUpdateProps> = ({
             onClick={handleUpdate}
             icon={<Download className="w-4 h-4" />}
           >
-            {language === 'de' && 'Aktualisieren'}
-            {language === 'en' && 'Update'}
-            {language === 'la' && 'Renovare'}
+            {language === 'DE' && 'Aktualisieren'}
+            {language === 'EN' && 'Update'}
+            {language === 'LA' && 'Renovare'}
           </EnhancedClassicalButton>
           
           <EnhancedClassicalButton
@@ -347,9 +347,9 @@ const EnhancedSWUpdate: React.FC<EnhancedSWUpdateProps> = ({
             onClick={handleDismiss}
             icon={<X className="w-4 h-4" />}
           >
-            {language === 'de' && 'Später'}
-            {language === 'en' && 'Later'}
-            {language === 'la' && 'Posterius'}
+            {language === 'DE' && 'Später'}
+            {language === 'EN' && 'Later'}
+            {language === 'LA' && 'Posterius'}
           </EnhancedClassicalButton>
         </div>
       </div>
@@ -405,17 +405,17 @@ const EnhancedBackgroundSync: React.FC<EnhancedBackgroundSyncProps> = ({
   const statusConfig = {
     syncing: {
       icon: <Wifi className="w-4 h-4 animate-spin" />,
-      text: language === 'de' ? 'Synchronisiere...' : language === 'en' ? 'Syncing...' : 'Synchronizando...',
+      text: language === 'DE' ? 'Synchronisiere...' : language === 'EN' ? 'Syncing...' : 'Synchronizando...',
       variant: 'cosmic' as const
     },
     success: {
       icon: <Wifi className="w-4 h-4 text-green-400" />,
-      text: language === 'de' ? 'Synchronisation erfolgreich' : language === 'en' ? 'Sync successful' : 'Synchronizatio successit',
+      text: language === 'DE' ? 'Synchronisation erfolgreich' : language === 'EN' ? 'Sync successful' : 'Synchronizatio successit',
       variant: 'oracle' as const
     },
     error: {
       icon: <WifiOff className="w-4 h-4 text-red-400" />,
-      text: language === 'de' ? 'Synchronisation fehlgeschlagen' : language === 'en' ? 'Sync failed' : 'Synchronizatio deficit',
+      text: language === 'DE' ? 'Synchronisation fehlgeschlagen' : language === 'EN' ? 'Sync failed' : 'Synchronizatio deficit',
       variant: 'default' as const
     }
   };
