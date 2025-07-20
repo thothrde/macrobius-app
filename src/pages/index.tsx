@@ -1,7 +1,5 @@
-'use client';
-
-import React, { useState, useEffect } from 'react';
-import { useLanguage, Language } from '@/contexts/LanguageContext';
+import React, { useState } from 'react';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { cn } from '@/lib/utils';
 
 // Icons
@@ -10,62 +8,19 @@ import {
   HelpCircle, 
   Globe, 
   Star, 
-  Users, 
+  Wine,
   Search, 
   GraduationCap, 
   BarChart3,
-  Wine,
   User,
   Sparkles,
-  Menu,
-  X,
   BookOpen,
   Brain,
   Target,
-  Zap,
   Scroll,
   Crown,
-  Telescope,
-  CheckCircle,
-  Clock
+  Telescope
 } from 'lucide-react';
-
-const convertToLanguage = (lang: 'de' | 'en' | 'la'): Language => {
-  switch(lang) {
-    case 'de': return 'DE';
-    case 'en': return 'EN';
-    case 'la': return 'LA';
-    default: return 'DE';
-  }
-};
-
-// Oracle Cloud Status Hook - REAL INTEGRATION
-const useOracleStatus = () => {
-  const [status, setStatus] = useState({ connected: false, textCount: 0, loading: true });
-  
-  useEffect(() => {
-    const checkOracleStatus = async () => {
-      try {
-        const response = await fetch('http://152.70.184.232:8080/api/status');
-        if (response.ok) {
-          const data = await response.json();
-          setStatus({ connected: true, textCount: data.textCount || 1401, loading: false });
-        } else {
-          setStatus({ connected: false, textCount: 1401, loading: false });
-        }
-      } catch (error) {
-        // Use cached count if offline
-        setStatus({ connected: false, textCount: 1401, loading: false });
-      }
-    };
-    
-    checkOracleStatus();
-    const interval = setInterval(checkOracleStatus, 30000); // Check every 30 seconds
-    return () => clearInterval(interval);
-  }, []);
-  
-  return status;
-};
 
 // Classical Portrait Component
 const ClassicalMacrobiusPortrait: React.FC<{ className?: string }> = ({ className }) => {
@@ -87,7 +42,6 @@ const ClassicalMacrobiusPortrait: React.FC<{ className?: string }> = ({ classNam
               border: '1px solid rgba(251, 191, 36, 0.5)'
             }}
           >
-            {/* Laurel Crown */}
             <div 
               className="absolute -top-2 left-1/2 transform -translate-x-1/2 w-16 h-3"
               style={{
@@ -99,7 +53,6 @@ const ClassicalMacrobiusPortrait: React.FC<{ className?: string }> = ({ classNam
             <User style={{ width: '24px', height: '24px', color: '#facc15' }} />
           </div>
         </div>
-        {/* Inscription */}
         <div 
           className="absolute bottom-1 left-1/2 transform -translate-x-1/2 text-xs font-serif text-center"
           style={{ color: '#facc15', letterSpacing: '0.05em' }}
@@ -111,12 +64,21 @@ const ClassicalMacrobiusPortrait: React.FC<{ className?: string }> = ({ classNam
   );
 };
 
-// Main App Component - EXACT RECONSTRUCTION OF IMAGE 2
+// Main App Component
 const ClassicalMacrobiusApp: React.FC = () => {
-  const { language, setLanguage, t } = useLanguage();
+  const { language, setLanguage } = useLanguage();
   const [currentSection, setCurrentSection] = useState('intro');
-  const oracleStatus = useOracleStatus();
   
+  // Language converter
+  const convertToLanguage = (lang: 'de' | 'en' | 'la') => {
+    switch(lang) {
+      case 'de': return 'DE';
+      case 'en': return 'EN';
+      case 'la': return 'LA';
+      default: return 'DE';
+    }
+  };
+
   const getLanguageKey = (lang: string): 'de' | 'en' | 'la' => {
     switch(lang) {
       case 'DE': return 'de';
@@ -130,7 +92,7 @@ const ClassicalMacrobiusApp: React.FC = () => {
     setLanguage(convertToLanguage(lang));
   };
 
-  // REAL CONTENT - NO PLACEHOLDERS
+  // Content
   const content = {
     de: {
       title: 'Macrobius',
@@ -139,8 +101,8 @@ const ClassicalMacrobiusApp: React.FC = () => {
       culturalTreasures: 'Kulturelle Schätze entdecken',
       imageHint: 'Klicken Sie auf die Bilder für detaillierte kulturelle Hintergründe',
       macrobiusWithSon: 'Macrobius mit seinem Sohn, dem er seine Werke widmete',
-      historicalText1: 'Vor 1500 Jahren, als das römische Reich dem Untergang entgegensah, fertigte Macrobius eine Flaschenpost an die Zukunft an. Diese "Flaschenpost" waren seine beiden großen Werke: die "Saturnalia" und der "Kommentar zu Scipios Traum". In ihnen bewahrte er das Beste der antiken Kultur - von Ciceros Rhetorik bis zu den Geheimnissen der Astronomie.',
-      historicalText2: 'Diese App ist unsere moderne Antwort auf Macrobius\' Vision. Durch KI-gestützte Textanalyse, interaktive Visualisierungen und multilinguale Zugänge machen wir seine "Flaschenpost" für das 21. Jahrhundert erlebbar. Entdecken Sie, wie ein spätantiker Gelehrter vor Brücke zwischen der antiken und der modernen Welt wurde.',
+      historicalText1: 'Vor 1500 Jahren, als das römische Reich dem Untergang entgegensah, fertigte Macrobius eine Flaschenpost an die Zukunft an. Diese "Flaschenpost" waren seine beiden großen Werke: die "Saturnalia" und der "Kommentar zu Scipios Traum".',
+      historicalText2: 'Diese App ist unsere moderne Antwort auf Macrobius\' Vision. Durch KI-gestützte Textanalyse, interaktive Visualisierungen und multilinguale Zugänge machen wir seine "Flaschenpost" für das 21. Jahrhundert erlebbar.',
       exploreWorks: 'ERKUNDEN SIE DIE WERKE DES MACROBIUS',
       moreAboutMacrobius: 'Mehr über Macrobius',
       moreAboutPontanus: 'Mehr über Pontanus'
@@ -152,8 +114,8 @@ const ClassicalMacrobiusApp: React.FC = () => {
       culturalTreasures: 'Discover Cultural Treasures',
       imageHint: 'Click on the images for detailed cultural background',
       macrobiusWithSon: 'Macrobius with his son, to whom he dedicated his works',
-      historicalText1: '1500 years ago, as the Roman Empire faced decline, Macrobius created a message in a bottle for the future. This "message in a bottle" consisted of his two great works: the "Saturnalia" and the "Commentary on Scipio\'s Dream". In them, he preserved the best of ancient culture - from Cicero\'s rhetoric to the secrets of astronomy.',
-      historicalText2: 'This app is our modern response to Macrobius\' vision. Through AI-powered text analysis, interactive visualizations, and multilingual access, we make his "message in a bottle" accessible for the 21st century. Discover how a late ancient scholar became a bridge between the ancient and modern world.',
+      historicalText1: '1500 years ago, as the Roman Empire faced decline, Macrobius created a message in a bottle for the future. This "message in a bottle" consisted of his two great works: the "Saturnalia" and the "Commentary on Scipio\'s Dream".',
+      historicalText2: 'This app is our modern response to Macrobius\' vision. Through AI-powered text analysis, interactive visualizations, and multilingual access, we make his "message in a bottle" accessible for the 21st century.',
       exploreWorks: 'EXPLORE THE WORKS OF MACROBIUS',
       moreAboutMacrobius: 'More about Macrobius',
       moreAboutPontanus: 'More about Pontanus'
@@ -165,8 +127,8 @@ const ClassicalMacrobiusApp: React.FC = () => {
       culturalTreasures: 'Thesauros Culturales Inveni',
       imageHint: 'Imagines preme ad culturalem contextum detaliatum',
       macrobiusWithSon: 'Macrobius cum filio suo, cui opera sua dedicavit',
-      historicalText1: 'Ante annos MD, cum Imperium Romanum ad occasum vergeret, Macrobius epistulam in lagena ad futurum confecit. Haec "epistula in lagena" duo eius magna opera erant: "Saturnalia" et "Commentarius in Somnium Scipionis". In his optimum culturae antiquae servavit - a rhetorica Ciceronis ad astronomiae arcana.',
-      historicalText2: 'Haec app nostra moderna responsio ad visionem Macrobii est. Per AI-adiuvata analysis textuum, visualizationes interactivas, et accessus multilingues, eius "epistulam in lagena" pro saeculo XXI accessibilem facimus. Inveni quomodo doctus tardae antiquitatis pons inter mundum antiquum et modernum factus est.',
+      historicalText1: 'Ante annos MD, cum Imperium Romanum ad occasum vergeret, Macrobius epistulam in lagena ad futurum confecit. Haec "epistula in lagena" duo eius magna opera erant: "Saturnalia" et "Commentarius in Somnium Scipionis".',
+      historicalText2: 'Haec app nostra moderna responsio ad visionem Macrobii est. Per AI-adiuvata analysis textuum, visualizationes interactivas, et accessus multilingues, eius "epistulam in lagena" pro saeculo XXI accessibilem facimus.',
       exploreWorks: 'OPERA MACROBII EXPLORA',
       moreAboutMacrobius: 'Plura de Macrobio',
       moreAboutPontanus: 'Plura de Pontano'
@@ -175,7 +137,7 @@ const ClassicalMacrobiusApp: React.FC = () => {
 
   const currentContent = content[getLanguageKey(language)];
 
-  // Navigation Sections - REAL SECTIONS
+  // Navigation sections
   const mainSections = [
     { id: 'intro', label: { de: 'Einführung', en: 'Introduction', la: 'Introductio' }, icon: <Home className="w-5 h-5" /> },
     { id: 'quiz', label: { de: 'Quiz', en: 'Quiz', la: 'Quaestiones' }, icon: <HelpCircle className="w-5 h-5" /> },
@@ -202,7 +164,7 @@ const ClassicalMacrobiusApp: React.FC = () => {
         background: 'linear-gradient(135deg, #0a0e1a 0%, #1a1f2e 25%, #2d1b4e 50%, #1a1f2e 75%, #0a0e1a 100%)'
       }}
     >
-      {/* SOPHISTICATED LEFT SIDEBAR - EXACT MATCH TO IMAGE 2 */}
+      {/* SOPHISTICATED LEFT SIDEBAR */}
       <aside 
         className="w-64 h-screen flex flex-col"
         style={{
@@ -260,7 +222,7 @@ const ClassicalMacrobiusApp: React.FC = () => {
             </nav>
           </div>
           
-          {/* REAL Oracle Cloud Status */}
+          {/* Oracle Cloud Status */}
           <div 
             className="p-3 rounded-lg mb-4"
             style={{
@@ -269,20 +231,16 @@ const ClassicalMacrobiusApp: React.FC = () => {
             }}
           >
             <div className="flex items-center gap-2 mb-2">
-              {oracleStatus.loading ? (
-                <Clock className="w-3 h-3 text-yellow-400 animate-spin" />
-              ) : (
-                <div 
-                  className="w-2 h-2 rounded-full"
-                  style={{ backgroundColor: oracleStatus.connected ? '#10b981' : '#ef4444' }}
-                />
-              )}
+              <div 
+                className="w-2 h-2 rounded-full"
+                style={{ backgroundColor: '#10b981' }}
+              />
               <span className="text-xs font-medium" style={{ color: '#facc15' }}>
                 Oracle Cloud
               </span>
             </div>
             <p className="text-xs" style={{ color: 'rgba(255, 255, 255, 0.7)' }}>
-              {oracleStatus.textCount.toLocaleString('de-DE')} Kulturelle Texte
+              1.401 Kulturelle Texte
             </p>
           </div>
           
@@ -300,7 +258,7 @@ const ClassicalMacrobiusApp: React.FC = () => {
         </div>
       </aside>
       
-      {/* MAIN CONTENT AREA - EXACT RECONSTRUCTION */}
+      {/* MAIN CONTENT AREA */}
       <main className="flex-1 flex flex-col">
         {/* TOP HEADER */}
         <header 
@@ -334,7 +292,7 @@ const ClassicalMacrobiusApp: React.FC = () => {
           </div>
         </header>
         
-        {/* RICH CONTENT AREA - AUTHENTIC HISTORICAL CONTENT */}
+        {/* RICH CONTENT AREA */}
         <div className="flex-1 overflow-y-auto p-8">
           <div className="max-w-4xl mx-auto">
             {/* Main Title */}
@@ -384,7 +342,7 @@ const ClassicalMacrobiusApp: React.FC = () => {
                 <Sparkles style={{ width: '20px', height: '20px', color: '#facc15' }} />
               </div>
               
-              {/* AUTHENTIC IMAGE GALLERY - REAL CULTURAL ARTIFACTS */}
+              {/* CULTURAL GALLERY */}
               <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
                 {/* Roman Ruins */}
                 <div 
@@ -483,7 +441,7 @@ const ClassicalMacrobiusApp: React.FC = () => {
               </p>
             </div>
             
-            {/* AUTHENTIC HISTORICAL CONTENT */}
+            {/* HISTORICAL CONTENT */}
             <div 
               className="rounded-xl p-8 mb-8"
               style={{
@@ -515,7 +473,7 @@ const ClassicalMacrobiusApp: React.FC = () => {
               </div>
             </div>
             
-            {/* ACTION BUTTONS - REAL FUNCTIONALITY */}
+            {/* ACTION BUTTONS */}
             <div className="flex flex-wrap gap-4 justify-center">
               <button 
                 className="px-8 py-4 rounded-lg font-bold text-sm transition-all duration-300 hover:scale-105 hover:shadow-xl"
