@@ -53,8 +53,22 @@ const LoadingFallback = () => (
   </div>
 );
 
-// 🔧 **BASIC LAYOUT FALLBACK FOR MAXIMUM SAFETY**
-const BasicLayoutFallback: React.FC<{ children: React.ReactNode }> = ({ children }) => (
+// 🔧 **COMPATIBLE LAYOUT FALLBACK WITH CORRECT PROPS INTERFACE**
+interface LayoutFallbackProps {
+  children?: React.ReactNode;
+  navigationItems?: any[];
+  contentSections?: any[];
+  currentSection?: string;
+  onLanguageChange?: (lang: 'de' | 'en' | 'la') => void;
+}
+
+const CompatibleLayoutFallback: React.FC<LayoutFallbackProps> = ({ 
+  children, 
+  navigationItems = [], 
+  contentSections = [], 
+  currentSection, 
+  onLanguageChange 
+}) => (
   <div className="min-h-screen bg-gradient-to-br from-indigo-950 via-purple-950 to-black">
     <div className="container mx-auto px-4 py-8">
       <header className="text-center mb-8">
@@ -62,19 +76,57 @@ const BasicLayoutFallback: React.FC<{ children: React.ReactNode }> = ({ children
           Macrobius
         </h1>
         <p className="text-xl text-white/80">Eine antike Flaschenpost - Eine Nachricht aus der Antike an die Zukunft</p>
+        
+        {/* Simple Language Selector */}
+        {onLanguageChange && (
+          <div className="mt-4 flex justify-center gap-2">
+            {(['de', 'en', 'la'] as const).map((lang) => (
+              <button
+                key={lang}
+                onClick={() => onLanguageChange(lang)}
+                className="px-3 py-1 bg-yellow-400/20 text-yellow-400 rounded border border-yellow-400/40 hover:bg-yellow-400/30 transition-colors"
+              >
+                {lang.toUpperCase()}
+              </button>
+            ))}
+          </div>
+        )}
       </header>
+      
       <main className="max-w-4xl mx-auto">
-        {children}
+        {/* Simple Navigation */}
+        {navigationItems.length > 0 && (
+          <nav className="mb-8 flex flex-wrap justify-center gap-2">
+            {navigationItems.map((item, index) => (
+              <button
+                key={item.id || index}
+                onClick={item.onClick}
+                className="px-4 py-2 bg-white/10 text-white rounded hover:bg-white/20 transition-colors border border-white/20"
+              >
+                {item.label?.de || item.label || `Section ${index + 1}`}
+              </button>
+            ))}
+          </nav>
+        )}
+        
+        {/* Content Area */}
+        <div className="bg-black/30 backdrop-blur-sm rounded-lg p-6 border border-white/20">
+          {children || (
+            <div className="text-center text-white">
+              <EnhancedLoadingSpinner />
+              <p className="mt-4">Lade Komponenten...</p>
+            </div>
+          )}
+        </div>
       </main>
     </div>
   </div>
 );
 
-// 🎯 **ALL DYNAMIC COMPONENTS WITH SSR DISABLED AND SAFE FALLBACKS**
-// Main layout component with ultra-safe fallback
+// 🎯 **ALL DYNAMIC COMPONENTS WITH SSR DISABLED AND PROPER FALLBACKS**
+// Main layout component with compatible fallback
 const ClassicalMacrobiusLayout = dynamic(
-  () => import('@/components/ui/ClassicalMacrobiusLayout')
-    .catch(() => ({ default: BasicLayoutFallback })),
+  () => import('@/components/ui/ClassicalMacrobiusLayout'),
   {
     ssr: false,
     loading: LoadingFallback
@@ -83,20 +135,7 @@ const ClassicalMacrobiusLayout = dynamic(
 
 // Section components with safe fallbacks
 const IntroSection = dynamic(
-  () => import('@/components/sections/IntroSection')
-    .catch(() => ({ default: () => (
-      <div className="text-center py-12">
-        <h2 className="text-3xl font-bold text-white mb-6">Willkommen bei Macrobius</h2>
-        <p className="text-xl text-white/80 mb-8 leading-relaxed">Eine antike Flaschenpost - Eine Nachricht aus der Antike an die Zukunft</p>
-        <div className="bg-gradient-to-br from-yellow-400/10 to-amber-500/10 border border-yellow-400/30 rounded-lg p-6">
-          <p className="text-white/90 leading-relaxed">
-            Entdecken Sie die Weisheit des Macrobius Ambrosius Theodosius, des großen spätantiken Gelehrten. 
-            Tauchen Sie ein in die Welt der Saturnalien und erforschen Sie antike Kultur, Astronomie und Philosophie 
-            mit modernsten KI-gestützten Lernwerkzeugen.
-          </p>
-        </div>
-      </div>
-    ) })),
+  () => import('@/components/sections/IntroSection'),
   {
     ssr: false,
     loading: LoadingFallback
@@ -122,16 +161,7 @@ const QuizSection = dynamic(
 );
 
 const WorldMapSection = dynamic(
-  () => import('@/components/sections/WorldMapSection')
-    .catch(() => ({ default: () => (
-      <div className="text-center py-12">
-        <h2 className="text-3xl font-bold text-white mb-6">Weltkarte</h2>
-        <p className="text-white/80 mb-8">Erkunden Sie die geographische Welt des Macrobius</p>
-        <div className="bg-gradient-to-br from-green-500/10 to-blue-500/10 border border-green-400/30 rounded-lg p-6">
-          <p className="text-white/90">Interaktive Darstellung historischer Orte und Konzepte...</p>
-        </div>
-      </div>
-    ) })),
+  () => import('@/components/sections/WorldMapSection'),
   {
     ssr: false,
     loading: LoadingFallback
@@ -139,16 +169,7 @@ const WorldMapSection = dynamic(
 );
 
 const CosmosSection = dynamic(
-  () => import('@/components/sections/CosmosSection')
-    .catch(() => ({ default: () => (
-      <div className="text-center py-12">
-        <h2 className="text-3xl font-bold text-white mb-6">Kosmos</h2>
-        <p className="text-white/80 mb-8">Entdecken Sie die antike Kosmologie und Astronomie</p>
-        <div className="bg-gradient-to-br from-purple-500/10 to-pink-500/10 border border-purple-400/30 rounded-lg p-6">
-          <p className="text-white/90">Visualisierung antiker astronomischer Konzepte...</p>
-        </div>
-      </div>
-    ) })),
+  () => import('@/components/sections/CosmosSection'),
   {
     ssr: false,
     loading: LoadingFallback
@@ -156,16 +177,7 @@ const CosmosSection = dynamic(
 );
 
 const BanquetSection = dynamic(
-  () => import('@/components/sections/BanquetSection')
-    .catch(() => ({ default: () => (
-      <div className="text-center py-12">
-        <h2 className="text-3xl font-bold text-white mb-6">Gastmahl</h2>
-        <p className="text-white/80 mb-8">Erleben Sie die berühmten Saturnalien-Gespräche</p>
-        <div className="bg-gradient-to-br from-orange-500/10 to-red-500/10 border border-orange-400/30 rounded-lg p-6">
-          <p className="text-white/90">Immersive Darstellung der antiken Symposium-Kultur...</p>
-        </div>
-      </div>
-    ) })),
+  () => import('@/components/sections/BanquetSection'),
   {
     ssr: false,
     loading: LoadingFallback
@@ -209,16 +221,7 @@ const LearningSection = dynamic(
 );
 
 const VisualizationsSection = dynamic(
-  () => import('@/components/sections/VisualizationsSection')
-    .catch(() => ({ default: () => (
-      <div className="text-center py-12">
-        <h2 className="text-3xl font-bold text-white mb-6">Visualisierungen</h2>
-        <p className="text-white/80 mb-8">Datenvisualisierung und interaktive Analysen</p>
-        <div className="bg-gradient-to-br from-violet-500/10 to-purple-500/10 border border-violet-400/30 rounded-lg p-6">
-          <p className="text-white/90">Zeitleisten, Netzwerke und thematische Analysen...</p>
-        </div>
-      </div>
-    ) })),
+  () => import('@/components/sections/VisualizationsSection'),
   {
     ssr: false,
     loading: LoadingFallback
@@ -429,16 +432,19 @@ const ClassicalMacrobiusApp: React.FC = () => {
     );
   }
   
-  // 🔧 **MAIN APP RENDER WITH SSR SAFETY**
+  // 🔧 **MAIN APP RENDER WITH COMPLETE PROP SAFETY**
+  // Use fallback layout if main layout fails to load
+  const LayoutComponent = ClassicalMacrobiusLayout || CompatibleLayoutFallback;
+  
   return (
-    <ClassicalMacrobiusLayout
+    <LayoutComponent
       navigationItems={navigationItems}
       contentSections={contentSections}
       currentSection={currentSection}
       onLanguageChange={handleLanguageChange}
     >
       {currentSection !== 'intro' && renderCurrentSection()}
-    </ClassicalMacrobiusLayout>
+    </LayoutComponent>
   );
 };
 
