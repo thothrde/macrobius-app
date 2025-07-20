@@ -18,7 +18,14 @@ import {
   User,
   Sparkles,
   Menu,
-  X
+  X,
+  BookOpen,
+  Brain,
+  Target,
+  Zap,
+  Scroll,
+  Crown,
+  Telescope
 } from 'lucide-react';
 
 // 🔧 **BULLETPROOF CLASSICAL LAYOUT - BUILT INTO MAIN COMPONENT**
@@ -183,12 +190,13 @@ const ClassicalMacrobiusPortrait: React.FC<{ className?: string }> = ({ classNam
   );
 };
 
-// 📚 **SECTION CONFIGURATION**
+// 📚 **ENHANCED SECTION CONFIGURATION**
 interface AppSection {
   id: string;
   label: { de: string; en: string; la: string };
   description: { de: string; en: string; la: string };
   icon: React.ReactNode;
+  category?: string;
 }
 
 const appSections: AppSection[] = [
@@ -200,7 +208,7 @@ const appSections: AppSection[] = [
       en: 'Discover the world of Macrobius',
       la: 'Mundum Macrobii explora'
     },
-    icon: <Home className="w-8 h-8" />
+    icon: <Home className="w-6 h-6" />
   },
   {
     id: 'quiz',
@@ -210,7 +218,7 @@ const appSections: AppSection[] = [
       en: 'Interactive knowledge testing',
       la: 'Scientia interactiva probatio'
     },
-    icon: <HelpCircle className="w-8 h-8" />
+    icon: <HelpCircle className="w-6 h-6" />
   },
   {
     id: 'worldmap',
@@ -220,7 +228,7 @@ const appSections: AppSection[] = [
       en: 'Geographical exploration',
       la: 'Geographica exploratio'
     },
-    icon: <Globe className="w-8 h-8" />
+    icon: <Globe className="w-6 h-6" />
   },
   {
     id: 'cosmos',
@@ -230,7 +238,7 @@ const appSections: AppSection[] = [
       en: 'Ancient astronomy and cosmology',
       la: 'Astronomia et cosmologia antiqua'
     },
-    icon: <Star className="w-8 h-8" />
+    icon: <Star className="w-6 h-6" />
   },
   {
     id: 'banquet',
@@ -240,7 +248,7 @@ const appSections: AppSection[] = [
       en: 'The famous Saturnalia conversations',
       la: 'Celebres Saturnalium colloquia'
     },
-    icon: <Wine className="w-8 h-8" />
+    icon: <Wine className="w-6 h-6" />
   },
   {
     id: 'textsearch',
@@ -250,7 +258,7 @@ const appSections: AppSection[] = [
       en: 'AI-powered corpus analysis',
       la: 'AI-adiuvata corporis analysis'
     },
-    icon: <Search className="w-8 h-8" />
+    icon: <Search className="w-6 h-6" />
   },
   {
     id: 'learning',
@@ -260,7 +268,17 @@ const appSections: AppSection[] = [
       en: 'Personalized learning paths',
       la: 'Personales viae discendi'
     },
-    icon: <GraduationCap className="w-8 h-8" />
+    icon: <GraduationCap className="w-6 h-6" />
+  },
+  {
+    id: 'vokabeltrainer',
+    label: { de: 'Vokabeltrainer', en: 'Vocabulary Trainer', la: 'Exercitium Vocabulorum' },
+    description: { 
+      de: 'Lateinische Vokabeln lernen',
+      en: 'Learn Latin vocabulary',
+      la: 'Vocabula Latina discere'
+    },
+    icon: <BookOpen className="w-6 h-6" />
   },
   {
     id: 'visualizations',
@@ -270,11 +288,55 @@ const appSections: AppSection[] = [
       en: 'Data analysis and visualization',
       la: 'Data analysis et visualizatio'
     },
-    icon: <BarChart3 className="w-8 h-8" />
+    icon: <BarChart3 className="w-6 h-6" />
+  },
+  {
+    id: 'ki-kulturanalyse',
+    label: { de: 'KI-Kulturanalyse', en: 'AI Cultural Analysis', la: 'AI Analysis Culturalis' },
+    description: { 
+      de: 'Intelligente Kulturanalyse',
+      en: 'Intelligent cultural analysis',
+      la: 'Analysis culturalis intelligens'
+    },
+    icon: <Brain className="w-6 h-6" />,
+    category: 'ki-systeme'
+  },
+  {
+    id: 'lernpfade',
+    label: { de: 'Lernpfade', en: 'Learning Paths', la: 'Semitae Discendi' },
+    description: { 
+      de: 'Personalisierte Lernwege',
+      en: 'Personalized learning paths',
+      la: 'Semitae discendi personales'
+    },
+    icon: <Target className="w-6 h-6" />,
+    category: 'ki-systeme'
+  },
+  {
+    id: 'ki-tutor',
+    label: { de: 'KI-Tutor', en: 'AI Tutor', la: 'AI Praeceptor' },
+    description: { 
+      de: 'Intelligenter Tutor-Assistent',
+      en: 'Intelligent tutor assistant',
+      la: 'Praeceptor intelligens assistens'
+    },
+    icon: <Crown className="w-6 h-6" />,
+    category: 'ki-systeme'
+  },
+  {
+    id: 'kulturmodule',
+    label: { de: 'Kulturmodule', en: 'Cultural Modules', la: 'Moduli Culturales' },
+    description: { 
+      de: 'Tiefgreifende Kulturanalyse',
+      en: 'Deep cultural analysis',
+      la: 'Analysis culturalis profunda'
+    },
+    icon: <Scroll className="w-6 h-6" />,
+    category: 'ki-systeme'
   }
 ];
 
-// 🎯 **MAIN APP COMPONENT WITH BUILT-IN CLASSICAL LAYOUT**
+// 🎯 **MAIN APP COMPONENT WITH ENHANCED CLASSICAL LAYOUT**
 const ClassicalMacrobiusApp: React.FC = () => {
   const { language, setLanguage, isHydrated } = useLanguage();
   const [currentSection, setCurrentSection] = useState('intro');
@@ -300,29 +362,33 @@ const ClassicalMacrobiusApp: React.FC = () => {
     setLanguage(convertedLang);
   };
 
-  // 🎯 **MAIN CLASSICAL LAYOUT - ALWAYS RENDER BEAUTIFUL DESIGN**
+  // Group sections by category
+  const mainSections = appSections.filter(s => !s.category);
+  const kiSections = appSections.filter(s => s.category === 'ki-systeme');
+
+  // 🎯 **MAIN CLASSICAL LAYOUT - ENHANCED VERSION**
   return (
     <div 
       className="min-h-screen relative overflow-hidden"
       style={{
-        background: 'linear-gradient(to bottom right, #1e1b4b, #7c3aed, #1e293b, #000000)'
+        background: 'linear-gradient(135deg, #0f1419 0%, #1e1b4b 25%, #312e81 50%, #1e1b4b 75%, #0f1419 100%)'
       }}
     >
       {/* 🌌 **BEAUTIFUL NIGHT SKY BACKGROUND** */}
       <div 
         className="fixed inset-0"
         style={{
-          background: 'linear-gradient(to bottom right, #1e1b4b, #7c3aed, #1e293b, #000000)',
+          background: 'radial-gradient(ellipse at center, rgba(30, 27, 75, 0.8) 0%, rgba(15, 20, 25, 0.9) 70%, rgba(0, 0, 0, 0.95) 100%)',
           zIndex: 1
         }}
       >
         {/* Animated Stars */}
-        {[...Array(150)].map((_, i) => {
+        {[...Array(200)].map((_, i) => {
           const left = Math.random() * 100;
           const top = Math.random() * 100;
           const delay = Math.random() * 4;
           const duration = 2 + Math.random() * 3;
-          const size = 0.5 + Math.random() * 1.5;
+          const size = 0.5 + Math.random() * 2;
           
           return (
             <div
@@ -336,124 +402,183 @@ const ClassicalMacrobiusApp: React.FC = () => {
                 backgroundColor: 'white',
                 animation: `pulse ${duration}s ease-in-out infinite`,
                 animationDelay: `${delay}s`,
-                opacity: 0.3 + Math.random() * 0.7
+                opacity: 0.2 + Math.random() * 0.8
               }}
             />
           );
         })}
         
-        {/* Constellation Pattern */}
+        {/* Enhanced Constellation Pattern */}
         <div 
           className="absolute"
           style={{
-            top: '25%',
-            right: '25%',
-            opacity: 0.4
+            top: '15%',
+            right: '10%',
+            opacity: 0.3
           }}
         >
-          <svg width="240" height="240" viewBox="0 0 240 240">
-            <g stroke="#facc15" strokeWidth="1.5" fill="none" opacity="0.7">
-              <line x1="60" y1="60" x2="120" y2="40" />
-              <line x1="120" y1="40" x2="180" y2="60" />
-              <line x1="180" y1="60" x2="160" y2="120" />
-              <line x1="160" y1="120" x2="80" y2="120" />
-              <line x1="80" y1="120" x2="60" y2="60" />
+          <svg width="300" height="300" viewBox="0 0 300 300">
+            <g stroke="#facc15" strokeWidth="1" fill="none" opacity="0.6">
+              <circle cx="150" cy="150" r="120" />
+              <circle cx="150" cy="150" r="80" />
+              <circle cx="150" cy="150" r="40" />
+              <line x1="30" y1="150" x2="270" y2="150" />
+              <line x1="150" y1="30" x2="150" y2="270" />
             </g>
             <g fill="#facc15">
-              <circle cx="60" cy="60" r="2.5" className="animate-pulse" />
-              <circle cx="120" cy="40" r="3" className="animate-pulse" />
-              <circle cx="180" cy="60" r="2" className="animate-pulse" />
-              <circle cx="160" cy="120" r="2.5" className="animate-pulse" />
-              <circle cx="80" cy="120" r="2" className="animate-pulse" />
+              <circle cx="150" cy="30" r="3" className="animate-pulse" />
+              <circle cx="270" cy="150" r="2.5" className="animate-pulse" />
+              <circle cx="150" cy="270" r="3" className="animate-pulse" />
+              <circle cx="30" cy="150" r="2.5" className="animate-pulse" />
             </g>
           </svg>
         </div>
-        
-        {/* Nebula Effects */}
-        <div 
-          className="absolute rounded-full"
-          style={{
-            top: '33.33%',
-            left: '16.67%',
-            width: '384px',
-            height: '384px',
-            background: 'rgba(168, 85, 247, 0.1)',
-            filter: 'blur(48px)',
-            animation: 'pulse 3s ease-in-out infinite'
-          }}
-        />
-        <div 
-          className="absolute rounded-full"
-          style={{
-            bottom: '25%',
-            right: '16.67%',
-            width: '320px',
-            height: '320px',
-            background: 'rgba(251, 191, 36, 0.08)',
-            filter: 'blur(48px)',
-            animation: 'pulse 4s ease-in-out infinite'
-          }}
-        />
       </div>
       
       {/* 🏯 **MAIN LAYOUT CONTAINER** */}
       <div 
-        className="relative min-h-screen flex flex-col"
+        className="relative min-h-screen flex"
         style={{ zIndex: 10 }}
       >
-        {/* 🏰 **TOP HEADER WITH MACROBIUS PORTRAIT** */}
-        <header 
-          className="w-full py-8"
+        {/* 🧭 **ENHANCED LEFT NAVIGATION** */}
+        <aside 
+          className="w-80 flex-shrink-0 h-screen overflow-y-auto"
           style={{
-            backdropFilter: 'blur(4px)',
-            backgroundColor: 'rgba(0, 0, 0, 0.1)'
+            backgroundColor: 'rgba(15, 20, 25, 0.95)',
+            borderRight: '1px solid rgba(251, 191, 36, 0.3)',
+            backdropFilter: 'blur(10px)'
           }}
         >
-          <div className="container mx-auto px-6">
-            <div className="flex items-center justify-between">
-              {/* Mobile Menu Toggle */}
-              <button
-                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                className="lg:hidden p-3 rounded-xl transition-all duration-300"
-                style={{
-                  color: 'white',
-                  border: '1px solid rgba(255, 255, 255, 0.2)'
-                }}
+          <div className="p-6">
+            {/* Astrolabe */}
+            <div className="mb-8 flex justify-center">
+              <ClassicalAstrolabe className="w-24 h-24" />
+            </div>
+            
+            {/* Main Navigation */}
+            <nav className="space-y-2 mb-8">
+              {mainSections.map((section, index) => (
+                <button
+                  key={section.id}
+                  onClick={() => setCurrentSection(section.id)}
+                  className="w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-300 text-left group"
+                  style={{
+                    backgroundColor: currentSection === section.id ? 'rgba(251, 191, 36, 0.2)' : 'transparent',
+                    color: currentSection === section.id ? '#facc15' : 'rgba(255, 255, 255, 0.8)',
+                    border: currentSection === section.id ? '1px solid rgba(251, 191, 36, 0.5)' : '1px solid transparent'
+                  }}
+                >
+                  <div style={{ color: currentSection === section.id ? '#facc15' : 'rgba(255, 255, 255, 0.6)' }}>
+                    {section.icon}
+                  </div>
+                  <span className="text-sm font-medium">
+                    {section.label[getLanguageKey(language)]}
+                  </span>
+                </button>
+              ))}
+            </nav>
+            
+            {/* KI-SYSTEME Section */}
+            <div className="mb-6">
+              <h3 
+                className="text-xs font-bold tracking-wider mb-3 px-4"
+                style={{ color: 'rgba(251, 191, 36, 0.8)' }}
               >
-                <Menu className="w-6 h-6" />
-              </button>
-              
-              {/* 🖼️ **CENTRAL MACROBIUS PORTRAIT** */}
-              <div className="flex-1 flex justify-center">
-                <ClassicalMacrobiusPortrait className="w-28 h-28" />
+                KI-SYSTEME
+              </h3>
+              <nav className="space-y-2">
+                {kiSections.map((section) => (
+                  <button
+                    key={section.id}
+                    onClick={() => setCurrentSection(section.id)}
+                    className="w-full flex items-center gap-3 px-4 py-2 rounded-lg transition-all duration-300 text-left"
+                    style={{
+                      backgroundColor: currentSection === section.id ? 'rgba(251, 191, 36, 0.15)' : 'transparent',
+                      color: currentSection === section.id ? '#facc15' : 'rgba(255, 255, 255, 0.7)'
+                    }}
+                  >
+                    <div style={{ color: currentSection === section.id ? '#facc15' : 'rgba(255, 255, 255, 0.5)' }}>
+                      {section.icon}
+                    </div>
+                    <span className="text-sm">
+                      {section.label[getLanguageKey(language)]}
+                    </span>
+                  </button>
+                ))}
+              </nav>
+            </div>
+            
+            {/* Oracle Status */}
+            <div 
+              className="p-4 rounded-lg mb-6"
+              style={{
+                backgroundColor: 'rgba(251, 191, 36, 0.1)',
+                border: '1px solid rgba(251, 191, 36, 0.3)'
+              }}
+            >
+              <div className="flex items-center gap-2 mb-2">
+                <div 
+                  className="w-2 h-2 rounded-full"
+                  style={{ backgroundColor: '#10b981' }}
+                />
+                <span 
+                  className="text-xs font-medium"
+                  style={{ color: '#facc15' }}
+                >
+                  Oracle Cloud
+                </span>
+              </div>
+              <p 
+                className="text-xs"
+                style={{ color: 'rgba(255, 255, 255, 0.7)' }}
+              >
+                1.401 Kulturelle Texte
+              </p>
+            </div>
+            
+            {/* More about Pontanus */}
+            <button 
+              className="w-full text-left p-3 rounded-lg transition-all duration-300"
+              style={{
+                backgroundColor: 'rgba(251, 191, 36, 0.05)',
+                border: '1px solid rgba(251, 191, 36, 0.2)',
+                color: 'rgba(255, 255, 255, 0.6)'
+              }}
+            >
+              <span className="text-xs">
+                Mehr über Pontanus
+              </span>
+            </button>
+          </div>
+        </aside>
+        
+        {/* 📱 **MAIN CONTENT AREA** */}
+        <main className="flex-1 flex flex-col">
+          {/* 🏰 **TOP HEADER WITH LANGUAGE SELECTOR** */}
+          <header 
+            className="w-full py-4 px-8"
+            style={{
+              backgroundColor: 'rgba(0, 0, 0, 0.2)',
+              borderBottom: '1px solid rgba(251, 191, 36, 0.2)'
+            }}
+          >
+            <div className="flex items-center justify-between">
+              {/* Portrait */}
+              <div className="flex items-center gap-4">
+                <ClassicalMacrobiusPortrait className="w-16 h-16" />
               </div>
               
-              {/* 🌍 **LANGUAGE SELECTOR** */}
-              <div 
-                className="flex items-center gap-3 rounded-xl p-2"
-                style={{
-                  backgroundColor: 'rgba(0, 0, 0, 0.2)',
-                  backdropFilter: 'blur(4px)',
-                  border: '1px solid rgba(251, 191, 36, 0.3)'
-                }}
-              >
-                {(['de', 'en', 'la'] as const).map((lang) => (
+              {/* Language Selector */}
+              <div className="flex items-center gap-2">
+                {(['de', 'en'] as const).map((lang) => (
                   <button
                     key={lang}
                     onClick={() => handleLanguageChange(lang)}
-                    className="px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 relative overflow-hidden"
+                    className="px-3 py-1 rounded text-sm font-medium transition-all duration-300"
                     style={{
-                      ...(getLanguageKey(language) === lang
-                        ? {
-                            background: 'linear-gradient(to right, #facc15, #f59e0b)',
-                            color: 'black',
-                            boxShadow: '0 4px 20px rgba(251, 191, 36, 0.4)',
-                            transform: 'scale(1.1)'
-                          }
-                        : {
-                            color: 'rgba(255, 255, 255, 0.8)',
-                            border: '1px solid rgba(255, 255, 255, 0.2)'
-                          })
+                      backgroundColor: getLanguageKey(language) === lang ? '#facc15' : 'transparent',
+                      color: getLanguageKey(language) === lang ? '#000' : 'rgba(255, 255, 255, 0.7)',
+                      border: '1px solid rgba(251, 191, 36, 0.3)'
                     }}
                   >
                     {lang.toUpperCase()}
@@ -461,256 +586,192 @@ const ClassicalMacrobiusApp: React.FC = () => {
                 ))}
               </div>
             </div>
-          </div>
-        </header>
-        
-        {/* 🏢 **MAIN CONTENT AREA** */}
-        <main className="flex-1 flex">
-          <div className="container mx-auto px-6 flex gap-10 h-full">
-            {/* 🧭 **LEFT NAVIGATION** */}
-            <aside className="w-80 flex-shrink-0 transition-all duration-500">
-              <div className="sticky top-8">
-                <div 
-                  className="rounded-xl p-8"
+          </header>
+          
+          {/* 🏛️ **ENHANCED CONTENT AREA** */}
+          <div className="flex-1 p-8 overflow-y-auto">
+            <div className="max-w-4xl mx-auto">
+              {/* Main Title */}
+              <div className="text-center mb-8">
+                <h1 
+                  className="text-5xl font-bold mb-4"
                   style={{
-                    backgroundColor: 'rgba(0, 0, 0, 0.3)',
-                    backdropFilter: 'blur(24px)',
-                    border: '1px solid rgba(251, 191, 36, 0.4)',
-                    boxShadow: '0 20px 50px rgba(251, 191, 36, 0.1)'
+                    background: 'linear-gradient(135deg, #facc15 0%, #f59e0b 50%, #facc15 100%)',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    backgroundClip: 'text'
                   }}
                 >
-                  {/* 🎭 **ASTROLABE** */}
-                  <div className="mb-10 flex justify-center">
-                    <ClassicalAstrolabe className="w-36 h-36" />
-                  </div>
-                  
-                  {/* 🧭 **NAVIGATION MENU** */}
-                  <nav className="space-y-3">
-                    {appSections.map((section, index) => (
-                      <button
-                        key={section.id}
-                        onClick={() => setCurrentSection(section.id)}
-                        className="w-full flex items-center gap-4 px-5 py-4 rounded-xl transition-all duration-500 text-left group relative overflow-hidden"
-                        style={{
-                          ...(currentSection === section.id
-                            ? {
-                                background: 'linear-gradient(to right, rgba(251, 191, 36, 0.25), rgba(245, 158, 11, 0.25))',
-                                border: '1px solid rgba(251, 191, 36, 0.5)',
-                                color: 'rgb(254, 240, 138)',
-                                boxShadow: '0 10px 40px rgba(251, 191, 36, 0.3)',
-                                transform: 'scale(1.05)'
-                              }
-                            : {
-                                color: 'rgba(255, 255, 255, 0.75)',
-                                border: '1px solid transparent'
-                              })
-                        }}
-                      >
-                        <div 
-                          style={{
-                            color: currentSection === section.id ? '#facc15' : 'rgba(255, 255, 255, 0.75)',
-                            transform: currentSection === section.id ? 'scale(1.25)' : 'scale(1)'
-                          }}
-                        >
-                          {section.icon}
-                        </div>
-                        <span className="font-medium tracking-wide">
-                          {section.label[getLanguageKey(language)]}
-                        </span>
-                        {currentSection === section.id && (
-                          <div className="ml-auto">
-                            <Sparkles style={{ width: '20px', height: '20px', color: '#facc15' }} />
-                          </div>
-                        )}
-                      </button>
-                    ))}
-                  </nav>
-                </div>
+                  Macrobius
+                </h1>
+                <p 
+                  className="text-xl mb-2"
+                  style={{ color: 'rgba(251, 191, 36, 0.9)' }}
+                >
+                  Eine antike Flaschenpost
+                </p>
+                <p 
+                  className="text-lg"
+                  style={{ color: 'rgba(255, 255, 255, 0.8)' }}
+                >
+                  Eine Nachricht aus der Antike an die Zukunft
+                </p>
               </div>
-            </aside>
-            
-            {/* 🏦 **CENTRAL CONTENT FRAME** */}
-            <div className="flex-1 flex items-center justify-center py-10">
-              <div className="w-full max-w-5xl">
-                {/* 🇼 **CLASSICAL FRAME** */}
-                <div 
-                  className="rounded-xl p-10"
-                  style={{
-                    backgroundColor: 'rgba(0, 0, 0, 0.4)',
-                    backdropFilter: 'blur(24px)',
-                    border: '2px solid rgba(251, 191, 36, 0.5)',
-                    boxShadow: '0 20px 50px rgba(251, 191, 36, 0.3)'
-                  }}
-                >
-                  {/* 🎆 **FRAME HEADER** */}
-                  <div className="text-center mb-10">
-                    <h1 
-                      className="text-4xl font-bold mb-4 tracking-wide"
-                      style={{
-                        background: 'linear-gradient(to right, #facc15, #f59e0b, #facc15)',
-                        WebkitBackgroundClip: 'text',
-                        WebkitTextFillColor: 'transparent',
-                        backgroundClip: 'text'
-                      }}
-                    >
-                      {getLanguageKey(language) === 'de' && 'Macrobius - Klassische Bildung'}
-                      {getLanguageKey(language) === 'en' && 'Macrobius - Classical Education'}
-                      {getLanguageKey(language) === 'la' && 'Macrobius - Eruditio Classica'}
-                    </h1>
-                    <p 
-                      className="text-lg leading-relaxed max-w-3xl mx-auto"
-                      style={{ color: 'rgba(255, 255, 255, 0.8)' }}
-                    >
-                      {getLanguageKey(language) === 'de' && 'Eine antike Flaschenpost - Eine Nachricht aus der Antike an die Zukunft'}
-                      {getLanguageKey(language) === 'en' && 'An Ancient Message in a Bottle - A Message from Antiquity to the Future'}
-                      {getLanguageKey(language) === 'la' && 'Antiqua Epistula in Vitro - Nuntius ab Antiquitate ad Futurum'}
-                    </p>
-                    
-                    {/* Decorative Divider */}
-                    <div className="mt-6 flex items-center justify-center">
-                      <div 
-                        style={{
-                          width: '80px',
-                          height: '1px',
-                          background: 'linear-gradient(to right, transparent, rgba(251, 191, 36, 0.5))'
-                        }}
-                      />
-                      <Sparkles style={{ width: '20px', height: '20px', color: 'rgba(251, 191, 36, 0.7)', margin: '0 16px' }} />
-                      <div 
-                        style={{
-                          width: '80px',
-                          height: '1px',
-                          background: 'linear-gradient(to left, transparent, rgba(251, 191, 36, 0.5))'
-                        }}
-                      />
+              
+              {/* Cultural Treasures Section */}
+              <div 
+                className="p-6 rounded-xl mb-8"
+                style={{
+                  backgroundColor: 'rgba(0, 0, 0, 0.3)',
+                  border: '1px solid rgba(251, 191, 36, 0.3)',
+                  backdropFilter: 'blur(10px)'
+                }}
+              >
+                <div className="flex items-center gap-2 mb-4">
+                  <Sparkles style={{ width: '20px', height: '20px', color: '#facc15' }} />
+                  <h2 
+                    className="text-lg font-semibold"
+                    style={{ color: '#facc15' }}
+                  >
+                    Kulturelle Schätze entdecken
+                  </h2>
+                  <Sparkles style={{ width: '20px', height: '20px', color: '#facc15' }} />
+                </div>
+                
+                {/* Image Gallery */}
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                  {/* Placeholder for historical images */}
+                  <div 
+                    className="aspect-square rounded-lg overflow-hidden"
+                    style={{
+                      background: 'linear-gradient(135deg, rgba(139, 92, 41, 0.8), rgba(180, 142, 82, 0.8))',
+                      border: '2px solid rgba(251, 191, 36, 0.3)'
+                    }}
+                  >
+                    <div className="w-full h-full flex items-center justify-center">
+                      <Crown style={{ width: '40px', height: '40px', color: '#facc15' }} />
                     </div>
                   </div>
                   
-                  {/* 🏠 **CONTENT AREA** */}
-                  <div style={{ minHeight: '600px' }}>
-                    {/* Content Grid */}
-                    <div className="grid grid-cols-2 gap-8 h-full">
-                      {appSections.map((section, index) => (
-                        <button
-                          key={section.id}
-                          onClick={() => setCurrentSection(section.id)}
-                          className="group relative h-full rounded-xl overflow-hidden transition-all duration-700 hover:scale-105"
-                          style={{
-                            background: 'linear-gradient(to bottom right, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.7))',
-                            border: '1px solid rgba(251, 191, 36, 0.4)',
-                            backdropFilter: 'blur(4px)',
-                            minHeight: '240px'
-                          }}
-                        >
-                          {/* Content */}
-                          <div className="relative z-10 h-full flex flex-col items-center justify-center p-8 text-center">
-                            {/* Icon */}
-                            <div 
-                              className="mb-6 p-6 rounded-full transition-all duration-500 group-hover:scale-125"
-                              style={{
-                                background: 'linear-gradient(to bottom right, rgba(251, 191, 36, 0.25), rgba(245, 158, 11, 0.25))',
-                                border: '2px solid rgba(251, 191, 36, 0.4)',
-                                boxShadow: '0 4px 20px rgba(251, 191, 36, 0.2)'
-                              }}
-                            >
-                              <div style={{ color: '#facc15' }}>
-                                {section.icon}
-                              </div>
-                            </div>
-                            
-                            {/* Title */}
-                            <h3 
-                              className="text-xl font-bold mb-3 tracking-wide transition-colors duration-500 group-hover:text-yellow-100"
-                              style={{ color: 'white' }}
-                            >
-                              {section.label[getLanguageKey(language)]}
-                            </h3>
-                            
-                            {/* Description */}
-                            <p 
-                              className="text-sm leading-relaxed max-w-xs transition-colors duration-500 group-hover:text-white"
-                              style={{ color: 'rgba(255, 255, 255, 0.8)' }}
-                            >
-                              {section.description[getLanguageKey(language)]}
-                            </p>
-                          </div>
-                          
-                          {/* Corner Sparkles */}
-                          <div 
-                            className="absolute opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-                            style={{ top: '12px', right: '12px' }}
-                          >
-                            <Sparkles style={{ width: '16px', height: '16px', color: 'rgba(251, 191, 36, 0.8)' }} />
-                          </div>
-                        </button>
-                      ))}
+                  <div 
+                    className="aspect-square rounded-lg overflow-hidden"
+                    style={{
+                      background: 'linear-gradient(135deg, rgba(55, 65, 81, 0.8), rgba(75, 85, 99, 0.8))',
+                      border: '2px solid rgba(251, 191, 36, 0.3)'
+                    }}
+                  >
+                    <div className="w-full h-full flex items-center justify-center">
+                      <Scroll style={{ width: '40px', height: '40px', color: '#facc15' }} />
+                    </div>
+                  </div>
+                  
+                  <div 
+                    className="aspect-square rounded-lg overflow-hidden"
+                    style={{
+                      background: 'linear-gradient(135deg, rgba(92, 57, 41, 0.8), rgba(124, 89, 64, 0.8))',
+                      border: '2px solid rgba(251, 191, 36, 0.3)'
+                    }}
+                  >
+                    <div className="w-full h-full flex items-center justify-center">
+                      <BookOpen style={{ width: '40px', height: '40px', color: '#facc15' }} />
+                    </div>
+                  </div>
+                  
+                  <div 
+                    className="aspect-square rounded-lg overflow-hidden"
+                    style={{
+                      background: 'linear-gradient(135deg, rgba(30, 27, 75, 0.8), rgba(49, 46, 129, 0.8))',
+                      border: '2px solid rgba(251, 191, 36, 0.3)'
+                    }}
+                  >
+                    <div className="w-full h-full flex items-center justify-center">
+                      <Telescope style={{ width: '40px', height: '40px', color: '#facc15' }} />
                     </div>
                   </div>
                 </div>
+                
+                <p 
+                  className="text-sm text-center mb-4"
+                  style={{ color: 'rgba(255, 255, 255, 0.7)' }}
+                >
+                  Klicken Sie auf die Bilder für detaillierte kulturelle Hintergründe
+                </p>
+              </div>
+              
+              {/* Historical Content */}
+              <div 
+                className="p-6 rounded-xl mb-8"
+                style={{
+                  backgroundColor: 'rgba(0, 0, 0, 0.4)',
+                  border: '1px solid rgba(251, 191, 36, 0.2)'
+                }}
+              >
+                <h3 
+                  className="text-lg font-semibold mb-4"
+                  style={{ color: '#facc15' }}
+                >
+                  Macrobius mit seinem Sohn, dem er seine Werke widmete
+                </h3>
+                
+                <p 
+                  className="text-sm leading-relaxed mb-4"
+                  style={{ color: 'rgba(255, 255, 255, 0.8)' }}
+                >
+                  Vor 1500 Jahren, als das römische Reich dem Untergang entgegensah, fertigte Macrobius eine Flaschenpost an 
+                  die Zukunft an. Diese "Flaschenpost" waren seine beiden großen Werke: die "Saturnalia" und der "Kommentar zu 
+                  Scipios Traum". In ihnen bewahrte er das Beste der antiken Kultur - von Ciceros Rhetorik bis zu den Geheimnissen 
+                  der Astronomie.
+                </p>
+                
+                <p 
+                  className="text-sm leading-relaxed"
+                  style={{ color: 'rgba(255, 255, 255, 0.7)' }}
+                >
+                  Diese App ist unsere moderne Antwort auf Macrobius' Vision. Durch KI-gestützte Textanalyse, interaktive 
+                  Visualisierungen und multilinguale Zugänge machen wir seine "Flaschenpost" für das 21. Jahrhundert erlebbar. 
+                  Entdecken Sie, wie ein spätantiker Gelehrter vor Erichs zwischen der ersten und der modernen Welt wurde.
+                </p>
+              </div>
+              
+              {/* Action Buttons */}
+              <div className="flex flex-wrap gap-4 justify-center">
+                <button 
+                  className="px-6 py-3 rounded-lg font-semibold transition-all duration-300 hover:scale-105"
+                  style={{
+                    background: 'linear-gradient(135deg, #dc2626, #991b1b)',
+                    color: 'white',
+                    border: '1px solid rgba(220, 38, 38, 0.5)'
+                  }}
+                >
+                  ERKUNDEN SIE DIE WERKE DES MACROBIUS
+                </button>
+                
+                <button 
+                  className="px-6 py-3 rounded-lg font-semibold transition-all duration-300 hover:scale-105"
+                  style={{
+                    background: 'linear-gradient(135deg, #059669, #047857)',
+                    color: 'white',
+                    border: '1px solid rgba(5, 150, 105, 0.5)'
+                  }}
+                >
+                  Mehr über Macrobius
+                </button>
+                
+                <button 
+                  className="px-6 py-3 rounded-lg font-semibold transition-all duration-300 hover:scale-105"
+                  style={{
+                    background: 'linear-gradient(135deg, #7c3aed, #5b21b6)',
+                    color: 'white',
+                    border: '1px solid rgba(124, 58, 237, 0.5)'
+                  }}
+                >
+                  Mehr über Pontanus
+                </button>
               </div>
             </div>
           </div>
         </main>
       </div>
-      
-      {/* 📱 **MOBILE NAVIGATION OVERLAY** */}
-      {mobileMenuOpen && (
-        <div 
-          className="lg:hidden fixed inset-0"
-          style={{
-            backgroundColor: 'rgba(0, 0, 0, 0.6)',
-            backdropFilter: 'blur(8px)',
-            zIndex: 50
-          }}
-        >
-          <div 
-            className="w-80 h-full p-8"
-            style={{
-              backgroundColor: 'rgba(0, 0, 0, 0.95)',
-              backdropFilter: 'blur(24px)',
-              borderRight: '1px solid rgba(251, 191, 36, 0.4)',
-              boxShadow: '0 0 50px rgba(0, 0, 0, 0.8)'
-            }}
-          >
-            <div className="flex justify-between items-center mb-10">
-              <h2 
-                className="text-2xl font-bold tracking-wide"
-                style={{ color: '#facc15' }}
-              >
-                Navigation
-              </h2>
-              <button
-                onClick={() => setMobileMenuOpen(false)}
-                className="p-3 rounded-xl transition-all duration-300"
-                style={{
-                  color: 'white',
-                  border: '1px solid rgba(255, 255, 255, 0.2)'
-                }}
-              >
-                <X className="w-6 h-6" />
-              </button>
-            </div>
-            
-            {/* Mobile Navigation */}
-            <nav className="space-y-3">
-              {appSections.map((section) => (
-                <button
-                  key={section.id}
-                  onClick={() => {
-                    setCurrentSection(section.id);
-                    setMobileMenuOpen(false);
-                  }}
-                  className="w-full flex items-center gap-4 px-4 py-3 rounded-lg transition-all duration-300"
-                  style={{ color: 'rgba(255, 255, 255, 0.75)' }}
-                >
-                  {section.icon}
-                  <span>{section.label[getLanguageKey(language)]}</span>
-                </button>
-              ))}
-            </nav>
-          </div>
-        </div>
-      )}
     </div>
   );
 };
