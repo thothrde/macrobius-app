@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 
 // Essential Icons
@@ -74,24 +74,24 @@ const MovingStars: React.FC = () => {
   return (
     <div className="absolute inset-0 overflow-hidden pointer-events-none">
       {/* Static Stars */}
-      {Array.from({ length: 50 }, (_, i) => (
+      {Array.from({ length: 60 }, (_, i) => (
         <div
           key={`star-${i}`}
           className="absolute rounded-full"
           style={{
-            width: Math.random() * 2 + 1 + 'px',
-            height: Math.random() * 2 + 1 + 'px',
+            width: Math.random() * 3 + 1 + 'px',
+            height: Math.random() * 3 + 1 + 'px',
             backgroundColor: '#facc15',
             top: Math.random() * 100 + '%',
             left: Math.random() * 100 + '%',
-            opacity: Math.random() * 0.8 + 0.2,
-            boxShadow: '0 0 6px rgba(251, 191, 36, 0.6)'
+            opacity: Math.random() * 0.9 + 0.1,
+            boxShadow: '0 0 8px rgba(251, 191, 36, 0.8)'
           }}
         />
       ))}
       
       {/* Moving Stars - Enhanced */}
-      {Array.from({ length: 15 }, (_, i) => (
+      {Array.from({ length: 20 }, (_, i) => (
         <div
           key={`moving-star-${i}`}
           className="absolute rounded-full animate-pulse"
@@ -101,8 +101,8 @@ const MovingStars: React.FC = () => {
             backgroundColor: '#ffffff',
             top: Math.random() * 100 + '%',
             left: Math.random() * 100 + '%',
-            animation: `moveLeft ${8 + Math.random() * 4}s linear infinite`,
-            opacity: 0.7
+            animation: `moveLeft ${6 + Math.random() * 6}s linear infinite`,
+            opacity: 0.8
           }}
         />
       ))}
@@ -125,6 +125,11 @@ const MovingStars: React.FC = () => {
 const ClassicalMacrobiusApp: React.FC = () => {
   const { language, setLanguage } = useLanguage();
   const [currentSection, setCurrentSection] = useState<string>('intro');
+  
+  // DEBUG: Log to console to verify this component is being used
+  useEffect(() => {
+    console.log('🏛️ MACROBIUS: CORRECT LAYOUT LOADED - LEFT SIDEBAR + NIGHT SKY!');
+  }, []);
   
   const convertToLanguage = (lang: LanguageCode): LanguageKey => {
     switch(lang) {
@@ -215,59 +220,61 @@ const ClassicalMacrobiusApp: React.FC = () => {
 
   return (
     <div 
-      className="min-h-screen flex relative overflow-hidden"
+      className="min-h-screen max-h-screen flex relative overflow-hidden"
       style={{
         background: 'radial-gradient(ellipse at center, #1a1f2e 0%, #0f172a 40%, #020617 100%)',
         backgroundImage: `
-          radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
-          radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
-          radial-gradient(circle at 40% 40%, rgba(120, 119, 198, 0.1) 0%, transparent 50%)
+          radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.4) 0%, transparent 50%),
+          radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.15) 0%, transparent 50%),
+          radial-gradient(circle at 40% 40%, rgba(120, 119, 198, 0.2) 0%, transparent 50%)
         `
       }}
     >
-      {/* BACKGROUND ASTROLABIUM */}
+      {/* BACKGROUND ASTROLABIUM - ENHANCED */}
       <div 
-        className="absolute top-10 right-10 opacity-10 pointer-events-none"
+        className="absolute top-8 right-8 opacity-15 pointer-events-none"
         style={{
-          width: '400px',
-          height: '400px',
+          width: '450px',
+          height: '450px',
           backgroundImage: 'url(/Astrolab.jpg)',
           backgroundSize: 'contain',
           backgroundRepeat: 'no-repeat',
-          filter: 'sepia(20%) saturate(120%) brightness(110%)'
+          filter: 'sepia(30%) saturate(140%) brightness(120%) contrast(110%)'
         }}
       />
       
-      {/* MOVING STARS */}
+      {/* MOVING STARS - ENHANCED */}
       <MovingStars />
       
       {/* LEFT SIDEBAR - VERTICAL NAVIGATION */}
       <aside 
-        className="w-64 h-screen flex flex-col z-10"
+        className="w-72 h-screen flex flex-col z-20"
         style={{
-          backgroundColor: 'rgba(10, 14, 26, 0.95)',
-          borderRight: '1px solid rgba(251, 191, 36, 0.2)'
+          backgroundColor: 'rgba(8, 12, 24, 0.98)',
+          borderRight: '2px solid rgba(251, 191, 36, 0.3)',
+          boxShadow: '4px 0 20px rgba(0, 0, 0, 0.5)'
         }}
       >
-        <div className="flex-1 overflow-y-auto p-4">
+        <div className="flex-1 overflow-y-auto p-5">
           {/* Main Navigation */}
-          <nav className="space-y-1 mb-6">
+          <nav className="space-y-2 mb-8">
             {mainSections.map((section) => {
               const IconComponent = section.icon;
               return (
                 <button
                   key={section.id}
                   onClick={() => setCurrentSection(section.id)}
-                  className="w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-all duration-200"
+                  className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all duration-300 hover:scale-102"
                   style={{
-                    backgroundColor: currentSection === section.id ? 'rgba(251, 191, 36, 0.15)' : 'transparent',
-                    color: currentSection === section.id ? '#facc15' : 'rgba(255, 255, 255, 0.8)',
-                    border: currentSection === section.id ? '1px solid rgba(251, 191, 36, 0.3)' : '1px solid transparent'
+                    backgroundColor: currentSection === section.id ? 'rgba(251, 191, 36, 0.18)' : 'rgba(255, 255, 255, 0.03)',
+                    color: currentSection === section.id ? '#facc15' : 'rgba(255, 255, 255, 0.85)',
+                    border: currentSection === section.id ? '1px solid rgba(251, 191, 36, 0.4)' : '1px solid rgba(255, 255, 255, 0.1)',
+                    boxShadow: currentSection === section.id ? '0 0 15px rgba(251, 191, 36, 0.2)' : 'none'
                   }}
                 >
                   <IconComponent 
                     className="w-5 h-5" 
-                    style={{ color: currentSection === section.id ? '#facc15' : 'rgba(255, 255, 255, 0.6)' }} 
+                    style={{ color: currentSection === section.id ? '#facc15' : 'rgba(255, 255, 255, 0.7)' }} 
                   />
                   {section.label[getLanguageKey(language)]}
                 </button>
@@ -276,29 +283,30 @@ const ClassicalMacrobiusApp: React.FC = () => {
           </nav>
           
           {/* KI-SYSTEME Section */}
-          <div className="mb-6">
+          <div className="mb-8">
             <h3 
-              className="text-xs font-bold uppercase tracking-wider mb-3 px-3"
-              style={{ color: 'rgba(251, 191, 36, 0.7)' }}
+              className="text-xs font-bold uppercase tracking-wider mb-4 px-4"
+              style={{ color: 'rgba(251, 191, 36, 0.8)' }}
             >
               KI-SYSTEME
             </h3>
-            <nav className="space-y-1">
+            <nav className="space-y-2">
               {kiSections.map((section) => {
                 const IconComponent = section.icon;
                 return (
                   <button
                     key={section.id}
                     onClick={() => setCurrentSection(section.id)}
-                    className="w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-all duration-200"
+                    className="w-full flex items-center gap-3 px-4 py-2 rounded-lg text-sm transition-all duration-300"
                     style={{
-                      backgroundColor: currentSection === section.id ? 'rgba(251, 191, 36, 0.1)' : 'transparent',
-                      color: currentSection === section.id ? '#facc15' : 'rgba(255, 255, 255, 0.7)'
+                      backgroundColor: currentSection === section.id ? 'rgba(251, 191, 36, 0.12)' : 'rgba(255, 255, 255, 0.02)',
+                      color: currentSection === section.id ? '#facc15' : 'rgba(255, 255, 255, 0.75)',
+                      border: '1px solid rgba(255, 255, 255, 0.05)'
                     }}
                   >
                     <IconComponent 
                       className="w-4 h-4" 
-                      style={{ color: currentSection === section.id ? '#facc15' : 'rgba(255, 255, 255, 0.5)' }} 
+                      style={{ color: currentSection === section.id ? '#facc15' : 'rgba(255, 255, 255, 0.6)' }} 
                     />
                     {section.label[getLanguageKey(language)]}
                   </button>
@@ -309,33 +317,34 @@ const ClassicalMacrobiusApp: React.FC = () => {
           
           {/* Oracle Cloud Status */}
           <div 
-            className="p-3 rounded-lg mb-4"
+            className="p-4 rounded-lg mb-4"
             style={{
               backgroundColor: 'rgba(251, 191, 36, 0.08)',
-              border: '1px solid rgba(251, 191, 36, 0.2)'
+              border: '1px solid rgba(251, 191, 36, 0.25)',
+              boxShadow: '0 0 10px rgba(251, 191, 36, 0.1)'
             }}
           >
             <div className="flex items-center gap-2 mb-2">
               <div 
-                className="w-2 h-2 rounded-full"
+                className="w-3 h-3 rounded-full animate-pulse"
                 style={{ backgroundColor: '#10b981' }}
               />
-              <span className="text-xs font-medium" style={{ color: '#facc15' }}>
+              <span className="text-xs font-semibold" style={{ color: '#facc15' }}>
                 Oracle Cloud
               </span>
             </div>
-            <p className="text-xs" style={{ color: 'rgba(255, 255, 255, 0.7)' }}>
+            <p className="text-xs" style={{ color: 'rgba(255, 255, 255, 0.8)' }}>
               1.401 Kulturelle Texte
             </p>
           </div>
           
           {/* Mehr über Pontanus Link */}
           <button 
-            className="w-full text-left p-3 rounded-lg transition-all duration-200 hover:bg-opacity-80"
+            className="w-full text-left p-4 rounded-lg transition-all duration-300 hover:bg-opacity-80"
             style={{
-              backgroundColor: 'rgba(251, 191, 36, 0.05)',
-              border: '1px solid rgba(251, 191, 36, 0.15)',
-              color: 'rgba(255, 255, 255, 0.6)'
+              backgroundColor: 'rgba(251, 191, 36, 0.06)',
+              border: '1px solid rgba(251, 191, 36, 0.2)',
+              color: 'rgba(255, 255, 255, 0.7)'
             }}
           >
             <span className="text-xs">{currentContent.moreAboutPontanus}</span>
@@ -343,18 +352,20 @@ const ClassicalMacrobiusApp: React.FC = () => {
         </div>
       </aside>
       
-      {/* MAIN CONTENT AREA - FITS IN ONE PAGE */}
-      <main className="flex-1 flex flex-col h-screen">
-        {/* TOP HEADER */}
+      {/* MAIN CONTENT AREA - STRICTLY FITS IN ONE PAGE */}
+      <main className="flex-1 flex flex-col h-screen max-h-screen overflow-hidden">
+        {/* COMPACT TOP HEADER */}
         <header 
-          className="flex items-center justify-between p-4"
+          className="flex items-center justify-between p-3"
           style={{
-            backgroundColor: 'rgba(0, 0, 0, 0.2)',
-            borderBottom: '1px solid rgba(251, 191, 36, 0.15)'
+            backgroundColor: 'rgba(0, 0, 0, 0.3)',
+            borderBottom: '1px solid rgba(251, 191, 36, 0.2)',
+            minHeight: '60px',
+            maxHeight: '60px'
           }}
         >
           <div className="flex items-center">
-            <ClassicalMacrobiusPortrait className="w-14 h-14" />
+            <ClassicalMacrobiusPortrait className="w-12 h-12" />
           </div>
           
           <div className="flex items-center gap-2">
@@ -365,8 +376,8 @@ const ClassicalMacrobiusApp: React.FC = () => {
                 className="px-3 py-1 text-sm font-medium rounded transition-all duration-200"
                 style={{
                   backgroundColor: getLanguageKey(language) === lang ? '#facc15' : 'transparent',
-                  color: getLanguageKey(language) === lang ? '#000' : 'rgba(255, 255, 255, 0.7)',
-                  border: '1px solid rgba(251, 191, 36, 0.3)'
+                  color: getLanguageKey(language) === lang ? '#000' : 'rgba(255, 255, 255, 0.8)',
+                  border: '1px solid rgba(251, 191, 36, 0.4)'
                 }}
               >
                 {lang.toUpperCase()}
@@ -375,14 +386,14 @@ const ClassicalMacrobiusApp: React.FC = () => {
           </div>
         </header>
         
-        {/* COMPACT MAIN CONTENT - FITS IN ONE BROWSER PAGE */}
-        <div className="flex-1 overflow-y-auto p-4">
-          <div className="max-w-4xl mx-auto h-full">
+        {/* ULTRA-COMPACT MAIN CONTENT - FITS EXACTLY IN REMAINING SPACE */}
+        <div className="flex-1 overflow-y-auto p-3" style={{ maxHeight: 'calc(100vh - 60px)' }}>
+          <div className="max-w-3xl mx-auto h-full">
             
-            {/* Title Section - Compact */}
-            <div className="text-center mb-4">
+            {/* Title Section - Ultra Compact */}
+            <div className="text-center mb-3">
               <h1 
-                className="text-3xl md:text-4xl font-bold mb-2"
+                className="text-2xl md:text-3xl font-bold mb-1"
                 style={{
                   background: 'linear-gradient(135deg, #facc15 0%, #f59e0b 30%, #facc15 60%, #f59e0b 100%)',
                   WebkitBackgroundClip: 'text',
@@ -394,42 +405,42 @@ const ClassicalMacrobiusApp: React.FC = () => {
                 {currentContent.title}
               </h1>
               <p 
-                className="text-lg mb-1 font-medium"
-                style={{ color: 'rgba(251, 191, 36, 0.9)' }}
+                className="text-base mb-1 font-medium"
+                style={{ color: 'rgba(251, 191, 36, 0.95)' }}
               >
                 {currentContent.subtitle}
               </p>
               <p 
                 className="text-sm"
-                style={{ color: 'rgba(255, 255, 255, 0.8)' }}
+                style={{ color: 'rgba(255, 255, 255, 0.85)' }}
               >
                 {currentContent.description}
               </p>
             </div>
             
-            {/* Cultural Treasures Header - Compact */}
-            <div className="text-center mb-4">
-              <div className="flex items-center justify-center gap-2 mb-3">
-                <Sparkles style={{ width: '16px', height: '16px', color: '#facc15' }} />
+            {/* Cultural Treasures Header - Ultra Compact */}
+            <div className="text-center mb-3">
+              <div className="flex items-center justify-center gap-2 mb-2">
+                <Sparkles style={{ width: '14px', height: '14px', color: '#facc15' }} />
                 <h2 
-                  className="text-lg font-semibold"
+                  className="text-base font-semibold"
                   style={{ color: '#facc15' }}
                 >
                   {currentContent.culturalTreasures}
                 </h2>
-                <Sparkles style={{ width: '16px', height: '16px', color: '#facc15' }} />
+                <Sparkles style={{ width: '14px', height: '14px', color: '#facc15' }} />
               </div>
             </div>
             
-            {/* COMPACT 2x2+1 IMAGE GRID - FITS IN ONE PAGE */}
-            <div className="mb-4">
+            {/* ULTRA-COMPACT 2x2+1 IMAGE GRID */}
+            <div className="mb-3">
               {/* First Row */}
-              <div className="grid grid-cols-2 gap-3 mb-3">
+              <div className="grid grid-cols-2 gap-2 mb-2">
                 <div 
-                  className="aspect-[4/3] rounded-lg overflow-hidden cursor-pointer group"
+                  className="aspect-[4/3] rounded-md overflow-hidden cursor-pointer group"
                   style={{
-                    border: '2px solid rgba(251, 191, 36, 0.6)',
-                    boxShadow: '0 4px 16px rgba(0, 0, 0, 0.3)'
+                    border: '2px solid rgba(251, 191, 36, 0.7)',
+                    boxShadow: '0 3px 12px rgba(0, 0, 0, 0.4)'
                   }}
                 >
                   <img 
@@ -437,16 +448,16 @@ const ClassicalMacrobiusApp: React.FC = () => {
                     alt="Declining Roman Empire"
                     className="w-full h-full object-cover transition-all duration-300 group-hover:scale-105"
                     style={{
-                      filter: 'sepia(15%) saturate(120%) brightness(90%) contrast(110%)'
+                      filter: 'sepia(15%) saturate(130%) brightness(95%) contrast(115%)'
                     }}
                   />
                 </div>
                 
                 <div 
-                  className="aspect-[4/3] rounded-lg overflow-hidden cursor-pointer group"
+                  className="aspect-[4/3] rounded-md overflow-hidden cursor-pointer group"
                   style={{
-                    border: '2px solid rgba(251, 191, 36, 0.6)',
-                    boxShadow: '0 4px 16px rgba(0, 0, 0, 0.3)'
+                    border: '2px solid rgba(251, 191, 36, 0.7)',
+                    boxShadow: '0 3px 12px rgba(0, 0, 0, 0.4)'
                   }}
                 >
                   <img 
@@ -454,19 +465,19 @@ const ClassicalMacrobiusApp: React.FC = () => {
                     alt="Macrobius with Eustachius"
                     className="w-full h-full object-cover transition-all duration-300 group-hover:scale-105"
                     style={{
-                      filter: 'sepia(15%) saturate(120%) brightness(95%) contrast(110%)'
+                      filter: 'sepia(15%) saturate(130%) brightness(100%) contrast(115%)'
                     }}
                   />
                 </div>
               </div>
               
               {/* Second Row */}
-              <div className="grid grid-cols-2 gap-3 mb-3">
+              <div className="grid grid-cols-2 gap-2 mb-2">
                 <div 
-                  className="aspect-[4/3] rounded-lg overflow-hidden cursor-pointer group"
+                  className="aspect-[4/3] rounded-md overflow-hidden cursor-pointer group"
                   style={{
-                    border: '2px solid rgba(251, 191, 36, 0.6)',
-                    boxShadow: '0 4px 16px rgba(0, 0, 0, 0.3)'
+                    border: '2px solid rgba(251, 191, 36, 0.7)',
+                    boxShadow: '0 3px 12px rgba(0, 0, 0, 0.4)'
                   }}
                 >
                   <img 
@@ -474,16 +485,16 @@ const ClassicalMacrobiusApp: React.FC = () => {
                     alt="Classical Symposium Wall Painting"
                     className="w-full h-full object-cover transition-all duration-300 group-hover:scale-105"
                     style={{
-                      filter: 'sepia(15%) saturate(120%) brightness(95%) contrast(110%)'
+                      filter: 'sepia(15%) saturate(130%) brightness(100%) contrast(115%)'
                     }}
                   />
                 </div>
                 
                 <div 
-                  className="aspect-[4/3] rounded-lg overflow-hidden cursor-pointer group"
+                  className="aspect-[4/3] rounded-md overflow-hidden cursor-pointer group"
                   style={{
-                    border: '2px solid rgba(251, 191, 36, 0.6)',
-                    boxShadow: '0 4px 16px rgba(0, 0, 0, 0.3)'
+                    border: '2px solid rgba(251, 191, 36, 0.7)',
+                    boxShadow: '0 3px 12px rgba(0, 0, 0, 0.4)'
                   }}
                 >
                   <img 
@@ -491,19 +502,19 @@ const ClassicalMacrobiusApp: React.FC = () => {
                     alt="Johannes Pontanus Portrait"
                     className="w-full h-full object-cover transition-all duration-300 group-hover:scale-105"
                     style={{
-                      filter: 'sepia(15%) saturate(120%) brightness(95%) contrast(110%)'
+                      filter: 'sepia(15%) saturate(130%) brightness(100%) contrast(115%)'
                     }}
                   />
                 </div>
               </div>
               
               {/* Third Row - Centered */}
-              <div className="flex justify-center mb-4">
+              <div className="flex justify-center mb-3">
                 <div 
-                  className="w-1/2 aspect-[4/3] rounded-lg overflow-hidden cursor-pointer group"
+                  className="w-1/2 aspect-[4/3] rounded-md overflow-hidden cursor-pointer group"
                   style={{
-                    border: '2px solid rgba(251, 191, 36, 0.6)',
-                    boxShadow: '0 4px 16px rgba(0, 0, 0, 0.3)'
+                    border: '2px solid rgba(251, 191, 36, 0.7)',
+                    boxShadow: '0 3px 12px rgba(0, 0, 0, 0.4)'
                   }}
                 >
                   <img 
@@ -511,53 +522,53 @@ const ClassicalMacrobiusApp: React.FC = () => {
                     alt="Macrobius Universe Diagram"
                     className="w-full h-full object-cover transition-all duration-300 group-hover:scale-105"
                     style={{
-                      filter: 'sepia(15%) saturate(120%) brightness(95%) contrast(110%)'
+                      filter: 'sepia(15%) saturate(130%) brightness(100%) contrast(115%)'
                     }}
                   />
                 </div>
               </div>
             </div>
             
-            {/* Caption and Text - Compact */}
-            <div className="text-center mb-3">
+            {/* Caption and Text - Ultra Compact */}
+            <div className="text-center mb-2">
               <p 
                 className="text-xs italic mb-1"
-                style={{ color: 'rgba(251, 191, 36, 0.8)' }}
+                style={{ color: 'rgba(251, 191, 36, 0.9)' }}
               >
                 {currentContent.macrobiusWithSon}
               </p>
               <p 
                 className="text-xs mb-2"
-                style={{ color: 'rgba(255, 255, 255, 0.6)' }}
+                style={{ color: 'rgba(255, 255, 255, 0.7)' }}
               >
                 ➤ {currentContent.clickForDetails}
               </p>
             </div>
             
-            {/* Compact Historical Text */}
-            <div className="mb-3">
+            {/* Ultra Compact Historical Text */}
+            <div className="mb-2">
               <p 
-                className="text-xs leading-relaxed mb-2"
-                style={{ color: 'rgba(255, 255, 255, 0.9)' }}
+                className="text-xs leading-relaxed mb-1"
+                style={{ color: 'rgba(255, 255, 255, 0.95)' }}
               >
                 {currentContent.historicalText1}
               </p>
               <p 
                 className="text-xs leading-relaxed"
-                style={{ color: 'rgba(255, 255, 255, 0.8)' }}
+                style={{ color: 'rgba(255, 255, 255, 0.85)' }}
               >
                 {currentContent.historicalText2}
               </p>
             </div>
             
-            {/* Action Buttons - Compact */}
+            {/* Action Buttons - Ultra Compact */}
             <div className="flex flex-wrap gap-2 justify-center">
               <button 
-                className="px-4 py-2 rounded-lg font-bold text-xs transition-all duration-300 hover:scale-105"
+                className="px-3 py-1 rounded-md font-bold text-xs transition-all duration-300 hover:scale-105"
                 style={{
                   background: 'linear-gradient(135deg, #dc2626, #b91c1c)',
                   color: 'white',
-                  border: '1px solid rgba(220, 38, 38, 0.5)'
+                  border: '1px solid rgba(220, 38, 38, 0.6)'
                 }}
                 onClick={() => setCurrentSection('textsearch')}
               >
@@ -565,11 +576,11 @@ const ClassicalMacrobiusApp: React.FC = () => {
               </button>
               
               <button 
-                className="px-4 py-2 rounded-lg font-bold text-xs transition-all duration-300 hover:scale-105"
+                className="px-3 py-1 rounded-md font-bold text-xs transition-all duration-300 hover:scale-105"
                 style={{
                   background: 'linear-gradient(135deg, #059669, #047857)',
                   color: 'white',
-                  border: '1px solid rgba(5, 150, 105, 0.5)'
+                  border: '1px solid rgba(5, 150, 105, 0.6)'
                 }}
                 onClick={() => setCurrentSection('intro')}
               >
@@ -577,11 +588,11 @@ const ClassicalMacrobiusApp: React.FC = () => {
               </button>
               
               <button 
-                className="px-4 py-2 rounded-lg font-bold text-xs transition-all duration-300 hover:scale-105"
+                className="px-3 py-1 rounded-md font-bold text-xs transition-all duration-300 hover:scale-105"
                 style={{
                   background: 'linear-gradient(135deg, #7c3aed, #6d28d9)',
                   color: 'white',
-                  border: '1px solid rgba(124, 58, 237, 0.5)'
+                  border: '1px solid rgba(124, 58, 237, 0.6)'
                 }}
               >
                 {currentContent.moreAboutPontanus}
