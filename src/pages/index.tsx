@@ -190,10 +190,9 @@ const ClassicalMacrobiusApp: React.FC = () => {
 
   // Render the correct section component
   const renderSection = () => {
-    const lang = getLanguageKey(language);
-    
+    // ✅ FIXED: Use language directly (already uppercase) instead of converting to lowercase
     switch(currentSection) {
-      case 'intro': return <IntroSection language={lang} />;
+      case 'intro': return <IntroSection language={language} />;
       case 'banquet': return <BanquetSection />;
       case 'cosmos': return <CosmosSection />;
       case 'quiz': return <QuizSection />;
@@ -202,7 +201,7 @@ const ClassicalMacrobiusApp: React.FC = () => {
       case 'visualizations': return <VisualizationsSection />;
       case 'vokabeltrainer': return <VocabularyTrainer />;
       case 'learning': return <LearningSection />;
-      default: return <IntroSection language={lang} />;
+      default: return <IntroSection language={language} />;
     }
   };
 
