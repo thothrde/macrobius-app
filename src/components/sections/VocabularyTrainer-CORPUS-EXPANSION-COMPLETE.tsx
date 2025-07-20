@@ -161,7 +161,9 @@ interface RealPersonalizedVocabularySet {
   };
 }
 
+// ✅ FIXED INTERFACE: Added missing isActive prop to match index.tsx requirements
 interface VocabularyTrainerSectionProps {
+  isActive: boolean;
   language: ComponentLanguage;
 }
 
@@ -232,7 +234,8 @@ const CORPUS_CATEGORIES = {
   }
 };
 
-const VocabularyTrainerSection: React.FC<VocabularyTrainerSectionProps> = ({ language }) => {
+// ✅ COMPONENT NOW PROPERLY ACCEPTS BOTH isActive AND language PROPS
+const VocabularyTrainerSection: React.FC<VocabularyTrainerSectionProps> = ({ isActive, language }) => {
   // Real AI State Management
   const [currentMode, setCurrentMode] = useState<VocabularyModeType>('corpus');
   const [currentWord, setCurrentWord] = useState<MacrobiusVocabulary | null>(null);
@@ -1106,6 +1109,11 @@ const VocabularyTrainerSection: React.FC<VocabularyTrainerSectionProps> = ({ lan
       </CardContent>
     </Card>
   );
+
+  // ✅ COMPONENT ONLY RENDERS WHEN ACTIVE (isActive prop now properly handled)
+  if (!isActive) {
+    return null;
+  }
 
   return (
     <section id="vocabulary-real-ai" className="py-20 bg-gradient-to-br from-indigo-900 via-purple-900 to-blue-900 min-h-screen">
