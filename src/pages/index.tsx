@@ -142,6 +142,7 @@ const ClassicalMacrobiusApp: React.FC = () => {
     console.log('🏛️ CRITICAL: CORRECT SIDEBAR LAYOUT IS LOADING! 🏛️');
     console.log('If you see this message, the new layout should be visible!');
     console.log('🚀 VERCEL BUILD FIX: TypeScript error resolved - forcing new deployment!');
+    console.log('✅ PROP FIX: Adding required isActive prop to section components!');
     
     // Force page title update to confirm changes
     document.title = 'Macrobius - LEFT SIDEBAR LAYOUT ACTIVE';
@@ -191,19 +192,29 @@ const ClassicalMacrobiusApp: React.FC = () => {
 
   // Render the correct section component
   const renderSection = () => {
-    // ✅ FIXED: Use language directly (already uppercase) instead of converting to lowercase
-    // This resolves the TypeScript error: Type 'LanguageCode' is not assignable to type 'DE' | 'EN' | 'LA'
+    // ✅ FIXED: Use language directly (already uppercase) and add required props
+    // BanquetSection requires isActive prop and language prop
     switch(currentSection) {
-      case 'intro': return <IntroSection language={language} />;
-      case 'banquet': return <BanquetSection />;
-      case 'cosmos': return <CosmosSection />;
-      case 'quiz': return <QuizSection />;
-      case 'textsearch': return <TextSearchSection />;
-      case 'worldmap': return <WorldMapSection />;
-      case 'visualizations': return <VisualizationsSection />;
-      case 'vokabeltrainer': return <VocabularyTrainer />;
-      case 'learning': return <LearningSection />;
-      default: return <IntroSection language={language} />;
+      case 'intro': 
+        return <IntroSection language={language} />;
+      case 'banquet': 
+        return <BanquetSection isActive={true} language={language} />;
+      case 'cosmos': 
+        return <CosmosSection />;
+      case 'quiz': 
+        return <QuizSection />;
+      case 'textsearch': 
+        return <TextSearchSection />;
+      case 'worldmap': 
+        return <WorldMapSection />;
+      case 'visualizations': 
+        return <VisualizationsSection />;
+      case 'vokabeltrainer': 
+        return <VocabularyTrainer />;
+      case 'learning': 
+        return <LearningSection />;
+      default: 
+        return <IntroSection language={language} />;
     }
   };
 
