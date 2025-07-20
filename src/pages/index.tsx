@@ -28,7 +28,7 @@ interface ClassicalPortraitProps {
 type LanguageCode = 'de' | 'en' | 'la';
 type LanguageKey = 'DE' | 'EN' | 'LA';
 
-// Classical Portrait Component
+// Enhanced Classical Portrait Component using real Macrobius portrait
 const ClassicalMacrobiusPortrait: React.FC<ClassicalPortraitProps> = ({ className = '' }) => {
   return (
     <div className={`relative ${className}`}>
@@ -36,34 +36,38 @@ const ClassicalMacrobiusPortrait: React.FC<ClassicalPortraitProps> = ({ classNam
         className="w-full h-full rounded-full overflow-hidden"
         style={{
           border: '3px solid #facc15',
-          background: 'linear-gradient(135deg, rgba(139, 92, 41, 0.9), rgba(180, 142, 82, 0.9))',
+          background: 'linear-gradient(135deg, rgba(139, 92, 41, 0.2), rgba(180, 142, 82, 0.2))',
           boxShadow: '0 0 20px rgba(251, 191, 36, 0.4)'
         }}
       >
-        <div className="w-full h-full flex items-center justify-center">
-          <div 
-            className="relative w-12 h-12 rounded-full flex items-center justify-center"
-            style={{
-              background: 'linear-gradient(135deg, rgba(251, 191, 36, 0.3), rgba(245, 158, 11, 0.3))',
-              border: '1px solid rgba(251, 191, 36, 0.5)'
+        {/* Real Macrobius Portrait */}
+        <img 
+          src="/Macrobius-Portrait.jpg" 
+          alt="Macrobius Classical Portrait"
+          className="w-full h-full object-cover"
+          style={{
+            filter: 'sepia(20%) saturate(120%) brightness(110%)'
+          }}
+        />
+        
+        {/* Golden nameplate overlay */}
+        <div 
+          className="absolute bottom-0 left-0 right-0 text-center py-1"
+          style={{
+            background: 'linear-gradient(to top, rgba(251, 191, 36, 0.9), transparent)',
+            backdropFilter: 'blur(2px)'
+          }}
+        >
+          <span 
+            className="text-xs font-serif font-bold"
+            style={{ 
+              color: '#1a1a1a', 
+              letterSpacing: '0.05em',
+              textShadow: '0 1px 2px rgba(255,255,255,0.8)'
             }}
           >
-            <div 
-              className="absolute -top-2 left-1/2 transform -translate-x-1/2 w-16 h-3"
-              style={{
-                background: 'linear-gradient(to right, rgba(74, 222, 128, 0.6), rgba(34, 197, 94, 0.6))',
-                borderRadius: '999px',
-                border: '1px solid rgba(74, 222, 128, 0.7)'
-              }}
-            />
-            <User style={{ width: '24px', height: '24px', color: '#facc15' }} />
-          </div>
-        </div>
-        <div 
-          className="absolute bottom-1 left-1/2 transform -translate-x-1/2 text-xs font-serif text-center"
-          style={{ color: '#facc15', letterSpacing: '0.05em' }}
-        >
-          MACROBIVS
+            MACROBIVS
+          </span>
         </div>
       </div>
     </div>
@@ -110,7 +114,8 @@ const ClassicalMacrobiusApp: React.FC = () => {
       historicalText2: 'Diese App ist unsere moderne Antwort auf Macrobius\' Vision.',
       exploreWorks: 'ERKUNDEN SIE DIE WERKE DES MACROBIUS',
       moreAboutMacrobius: 'Mehr über Macrobius',
-      moreAboutPontanus: 'Mehr über Pontanus'
+      moreAboutPontanus: 'Mehr über Pontanus',
+      clickForDetails: 'Klicken Sie auf die Bilder für detaillierte kulturelle Hintergründe'
     },
     en: {
       title: 'Macrobius',
@@ -122,7 +127,8 @@ const ClassicalMacrobiusApp: React.FC = () => {
       historicalText2: 'This app is our modern response to Macrobius\' vision.',
       exploreWorks: 'EXPLORE THE WORKS OF MACROBIUS',
       moreAboutMacrobius: 'More about Macrobius',
-      moreAboutPontanus: 'More about Pontanus'
+      moreAboutPontanus: 'More about Pontanus',
+      clickForDetails: 'Click on images for detailed cultural backgrounds'
     },
     la: {
       title: 'Macrobius',
@@ -134,7 +140,8 @@ const ClassicalMacrobiusApp: React.FC = () => {
       historicalText2: 'Haec app nostra moderna responsio ad visionem Macrobii est.',
       exploreWorks: 'OPERA MACROBII EXPLORA',
       moreAboutMacrobius: 'Plura de Macrobio',
-      moreAboutPontanus: 'Plura de Pontano'
+      moreAboutPontanus: 'Plura de Pontano',
+      clickForDetails: 'Imagines tangi ad contextus culturales detaliatos'
     }
   };
 
@@ -279,7 +286,7 @@ const ClassicalMacrobiusApp: React.FC = () => {
             borderBottom: '1px solid rgba(251, 191, 36, 0.15)'
           }}
         >
-          {/* Classical Portrait */}
+          {/* Enhanced Classical Portrait */}
           <div className="flex items-center">
             <ClassicalMacrobiusPortrait className="w-14 h-14" />
           </div>
@@ -333,7 +340,7 @@ const ClassicalMacrobiusApp: React.FC = () => {
               </p>
             </div>
             
-            {/* CULTURAL TREASURES SECTION */}
+            {/* ENHANCED CULTURAL TREASURES SECTION - Using Real Images */}
             <div 
               className="rounded-xl p-6 mb-8"
               style={{
@@ -353,93 +360,114 @@ const ClassicalMacrobiusApp: React.FC = () => {
                 <Sparkles style={{ width: '20px', height: '20px', color: '#facc15' }} />
               </div>
               
-              {/* CULTURAL GALLERY */}
+              <p className="text-center text-sm mb-6" style={{ color: 'rgba(255, 255, 255, 0.7)' }}>
+                {currentContent.clickForDetails}
+              </p>
+              
+              {/* SOPHISTICATED CULTURAL GALLERY - Real Classical Images */}
               <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-                {/* Roman Ruins */}
+                
+                {/* Roman Ruins - Real Image */}
                 <div 
-                  className="aspect-square rounded-lg overflow-hidden cursor-pointer transition-all duration-300 hover:scale-105"
+                  className="aspect-square rounded-lg overflow-hidden cursor-pointer transition-all duration-300 hover:scale-105 group"
                   style={{
-                    background: 'linear-gradient(135deg, rgba(120, 85, 60, 0.9), rgba(160, 120, 85, 0.9))',
                     border: '2px solid rgba(251, 191, 36, 0.4)',
                     boxShadow: '0 4px 20px rgba(0, 0, 0, 0.3)'
                   }}
                 >
-                  <div className="w-full h-full flex flex-col items-center justify-center p-4">
-                    <div 
-                      className="w-12 h-12 rounded-lg mb-2 flex items-center justify-center"
-                      style={{ backgroundColor: 'rgba(251, 191, 36, 0.2)' }}
-                    >
-                      <Star style={{ width: '24px', height: '24px', color: '#facc15' }} />
+                  <div className="relative w-full h-full">
+                    <img 
+                      src="/Rome-under.jpg" 
+                      alt="Declining Roman Empire"
+                      className="w-full h-full object-cover transition-all duration-300 group-hover:scale-110"
+                      style={{
+                        filter: 'sepia(15%) saturate(120%) brightness(90%) contrast(110%)'
+                      }}
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
+                    <div className="absolute bottom-2 left-2 right-2">
+                      <span className="text-xs text-white font-semibold drop-shadow-lg">
+                        {getLanguageKey(language) === 'de' ? 'Römische Ruinen' : getLanguageKey(language) === 'en' ? 'Roman Ruins' : 'Ruinae Romanae'}
+                      </span>
                     </div>
-                    <span className="text-xs text-center" style={{ color: 'rgba(255, 255, 255, 0.9)' }}>
-                      {getLanguageKey(language) === 'de' ? 'Römische Ruinen' : getLanguageKey(language) === 'en' ? 'Roman Ruins' : 'Ruinae Romanae'}
-                    </span>
                   </div>
                 </div>
                 
-                {/* Classical Scholar */}
+                {/* Classical Scholar - Real Image */}
                 <div 
-                  className="aspect-square rounded-lg overflow-hidden cursor-pointer transition-all duration-300 hover:scale-105"
+                  className="aspect-square rounded-lg overflow-hidden cursor-pointer transition-all duration-300 hover:scale-105 group"
                   style={{
-                    background: 'linear-gradient(135deg, rgba(60, 70, 90, 0.9), rgba(80, 90, 110, 0.9))',
                     border: '2px solid rgba(251, 191, 36, 0.4)',
                     boxShadow: '0 4px 20px rgba(0, 0, 0, 0.3)'
                   }}
                 >
-                  <div className="w-full h-full flex flex-col items-center justify-center p-4">
-                    <div 
-                      className="w-12 h-12 rounded-lg mb-2 flex items-center justify-center"
-                      style={{ backgroundColor: 'rgba(251, 191, 36, 0.2)' }}
-                    >
-                      <Crown style={{ width: '24px', height: '24px', color: '#facc15' }} />
+                  <div className="relative w-full h-full">
+                    <img 
+                      src="/Macrobius-and-Eustachius.jpg" 
+                      alt="Macrobius with Eustachius"
+                      className="w-full h-full object-cover transition-all duration-300 group-hover:scale-110"
+                      style={{
+                        filter: 'sepia(15%) saturate(120%) brightness(95%) contrast(110%)'
+                      }}
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
+                    <div className="absolute bottom-2 left-2 right-2">
+                      <span className="text-xs text-white font-semibold drop-shadow-lg">
+                        {getLanguageKey(language) === 'de' ? 'Gelehrter' : getLanguageKey(language) === 'en' ? 'Scholar' : 'Doctus'}
+                      </span>
                     </div>
-                    <span className="text-xs text-center" style={{ color: 'rgba(255, 255, 255, 0.9)' }}>
-                      {getLanguageKey(language) === 'de' ? 'Gelehrter' : getLanguageKey(language) === 'en' ? 'Scholar' : 'Doctus'}
-                    </span>
                   </div>
                 </div>
                 
-                {/* Ancient Manuscripts */}
+                {/* Ancient Manuscripts - Real Image */}
                 <div 
-                  className="aspect-square rounded-lg overflow-hidden cursor-pointer transition-all duration-300 hover:scale-105"
+                  className="aspect-square rounded-lg overflow-hidden cursor-pointer transition-all duration-300 hover:scale-105 group"
                   style={{
-                    background: 'linear-gradient(135deg, rgba(101, 67, 33, 0.9), rgba(139, 92, 41, 0.9))',
                     border: '2px solid rgba(251, 191, 36, 0.4)',
                     boxShadow: '0 4px 20px rgba(0, 0, 0, 0.3)'
                   }}
                 >
-                  <div className="w-full h-full flex flex-col items-center justify-center p-4">
-                    <div 
-                      className="w-12 h-12 rounded-lg mb-2 flex items-center justify-center"
-                      style={{ backgroundColor: 'rgba(251, 191, 36, 0.2)' }}
-                    >
-                      <Scroll style={{ width: '24px', height: '24px', color: '#facc15' }} />
+                  <div className="relative w-full h-full">
+                    <img 
+                      src="/Symposion.jpg" 
+                      alt="Classical Symposium"
+                      className="w-full h-full object-cover transition-all duration-300 group-hover:scale-110"
+                      style={{
+                        filter: 'sepia(15%) saturate(120%) brightness(95%) contrast(110%)'
+                      }}
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
+                    <div className="absolute bottom-2 left-2 right-2">
+                      <span className="text-xs text-white font-semibold drop-shadow-lg">
+                        {getLanguageKey(language) === 'de' ? 'Manuskripte' : getLanguageKey(language) === 'en' ? 'Manuscripts' : 'Manuscripta'}
+                      </span>
                     </div>
-                    <span className="text-xs text-center" style={{ color: 'rgba(255, 255, 255, 0.9)' }}>
-                      {getLanguageKey(language) === 'de' ? 'Manuskripte' : getLanguageKey(language) === 'en' ? 'Manuscripts' : 'Manuscripta'}
-                    </span>
                   </div>
                 </div>
                 
-                {/* Astronomical Instruments */}
+                {/* Astronomical Instruments - Real Image */}
                 <div 
-                  className="aspect-square rounded-lg overflow-hidden cursor-pointer transition-all duration-300 hover:scale-105"
+                  className="aspect-square rounded-lg overflow-hidden cursor-pointer transition-all duration-300 hover:scale-105 group"
                   style={{
-                    background: 'linear-gradient(135deg, rgba(30, 27, 75, 0.9), rgba(49, 46, 129, 0.9))',
                     border: '2px solid rgba(251, 191, 36, 0.4)',
                     boxShadow: '0 4px 20px rgba(0, 0, 0, 0.3)'
                   }}
                 >
-                  <div className="w-full h-full flex flex-col items-center justify-center p-4">
-                    <div 
-                      className="w-12 h-12 rounded-lg mb-2 flex items-center justify-center"
-                      style={{ backgroundColor: 'rgba(251, 191, 36, 0.2)' }}
-                    >
-                      <Star style={{ width: '24px', height: '24px', color: '#facc15' }} />
+                  <div className="relative w-full h-full">
+                    <img 
+                      src="/Astrolab.jpg" 
+                      alt="Historical Astrolabe"
+                      className="w-full h-full object-cover transition-all duration-300 group-hover:scale-110"
+                      style={{
+                        filter: 'sepia(15%) saturate(120%) brightness(95%) contrast(110%)'
+                      }}
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
+                    <div className="absolute bottom-2 left-2 right-2">
+                      <span className="text-xs text-white font-semibold drop-shadow-lg">
+                        {getLanguageKey(language) === 'de' ? 'Astronomie' : getLanguageKey(language) === 'en' ? 'Astronomy' : 'Astronomia'}
+                      </span>
                     </div>
-                    <span className="text-xs text-center" style={{ color: 'rgba(255, 255, 255, 0.9)' }}>
-                      {getLanguageKey(language) === 'de' ? 'Astronomie' : getLanguageKey(language) === 'en' ? 'Astronomy' : 'Astronomia'}
-                    </span>
                   </div>
                 </div>
               </div>
