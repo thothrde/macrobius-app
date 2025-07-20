@@ -69,7 +69,7 @@ const ClassicalMacrobiusPortrait: React.FC<ClassicalPortraitProps> = ({ classNam
   );
 };
 
-// Moving Stars Component
+// Moving Stars Component with Enhanced Animation
 const MovingStars: React.FC = () => {
   return (
     <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -90,7 +90,7 @@ const MovingStars: React.FC = () => {
         />
       ))}
       
-      {/* Moving Stars */}
+      {/* Moving Stars - Enhanced */}
       {Array.from({ length: 15 }, (_, i) => (
         <div
           key={`moving-star-${i}`}
