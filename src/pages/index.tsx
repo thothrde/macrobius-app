@@ -69,6 +69,58 @@ const ClassicalMacrobiusPortrait: React.FC<ClassicalPortraitProps> = ({ classNam
   );
 };
 
+// Moving Stars Component
+const MovingStars: React.FC = () => {
+  return (
+    <div className="absolute inset-0 overflow-hidden pointer-events-none">
+      {/* Static Stars */}
+      {Array.from({ length: 50 }, (_, i) => (
+        <div
+          key={`star-${i}`}
+          className="absolute rounded-full"
+          style={{
+            width: Math.random() * 2 + 1 + 'px',
+            height: Math.random() * 2 + 1 + 'px',
+            backgroundColor: '#facc15',
+            top: Math.random() * 100 + '%',
+            left: Math.random() * 100 + '%',
+            opacity: Math.random() * 0.8 + 0.2,
+            boxShadow: '0 0 6px rgba(251, 191, 36, 0.6)'
+          }}
+        />
+      ))}
+      
+      {/* Moving Stars */}
+      {Array.from({ length: 15 }, (_, i) => (
+        <div
+          key={`moving-star-${i}`}
+          className="absolute rounded-full animate-pulse"
+          style={{
+            width: '2px',
+            height: '2px',
+            backgroundColor: '#ffffff',
+            top: Math.random() * 100 + '%',
+            left: Math.random() * 100 + '%',
+            animation: `moveLeft ${8 + Math.random() * 4}s linear infinite`,
+            opacity: 0.7
+          }}
+        />
+      ))}
+      
+      <style jsx>{`
+        @keyframes moveLeft {
+          from {
+            transform: translateX(100vw);
+          }
+          to {
+            transform: translateX(-100px);
+          }
+        }
+      `}</style>
+    </div>
+  );
+};
+
 // Main App Component
 const ClassicalMacrobiusApp: React.FC = () => {
   const { language, setLanguage } = useLanguage();
@@ -104,8 +156,8 @@ const ClassicalMacrobiusApp: React.FC = () => {
       description: 'Eine Nachricht aus der Antike an die Zukunft',
       culturalTreasures: 'Kulturelle Schätze entdecken',
       macrobiusWithSon: 'Macrobius mit seinem Sohn, dem er seine Werke widmete',
-      historicalText1: 'Vor 1500 Jahren, als das römische Reich dem Untergang entgegensah, fertigte Macrobius eine Flaschenpost an die Zukunft an. Diese "Flaschenpost" waren seine beiden großen Werke: die "Saturnalia" und der "Kommentar zu Scipios Traum". In ihnen bewahrte er die Basis der antiken Kultur - von Ciceros Rhetorik bis zu den Geheimnissen der Astronomie.',
-      historicalText2: 'Diese App ist unsere moderne Antwort auf Macrobius\' Vision. Durch KI-gestützte Textanalyse, interaktive Visualisierungen und multilinguale Zugänge machen wir seine "Flaschenpost" für das 21. Jahrhundert erreichbar. Entdecken Sie, wie ein spätantiker Gelehrter vor Brücken zwischen der antiken und der modernen Welt baute.',
+      historicalText1: 'Vor 1500 Jahren, als das römische Reich dem Untergang entgegensah, fertigte Macrobius eine Flaschenpost an die Zukunft an.',
+      historicalText2: 'Diese App ist unsere moderne Antwort auf Macrobius\' Vision. Durch KI-gestützte Textanalyse, interaktive Visualisierungen und multilinguale Zugänge machen wir seine "Flaschenpost" für das 21. Jahrhundert erreichbar.',
       exploreWorks: 'ERKUNDEN SIE DIE WERKE DES MACROBIUS',
       moreAboutMacrobius: 'Mehr über Macrobius',
       moreAboutPontanus: 'Mehr über Pontanus',
@@ -117,8 +169,8 @@ const ClassicalMacrobiusApp: React.FC = () => {
       description: 'A Message from Antiquity to the Future',
       culturalTreasures: 'Discover Cultural Treasures',
       macrobiusWithSon: 'Macrobius with his son, to whom he dedicated his works',
-      historicalText1: '1500 years ago, as the Roman Empire faced decline, Macrobius created a message in a bottle for the future. This "message in a bottle" were his two great works: the "Saturnalia" and the "Commentary on Scipio\'s Dream". In them, he preserved the foundation of ancient culture - from Cicero\'s rhetoric to the secrets of astronomy.',
-      historicalText2: 'This app is our modern response to Macrobius\' vision. Through AI-powered text analysis, interactive visualizations, and multilingual access, we make his "message in a bottle" accessible for the 21st century. Discover how a late antique scholar built bridges between the ancient and modern worlds.',
+      historicalText1: '1500 years ago, as the Roman Empire faced decline, Macrobius created a message in a bottle for the future.',
+      historicalText2: 'This app is our modern response to Macrobius\' vision. Through AI-powered text analysis, interactive visualizations, and multilingual access, we make his "message in a bottle" accessible for the 21st century.',
       exploreWorks: 'EXPLORE THE WORKS OF MACROBIUS',
       moreAboutMacrobius: 'More about Macrobius',
       moreAboutPontanus: 'More about Pontanus',
@@ -130,8 +182,8 @@ const ClassicalMacrobiusApp: React.FC = () => {
       description: 'Nuntius ab Antiquitate ad Futurum',
       culturalTreasures: 'Thesauros Culturales Inveni',
       macrobiusWithSon: 'Macrobius cum filio suo, cui opera sua dedicavit',
-      historicalText1: 'Ante annos MD, cum Imperium Romanum ad occasum vergeret, Macrobius epistulam in lagena ad futurum confecit. Haec "epistula in lagena" erant duo magna opera sua: "Saturnalia" et "Commentarium ad Somnium Scipionis". In his servavit fundamenta culturae antiquae - a rhetorica Ciceronis usque ad secreta astronomiae.',
-      historicalText2: 'Haec app nostra moderna responsio ad visionem Macrobii est. Per analysin textuum AI adiutam, visualizationes interactivas, et accessus multilingues, suam "epistulam in lagena" saeculo XXI accessibilem facimus. Inveni quomodo eruditus antiquitatis serae pontes inter mundos antiquum et modernum aedificaverit.',
+      historicalText1: 'Ante annos MD, cum Imperium Romanum ad occasum vergeret, Macrobius epistulam in lagena ad futurum confecit.',
+      historicalText2: 'Haec app nostra moderna responsio ad visionem Macrobii est. Per analysin textuum AI adiutam, visualizationes interactivas, et accessus multilingues, suam "epistulam in lagena" saeculo XXI accessibilem facimus.',
       exploreWorks: 'OPERA MACROBII EXPLORA',
       moreAboutMacrobius: 'Plura de Macrobio',
       moreAboutPontanus: 'Plura de Pontano',
@@ -163,9 +215,9 @@ const ClassicalMacrobiusApp: React.FC = () => {
 
   return (
     <div 
-      className="min-h-screen flex"
+      className="min-h-screen flex relative overflow-hidden"
       style={{
-        background: 'radial-gradient(ellipse at center, #1e293b 0%, #0f172a 40%, #020617 100%)',
+        background: 'radial-gradient(ellipse at center, #1a1f2e 0%, #0f172a 40%, #020617 100%)',
         backgroundImage: `
           radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
           radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
@@ -173,9 +225,25 @@ const ClassicalMacrobiusApp: React.FC = () => {
         `
       }}
     >
-      {/* LEFT SIDEBAR */}
+      {/* BACKGROUND ASTROLABIUM */}
+      <div 
+        className="absolute top-10 right-10 opacity-10 pointer-events-none"
+        style={{
+          width: '400px',
+          height: '400px',
+          backgroundImage: 'url(/Astrolab.jpg)',
+          backgroundSize: 'contain',
+          backgroundRepeat: 'no-repeat',
+          filter: 'sepia(20%) saturate(120%) brightness(110%)'
+        }}
+      />
+      
+      {/* MOVING STARS */}
+      <MovingStars />
+      
+      {/* LEFT SIDEBAR - VERTICAL NAVIGATION */}
       <aside 
-        className="w-64 h-screen flex flex-col"
+        className="w-64 h-screen flex flex-col z-10"
         style={{
           backgroundColor: 'rgba(10, 14, 26, 0.95)',
           borderRight: '1px solid rgba(251, 191, 36, 0.2)'
@@ -275,8 +343,8 @@ const ClassicalMacrobiusApp: React.FC = () => {
         </div>
       </aside>
       
-      {/* MAIN CONTENT AREA */}
-      <main className="flex-1 flex flex-col">
+      {/* MAIN CONTENT AREA - FITS IN ONE PAGE */}
+      <main className="flex-1 flex flex-col h-screen">
         {/* TOP HEADER */}
         <header 
           className="flex items-center justify-between p-4"
@@ -307,19 +375,14 @@ const ClassicalMacrobiusApp: React.FC = () => {
           </div>
         </header>
         
-        {/* MAIN CONTENT - ORGANIZED GRID LAYOUT ONLY */}
-        <div className="flex-1 overflow-y-auto p-6">
-          <div className="max-w-5xl mx-auto">
+        {/* COMPACT MAIN CONTENT - FITS IN ONE BROWSER PAGE */}
+        <div className="flex-1 overflow-y-auto p-4">
+          <div className="max-w-4xl mx-auto h-full">
             
-            {/* Centered Portrait */}
-            <div className="text-center mb-6">
-              <ClassicalMacrobiusPortrait className="w-32 h-32 mx-auto" />
-            </div>
-            
-            {/* Title Section */}
-            <div className="text-center mb-8">
+            {/* Title Section - Compact */}
+            <div className="text-center mb-4">
               <h1 
-                className="text-5xl md:text-6xl font-bold mb-4"
+                className="text-3xl md:text-4xl font-bold mb-2"
                 style={{
                   background: 'linear-gradient(135deg, #facc15 0%, #f59e0b 30%, #facc15 60%, #f59e0b 100%)',
                   WebkitBackgroundClip: 'text',
@@ -331,42 +394,42 @@ const ClassicalMacrobiusApp: React.FC = () => {
                 {currentContent.title}
               </h1>
               <p 
-                className="text-xl md:text-2xl mb-3 font-medium"
+                className="text-lg mb-1 font-medium"
                 style={{ color: 'rgba(251, 191, 36, 0.9)' }}
               >
                 {currentContent.subtitle}
               </p>
               <p 
-                className="text-lg"
+                className="text-sm"
                 style={{ color: 'rgba(255, 255, 255, 0.8)' }}
               >
                 {currentContent.description}
               </p>
             </div>
             
-            {/* Cultural Treasures Header */}
-            <div className="text-center mb-8">
-              <div className="flex items-center justify-center gap-3 mb-4">
-                <Sparkles style={{ width: '20px', height: '20px', color: '#facc15' }} />
+            {/* Cultural Treasures Header - Compact */}
+            <div className="text-center mb-4">
+              <div className="flex items-center justify-center gap-2 mb-3">
+                <Sparkles style={{ width: '16px', height: '16px', color: '#facc15' }} />
                 <h2 
-                  className="text-xl font-semibold"
+                  className="text-lg font-semibold"
                   style={{ color: '#facc15' }}
                 >
                   {currentContent.culturalTreasures}
                 </h2>
-                <Sparkles style={{ width: '20px', height: '20px', color: '#facc15' }} />
+                <Sparkles style={{ width: '16px', height: '16px', color: '#facc15' }} />
               </div>
             </div>
             
-            {/* ORGANIZED 2x2+1 IMAGE GRID */}
-            <div className="mb-8">
+            {/* COMPACT 2x2+1 IMAGE GRID - FITS IN ONE PAGE */}
+            <div className="mb-4">
               {/* First Row */}
-              <div className="grid grid-cols-2 gap-6 mb-6">
+              <div className="grid grid-cols-2 gap-3 mb-3">
                 <div 
                   className="aspect-[4/3] rounded-lg overflow-hidden cursor-pointer group"
                   style={{
-                    border: '3px solid rgba(251, 191, 36, 0.6)',
-                    boxShadow: '0 6px 24px rgba(0, 0, 0, 0.3)'
+                    border: '2px solid rgba(251, 191, 36, 0.6)',
+                    boxShadow: '0 4px 16px rgba(0, 0, 0, 0.3)'
                   }}
                 >
                   <img 
@@ -382,8 +445,8 @@ const ClassicalMacrobiusApp: React.FC = () => {
                 <div 
                   className="aspect-[4/3] rounded-lg overflow-hidden cursor-pointer group"
                   style={{
-                    border: '3px solid rgba(251, 191, 36, 0.6)',
-                    boxShadow: '0 6px 24px rgba(0, 0, 0, 0.3)'
+                    border: '2px solid rgba(251, 191, 36, 0.6)',
+                    boxShadow: '0 4px 16px rgba(0, 0, 0, 0.3)'
                   }}
                 >
                   <img 
@@ -398,12 +461,12 @@ const ClassicalMacrobiusApp: React.FC = () => {
               </div>
               
               {/* Second Row */}
-              <div className="grid grid-cols-2 gap-6 mb-6">
+              <div className="grid grid-cols-2 gap-3 mb-3">
                 <div 
                   className="aspect-[4/3] rounded-lg overflow-hidden cursor-pointer group"
                   style={{
-                    border: '3px solid rgba(251, 191, 36, 0.6)',
-                    boxShadow: '0 6px 24px rgba(0, 0, 0, 0.3)'
+                    border: '2px solid rgba(251, 191, 36, 0.6)',
+                    boxShadow: '0 4px 16px rgba(0, 0, 0, 0.3)'
                   }}
                 >
                   <img 
@@ -419,8 +482,8 @@ const ClassicalMacrobiusApp: React.FC = () => {
                 <div 
                   className="aspect-[4/3] rounded-lg overflow-hidden cursor-pointer group"
                   style={{
-                    border: '3px solid rgba(251, 191, 36, 0.6)',
-                    boxShadow: '0 6px 24px rgba(0, 0, 0, 0.3)'
+                    border: '2px solid rgba(251, 191, 36, 0.6)',
+                    boxShadow: '0 4px 16px rgba(0, 0, 0, 0.3)'
                   }}
                 >
                   <img 
@@ -435,12 +498,12 @@ const ClassicalMacrobiusApp: React.FC = () => {
               </div>
               
               {/* Third Row - Centered */}
-              <div className="flex justify-center">
+              <div className="flex justify-center mb-4">
                 <div 
                   className="w-1/2 aspect-[4/3] rounded-lg overflow-hidden cursor-pointer group"
                   style={{
-                    border: '3px solid rgba(251, 191, 36, 0.6)',
-                    boxShadow: '0 6px 24px rgba(0, 0, 0, 0.3)'
+                    border: '2px solid rgba(251, 191, 36, 0.6)',
+                    boxShadow: '0 4px 16px rgba(0, 0, 0, 0.3)'
                   }}
                 >
                   <img 
@@ -455,56 +518,46 @@ const ClassicalMacrobiusApp: React.FC = () => {
               </div>
             </div>
             
-            {/* Caption */}
-            <div className="text-center mb-8">
+            {/* Caption and Text - Compact */}
+            <div className="text-center mb-3">
               <p 
-                className="text-sm italic mb-2"
+                className="text-xs italic mb-1"
                 style={{ color: 'rgba(251, 191, 36, 0.8)' }}
               >
                 {currentContent.macrobiusWithSon}
               </p>
               <p 
-                className="text-xs"
+                className="text-xs mb-2"
                 style={{ color: 'rgba(255, 255, 255, 0.6)' }}
               >
                 ➤ {currentContent.clickForDetails}
               </p>
             </div>
             
-            {/* Historical Text */}
-            <div 
-              className="rounded-xl p-6 mb-8"
-              style={{
-                background: 'rgba(0, 0, 0, 0.3)',
-                border: '1px solid rgba(251, 191, 36, 0.3)'
-              }}
-            >
-              <div className="space-y-4">
-                <p 
-                  className="text-sm leading-relaxed"
-                  style={{ color: 'rgba(255, 255, 255, 0.9)' }}
-                >
-                  {currentContent.historicalText1}
-                </p>
-                
-                <p 
-                  className="text-sm leading-relaxed"
-                  style={{ color: 'rgba(255, 255, 255, 0.8)' }}
-                >
-                  {currentContent.historicalText2}
-                </p>
-              </div>
+            {/* Compact Historical Text */}
+            <div className="mb-3">
+              <p 
+                className="text-xs leading-relaxed mb-2"
+                style={{ color: 'rgba(255, 255, 255, 0.9)' }}
+              >
+                {currentContent.historicalText1}
+              </p>
+              <p 
+                className="text-xs leading-relaxed"
+                style={{ color: 'rgba(255, 255, 255, 0.8)' }}
+              >
+                {currentContent.historicalText2}
+              </p>
             </div>
             
-            {/* Action Buttons */}
-            <div className="flex flex-wrap gap-4 justify-center">
+            {/* Action Buttons - Compact */}
+            <div className="flex flex-wrap gap-2 justify-center">
               <button 
-                className="px-6 py-3 rounded-lg font-bold text-sm transition-all duration-300 hover:scale-105 hover:shadow-xl"
+                className="px-4 py-2 rounded-lg font-bold text-xs transition-all duration-300 hover:scale-105"
                 style={{
                   background: 'linear-gradient(135deg, #dc2626, #b91c1c)',
                   color: 'white',
-                  border: '1px solid rgba(220, 38, 38, 0.5)',
-                  boxShadow: '0 4px 15px rgba(220, 38, 38, 0.3)'
+                  border: '1px solid rgba(220, 38, 38, 0.5)'
                 }}
                 onClick={() => setCurrentSection('textsearch')}
               >
@@ -512,12 +565,11 @@ const ClassicalMacrobiusApp: React.FC = () => {
               </button>
               
               <button 
-                className="px-6 py-3 rounded-lg font-bold text-sm transition-all duration-300 hover:scale-105 hover:shadow-xl"
+                className="px-4 py-2 rounded-lg font-bold text-xs transition-all duration-300 hover:scale-105"
                 style={{
                   background: 'linear-gradient(135deg, #059669, #047857)',
                   color: 'white',
-                  border: '1px solid rgba(5, 150, 105, 0.5)',
-                  boxShadow: '0 4px 15px rgba(5, 150, 105, 0.3)'
+                  border: '1px solid rgba(5, 150, 105, 0.5)'
                 }}
                 onClick={() => setCurrentSection('intro')}
               >
@@ -525,12 +577,11 @@ const ClassicalMacrobiusApp: React.FC = () => {
               </button>
               
               <button 
-                className="px-6 py-3 rounded-lg font-bold text-sm transition-all duration-300 hover:scale-105 hover:shadow-xl"
+                className="px-4 py-2 rounded-lg font-bold text-xs transition-all duration-300 hover:scale-105"
                 style={{
                   background: 'linear-gradient(135deg, #7c3aed, #6d28d9)',
                   color: 'white',
-                  border: '1px solid rgba(124, 58, 237, 0.5)',
-                  boxShadow: '0 4px 15px rgba(124, 58, 237, 0.3)'
+                  border: '1px solid rgba(124, 58, 237, 0.5)'
                 }}
               >
                 {currentContent.moreAboutPontanus}
