@@ -28,7 +28,7 @@ interface ClassicalPortraitProps {
 type LanguageCode = 'de' | 'en' | 'la';
 type LanguageKey = 'DE' | 'EN' | 'LA';
 
-// Enhanced Classical Portrait Component using real Macrobius portrait
+// Enhanced Classical Portrait Component
 const ClassicalMacrobiusPortrait: React.FC<ClassicalPortraitProps> = ({ className = '' }) => {
   return (
     <div className={`relative ${className}`}>
@@ -40,17 +40,12 @@ const ClassicalMacrobiusPortrait: React.FC<ClassicalPortraitProps> = ({ classNam
           boxShadow: '0 0 20px rgba(251, 191, 36, 0.4)'
         }}
       >
-        {/* Real Macrobius Portrait */}
         <img 
           src="/Macrobius-Portrait.jpg" 
           alt="Macrobius Classical Portrait"
           className="w-full h-full object-cover"
-          style={{
-            filter: 'sepia(20%) saturate(120%) brightness(110%)'
-          }}
+          style={{ filter: 'sepia(20%) saturate(120%) brightness(110%)' }}
         />
-        
-        {/* Golden nameplate overlay */}
         <div 
           className="absolute bottom-0 left-0 right-0 text-center py-1"
           style={{
@@ -79,7 +74,6 @@ const ClassicalMacrobiusApp: React.FC = () => {
   const { language, setLanguage } = useLanguage();
   const [currentSection, setCurrentSection] = useState<string>('intro');
   
-  // Language conversion functions with proper TypeScript types
   const convertToLanguage = (lang: LanguageCode): LanguageKey => {
     switch(lang) {
       case 'de': return 'DE';
@@ -286,12 +280,10 @@ const ClassicalMacrobiusApp: React.FC = () => {
             borderBottom: '1px solid rgba(251, 191, 36, 0.15)'
           }}
         >
-          {/* Enhanced Classical Portrait */}
           <div className="flex items-center">
             <ClassicalMacrobiusPortrait className="w-14 h-14" />
           </div>
           
-          {/* Language Switcher */}
           <div className="flex items-center gap-2">
             {(['de', 'en', 'la'] as const).map((lang) => (
               <button
@@ -310,363 +302,229 @@ const ClassicalMacrobiusApp: React.FC = () => {
           </div>
         </header>
         
-        {/* RICH CONTENT AREA - ENHANCED MUSEUM LAYOUT */}
-        <div className="flex-1 overflow-y-auto p-8">
-          <div className="max-w-6xl mx-auto">
+        {/* MUSEUM-STYLE CONTENT */}
+        <div className="flex-1 overflow-y-auto">
+          <div className="max-w-full mx-auto">
             
-            {/* MANUSCRIPT HEADER - Classical Touch */}
+            {/* Decorative Header */}
             <div 
-              className="mb-8 rounded-xl overflow-hidden"
+              className="h-12 flex items-center justify-center"
               style={{
-                background: 'linear-gradient(135deg, rgba(238, 220, 188, 0.95), rgba(245, 235, 210, 0.95))',
-                border: '2px solid rgba(139, 92, 41, 0.3)',
-                boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)'
+                background: 'linear-gradient(90deg, rgba(139, 92, 41, 0.8), rgba(180, 142, 82, 0.8))',
+                borderBottom: '2px solid rgba(251, 191, 36, 0.5)'
               }}
             >
-              <div className="p-4">
-                <img 
-                  src="/Screenshot 18.jpg" 
-                  alt="Manuscript Header"
-                  className="w-full h-16 object-cover rounded"
-                  style={{
-                    filter: 'sepia(30%) saturate(80%) brightness(110%)'
-                  }}
-                />
-              </div>
+              <span 
+                className="text-sm font-serif italic"
+                style={{ color: '#facc15', letterSpacing: '0.1em' }}
+              >
+                Tho: Dring & Car: Harper in Fleet Street
+              </span>
+            </div>
+            
+            {/* Large Classical Illustration */}
+            <div className="relative">
+              <img 
+                src="/Macrobius-universe.jpg" 
+                alt="Macrobius Universe"
+                className="w-full h-auto"
+                style={{
+                  maxHeight: '70vh',
+                  objectFit: 'contain',
+                  filter: 'sepia(10%) saturate(110%) brightness(105%)'
+                }}
+              />
             </div>
 
-            {/* Main Title */}
-            <div className="text-center mb-12">
+            {/* Title Section */}
+            <div 
+              className="text-center py-12 px-8"
+              style={{
+                background: 'linear-gradient(135deg, rgba(10, 14, 26, 0.9), rgba(45, 27, 78, 0.9))',
+                borderTop: '1px solid rgba(251, 191, 36, 0.3)',
+                borderBottom: '1px solid rgba(251, 191, 36, 0.3)'
+              }}
+            >
               <h1 
-                className="text-6xl font-bold mb-4"
+                className="text-6xl md:text-8xl font-bold mb-4"
                 style={{
                   background: 'linear-gradient(135deg, #facc15 0%, #f59e0b 30%, #facc15 60%, #f59e0b 100%)',
                   WebkitBackgroundClip: 'text',
                   WebkitTextFillColor: 'transparent',
-                  backgroundClip: 'text'
+                  backgroundClip: 'text',
+                  fontFamily: 'serif'
                 }}
               >
                 {currentContent.title}
               </h1>
               <p 
-                className="text-2xl mb-3 font-medium"
+                className="text-2xl md:text-3xl mb-4 font-medium"
                 style={{ color: 'rgba(251, 191, 36, 0.9)' }}
               >
                 {currentContent.subtitle}
               </p>
               <p 
-                className="text-lg"
+                className="text-lg md:text-xl"
                 style={{ color: 'rgba(255, 255, 255, 0.8)' }}
               >
                 {currentContent.description}
               </p>
             </div>
             
-            {/* LAYERED CULTURAL GALLERY - Museum Style */}
+            {/* Cultural Treasures */}
             <div 
-              className="rounded-xl mb-12"
+              className="py-8 px-8"
               style={{
-                backgroundColor: 'rgba(0, 0, 0, 0.4)',
-                border: '1px solid rgba(251, 191, 36, 0.3)',
-                backdropFilter: 'blur(10px)'
+                background: 'linear-gradient(135deg, rgba(45, 27, 78, 0.8), rgba(10, 14, 26, 0.9))'
               }}
             >
-              {/* Header */}
-              <div className="p-6 text-center border-b border-amber-500/20">
-                <div className="flex items-center justify-center gap-2 mb-4">
-                  <Sparkles style={{ width: '20px', height: '20px', color: '#facc15' }} />
+              <div className="text-center mb-8">
+                <div className="flex items-center justify-center gap-3 mb-4">
+                  <Sparkles style={{ width: '24px', height: '24px', color: '#facc15' }} />
                   <h2 
-                    className="text-xl font-semibold"
+                    className="text-2xl md:text-3xl font-bold"
                     style={{ color: '#facc15' }}
                   >
                     {currentContent.culturalTreasures}
                   </h2>
-                  <Sparkles style={{ width: '20px', height: '20px', color: '#facc15' }} />
+                  <Sparkles style={{ width: '24px', height: '24px', color: '#facc15' }} />
                 </div>
-                <p className="text-sm" style={{ color: 'rgba(255, 255, 255, 0.7)' }}>
+                <p className="text-sm mb-6" style={{ color: 'rgba(255, 255, 255, 0.7)' }}>
                   {currentContent.clickForDetails}
                 </p>
               </div>
               
-              {/* FEATURED LARGE ARTWORK */}
-              <div className="p-6">
-                <div 
-                  className="mb-8 rounded-lg overflow-hidden cursor-pointer group"
-                  style={{
-                    border: '3px solid rgba(251, 191, 36, 0.5)',
-                    boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4)'
-                  }}
-                >
-                  <div className="relative">
+              {/* Large Format Artworks */}
+              <div className="space-y-6">
+                
+                {/* Roman Ruins */}
+                <div className="relative rounded-lg overflow-hidden group cursor-pointer">
+                  <img 
+                    src="/Rome-under.jpg" 
+                    alt="Declining Roman Empire"
+                    className="w-full h-64 md:h-80 object-cover transition-all duration-500 group-hover:scale-105"
+                    style={{
+                      filter: 'sepia(15%) saturate(120%) brightness(90%) contrast(110%)'
+                    }}
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                  <div className="absolute bottom-6 left-6 right-6">
+                    <h3 className="text-xl md:text-2xl font-bold text-white mb-2">
+                      {getLanguageKey(language) === 'de' ? 'Das untergehende Römische Reich' : 
+                       getLanguageKey(language) === 'en' ? 'The Declining Roman Empire' : 
+                       'Imperium Romanum Declinans'}
+                    </h3>
+                    <p className="text-sm text-white/80">
+                      {getLanguageKey(language) === 'de' ? 'Kultureller Niedergang und die Mission der Gelehrten' : 
+                       getLanguageKey(language) === 'en' ? 'Cultural decline and the mission of scholars' : 
+                       'Declinatio culturalis et missio eruditorum'}
+                    </p>
+                  </div>
+                </div>
+                
+                {/* Classical Symposium */}
+                <div className="relative rounded-lg overflow-hidden group cursor-pointer">
+                  <img 
+                    src="/Symposion.jpg" 
+                    alt="Classical Symposium"
+                    className="w-full h-64 md:h-80 object-cover transition-all duration-500 group-hover:scale-105"
+                    style={{
+                      filter: 'sepia(15%) saturate(120%) brightness(95%) contrast(110%)'
+                    }}
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                  <div className="absolute bottom-6 left-6 right-6">
+                    <h3 className="text-xl md:text-2xl font-bold text-white mb-2">
+                      {currentContent.macrobiusWithSon}
+                    </h3>
+                    <p className="text-sm text-white/80">
+                      {getLanguageKey(language) === 'de' ? 'Gelehrte Diskussionen beim römischen Gastmahl' : 
+                       getLanguageKey(language) === 'en' ? 'Scholarly discussions at the Roman banquet' : 
+                       'Disputationes eruditae in convivio Romano'}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Golden Astrolabe */}
+                <div className="relative rounded-lg overflow-hidden group cursor-pointer">
+                  <div 
+                    className="w-full h-64 md:h-80 flex items-center justify-center"
+                    style={{
+                      background: 'linear-gradient(135deg, rgba(139, 92, 41, 0.4), rgba(180, 142, 82, 0.4))'
+                    }}
+                  >
                     <img 
-                      src="/WandSymposion.jpg" 
-                      alt="Macrobius Symposium - Wall Painting"
-                      className="w-full h-80 object-cover transition-all duration-500 group-hover:scale-105"
+                      src="/Astrolab.jpg" 
+                      alt="Historical Astrolabe"
+                      className="max-w-full max-h-full object-contain transition-all duration-500 group-hover:scale-105"
                       style={{
-                        filter: 'sepia(10%) saturate(120%) brightness(95%) contrast(110%)'
+                        filter: 'sepia(20%) saturate(130%) brightness(110%) contrast(120%)'
                       }}
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
-                    <div className="absolute bottom-4 left-4 right-4">
-                      <h3 className="text-white text-lg font-semibold mb-1 drop-shadow-lg">
-                        {getLanguageKey(language) === 'de' ? 'Das Gastmahl der Gelehrten' : 
-                         getLanguageKey(language) === 'en' ? 'The Scholars\' Banquet' : 
-                         'Convivium Eruditorum'}
-                      </h3>
-                      <p className="text-white/80 text-sm drop-shadow-lg">
-                        {getLanguageKey(language) === 'de' ? 'Wandmalerei eines antiken Symposiums' : 
-                         getLanguageKey(language) === 'en' ? 'Wall painting of an ancient symposium' : 
-                         'Pictura parietis symposii antiqui'}
-                      </p>
-                    </div>
                   </div>
-                </div>
-                
-                {/* ASTRONOMICAL INSTRUMENTS ROW */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-                  
-                  {/* Astrolabe */}
-                  <div 
-                    className="rounded-lg overflow-hidden cursor-pointer group"
-                    style={{
-                      border: '2px solid rgba(251, 191, 36, 0.4)',
-                      boxShadow: '0 6px 24px rgba(0, 0, 0, 0.3)'
-                    }}
-                  >
-                    <div className="relative">
-                      <img 
-                        src="/MA-Uni-Astrolab.jpg" 
-                        alt="Medieval University Astrolabe"
-                        className="w-full h-64 object-cover transition-all duration-300 group-hover:scale-110"
-                        style={{
-                          filter: 'sepia(20%) saturate(110%) brightness(100%) contrast(110%)'
-                        }}
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-                      <div className="absolute bottom-3 left-3 right-3">
-                        <span className="text-white text-sm font-semibold drop-shadow-lg">
-                          {getLanguageKey(language) === 'de' ? 'Universitäts-Astrolabium' : 
-                           getLanguageKey(language) === 'en' ? 'University Astrolabe' : 
-                           'Astrolabium Universitatis'}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                  
-                  {/* Cosmological Diagram */}
-                  <div 
-                    className="rounded-lg overflow-hidden cursor-pointer group"
-                    style={{
-                      border: '2px solid rgba(251, 191, 36, 0.4)',
-                      boxShadow: '0 6px 24px rgba(0, 0, 0, 0.3)'
-                    }}
-                  >
-                    <div className="relative">
-                      <img 
-                        src="/Macrobius-universe.jpg" 
-                        alt="Macrobius Universe Diagram"
-                        className="w-full h-64 object-cover transition-all duration-300 group-hover:scale-110"
-                        style={{
-                          filter: 'sepia(25%) saturate(120%) brightness(105%) contrast(115%)'
-                        }}
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-                      <div className="absolute bottom-3 left-3 right-3">
-                        <span className="text-white text-sm font-semibold drop-shadow-lg">
-                          {getLanguageKey(language) === 'de' ? 'Kosmologie-Diagramm' : 
-                           getLanguageKey(language) === 'en' ? 'Cosmology Diagram' : 
-                           'Diagramma Cosmologicum'}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                
-                {/* CLASSICAL SCHOLARS GRID */}
-                <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-                  
-                  {/* Roman Ruins */}
-                  <div 
-                    className="aspect-square rounded-lg overflow-hidden cursor-pointer group"
-                    style={{
-                      border: '2px solid rgba(251, 191, 36, 0.4)',
-                      boxShadow: '0 4px 20px rgba(0, 0, 0, 0.3)'
-                    }}
-                  >
-                    <div className="relative w-full h-full">
-                      <img 
-                        src="/Rome-under.jpg" 
-                        alt="Declining Roman Empire"
-                        className="w-full h-full object-cover transition-all duration-300 group-hover:scale-110"
-                        style={{
-                          filter: 'sepia(15%) saturate(120%) brightness(90%) contrast(110%)'
-                        }}
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
-                      <div className="absolute bottom-2 left-2 right-2">
-                        <span className="text-xs text-white font-semibold drop-shadow-lg">
-                          {getLanguageKey(language) === 'de' ? 'Römische Ruinen' : getLanguageKey(language) === 'en' ? 'Roman Ruins' : 'Ruinae Romanae'}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                  
-                  {/* Classical Scholar */}
-                  <div 
-                    className="aspect-square rounded-lg overflow-hidden cursor-pointer group"
-                    style={{
-                      border: '2px solid rgba(251, 191, 36, 0.4)',
-                      boxShadow: '0 4px 20px rgba(0, 0, 0, 0.3)'
-                    }}
-                  >
-                    <div className="relative w-full h-full">
-                      <img 
-                        src="/Macrobius-and-Eustachius.jpg" 
-                        alt="Macrobius with Eustachius"
-                        className="w-full h-full object-cover transition-all duration-300 group-hover:scale-110"
-                        style={{
-                          filter: 'sepia(15%) saturate(120%) brightness(95%) contrast(110%)'
-                        }}
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
-                      <div className="absolute bottom-2 left-2 right-2">
-                        <span className="text-xs text-white font-semibold drop-shadow-lg">
-                          {getLanguageKey(language) === 'de' ? 'Gelehrter' : getLanguageKey(language) === 'en' ? 'Scholar' : 'Doctus'}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                  
-                  {/* Ancient Manuscripts */}
-                  <div 
-                    className="aspect-square rounded-lg overflow-hidden cursor-pointer group"
-                    style={{
-                      border: '2px solid rgba(251, 191, 36, 0.4)',
-                      boxShadow: '0 4px 20px rgba(0, 0, 0, 0.3)'
-                    }}
-                  >
-                    <div className="relative w-full h-full">
-                      <img 
-                        src="/Symposion.jpg" 
-                        alt="Classical Symposium"
-                        className="w-full h-full object-cover transition-all duration-300 group-hover:scale-110"
-                        style={{
-                          filter: 'sepia(15%) saturate(120%) brightness(95%) contrast(110%)'
-                        }}
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
-                      <div className="absolute bottom-2 left-2 right-2">
-                        <span className="text-xs text-white font-semibold drop-shadow-lg">
-                          {getLanguageKey(language) === 'de' ? 'Manuskripte' : getLanguageKey(language) === 'en' ? 'Manuscripts' : 'Manuscripta'}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                  
-                  {/* Astronomical Instruments */}
-                  <div 
-                    className="aspect-square rounded-lg overflow-hidden cursor-pointer group"
-                    style={{
-                      border: '2px solid rgba(251, 191, 36, 0.4)',
-                      boxShadow: '0 4px 20px rgba(0, 0, 0, 0.3)'
-                    }}
-                  >
-                    <div className="relative w-full h-full">
-                      <img 
-                        src="/Astrolab.jpg" 
-                        alt="Historical Astrolabe"
-                        className="w-full h-full object-cover transition-all duration-300 group-hover:scale-110"
-                        style={{
-                          filter: 'sepia(15%) saturate(120%) brightness(95%) contrast(110%)'
-                        }}
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
-                      <div className="absolute bottom-2 left-2 right-2">
-                        <span className="text-xs text-white font-semibold drop-shadow-lg">
-                          {getLanguageKey(language) === 'de' ? 'Astronomie' : getLanguageKey(language) === 'en' ? 'Astronomy' : 'Astronomia'}
-                        </span>
-                      </div>
-                    </div>
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                  <div className="absolute bottom-6 left-6 right-6">
+                    <h3 className="text-xl md:text-2xl font-bold text-white mb-2">
+                      {getLanguageKey(language) === 'de' ? 'Astronomische Instrumente' : 
+                       getLanguageKey(language) === 'en' ? 'Astronomical Instruments' : 
+                       'Instrumenta Astronomica'}
+                    </h3>
+                    <p className="text-sm text-white/80">
+                      {getLanguageKey(language) === 'de' ? 'Wissenschaft und Kosmologie in der Spätantike' : 
+                       getLanguageKey(language) === 'en' ? 'Science and cosmology in late antiquity' : 
+                       'Scientia et cosmologia in antiquitate sera'}
+                    </p>
                   </div>
                 </div>
               </div>
             </div>
             
-            {/* HISTORICAL CONTENT WITH MANUSCRIPT STYLING */}
+            {/* Action Buttons */}
             <div 
-              className="rounded-xl p-8 mb-8"
+              className="py-8 text-center"
               style={{
-                background: 'linear-gradient(135deg, rgba(238, 220, 188, 0.15), rgba(245, 235, 210, 0.10))',
-                border: '2px solid rgba(139, 92, 41, 0.3)',
-                boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)'
+                background: 'linear-gradient(135deg, rgba(10, 14, 26, 0.9), rgba(45, 27, 78, 0.8))'
               }}
             >
-              <h3 
-                className="text-2xl font-semibold mb-6 text-center"
-                style={{ 
-                  color: '#facc15',
-                  textShadow: '0 2px 4px rgba(0,0,0,0.3)'
-                }}
-              >
-                {currentContent.macrobiusWithSon}
-              </h3>
-              
-              <div className="space-y-6">
-                <p 
-                  className="text-base leading-relaxed text-center"
-                  style={{ color: 'rgba(255, 255, 255, 0.9)' }}
+              <div className="flex flex-wrap gap-4 justify-center px-8">
+                <button 
+                  className="px-8 py-4 rounded-lg font-bold text-sm transition-all duration-300 hover:scale-105 hover:shadow-xl"
+                  style={{
+                    background: 'linear-gradient(135deg, #dc2626, #b91c1c)',
+                    color: 'white',
+                    border: '1px solid rgba(220, 38, 38, 0.5)',
+                    boxShadow: '0 4px 15px rgba(220, 38, 38, 0.3)'
+                  }}
+                  onClick={() => setCurrentSection('textsearch')}
                 >
-                  {currentContent.historicalText1}
-                </p>
+                  {currentContent.exploreWorks}
+                </button>
                 
-                <p 
-                  className="text-base leading-relaxed text-center"
-                  style={{ color: 'rgba(255, 255, 255, 0.8)' }}
+                <button 
+                  className="px-8 py-4 rounded-lg font-bold text-sm transition-all duration-300 hover:scale-105 hover:shadow-xl"
+                  style={{
+                    background: 'linear-gradient(135deg, #059669, #047857)',
+                    color: 'white',
+                    border: '1px solid rgba(5, 150, 105, 0.5)',
+                    boxShadow: '0 4px 15px rgba(5, 150, 105, 0.3)'
+                  }}
+                  onClick={() => setCurrentSection('intro')}
                 >
-                  {currentContent.historicalText2}
-                </p>
+                  {currentContent.moreAboutMacrobius}
+                </button>
+                
+                <button 
+                  className="px-8 py-4 rounded-lg font-bold text-sm transition-all duration-300 hover:scale-105 hover:shadow-xl"
+                  style={{
+                    background: 'linear-gradient(135deg, #7c3aed, #6d28d9)',
+                    color: 'white',
+                    border: '1px solid rgba(124, 58, 237, 0.5)',
+                    boxShadow: '0 4px 15px rgba(124, 58, 237, 0.3)'
+                  }}
+                >
+                  {currentContent.moreAboutPontanus}
+                </button>
               </div>
-            </div>
-            
-            {/* ACTION BUTTONS */}
-            <div className="flex flex-wrap gap-4 justify-center">
-              <button 
-                className="px-8 py-4 rounded-lg font-bold text-sm transition-all duration-300 hover:scale-105 hover:shadow-xl"
-                style={{
-                  background: 'linear-gradient(135deg, #dc2626, #b91c1c)',
-                  color: 'white',
-                  border: '1px solid rgba(220, 38, 38, 0.5)',
-                  boxShadow: '0 4px 15px rgba(220, 38, 38, 0.3)'
-                }}
-                onClick={() => setCurrentSection('textsearch')}
-              >
-                {currentContent.exploreWorks}
-              </button>
-              
-              <button 
-                className="px-8 py-4 rounded-lg font-bold text-sm transition-all duration-300 hover:scale-105 hover:shadow-xl"
-                style={{
-                  background: 'linear-gradient(135deg, #059669, #047857)',
-                  color: 'white',
-                  border: '1px solid rgba(5, 150, 105, 0.5)',
-                  boxShadow: '0 4px 15px rgba(5, 150, 105, 0.3)'
-                }}
-                onClick={() => setCurrentSection('intro')}
-              >
-                {currentContent.moreAboutMacrobius}
-              </button>
-              
-              <button 
-                className="px-8 py-4 rounded-lg font-bold text-sm transition-all duration-300 hover:scale-105 hover:shadow-xl"
-                style={{
-                  background: 'linear-gradient(135deg, #7c3aed, #6d28d9)',
-                  color: 'white',
-                  border: '1px solid rgba(124, 58, 237, 0.5)',
-                  boxShadow: '0 4px 15px rgba(124, 58, 237, 0.3)'
-                }}
-              >
-                {currentContent.moreAboutPontanus}
-              </button>
             </div>
           </div>
         </div>
