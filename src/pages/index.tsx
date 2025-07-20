@@ -203,9 +203,8 @@ const appSections: AppSection[] = [
 const ClassicalMacrobiusApp: React.FC = () => {
   const { language, setLanguage, isHydrated } = useLanguage();
   const [currentSection, setCurrentSection] = useState('intro');
-  const [isLoading, setIsLoading] = useState(true);
-  const [isClient, setIsClient] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isClient, setIsClient] = useState(false);
 
   // Helper function to get language key
   const getLanguageKey = (lang: string): 'de' | 'en' | 'la' => {
@@ -219,42 +218,14 @@ const ClassicalMacrobiusApp: React.FC = () => {
 
   useEffect(() => {
     setIsClient(true);
-    const timer = setTimeout(() => setIsLoading(false), 1500);
-    return () => clearTimeout(timer);
   }, []);
 
   const handleLanguageChange = (lang: 'de' | 'en' | 'la') => {
-    if (isClient && isHydrated) {
-      const convertedLang = convertToLanguage(lang);
-      setLanguage(convertedLang);
-    }
+    const convertedLang = convertToLanguage(lang);
+    setLanguage(convertedLang);
   };
 
-  // Loading screen
-  if (isLoading || !isClient || !isHydrated) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-950 via-purple-950 to-black">
-        <div className="text-center space-y-8">
-          <div className="relative mx-auto">
-            <div className="w-32 h-32 rounded-full border-4 border-yellow-400 bg-gradient-to-br from-amber-900/80 to-yellow-900/80 backdrop-blur-sm flex items-center justify-center animate-pulse">
-              <User className="w-16 h-16 text-yellow-400" />
-            </div>
-            <div className="absolute -inset-4 rounded-full border border-yellow-400/30 animate-spin" />
-          </div>
-          <div className="space-y-4">
-            <h1 className="text-3xl md:text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-amber-500">
-              {language === 'DE' ? 'Lade Macrobius...' : language === 'EN' ? 'Loading Macrobius...' : 'Macrobius Carrico...'}
-            </h1>
-            <p className="text-lg text-white/70">
-              {language === 'DE' ? 'Bereite die antike Weisheit vor...' : language === 'EN' ? 'Preparing ancient wisdom...' : 'Sapientiam antiquam paro...'}
-            </p>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  // 🎯 **MAIN CLASSICAL LAYOUT - BUILT DIRECTLY HERE**
+  // 🎯 **MAIN CLASSICAL LAYOUT - ALWAYS RENDER BEAUTIFUL DESIGN**
   return (
     <div className="min-h-screen relative overflow-hidden">
       {/* 🌌 **BEAUTIFUL NIGHT SKY BACKGROUND** */}
