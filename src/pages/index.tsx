@@ -38,14 +38,6 @@ const convertToLanguage = (lang: 'de' | 'en' | 'la'): Language => {
   }
 };
 
-// 🎯 **UNIFIED PROP INTERFACES**
-interface UnifiedComponentProps {
-  language?: any;
-  vocabularyData?: any;
-  userProfile?: any;
-  isActive?: boolean;
-}
-
 // 🔧 **LOADING FALLBACK COMPONENT**
 const LoadingFallback = () => (
   <div className="min-h-[400px] flex items-center justify-center">
@@ -53,7 +45,47 @@ const LoadingFallback = () => (
   </div>
 );
 
-// 🔧 **COMPATIBLE LAYOUT FALLBACK WITH CORRECT PROPS INTERFACE**
+// 🔧 **SIMPLE STATIC FALLBACK COMPONENTS FOR TYPE SAFETY**
+const StaticQuizFallback = () => (
+  <div className="text-center py-12">
+    <h2 className="text-3xl font-bold text-white mb-6">Interaktive Quiz</h2>
+    <p className="text-white/80 mb-8">Testen Sie Ihr Wissen über Macrobius und die antike Kultur</p>
+    <div className="bg-gradient-to-br from-blue-500/10 to-purple-500/10 border border-blue-400/30 rounded-lg p-6">
+      <p className="text-white/90">KI-generierte Quizfragen basierend auf authentischen Texten...</p>
+      <div className="mt-4 flex justify-center">
+        <EnhancedLoadingSpinner />
+      </div>
+    </div>
+  </div>
+);
+
+const StaticTextSearchFallback = () => (
+  <div className="text-center py-12">
+    <h2 className="text-3xl font-bold text-white mb-6">Textsuche</h2>
+    <p className="text-white/80 mb-8">Durchsuchen Sie das komplette Macrobius-Korpus</p>
+    <div className="bg-gradient-to-br from-teal-500/10 to-cyan-500/10 border border-teal-400/30 rounded-lg p-6">
+      <p className="text-white/90">KI-gestützte semantische Suche durch 1.401 authentische Textpassagen...</p>
+      <div className="mt-4 flex justify-center">
+        <EnhancedLoadingSpinner />
+      </div>
+    </div>
+  </div>
+);
+
+const StaticLearningFallback = () => (
+  <div className="text-center py-12">
+    <h2 className="text-3xl font-bold text-white mb-6">Lernen</h2>
+    <p className="text-white/80 mb-8">Personalisierte Lernpfade für Latein und antike Kultur</p>
+    <div className="bg-gradient-to-br from-emerald-500/10 to-green-500/10 border border-emerald-400/30 rounded-lg p-6">
+      <p className="text-white/90">Adaptive KI-Tutoring und Vokabeltraining...</p>
+      <div className="mt-4 flex justify-center">
+        <EnhancedLoadingSpinner />
+      </div>
+    </div>
+  </div>
+);
+
+// 🔧 **COMPATIBLE LAYOUT FALLBACK**
 interface LayoutFallbackProps {
   children?: React.ReactNode;
   navigationItems?: any[];
@@ -123,8 +155,8 @@ const CompatibleLayoutFallback: React.FC<LayoutFallbackProps> = ({
   </div>
 );
 
-// 🎯 **ALL DYNAMIC COMPONENTS WITH SSR DISABLED AND PROPER FALLBACKS**
-// Main layout component with compatible fallback
+// 🎯 **SIMPLIFIED DYNAMIC COMPONENTS - NO COMPLEX FALLBACK CHAINS**
+// Main layout component
 const ClassicalMacrobiusLayout = dynamic(
   () => import('@/components/ui/ClassicalMacrobiusLayout'),
   {
@@ -133,7 +165,7 @@ const ClassicalMacrobiusLayout = dynamic(
   }
 );
 
-// Section components with safe fallbacks
+// Section components with simple dynamic imports - no complex fallbacks
 const IntroSection = dynamic(
   () => import('@/components/sections/IntroSection'),
   {
@@ -142,18 +174,9 @@ const IntroSection = dynamic(
   }
 );
 
+// Use static fallbacks instead of dynamic import chains
 const QuizSection = dynamic(
-  () => import('@/components/sections/QuizSection-SMART-GENERATION-COMPLETE')
-    .catch(() => import('@/components/sections/QuizSection'))
-    .catch(() => ({ default: () => (
-      <div className="text-center py-12">
-        <h2 className="text-3xl font-bold text-white mb-6">Interaktive Quiz</h2>
-        <p className="text-white/80 mb-8">Testen Sie Ihr Wissen über Macrobius und die antike Kultur</p>
-        <div className="bg-gradient-to-br from-blue-500/10 to-purple-500/10 border border-blue-400/30 rounded-lg p-6">
-          <p className="text-white/90">KI-generierte Quizfragen basierend auf authentischen Texten...</p>
-        </div>
-      </div>
-    ) })),
+  () => import('@/components/sections/QuizSection-SMART-GENERATION-COMPLETE'),
   {
     ssr: false,
     loading: LoadingFallback
@@ -185,17 +208,7 @@ const BanquetSection = dynamic(
 );
 
 const TextSearchSection = dynamic(
-  () => import('@/components/sections/MacrobiusTextProcessor-TIER2-COMPLETE')
-    .catch(() => import('@/components/sections/TextSearchSection'))
-    .catch(() => ({ default: () => (
-      <div className="text-center py-12">
-        <h2 className="text-3xl font-bold text-white mb-6">Textsuche</h2>
-        <p className="text-white/80 mb-8">Durchsuchen Sie das komplette Macrobius-Korpus</p>
-        <div className="bg-gradient-to-br from-teal-500/10 to-cyan-500/10 border border-teal-400/30 rounded-lg p-6">
-          <p className="text-white/90">KI-gestützte semantische Suche durch 1.401 authentische Textpassagen...</p>
-        </div>
-      </div>
-    ) })),
+  () => import('@/components/sections/MacrobiusTextProcessor-TIER2-COMPLETE'),
   {
     ssr: false,
     loading: LoadingFallback
@@ -203,17 +216,7 @@ const TextSearchSection = dynamic(
 );
 
 const LearningSection = dynamic(
-  () => import('@/components/sections/LearningSection-enhanced-complete')
-    .catch(() => import('@/components/sections/LearningSection'))
-    .catch(() => ({ default: () => (
-      <div className="text-center py-12">
-        <h2 className="text-3xl font-bold text-white mb-6">Lernen</h2>
-        <p className="text-white/80 mb-8">Personalisierte Lernpfade für Latein und antike Kultur</p>
-        <div className="bg-gradient-to-br from-emerald-500/10 to-green-500/10 border border-emerald-400/30 rounded-lg p-6">
-          <p className="text-white/90">Adaptive KI-Tutoring und Vokabeltraining...</p>
-        </div>
-      </div>
-    ) })),
+  () => import('@/components/sections/LearningSection-enhanced-complete'),
   {
     ssr: false,
     loading: LoadingFallback
@@ -235,6 +238,7 @@ interface AppSection {
   description: { de: string; en: string; la: string };
   icon: React.ReactNode;
   component: React.ComponentType<any>;
+  fallback: React.ComponentType;
 }
 
 const appSections: AppSection[] = [
@@ -247,7 +251,8 @@ const appSections: AppSection[] = [
       la: 'Mundum Macrobii explora'
     },
     icon: <Home className="w-8 h-8" />,
-    component: IntroSection
+    component: IntroSection,
+    fallback: LoadingFallback
   },
   {
     id: 'quiz',
@@ -258,7 +263,8 @@ const appSections: AppSection[] = [
       la: 'Scientia interactiva probatio'
     },
     icon: <HelpCircle className="w-8 h-8" />,
-    component: QuizSection
+    component: QuizSection,
+    fallback: StaticQuizFallback
   },
   {
     id: 'worldmap',
@@ -269,7 +275,8 @@ const appSections: AppSection[] = [
       la: 'Geographica exploratio'
     },
     icon: <Globe className="w-8 h-8" />,
-    component: WorldMapSection
+    component: WorldMapSection,
+    fallback: LoadingFallback
   },
   {
     id: 'cosmos',
@@ -280,7 +287,8 @@ const appSections: AppSection[] = [
       la: 'Astronomia et cosmologia antiqua'
     },
     icon: <Star className="w-8 h-8" />,
-    component: CosmosSection
+    component: CosmosSection,
+    fallback: LoadingFallback
   },
   {
     id: 'banquet',
@@ -291,7 +299,8 @@ const appSections: AppSection[] = [
       la: 'Celebres Saturnalium colloquia'
     },
     icon: <Wine className="w-8 h-8" />,
-    component: BanquetSection
+    component: BanquetSection,
+    fallback: LoadingFallback
   },
   {
     id: 'textsearch',
@@ -302,7 +311,8 @@ const appSections: AppSection[] = [
       la: 'AI-adiuvata corporis analysis'
     },
     icon: <Search className="w-8 h-8" />,
-    component: TextSearchSection
+    component: TextSearchSection,
+    fallback: StaticTextSearchFallback
   },
   {
     id: 'learning',
@@ -313,7 +323,8 @@ const appSections: AppSection[] = [
       la: 'Personales viae discendi'
     },
     icon: <GraduationCap className="w-8 h-8" />,
-    component: LearningSection
+    component: LearningSection,
+    fallback: StaticLearningFallback
   },
   {
     id: 'visualizations',
@@ -324,16 +335,18 @@ const appSections: AppSection[] = [
       la: 'Data analysis et visualizatio'
     },
     icon: <BarChart3 className="w-8 h-8" />,
-    component: VisualizationsSection
+    component: VisualizationsSection,
+    fallback: LoadingFallback
   }
 ];
 
-// 🎯 **MAIN APP COMPONENT WITH SSR SAFETY**
+// 🎯 **MAIN APP COMPONENT WITH ENHANCED ERROR HANDLING**
 const ClassicalMacrobiusApp: React.FC = () => {
   // State Management with SSR-safe defaults
   const [currentSection, setCurrentSection] = useState('intro');
   const [isLoading, setIsLoading] = useState(true);
   const [isClient, setIsClient] = useState(false);
+  const [componentError, setComponentError] = useState<string | null>(null);
   
   // Safe language hook usage
   const { language, setLanguage, isHydrated } = useLanguage();
@@ -342,9 +355,15 @@ const ClassicalMacrobiusApp: React.FC = () => {
   useEffect(() => {
     setIsClient(true);
     const initializeApp = async () => {
-      // Simulate app initialization
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      setIsLoading(false);
+      try {
+        // Simulate app initialization
+        await new Promise(resolve => setTimeout(resolve, 1500));
+        setIsLoading(false);
+      } catch (error) {
+        console.error('App initialization error:', error);
+        setComponentError('Initialization failed');
+        setIsLoading(false);
+      }
     };
     
     initializeApp();
@@ -353,8 +372,12 @@ const ClassicalMacrobiusApp: React.FC = () => {
   // 🔧 **SAFE LANGUAGE CHANGE HANDLER**
   const handleLanguageChange = (lang: 'de' | 'en' | 'la') => {
     if (isClient && isHydrated) {
-      const convertedLang = convertToLanguage(lang);
-      setLanguage(convertedLang);
+      try {
+        const convertedLang = convertToLanguage(lang);
+        setLanguage(convertedLang);
+      } catch (error) {
+        console.error('Language change error:', error);
+      }
     }
   };
   
@@ -363,7 +386,15 @@ const ClassicalMacrobiusApp: React.FC = () => {
     id: section.id,
     label: section.label,
     icon: section.icon,
-    onClick: () => setCurrentSection(section.id),
+    onClick: () => {
+      try {
+        setCurrentSection(section.id);
+        setComponentError(null); // Clear any previous errors
+      } catch (error) {
+        console.error('Navigation error:', error);
+        setComponentError('Navigation failed');
+      }
+    },
     active: currentSection === section.id
   }));
   
@@ -373,33 +404,70 @@ const ClassicalMacrobiusApp: React.FC = () => {
     title: section.label,
     description: section.description,
     icon: section.icon,
-    onClick: () => setCurrentSection(section.id)
+    onClick: () => {
+      try {
+        setCurrentSection(section.id);
+        setComponentError(null); // Clear any previous errors
+      } catch (error) {
+        console.error('Section selection error:', error);
+        setComponentError('Section selection failed');
+      }
+    }
   }));
   
-  // 🔧 **SAFE SECTION RENDERING**
+  // 🔧 **SAFE SECTION RENDERING WITH FALLBACKS**
   const renderCurrentSection = () => {
     if (!isClient || !isHydrated) {
       return <LoadingFallback />;
     }
     
+    if (componentError) {
+      return (
+        <div className="text-center py-12">
+          <h2 className="text-2xl font-bold text-red-400 mb-4">Component Error</h2>
+          <p className="text-white/80 mb-4">{componentError}</p>
+          <button 
+            onClick={() => {
+              setComponentError(null);
+              setCurrentSection('intro');
+            }}
+            className="px-4 py-2 bg-yellow-400 text-black rounded hover:bg-yellow-500 transition-colors"
+          >
+            Zurück zur Einführung
+          </button>
+        </div>
+      );
+    }
+    
     const section = appSections.find(s => s.id === currentSection);
-    if (!section) return <LoadingFallback />;
+    if (!section) {
+      const FallbackComponent = StaticQuizFallback;
+      return <FallbackComponent />;
+    }
     
-    const Component = section.component;
-    
-    // Safe language handling
-    const languageCode = language?.toLowerCase() || 'de';
-    const languageName = language === 'DE' ? 'Deutsch' : language === 'EN' ? 'English' : 'Latina';
-    
-    // Unified props for all components
-    const unifiedProps = {
-      language: { code: languageCode, name: languageName },
-      vocabularyData: null,
-      userProfile: null,
-      isActive: true
-    };
-    
-    return <Component {...unifiedProps} />;
+    try {
+      const Component = section.component;
+      const FallbackComponent = section.fallback;
+      
+      // Safe language handling
+      const languageCode = language?.toLowerCase() || 'de';
+      const languageName = language === 'DE' ? 'Deutsch' : language === 'EN' ? 'English' : 'Latina';
+      
+      // Try to render the main component, fall back to static component on error
+      const ComponentToRender = Component || FallbackComponent;
+      
+      // Simplified props - no complex objects
+      const safeProps = {
+        language: languageCode,
+        isActive: true
+      };
+      
+      return <ComponentToRender {...safeProps} />;
+    } catch (error) {
+      console.error('Component render error:', error);
+      const FallbackComponent = section.fallback;
+      return <FallbackComponent />;
+    }
   };
   
   // 🔧 **ENHANCED LOADING SCREEN**
@@ -432,20 +500,33 @@ const ClassicalMacrobiusApp: React.FC = () => {
     );
   }
   
-  // 🔧 **MAIN APP RENDER WITH COMPLETE PROP SAFETY**
-  // Use fallback layout if main layout fails to load
+  // 🔧 **MAIN APP RENDER WITH SAFE COMPONENT SELECTION**
   const LayoutComponent = ClassicalMacrobiusLayout || CompatibleLayoutFallback;
   
-  return (
-    <LayoutComponent
-      navigationItems={navigationItems}
-      contentSections={contentSections}
-      currentSection={currentSection}
-      onLanguageChange={handleLanguageChange}
-    >
-      {currentSection !== 'intro' && renderCurrentSection()}
-    </LayoutComponent>
-  );
+  try {
+    return (
+      <LayoutComponent
+        navigationItems={navigationItems}
+        contentSections={contentSections}
+        currentSection={currentSection}
+        onLanguageChange={handleLanguageChange}
+      >
+        {currentSection !== 'intro' && renderCurrentSection()}
+      </LayoutComponent>
+    );
+  } catch (error) {
+    console.error('Layout render error:', error);
+    return (
+      <CompatibleLayoutFallback
+        navigationItems={navigationItems}
+        contentSections={contentSections}
+        currentSection={currentSection}
+        onLanguageChange={handleLanguageChange}
+      >
+        {currentSection !== 'intro' && renderCurrentSection()}
+      </CompatibleLayoutFallback>
+    );
+  }
 };
 
 // 🔧 **ERROR BOUNDARY WRAPPER**
