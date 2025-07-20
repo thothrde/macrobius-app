@@ -141,6 +141,7 @@ const ClassicalMacrobiusApp: React.FC = () => {
   useEffect(() => {
     console.log('🏛️ CRITICAL: CORRECT SIDEBAR LAYOUT IS LOADING! 🏛️');
     console.log('If you see this message, the new layout should be visible!');
+    console.log('🚀 VERCEL BUILD FIX: TypeScript error resolved - forcing new deployment!');
     
     // Force page title update to confirm changes
     document.title = 'Macrobius - LEFT SIDEBAR LAYOUT ACTIVE';
@@ -191,6 +192,7 @@ const ClassicalMacrobiusApp: React.FC = () => {
   // Render the correct section component
   const renderSection = () => {
     // ✅ FIXED: Use language directly (already uppercase) instead of converting to lowercase
+    // This resolves the TypeScript error: Type 'LanguageCode' is not assignable to type 'DE' | 'EN' | 'LA'
     switch(currentSection) {
       case 'intro': return <IntroSection language={language} />;
       case 'banquet': return <BanquetSection />;
