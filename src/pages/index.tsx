@@ -134,7 +134,7 @@ const MovingStars: React.FC = () => {
 
 // Main App Component - COMPLETELY OVERRIDING SECTION SYSTEM
 const ClassicalMacrobiusApp: React.FC = () => {
-  const { language, setLanguage } = useLanguage();
+  const { language, setLanguage, t } = useLanguage();
   const [currentSection, setCurrentSection] = useState<string>('intro');
   
   // DEBUG: CRITICAL - Log to confirm this is loading
@@ -144,6 +144,7 @@ const ClassicalMacrobiusApp: React.FC = () => {
     console.log('🚀 VERCEL BUILD FIX: TypeScript error resolved - forcing new deployment!');
     console.log('✅ PROP FIX: Adding required isActive prop to section components!');
     console.log('🔧 COMPREHENSIVE FIX: All section components now have proper isActive props!');
+    console.log('🌍 WORLDMAP FIX: Added required t function from language context!');
     
     // Force page title update to confirm changes
     document.title = 'Macrobius - LEFT SIDEBAR LAYOUT ACTIVE';
@@ -193,9 +194,10 @@ const ClassicalMacrobiusApp: React.FC = () => {
 
   // Render the correct section component
   const renderSection = () => {
-    // ✅ COMPREHENSIVE FIX: All section components now receive proper props
-    // - language: Already correct uppercase format (DE|EN|LA)
+    // ✅ ULTIMATE FIX: All section components now receive exactly the props they need
+    // - language: Correct uppercase format (DE|EN|LA)
     // - isActive: Added to ALL components that require it
+    // - t: Translation function for WorldMapSection
     switch(currentSection) {
       case 'intro': 
         return <IntroSection language={language} />;
@@ -208,7 +210,7 @@ const ClassicalMacrobiusApp: React.FC = () => {
       case 'textsearch': 
         return <TextSearchSection isActive={true} language={language} />;
       case 'worldmap': 
-        return <WorldMapSection isActive={true} language={language} />;
+        return <WorldMapSection isActive={true} t={t} language={language} />;
       case 'visualizations': 
         return <VisualizationsSection isActive={true} language={language} />;
       case 'vokabeltrainer': 
