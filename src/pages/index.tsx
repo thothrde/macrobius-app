@@ -53,33 +53,50 @@ const LoadingFallback = () => (
   </div>
 );
 
-// 🔧 **STATIC FALLBACK COMPONENTS FOR SSR SAFETY**
-const createStaticFallback = (title: string, description: string, gradientClasses: string) => () => (
-  <div className="text-center py-12">
-    <h2 className="text-3xl font-bold text-white mb-6">{title}</h2>
-    <p className="text-white/80 mb-8">{description}</p>
-    <div className={cn("border border-opacity-30 rounded-lg p-6", gradientClasses)}>
-      <p className="text-white/90">Lade erweiterte Funktionen...</p>
-      <div className="mt-4 flex justify-center">
-        <EnhancedLoadingSpinner />
-      </div>
+// 🔧 **BASIC LAYOUT FALLBACK FOR MAXIMUM SAFETY**
+const BasicLayoutFallback: React.FC<{ children: React.ReactNode }> = ({ children }) => (
+  <div className="min-h-screen bg-gradient-to-br from-indigo-950 via-purple-950 to-black">
+    <div className="container mx-auto px-4 py-8">
+      <header className="text-center mb-8">
+        <h1 className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-amber-500 mb-4">
+          Macrobius
+        </h1>
+        <p className="text-xl text-white/80">Eine antike Flaschenpost - Eine Nachricht aus der Antike an die Zukunft</p>
+      </header>
+      <main className="max-w-4xl mx-auto">
+        {children}
+      </main>
     </div>
   </div>
 );
 
-// 🎯 **ALL DYNAMIC COMPONENTS WITH SSR DISABLED**
-// Main layout component
+// 🎯 **ALL DYNAMIC COMPONENTS WITH SSR DISABLED AND SAFE FALLBACKS**
+// Main layout component with ultra-safe fallback
 const ClassicalMacrobiusLayout = dynamic(
-  () => import('@/components/ui/ClassicalMacrobiusLayout'),
+  () => import('@/components/ui/ClassicalMacrobiusLayout')
+    .catch(() => ({ default: BasicLayoutFallback })),
   {
     ssr: false,
     loading: LoadingFallback
   }
 );
 
-// Section components with fallbacks
+// Section components with safe fallbacks
 const IntroSection = dynamic(
-  () => import('@/components/sections/IntroSection'),
+  () => import('@/components/sections/IntroSection')
+    .catch(() => ({ default: () => (
+      <div className="text-center py-12">
+        <h2 className="text-3xl font-bold text-white mb-6">Willkommen bei Macrobius</h2>
+        <p className="text-xl text-white/80 mb-8 leading-relaxed">Eine antike Flaschenpost - Eine Nachricht aus der Antike an die Zukunft</p>
+        <div className="bg-gradient-to-br from-yellow-400/10 to-amber-500/10 border border-yellow-400/30 rounded-lg p-6">
+          <p className="text-white/90 leading-relaxed">
+            Entdecken Sie die Weisheit des Macrobius Ambrosius Theodosius, des großen spätantiken Gelehrten. 
+            Tauchen Sie ein in die Welt der Saturnalien und erforschen Sie antike Kultur, Astronomie und Philosophie 
+            mit modernsten KI-gestützten Lernwerkzeugen.
+          </p>
+        </div>
+      </div>
+    ) })),
   {
     ssr: false,
     loading: LoadingFallback
@@ -88,7 +105,16 @@ const IntroSection = dynamic(
 
 const QuizSection = dynamic(
   () => import('@/components/sections/QuizSection-SMART-GENERATION-COMPLETE')
-    .catch(() => import('@/components/sections/QuizSection')),
+    .catch(() => import('@/components/sections/QuizSection'))
+    .catch(() => ({ default: () => (
+      <div className="text-center py-12">
+        <h2 className="text-3xl font-bold text-white mb-6">Interaktive Quiz</h2>
+        <p className="text-white/80 mb-8">Testen Sie Ihr Wissen über Macrobius und die antike Kultur</p>
+        <div className="bg-gradient-to-br from-blue-500/10 to-purple-500/10 border border-blue-400/30 rounded-lg p-6">
+          <p className="text-white/90">KI-generierte Quizfragen basierend auf authentischen Texten...</p>
+        </div>
+      </div>
+    ) })),
   {
     ssr: false,
     loading: LoadingFallback
@@ -96,7 +122,16 @@ const QuizSection = dynamic(
 );
 
 const WorldMapSection = dynamic(
-  () => import('@/components/sections/WorldMapSection'),
+  () => import('@/components/sections/WorldMapSection')
+    .catch(() => ({ default: () => (
+      <div className="text-center py-12">
+        <h2 className="text-3xl font-bold text-white mb-6">Weltkarte</h2>
+        <p className="text-white/80 mb-8">Erkunden Sie die geographische Welt des Macrobius</p>
+        <div className="bg-gradient-to-br from-green-500/10 to-blue-500/10 border border-green-400/30 rounded-lg p-6">
+          <p className="text-white/90">Interaktive Darstellung historischer Orte und Konzepte...</p>
+        </div>
+      </div>
+    ) })),
   {
     ssr: false,
     loading: LoadingFallback
@@ -104,7 +139,16 @@ const WorldMapSection = dynamic(
 );
 
 const CosmosSection = dynamic(
-  () => import('@/components/sections/CosmosSection'),
+  () => import('@/components/sections/CosmosSection')
+    .catch(() => ({ default: () => (
+      <div className="text-center py-12">
+        <h2 className="text-3xl font-bold text-white mb-6">Kosmos</h2>
+        <p className="text-white/80 mb-8">Entdecken Sie die antike Kosmologie und Astronomie</p>
+        <div className="bg-gradient-to-br from-purple-500/10 to-pink-500/10 border border-purple-400/30 rounded-lg p-6">
+          <p className="text-white/90">Visualisierung antiker astronomischer Konzepte...</p>
+        </div>
+      </div>
+    ) })),
   {
     ssr: false,
     loading: LoadingFallback
@@ -112,7 +156,16 @@ const CosmosSection = dynamic(
 );
 
 const BanquetSection = dynamic(
-  () => import('@/components/sections/BanquetSection'),
+  () => import('@/components/sections/BanquetSection')
+    .catch(() => ({ default: () => (
+      <div className="text-center py-12">
+        <h2 className="text-3xl font-bold text-white mb-6">Gastmahl</h2>
+        <p className="text-white/80 mb-8">Erleben Sie die berühmten Saturnalien-Gespräche</p>
+        <div className="bg-gradient-to-br from-orange-500/10 to-red-500/10 border border-orange-400/30 rounded-lg p-6">
+          <p className="text-white/90">Immersive Darstellung der antiken Symposium-Kultur...</p>
+        </div>
+      </div>
+    ) })),
   {
     ssr: false,
     loading: LoadingFallback
@@ -121,7 +174,16 @@ const BanquetSection = dynamic(
 
 const TextSearchSection = dynamic(
   () => import('@/components/sections/MacrobiusTextProcessor-TIER2-COMPLETE')
-    .catch(() => import('@/components/sections/TextSearchSection')),
+    .catch(() => import('@/components/sections/TextSearchSection'))
+    .catch(() => ({ default: () => (
+      <div className="text-center py-12">
+        <h2 className="text-3xl font-bold text-white mb-6">Textsuche</h2>
+        <p className="text-white/80 mb-8">Durchsuchen Sie das komplette Macrobius-Korpus</p>
+        <div className="bg-gradient-to-br from-teal-500/10 to-cyan-500/10 border border-teal-400/30 rounded-lg p-6">
+          <p className="text-white/90">KI-gestützte semantische Suche durch 1.401 authentische Textpassagen...</p>
+        </div>
+      </div>
+    ) })),
   {
     ssr: false,
     loading: LoadingFallback
@@ -130,7 +192,16 @@ const TextSearchSection = dynamic(
 
 const LearningSection = dynamic(
   () => import('@/components/sections/LearningSection-enhanced-complete')
-    .catch(() => import('@/components/sections/LearningSection')),
+    .catch(() => import('@/components/sections/LearningSection'))
+    .catch(() => ({ default: () => (
+      <div className="text-center py-12">
+        <h2 className="text-3xl font-bold text-white mb-6">Lernen</h2>
+        <p className="text-white/80 mb-8">Personalisierte Lernpfade für Latein und antike Kultur</p>
+        <div className="bg-gradient-to-br from-emerald-500/10 to-green-500/10 border border-emerald-400/30 rounded-lg p-6">
+          <p className="text-white/90">Adaptive KI-Tutoring und Vokabeltraining...</p>
+        </div>
+      </div>
+    ) })),
   {
     ssr: false,
     loading: LoadingFallback
@@ -138,7 +209,16 @@ const LearningSection = dynamic(
 );
 
 const VisualizationsSection = dynamic(
-  () => import('@/components/sections/VisualizationsSection'),
+  () => import('@/components/sections/VisualizationsSection')
+    .catch(() => ({ default: () => (
+      <div className="text-center py-12">
+        <h2 className="text-3xl font-bold text-white mb-6">Visualisierungen</h2>
+        <p className="text-white/80 mb-8">Datenvisualisierung und interaktive Analysen</p>
+        <div className="bg-gradient-to-br from-violet-500/10 to-purple-500/10 border border-violet-400/30 rounded-lg p-6">
+          <p className="text-white/90">Zeitleisten, Netzwerke und thematische Analysen...</p>
+        </div>
+      </div>
+    ) })),
   {
     ssr: false,
     loading: LoadingFallback
