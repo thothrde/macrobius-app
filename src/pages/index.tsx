@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import dynamic from 'next/dynamic';
 import { useLanguage, Language } from '@/contexts/LanguageContext';
 import { cn } from '@/lib/utils';
@@ -16,7 +16,8 @@ import {
   GraduationCap, 
   BarChart3,
   Wine,
-  User
+  User,
+  Sparkles
 } from 'lucide-react';
 
 // 🔧 **SAFE UI COMPONENTS WITH FALLBACKS**
@@ -38,196 +39,214 @@ const convertToLanguage = (lang: 'de' | 'en' | 'la'): Language => {
   }
 };
 
-// 🔧 **LOADING FALLBACK COMPONENT**
-const LoadingFallback = () => (
-  <div className="min-h-[400px] flex items-center justify-center">
-    <EnhancedLoadingSpinner />
-  </div>
-);
-
-// 🔧 **SIMPLE STATIC FALLBACK COMPONENTS FOR TYPE SAFETY**
-const StaticQuizFallback = () => (
-  <div className="text-center py-12">
-    <h2 className="text-3xl font-bold text-white mb-6">Interaktive Quiz</h2>
-    <p className="text-white/80 mb-8">Testen Sie Ihr Wissen über Macrobius und die antike Kultur</p>
-    <div className="bg-gradient-to-br from-blue-500/10 to-purple-500/10 border border-blue-400/30 rounded-lg p-6">
-      <p className="text-white/90">KI-generierte Quizfragen basierend auf authentischen Texten...</p>
-      <div className="mt-4 flex justify-center">
-        <EnhancedLoadingSpinner />
-      </div>
+// 🔧 **ENHANCED LOADING FALLBACK WITH CLASSICAL DESIGN**
+const ClassicalLoadingFallback = () => (
+  <div className="min-h-screen bg-gradient-to-br from-indigo-950 via-purple-950 to-black relative overflow-hidden">
+    {/* Starfield Background */}
+    <div className="absolute inset-0">
+      {[...Array(100)].map((_, i) => (
+        <div
+          key={i}
+          className="absolute bg-white rounded-full animate-pulse"
+          style={{
+            left: `${Math.random() * 100}%`,
+            top: `${Math.random() * 100}%`,
+            width: `${0.5 + Math.random() * 1.5}px`,
+            height: `${0.5 + Math.random() * 1.5}px`,
+            animationDelay: `${Math.random() * 3}s`,
+            animationDuration: `${2 + Math.random() * 2}s`
+          }}
+        />
+      ))}
     </div>
-  </div>
-);
-
-const StaticTextSearchFallback = () => (
-  <div className="text-center py-12">
-    <h2 className="text-3xl font-bold text-white mb-6">Textsuche</h2>
-    <p className="text-white/80 mb-8">Durchsuchen Sie das komplette Macrobius-Korpus</p>
-    <div className="bg-gradient-to-br from-teal-500/10 to-cyan-500/10 border border-teal-400/30 rounded-lg p-6">
-      <p className="text-white/90">KI-gestützte semantische Suche durch 1.401 authentische Textpassagen...</p>
-      <div className="mt-4 flex justify-center">
-        <EnhancedLoadingSpinner />
-      </div>
-    </div>
-  </div>
-);
-
-const StaticLearningFallback = () => (
-  <div className="text-center py-12">
-    <h2 className="text-3xl font-bold text-white mb-6">Lernen</h2>
-    <p className="text-white/80 mb-8">Personalisierte Lernpfade für Latein und antike Kultur</p>
-    <div className="bg-gradient-to-br from-emerald-500/10 to-green-500/10 border border-emerald-400/30 rounded-lg p-6">
-      <p className="text-white/90">Adaptive KI-Tutoring und Vokabeltraining...</p>
-      <div className="mt-4 flex justify-center">
-        <EnhancedLoadingSpinner />
-      </div>
-    </div>
-  </div>
-);
-
-// 🔧 **COMPATIBLE LAYOUT FALLBACK**
-interface LayoutFallbackProps {
-  children?: React.ReactNode;
-  navigationItems?: any[];
-  contentSections?: any[];
-  currentSection?: string;
-  onLanguageChange?: (lang: 'de' | 'en' | 'la') => void;
-}
-
-const CompatibleLayoutFallback: React.FC<LayoutFallbackProps> = ({ 
-  children, 
-  navigationItems = [], 
-  contentSections = [], 
-  currentSection, 
-  onLanguageChange 
-}) => (
-  <div className="min-h-screen bg-gradient-to-br from-indigo-950 via-purple-950 to-black">
-    <div className="container mx-auto px-4 py-8">
-      <header className="text-center mb-8">
-        <h1 className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-amber-500 mb-4">
-          Macrobius
-        </h1>
-        <p className="text-xl text-white/80">Eine antike Flaschenpost - Eine Nachricht aus der Antike an die Zukunft</p>
-        
-        {/* Simple Language Selector */}
-        {onLanguageChange && (
-          <div className="mt-4 flex justify-center gap-2">
-            {(['de', 'en', 'la'] as const).map((lang) => (
-              <button
-                key={lang}
-                onClick={() => onLanguageChange(lang)}
-                className="px-3 py-1 bg-yellow-400/20 text-yellow-400 rounded border border-yellow-400/40 hover:bg-yellow-400/30 transition-colors"
-              >
-                {lang.toUpperCase()}
-              </button>
-            ))}
+    
+    {/* Loading Content */}
+    <div className="relative z-10 min-h-screen flex items-center justify-center">
+      <div className="text-center space-y-8">
+        {/* Animated Macrobius Portrait */}
+        <div className="relative mx-auto">
+          <div className="w-32 h-32 rounded-full border-4 border-yellow-400 bg-gradient-to-br from-amber-900/80 to-yellow-900/80 backdrop-blur-sm flex items-center justify-center animate-pulse">
+            <User className="w-16 h-16 text-yellow-400" />
           </div>
-        )}
-      </header>
-      
-      <main className="max-w-4xl mx-auto">
-        {/* Simple Navigation */}
-        {navigationItems.length > 0 && (
-          <nav className="mb-8 flex flex-wrap justify-center gap-2">
-            {navigationItems.map((item, index) => (
-              <button
-                key={item.id || index}
-                onClick={item.onClick}
-                className="px-4 py-2 bg-white/10 text-white rounded hover:bg-white/20 transition-colors border border-white/20"
-              >
-                {item.label?.de || item.label || `Section ${index + 1}`}
-              </button>
-            ))}
-          </nav>
-        )}
-        
-        {/* Content Area */}
-        <div className="bg-black/30 backdrop-blur-sm rounded-lg p-6 border border-white/20">
-          {children || (
-            <div className="text-center text-white">
-              <EnhancedLoadingSpinner />
-              <p className="mt-4">Lade Komponenten...</p>
-            </div>
-          )}
+          <div className="absolute -inset-4 rounded-full border border-yellow-400/30 animate-spin" style={{
+            animation: 'spin 3s linear infinite'
+          }} />
         </div>
-      </main>
+        
+        <div className="space-y-4">
+          <h1 className="text-3xl md:text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-amber-500">
+            Lade Macrobius...
+          </h1>
+          <p className="text-lg text-white/70">
+            Bereite die antike Weisheit vor...
+          </p>
+        </div>
+        
+        <EnhancedLoadingSpinner />
+      </div>
     </div>
   </div>
 );
 
-// 🎯 **SIMPLIFIED DYNAMIC COMPONENTS - NO COMPLEX FALLBACK CHAINS**
-// Main layout component
-const ClassicalMacrobiusLayout = dynamic(
-  () => import('@/components/ui/ClassicalMacrobiusLayout'),
-  {
-    ssr: false,
-    loading: LoadingFallback
-  }
-);
+// 🎯 **DIRECT IMPORTS WITH ERROR BOUNDARIES - NO DYNAMIC LOADING FOR LAYOUT**
+// Import ClassicalMacrobiusLayout directly to ensure it loads
+import ClassicalMacrobiusLayout from '@/components/ui/ClassicalMacrobiusLayout';
 
-// Section components with simple dynamic imports - no complex fallbacks
+// Section components with simple dynamic imports
 const IntroSection = dynamic(
-  () => import('@/components/sections/IntroSection'),
+  () => import('@/components/sections/IntroSection').catch(() => ({
+    default: () => (
+      <div className="text-center py-12">
+        <h2 className="text-3xl font-bold text-white mb-6">Willkommen bei Macrobius</h2>
+        <p className="text-xl text-white/80 mb-8 leading-relaxed">Eine antike Flaschenpost - Eine Nachricht aus der Antike an die Zukunft</p>
+        <div className="bg-gradient-to-br from-yellow-400/10 to-amber-500/10 border border-yellow-400/30 rounded-lg p-6">
+          <p className="text-white/90 leading-relaxed">
+            Entdecken Sie die Weisheit des Macrobius Ambrosius Theodosius, des großen spätantiken Gelehrten. 
+            Tauchen Sie ein in die Welt der Saturnalien und erforschen Sie antike Kultur, Astronomie und Philosophie 
+            mit modernsten KI-gestützten Lernwerkzeugen.
+          </p>
+        </div>
+      </div>
+    )
+  })),
   {
     ssr: false,
-    loading: LoadingFallback
+    loading: () => <ClassicalLoadingFallback />
   }
 );
 
-// Use static fallbacks instead of dynamic import chains
 const QuizSection = dynamic(
-  () => import('@/components/sections/QuizSection-SMART-GENERATION-COMPLETE'),
+  () => import('@/components/sections/QuizSection-SMART-GENERATION-COMPLETE').catch(() => ({
+    default: () => (
+      <div className="text-center py-12">
+        <h2 className="text-3xl font-bold text-white mb-6">Interaktive Quiz</h2>
+        <p className="text-white/80 mb-8">Testen Sie Ihr Wissen über Macrobius und die antike Kultur</p>
+        <div className="bg-gradient-to-br from-blue-500/10 to-purple-500/10 border border-blue-400/30 rounded-lg p-6">
+          <p className="text-white/90">KI-generierte Quizfragen basierend auf authentischen Texten...</p>
+          <div className="mt-4 flex justify-center">
+            <EnhancedLoadingSpinner />
+          </div>
+        </div>
+      </div>
+    )
+  })),
   {
     ssr: false,
-    loading: LoadingFallback
+    loading: () => <ClassicalLoadingFallback />
   }
 );
 
 const WorldMapSection = dynamic(
-  () => import('@/components/sections/WorldMapSection'),
+  () => import('@/components/sections/WorldMapSection').catch(() => ({
+    default: () => (
+      <div className="text-center py-12">
+        <h2 className="text-3xl font-bold text-white mb-6">Weltkarte</h2>
+        <p className="text-white/80 mb-8">Erkunden Sie die geographische Welt des Macrobius</p>
+        <div className="bg-gradient-to-br from-green-500/10 to-blue-500/10 border border-green-400/30 rounded-lg p-6">
+          <p className="text-white/90">Interaktive Darstellung historischer Orte und Konzepte...</p>
+        </div>
+      </div>
+    )
+  })),
   {
     ssr: false,
-    loading: LoadingFallback
+    loading: () => <ClassicalLoadingFallback />
   }
 );
 
 const CosmosSection = dynamic(
-  () => import('@/components/sections/CosmosSection'),
+  () => import('@/components/sections/CosmosSection').catch(() => ({
+    default: () => (
+      <div className="text-center py-12">
+        <h2 className="text-3xl font-bold text-white mb-6">Kosmos</h2>
+        <p className="text-white/80 mb-8">Entdecken Sie die antike Kosmologie und Astronomie</p>
+        <div className="bg-gradient-to-br from-purple-500/10 to-pink-500/10 border border-purple-400/30 rounded-lg p-6">
+          <p className="text-white/90">Visualisierung antiker astronomischer Konzepte...</p>
+        </div>
+      </div>
+    )
+  })),
   {
     ssr: false,
-    loading: LoadingFallback
+    loading: () => <ClassicalLoadingFallback />
   }
 );
 
 const BanquetSection = dynamic(
-  () => import('@/components/sections/BanquetSection'),
+  () => import('@/components/sections/BanquetSection').catch(() => ({
+    default: () => (
+      <div className="text-center py-12">
+        <h2 className="text-3xl font-bold text-white mb-6">Gastmahl</h2>
+        <p className="text-white/80 mb-8">Erleben Sie die berühmten Saturnalien-Gespräche</p>
+        <div className="bg-gradient-to-br from-orange-500/10 to-red-500/10 border border-orange-400/30 rounded-lg p-6">
+          <p className="text-white/90">Immersive Darstellung der antiken Symposium-Kultur...</p>
+        </div>
+      </div>
+    )
+  })),
   {
     ssr: false,
-    loading: LoadingFallback
+    loading: () => <ClassicalLoadingFallback />
   }
 );
 
 const TextSearchSection = dynamic(
-  () => import('@/components/sections/MacrobiusTextProcessor-TIER2-COMPLETE'),
+  () => import('@/components/sections/MacrobiusTextProcessor-TIER2-COMPLETE').catch(() => ({
+    default: () => (
+      <div className="text-center py-12">
+        <h2 className="text-3xl font-bold text-white mb-6">Textsuche</h2>
+        <p className="text-white/80 mb-8">Durchsuchen Sie das komplette Macrobius-Korpus</p>
+        <div className="bg-gradient-to-br from-teal-500/10 to-cyan-500/10 border border-teal-400/30 rounded-lg p-6">
+          <p className="text-white/90">KI-gestützte semantische Suche durch 1.401 authentische Textpassagen...</p>
+          <div className="mt-4 flex justify-center">
+            <EnhancedLoadingSpinner />
+          </div>
+        </div>
+      </div>
+    )
+  })),
   {
     ssr: false,
-    loading: LoadingFallback
+    loading: () => <ClassicalLoadingFallback />
   }
 );
 
 const LearningSection = dynamic(
-  () => import('@/components/sections/LearningSection-enhanced-complete'),
+  () => import('@/components/sections/LearningSection-enhanced-complete').catch(() => ({
+    default: () => (
+      <div className="text-center py-12">
+        <h2 className="text-3xl font-bold text-white mb-6">Lernen</h2>
+        <p className="text-white/80 mb-8">Personalisierte Lernpfade für Latein und antike Kultur</p>
+        <div className="bg-gradient-to-br from-emerald-500/10 to-green-500/10 border border-emerald-400/30 rounded-lg p-6">
+          <p className="text-white/90">Adaptive KI-Tutoring und Vokabeltraining...</p>
+          <div className="mt-4 flex justify-center">
+            <EnhancedLoadingSpinner />
+          </div>
+        </div>
+      </div>
+    )
+  })),
   {
     ssr: false,
-    loading: LoadingFallback
+    loading: () => <ClassicalLoadingFallback />
   }
 );
 
 const VisualizationsSection = dynamic(
-  () => import('@/components/sections/VisualizationsSection'),
+  () => import('@/components/sections/VisualizationsSection').catch(() => ({
+    default: () => (
+      <div className="text-center py-12">
+        <h2 className="text-3xl font-bold text-white mb-6">Visualisierungen</h2>
+        <p className="text-white/80 mb-8">Datenvisualisierung und interaktive Analysen</p>
+        <div className="bg-gradient-to-br from-violet-500/10 to-purple-500/10 border border-violet-400/30 rounded-lg p-6">
+          <p className="text-white/90">Zeitleisten, Netzwerke und thematische Analysen...</p>
+        </div>
+      </div>
+    )
+  })),
   {
     ssr: false,
-    loading: LoadingFallback
+    loading: () => <ClassicalLoadingFallback />
   }
 );
 
@@ -238,7 +257,6 @@ interface AppSection {
   description: { de: string; en: string; la: string };
   icon: React.ReactNode;
   component: React.ComponentType<any>;
-  fallback: React.ComponentType;
 }
 
 const appSections: AppSection[] = [
@@ -251,8 +269,7 @@ const appSections: AppSection[] = [
       la: 'Mundum Macrobii explora'
     },
     icon: <Home className="w-8 h-8" />,
-    component: IntroSection,
-    fallback: LoadingFallback
+    component: IntroSection
   },
   {
     id: 'quiz',
@@ -263,8 +280,7 @@ const appSections: AppSection[] = [
       la: 'Scientia interactiva probatio'
     },
     icon: <HelpCircle className="w-8 h-8" />,
-    component: QuizSection,
-    fallback: StaticQuizFallback
+    component: QuizSection
   },
   {
     id: 'worldmap',
@@ -275,8 +291,7 @@ const appSections: AppSection[] = [
       la: 'Geographica exploratio'
     },
     icon: <Globe className="w-8 h-8" />,
-    component: WorldMapSection,
-    fallback: LoadingFallback
+    component: WorldMapSection
   },
   {
     id: 'cosmos',
@@ -287,8 +302,7 @@ const appSections: AppSection[] = [
       la: 'Astronomia et cosmologia antiqua'
     },
     icon: <Star className="w-8 h-8" />,
-    component: CosmosSection,
-    fallback: LoadingFallback
+    component: CosmosSection
   },
   {
     id: 'banquet',
@@ -299,8 +313,7 @@ const appSections: AppSection[] = [
       la: 'Celebres Saturnalium colloquia'
     },
     icon: <Wine className="w-8 h-8" />,
-    component: BanquetSection,
-    fallback: LoadingFallback
+    component: BanquetSection
   },
   {
     id: 'textsearch',
@@ -311,8 +324,7 @@ const appSections: AppSection[] = [
       la: 'AI-adiuvata corporis analysis'
     },
     icon: <Search className="w-8 h-8" />,
-    component: TextSearchSection,
-    fallback: StaticTextSearchFallback
+    component: TextSearchSection
   },
   {
     id: 'learning',
@@ -323,8 +335,7 @@ const appSections: AppSection[] = [
       la: 'Personales viae discendi'
     },
     icon: <GraduationCap className="w-8 h-8" />,
-    component: LearningSection,
-    fallback: StaticLearningFallback
+    component: LearningSection
   },
   {
     id: 'visualizations',
@@ -335,18 +346,16 @@ const appSections: AppSection[] = [
       la: 'Data analysis et visualizatio'
     },
     icon: <BarChart3 className="w-8 h-8" />,
-    component: VisualizationsSection,
-    fallback: LoadingFallback
+    component: VisualizationsSection
   }
 ];
 
-// 🎯 **MAIN APP COMPONENT WITH ENHANCED ERROR HANDLING**
+// 🎯 **MAIN APP COMPONENT WITH DIRECT LAYOUT IMPORT**
 const ClassicalMacrobiusApp: React.FC = () => {
   // State Management with SSR-safe defaults
   const [currentSection, setCurrentSection] = useState('intro');
   const [isLoading, setIsLoading] = useState(true);
   const [isClient, setIsClient] = useState(false);
-  const [componentError, setComponentError] = useState<string | null>(null);
   
   // Safe language hook usage
   const { language, setLanguage, isHydrated } = useLanguage();
@@ -361,7 +370,6 @@ const ClassicalMacrobiusApp: React.FC = () => {
         setIsLoading(false);
       } catch (error) {
         console.error('App initialization error:', error);
-        setComponentError('Initialization failed');
         setIsLoading(false);
       }
     };
@@ -386,15 +394,7 @@ const ClassicalMacrobiusApp: React.FC = () => {
     id: section.id,
     label: section.label,
     icon: section.icon,
-    onClick: () => {
-      try {
-        setCurrentSection(section.id);
-        setComponentError(null); // Clear any previous errors
-      } catch (error) {
-        console.error('Navigation error:', error);
-        setComponentError('Navigation failed');
-      }
-    },
+    onClick: () => setCurrentSection(section.id),
     active: currentSection === section.id
   }));
   
@@ -404,127 +404,109 @@ const ClassicalMacrobiusApp: React.FC = () => {
     title: section.label,
     description: section.description,
     icon: section.icon,
-    onClick: () => {
-      try {
-        setCurrentSection(section.id);
-        setComponentError(null); // Clear any previous errors
-      } catch (error) {
-        console.error('Section selection error:', error);
-        setComponentError('Section selection failed');
-      }
-    }
+    onClick: () => setCurrentSection(section.id)
   }));
   
-  // 🔧 **SAFE SECTION RENDERING WITH FALLBACKS**
+  // 🔧 **SAFE SECTION RENDERING**
   const renderCurrentSection = () => {
     if (!isClient || !isHydrated) {
-      return <LoadingFallback />;
-    }
-    
-    if (componentError) {
-      return (
-        <div className="text-center py-12">
-          <h2 className="text-2xl font-bold text-red-400 mb-4">Component Error</h2>
-          <p className="text-white/80 mb-4">{componentError}</p>
-          <button 
-            onClick={() => {
-              setComponentError(null);
-              setCurrentSection('intro');
-            }}
-            className="px-4 py-2 bg-yellow-400 text-black rounded hover:bg-yellow-500 transition-colors"
-          >
-            Zurück zur Einführung
-          </button>
-        </div>
-      );
+      return <ClassicalLoadingFallback />;
     }
     
     const section = appSections.find(s => s.id === currentSection);
-    if (!section) {
-      const FallbackComponent = StaticQuizFallback;
-      return <FallbackComponent />;
-    }
+    if (!section) return <ClassicalLoadingFallback />;
     
-    try {
-      const Component = section.component;
-      const FallbackComponent = section.fallback;
-      
-      // Safe language handling
-      const languageCode = language?.toLowerCase() || 'de';
-      const languageName = language === 'DE' ? 'Deutsch' : language === 'EN' ? 'English' : 'Latina';
-      
-      // Try to render the main component, fall back to static component on error
-      const ComponentToRender = Component || FallbackComponent;
-      
-      // Simplified props - no complex objects
-      const safeProps = {
-        language: languageCode,
-        isActive: true
-      };
-      
-      return <ComponentToRender {...safeProps} />;
-    } catch (error) {
-      console.error('Component render error:', error);
-      const FallbackComponent = section.fallback;
-      return <FallbackComponent />;
-    }
+    const Component = section.component;
+    
+    // Safe language handling
+    const languageCode = language?.toLowerCase() || 'de';
+    const languageName = language === 'DE' ? 'Deutsch' : language === 'EN' ? 'English' : 'Latina';
+    
+    // Simplified props
+    const safeProps = {
+      language: languageCode,
+      isActive: true
+    };
+    
+    return (
+      <Suspense fallback={<ClassicalLoadingFallback />}>
+        <Component {...safeProps} />
+      </Suspense>
+    );
   };
   
-  // 🔧 **ENHANCED LOADING SCREEN**
+  // 🔧 **ENHANCED LOADING SCREEN WITH CLASSICAL DESIGN**
   if (isLoading || !isClient || !isHydrated) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-950 via-purple-950 to-black">
-        <div className="text-center space-y-8">
-          {/* Animated Macrobius Portrait */}
-          <div className="relative mx-auto">
-            <div className="w-32 h-32 rounded-full border-4 border-yellow-400 bg-gradient-to-br from-amber-900/80 to-yellow-900/80 backdrop-blur-sm flex items-center justify-center animate-pulse">
-              <User className="w-16 h-16 text-yellow-400" />
-            </div>
-            <div className="absolute -inset-4 rounded-full border border-yellow-400/30 animate-spin" style={{
-              animation: 'spin 3s linear infinite'
-            }} />
-          </div>
-          
-          <div className="space-y-4">
-            <h1 className="text-3xl md:text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-amber-500">
-              {language === 'DE' ? 'Lade Macrobius...' : language === 'EN' ? 'Loading Macrobius...' : 'Macrobius Carrico...'}
-            </h1>
-            <p className="text-lg text-white/70">
-              {language === 'DE' ? 'Bereite die antike Weisheit vor...' : language === 'EN' ? 'Preparing ancient wisdom...' : 'Sapientiam antiquam paro...'}
-            </p>
-          </div>
-          
-          <EnhancedLoadingSpinner />
-        </div>
-      </div>
-    );
+    return <ClassicalLoadingFallback />;
   }
   
-  // 🔧 **MAIN APP RENDER WITH SAFE COMPONENT SELECTION**
-  const LayoutComponent = ClassicalMacrobiusLayout || CompatibleLayoutFallback;
-  
+  // 🔧 **MAIN APP RENDER WITH DIRECT CLASSICAL LAYOUT**
   try {
     return (
-      <LayoutComponent
+      <ClassicalMacrobiusLayout
         navigationItems={navigationItems}
         contentSections={contentSections}
         currentSection={currentSection}
         onLanguageChange={handleLanguageChange}
       >
         {currentSection !== 'intro' && renderCurrentSection()}
-      </LayoutComponent>
+      </ClassicalMacrobiusLayout>
     );
   } catch (error) {
     console.error('Layout render error:', error);
+    
+    // Fallback with classical design if main layout fails
     return (
-      <CompatibleLayoutFallback
-        navigationItems={navigationItems}
-        contentSections={contentSections}
-        currentSection={currentSection}
-        onLanguageChange={handleLanguageChange}
-      >
-        {currentSection !== 'intro' && renderCurrentSection()}
-      </CompatibleLayoutFallback>
+      <div className="min-h-screen bg-gradient-to-br from-indigo-950 via-purple-950 to-black relative overflow-hidden">
+        {/* Starfield Background */}
+        <div className="absolute inset-0">
+          {[...Array(100)].map((_, i) => (
+            <div
+              key={i}
+              className="absolute bg-white rounded-full animate-pulse"
+              style={{
+                left: `${Math.random() * 100}%`,
+                top: `${Math.random() * 100}%`,
+                width: `${0.5 + Math.random() * 1.5}px`,
+                height: `${0.5 + Math.random() * 1.5}px`,
+                animationDelay: `${Math.random() * 3}s`,
+                animationDuration: `${2 + Math.random() * 2}s`
+              }}
+            />
+          ))}
+        </div>
+        
+        <div className="relative z-10 container mx-auto px-4 py-8">
+          <header className="text-center mb-8">
+            <div className="mb-6 mx-auto w-24 h-24 rounded-full border-4 border-yellow-400 bg-gradient-to-br from-amber-900/80 to-yellow-900/80 backdrop-blur-sm flex items-center justify-center">
+              <User className="w-12 h-12 text-yellow-400" />
+            </div>
+            <h1 className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-amber-500 mb-4">
+              Macrobius
+            </h1>
+            <p className="text-xl text-white/80">Eine antike Flaschenpost - Eine Nachricht aus der Antike an die Zukunft</p>
+            
+            {/* Language Selector */}
+            <div className="mt-4 flex justify-center gap-2">
+              {(['de', 'en', 'la'] as const).map((lang) => (
+                <button
+                  key={lang}
+                  onClick={() => handleLanguageChange(lang)}
+                  className="px-3 py-1 bg-yellow-400/20 text-yellow-400 rounded border border-yellow-400/40 hover:bg-yellow-400/30 transition-colors"
+                >
+                  {lang.toUpperCase()}
+                </button>
+              ))}
+            </div>
+          </header>
+          
+          <main className="max-w-4xl mx-auto">
+            <div className="bg-black/30 backdrop-blur-sm rounded-lg p-6 border border-yellow-400/30">
+              {renderCurrentSection()}
+            </div>
+          </main>
+        </div>
+      </div>
     );
   }
 };
