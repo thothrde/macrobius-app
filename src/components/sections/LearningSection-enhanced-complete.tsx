@@ -28,6 +28,12 @@ import {
 // Define the expected language type for components
 type ComponentLanguage = 'DE' | 'EN' | 'LA';
 
+// ✅ FIXED INTERFACE: Added missing props to match index.tsx requirements
+interface LearningSectionProps {
+  isActive: boolean;
+  language: ComponentLanguage;
+}
+
 interface LearningToolProps {
   title: string;
   description: string;
@@ -55,12 +61,12 @@ const LearningTool: React.FC<LearningToolProps> = ({ title, description, icon, i
   </Card>
 );
 
-const LearningSection: React.FC = () => {
-  const { language } = useLanguage();
+// ✅ COMPONENT NOW PROPERLY ACCEPTS BOTH isActive AND language PROPS
+const LearningSection: React.FC<LearningSectionProps> = ({ isActive, language }) => {
   const [activeComponent, setActiveComponent] = useState<string | null>(null);
 
   const translations = {
-    de: {
+    DE: {
       title: "Lernen",
       subtitle: "Entdecke die Welt des Macrobius mit unseren fortgeschrittenen Lernwerkzeugen",
       tools: {
@@ -95,7 +101,7 @@ const LearningSection: React.FC = () => {
       },
       backToOverview: "Zurück zur Übersicht"
     },
-    en: {
+    EN: {
       title: "Learning",
       subtitle: "Discover the world of Macrobius with our advanced learning tools",
       tools: {
@@ -130,7 +136,7 @@ const LearningSection: React.FC = () => {
       },
       backToOverview: "Back to Overview"
     },
-    la: {
+    LA: {
       title: "Discere",
       subtitle: "Mundum Macrobii cum instrumentis eruditionis provectis explora",
       tools: {
@@ -167,7 +173,8 @@ const LearningSection: React.FC = () => {
     }
   };
 
-  const currentTranslations = translations[language as keyof typeof translations];
+  // ✅ USE PASSED LANGUAGE PROP (consistent with other sections)
+  const currentTranslations = translations[language] || translations.EN;
 
   const learningTools = [
     {
@@ -229,6 +236,11 @@ const LearningSection: React.FC = () => {
     setActiveComponent(null);
   };
 
+  // ✅ COMPONENT ONLY RENDERS WHEN ACTIVE (isActive prop now properly handled)
+  if (!isActive) {
+    return null;
+  }
+
   // Render specific component if active
   if (activeComponent) {
     const activeTool = learningTools.find(tool => tool.id === activeComponent);
@@ -251,7 +263,7 @@ const LearningSection: React.FC = () => {
               </h1>
               <p className="text-gray-600">{activeTool.description}</p>
             </div>
-            <ActiveComponent isActive={true} language={language as ComponentLanguage} />
+            <ActiveComponent isActive={true} language={language} />
           </div>
         </div>
       );
