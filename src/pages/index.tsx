@@ -143,6 +143,7 @@ const ClassicalMacrobiusApp: React.FC = () => {
     console.log('If you see this message, the new layout should be visible!');
     console.log('🚀 VERCEL BUILD FIX: TypeScript error resolved - forcing new deployment!');
     console.log('✅ PROP FIX: Adding required isActive prop to section components!');
+    console.log('🔧 COMPREHENSIVE FIX: All section components now have proper isActive props!');
     
     // Force page title update to confirm changes
     document.title = 'Macrobius - LEFT SIDEBAR LAYOUT ACTIVE';
@@ -192,27 +193,28 @@ const ClassicalMacrobiusApp: React.FC = () => {
 
   // Render the correct section component
   const renderSection = () => {
-    // ✅ FIXED: Use language directly (already uppercase) and add required props
-    // BanquetSection requires isActive prop and language prop
+    // ✅ COMPREHENSIVE FIX: All section components now receive proper props
+    // - language: Already correct uppercase format (DE|EN|LA)
+    // - isActive: Added to ALL components that require it
     switch(currentSection) {
       case 'intro': 
         return <IntroSection language={language} />;
       case 'banquet': 
         return <BanquetSection isActive={true} language={language} />;
       case 'cosmos': 
-        return <CosmosSection />;
+        return <CosmosSection isActive={true} language={language} />;
       case 'quiz': 
-        return <QuizSection />;
+        return <QuizSection isActive={true} language={language} />;
       case 'textsearch': 
-        return <TextSearchSection />;
+        return <TextSearchSection isActive={true} language={language} />;
       case 'worldmap': 
-        return <WorldMapSection />;
+        return <WorldMapSection isActive={true} language={language} />;
       case 'visualizations': 
-        return <VisualizationsSection />;
+        return <VisualizationsSection isActive={true} language={language} />;
       case 'vokabeltrainer': 
-        return <VocabularyTrainer />;
+        return <VocabularyTrainer isActive={true} language={language} />;
       case 'learning': 
-        return <LearningSection />;
+        return <LearningSection isActive={true} language={language} />;
       default: 
         return <IntroSection language={language} />;
     }
