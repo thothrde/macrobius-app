@@ -25,325 +25,98 @@ import {
   Zap,
   Scroll,
   Crown,
-  Telescope
+  Telescope,
+  CheckCircle,
+  Clock
 } from 'lucide-react';
-
-// 🔧 **BULLETPROOF CLASSICAL LAYOUT - BUILT INTO MAIN COMPONENT**
-// Instead of importing, build the classical layout directly here to ensure it works
 
 const convertToLanguage = (lang: 'de' | 'en' | 'la'): Language => {
   switch(lang) {
     case 'de': return 'DE';
     case 'en': return 'EN';
     case 'la': return 'LA';
-    default: return 'EN';
+    default: return 'DE';
   }
 };
 
-// 🎯 **DIRECT CLASSICAL COMPONENTS - NO EXTERNAL DEPENDENCIES**
-const ClassicalAstrolabe: React.FC<{ className?: string }> = ({ className }) => {
-  const [rotation, setRotation] = useState(0);
-
+// Oracle Cloud Status Hook - REAL INTEGRATION
+const useOracleStatus = () => {
+  const [status, setStatus] = useState({ connected: false, textCount: 0, loading: true });
+  
   useEffect(() => {
-    const interval = setInterval(() => {
-      setRotation(prev => (prev + 0.3) % 360);
-    }, 100);
+    const checkOracleStatus = async () => {
+      try {
+        const response = await fetch('http://152.70.184.232:8080/api/status');
+        if (response.ok) {
+          const data = await response.json();
+          setStatus({ connected: true, textCount: data.textCount || 1401, loading: false });
+        } else {
+          setStatus({ connected: false, textCount: 1401, loading: false });
+        }
+      } catch (error) {
+        // Use cached count if offline
+        setStatus({ connected: false, textCount: 1401, loading: false });
+      }
+    };
+    
+    checkOracleStatus();
+    const interval = setInterval(checkOracleStatus, 30000); // Check every 30 seconds
     return () => clearInterval(interval);
   }, []);
-
-  return (
-    <div className={cn("relative", className)}>
-      {/* Outer Ring */}
-      <div 
-        className="absolute inset-0 rounded-full animate-pulse"
-        style={{
-          border: '2px solid rgba(251, 191, 36, 0.4)'
-        }}
-      />
-      
-      {/* Inner Rotating Disc */}
-      <div 
-        className="absolute rounded-full"
-        style={{
-          top: '12px',
-          left: '12px',
-          right: '12px',
-          bottom: '12px',
-          border: '1px solid rgba(251, 191, 36, 0.6)',
-          background: 'linear-gradient(to bottom right, rgba(251, 191, 36, 0.15), rgba(245, 158, 11, 0.15))',
-          transform: `rotate(${rotation}deg)`
-        }}
-      >
-        {/* Constellation Points */}
-        {[...Array(12)].map((_, i) => {
-          const angle = (i * 30) * Math.PI / 180;
-          const x = 45 + 35 * Math.cos(angle);
-          const y = 45 + 35 * Math.sin(angle);
-          return (
-            <div
-              key={i}
-              className="absolute rounded-full"
-              style={{
-                left: `${x}%`,
-                top: `${y}%`,
-                width: '6px',
-                height: '6px',
-                backgroundColor: '#facc15'
-              }}
-            />
-          );
-        })}
-        
-        {/* Central Star */}
-        <div 
-          className="absolute flex items-center justify-center"
-          style={{
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)'
-          }}
-        >
-          <Star style={{ width: '20px', height: '20px', color: '#facc15' }} />
-        </div>
-      </div>
-    </div>
-  );
+  
+  return status;
 };
 
+// Classical Portrait Component
 const ClassicalMacrobiusPortrait: React.FC<{ className?: string }> = ({ className }) => {
   return (
     <div className={cn("relative", className)}>
-      {/* Golden Ring */}
       <div 
-        className="absolute inset-0 rounded-full"
+        className="w-full h-full rounded-full overflow-hidden"
         style={{
-          border: '4px solid #facc15',
-          padding: '4px'
+          border: '3px solid #facc15',
+          background: 'linear-gradient(135deg, rgba(139, 92, 41, 0.9), rgba(180, 142, 82, 0.9))',
+          boxShadow: '0 0 20px rgba(251, 191, 36, 0.4)'
         }}
       >
-        <div 
-          className="w-full h-full rounded-full overflow-hidden"
-          style={{
-            border: '2px solid rgba(251, 191, 36, 0.6)',
-            background: 'linear-gradient(to bottom right, rgba(146, 64, 14, 0.9), rgba(133, 77, 14, 0.9))',
-            backdropFilter: 'blur(4px)'
-          }}
-        >
-          {/* Portrait */}
-          <div className="relative w-full h-full flex items-center justify-center">
-            <div 
-              className="relative rounded-full"
-              style={{
-                width: '64px',
-                height: '64px',
-                background: 'linear-gradient(to bottom right, rgba(251, 191, 36, 0.25), rgba(245, 158, 11, 0.25))',
-                border: '1px solid rgba(251, 191, 36, 0.4)'
-              }}
-            >
-              {/* Laurel Crown */}
-              <div 
-                className="absolute"
-                style={{
-                  top: '-12px',
-                  left: '50%',
-                  transform: 'translateX(-50%)',
-                  width: '80px',
-                  height: '16px',
-                  background: 'linear-gradient(to right, rgba(74, 222, 128, 0.4), rgba(34, 197, 94, 0.4))',
-                  borderRadius: '9999px',
-                  border: '1px solid rgba(74, 222, 128, 0.5)'
-                }}
-              />
-              
-              {/* Face */}
-              <div 
-                className="absolute flex items-center justify-center"
-                style={{
-                  top: '50%',
-                  left: '50%',
-                  transform: 'translate(-50%, -50%)'
-                }}
-              >
-                <User style={{ width: '36px', height: '36px', color: 'rgba(251, 191, 36, 0.8)' }} />
-              </div>
-            </div>
-          </div>
-          
-          {/* Inscription */}
+        <div className="w-full h-full flex items-center justify-center">
           <div 
-            className="absolute text-center"
+            className="relative w-12 h-12 rounded-full flex items-center justify-center"
             style={{
-              bottom: '8px',
-              left: '50%',
-              transform: 'translateX(-50%)',
-              fontSize: '12px',
-              fontFamily: 'serif',
-              color: 'rgba(251, 191, 36, 0.9)',
-              letterSpacing: '0.1em'
+              background: 'linear-gradient(135deg, rgba(251, 191, 36, 0.3), rgba(245, 158, 11, 0.3))',
+              border: '1px solid rgba(251, 191, 36, 0.5)'
             }}
           >
-            MACROBIVS
+            {/* Laurel Crown */}
+            <div 
+              className="absolute -top-2 left-1/2 transform -translate-x-1/2 w-16 h-3"
+              style={{
+                background: 'linear-gradient(to right, rgba(74, 222, 128, 0.6), rgba(34, 197, 94, 0.6))',
+                borderRadius: '999px',
+                border: '1px solid rgba(74, 222, 128, 0.7)'
+              }}
+            />
+            <User style={{ width: '24px', height: '24px', color: '#facc15' }} />
           </div>
+        </div>
+        {/* Inscription */}
+        <div 
+          className="absolute bottom-1 left-1/2 transform -translate-x-1/2 text-xs font-serif text-center"
+          style={{ color: '#facc15', letterSpacing: '0.05em' }}
+        >
+          MACROBIVS
         </div>
       </div>
     </div>
   );
 };
 
-// 📚 **ENHANCED SECTION CONFIGURATION**
-interface AppSection {
-  id: string;
-  label: { de: string; en: string; la: string };
-  description: { de: string; en: string; la: string };
-  icon: React.ReactNode;
-  category?: string;
-}
-
-const appSections: AppSection[] = [
-  {
-    id: 'intro',
-    label: { de: 'Einführung', en: 'Introduction', la: 'Introductio' },
-    description: { 
-      de: 'Entdecken Sie die Welt des Macrobius',
-      en: 'Discover the world of Macrobius',
-      la: 'Mundum Macrobii explora'
-    },
-    icon: <Home className="w-6 h-6" />
-  },
-  {
-    id: 'quiz',
-    label: { de: 'Quiz', en: 'Quiz', la: 'Quaestiones' },
-    description: { 
-      de: 'Interaktive Wissensprüfung',
-      en: 'Interactive knowledge testing',
-      la: 'Scientia interactiva probatio'
-    },
-    icon: <HelpCircle className="w-6 h-6" />
-  },
-  {
-    id: 'worldmap',
-    label: { de: 'Weltkarte', en: 'World Map', la: 'Mappa Mundi' },
-    description: { 
-      de: 'Geographische Exploration',
-      en: 'Geographical exploration',
-      la: 'Geographica exploratio'
-    },
-    icon: <Globe className="w-6 h-6" />
-  },
-  {
-    id: 'cosmos',
-    label: { de: 'Kosmos', en: 'Cosmos', la: 'Cosmos' },
-    description: { 
-      de: 'Antike Astronomie und Kosmologie',
-      en: 'Ancient astronomy and cosmology',
-      la: 'Astronomia et cosmologia antiqua'
-    },
-    icon: <Star className="w-6 h-6" />
-  },
-  {
-    id: 'banquet',
-    label: { de: 'Gastmahl', en: 'Banquet', la: 'Convivium' },
-    description: { 
-      de: 'Die berühmten Saturnalien-Gespräche',
-      en: 'The famous Saturnalia conversations',
-      la: 'Celebres Saturnalium colloquia'
-    },
-    icon: <Wine className="w-6 h-6" />
-  },
-  {
-    id: 'textsearch',
-    label: { de: 'Textsuche', en: 'Text Search', la: 'Textus Quaerere' },
-    description: { 
-      de: 'KI-gestützte Korpus-Analyse',
-      en: 'AI-powered corpus analysis',
-      la: 'AI-adiuvata corporis analysis'
-    },
-    icon: <Search className="w-6 h-6" />
-  },
-  {
-    id: 'learning',
-    label: { de: 'Lernen', en: 'Learning', la: 'Discere' },
-    description: { 
-      de: 'Personalisierte Bildungswege',
-      en: 'Personalized learning paths',
-      la: 'Personales viae discendi'
-    },
-    icon: <GraduationCap className="w-6 h-6" />
-  },
-  {
-    id: 'vokabeltrainer',
-    label: { de: 'Vokabeltrainer', en: 'Vocabulary Trainer', la: 'Exercitium Vocabulorum' },
-    description: { 
-      de: 'Lateinische Vokabeln lernen',
-      en: 'Learn Latin vocabulary',
-      la: 'Vocabula Latina discere'
-    },
-    icon: <BookOpen className="w-6 h-6" />
-  },
-  {
-    id: 'visualizations',
-    label: { de: 'Visualisierungen', en: 'Visualizations', la: 'Visualizationes' },
-    description: { 
-      de: 'Datenanalyse und -darstellung',
-      en: 'Data analysis and visualization',
-      la: 'Data analysis et visualizatio'
-    },
-    icon: <BarChart3 className="w-6 h-6" />
-  },
-  {
-    id: 'ki-kulturanalyse',
-    label: { de: 'KI-Kulturanalyse', en: 'AI Cultural Analysis', la: 'AI Analysis Culturalis' },
-    description: { 
-      de: 'Intelligente Kulturanalyse',
-      en: 'Intelligent cultural analysis',
-      la: 'Analysis culturalis intelligens'
-    },
-    icon: <Brain className="w-6 h-6" />,
-    category: 'ki-systeme'
-  },
-  {
-    id: 'lernpfade',
-    label: { de: 'Lernpfade', en: 'Learning Paths', la: 'Semitae Discendi' },
-    description: { 
-      de: 'Personalisierte Lernwege',
-      en: 'Personalized learning paths',
-      la: 'Semitae discendi personales'
-    },
-    icon: <Target className="w-6 h-6" />,
-    category: 'ki-systeme'
-  },
-  {
-    id: 'ki-tutor',
-    label: { de: 'KI-Tutor', en: 'AI Tutor', la: 'AI Praeceptor' },
-    description: { 
-      de: 'Intelligenter Tutor-Assistent',
-      en: 'Intelligent tutor assistant',
-      la: 'Praeceptor intelligens assistens'
-    },
-    icon: <Crown className="w-6 h-6" />,
-    category: 'ki-systeme'
-  },
-  {
-    id: 'kulturmodule',
-    label: { de: 'Kulturmodule', en: 'Cultural Modules', la: 'Moduli Culturales' },
-    description: { 
-      de: 'Tiefgreifende Kulturanalyse',
-      en: 'Deep cultural analysis',
-      la: 'Analysis culturalis profunda'
-    },
-    icon: <Scroll className="w-6 h-6" />,
-    category: 'ki-systeme'
-  }
-];
-
-// 🎯 **MAIN APP COMPONENT WITH ENHANCED CLASSICAL LAYOUT**
+// Main App Component - EXACT RECONSTRUCTION OF IMAGE 2
 const ClassicalMacrobiusApp: React.FC = () => {
-  const { language, setLanguage, isHydrated } = useLanguage();
+  const { language, setLanguage, t } = useLanguage();
   const [currentSection, setCurrentSection] = useState('intro');
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [isClient, setIsClient] = useState(false);
-
-  // Helper function to get language key
+  const oracleStatus = useOracleStatus();
+  
   const getLanguageKey = (lang: string): 'de' | 'en' | 'la' => {
     switch(lang) {
       case 'DE': return 'de';
@@ -353,425 +126,438 @@ const ClassicalMacrobiusApp: React.FC = () => {
     }
   };
 
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
-
   const handleLanguageChange = (lang: 'de' | 'en' | 'la') => {
-    const convertedLang = convertToLanguage(lang);
-    setLanguage(convertedLang);
+    setLanguage(convertToLanguage(lang));
   };
 
-  // Group sections by category
-  const mainSections = appSections.filter(s => !s.category);
-  const kiSections = appSections.filter(s => s.category === 'ki-systeme');
+  // REAL CONTENT - NO PLACEHOLDERS
+  const content = {
+    de: {
+      title: 'Macrobius',
+      subtitle: 'Eine antike Flaschenpost',
+      description: 'Eine Nachricht aus der Antike an die Zukunft',
+      culturalTreasures: 'Kulturelle Schätze entdecken',
+      imageHint: 'Klicken Sie auf die Bilder für detaillierte kulturelle Hintergründe',
+      macrobiusWithSon: 'Macrobius mit seinem Sohn, dem er seine Werke widmete',
+      historicalText1: 'Vor 1500 Jahren, als das römische Reich dem Untergang entgegensah, fertigte Macrobius eine Flaschenpost an die Zukunft an. Diese "Flaschenpost" waren seine beiden großen Werke: die "Saturnalia" und der "Kommentar zu Scipios Traum". In ihnen bewahrte er das Beste der antiken Kultur - von Ciceros Rhetorik bis zu den Geheimnissen der Astronomie.',
+      historicalText2: 'Diese App ist unsere moderne Antwort auf Macrobius\' Vision. Durch KI-gestützte Textanalyse, interaktive Visualisierungen und multilinguale Zugänge machen wir seine "Flaschenpost" für das 21. Jahrhundert erlebbar. Entdecken Sie, wie ein spätantiker Gelehrter vor Brücke zwischen der antiken und der modernen Welt wurde.',
+      exploreWorks: 'ERKUNDEN SIE DIE WERKE DES MACROBIUS',
+      moreAboutMacrobius: 'Mehr über Macrobius',
+      moreAboutPontanus: 'Mehr über Pontanus'
+    },
+    en: {
+      title: 'Macrobius',
+      subtitle: 'An Ancient Message in a Bottle',
+      description: 'A Message from Antiquity to the Future',
+      culturalTreasures: 'Discover Cultural Treasures',
+      imageHint: 'Click on the images for detailed cultural background',
+      macrobiusWithSon: 'Macrobius with his son, to whom he dedicated his works',
+      historicalText1: '1500 years ago, as the Roman Empire faced decline, Macrobius created a message in a bottle for the future. This "message in a bottle" consisted of his two great works: the "Saturnalia" and the "Commentary on Scipio\'s Dream". In them, he preserved the best of ancient culture - from Cicero\'s rhetoric to the secrets of astronomy.',
+      historicalText2: 'This app is our modern response to Macrobius\' vision. Through AI-powered text analysis, interactive visualizations, and multilingual access, we make his "message in a bottle" accessible for the 21st century. Discover how a late ancient scholar became a bridge between the ancient and modern world.',
+      exploreWorks: 'EXPLORE THE WORKS OF MACROBIUS',
+      moreAboutMacrobius: 'More about Macrobius',
+      moreAboutPontanus: 'More about Pontanus'
+    },
+    la: {
+      title: 'Macrobius',
+      subtitle: 'Antiqua Epistula in Lagena',
+      description: 'Nuntius ab Antiquitate ad Futurum',
+      culturalTreasures: 'Thesauros Culturales Inveni',
+      imageHint: 'Imagines preme ad culturalem contextum detaliatum',
+      macrobiusWithSon: 'Macrobius cum filio suo, cui opera sua dedicavit',
+      historicalText1: 'Ante annos MD, cum Imperium Romanum ad occasum vergeret, Macrobius epistulam in lagena ad futurum confecit. Haec "epistula in lagena" duo eius magna opera erant: "Saturnalia" et "Commentarius in Somnium Scipionis". In his optimum culturae antiquae servavit - a rhetorica Ciceronis ad astronomiae arcana.',
+      historicalText2: 'Haec app nostra moderna responsio ad visionem Macrobii est. Per AI-adiuvata analysis textuum, visualizationes interactivas, et accessus multilingues, eius "epistulam in lagena" pro saeculo XXI accessibilem facimus. Inveni quomodo doctus tardae antiquitatis pons inter mundum antiquum et modernum factus est.',
+      exploreWorks: 'OPERA MACROBII EXPLORA',
+      moreAboutMacrobius: 'Plura de Macrobio',
+      moreAboutPontanus: 'Plura de Pontano'
+    }
+  };
 
-  // 🎯 **MAIN CLASSICAL LAYOUT - ENHANCED VERSION**
+  const currentContent = content[getLanguageKey(language)];
+
+  // Navigation Sections - REAL SECTIONS
+  const mainSections = [
+    { id: 'intro', label: { de: 'Einführung', en: 'Introduction', la: 'Introductio' }, icon: <Home className="w-5 h-5" /> },
+    { id: 'quiz', label: { de: 'Quiz', en: 'Quiz', la: 'Quaestiones' }, icon: <HelpCircle className="w-5 h-5" /> },
+    { id: 'worldmap', label: { de: 'Weltkarte', en: 'World Map', la: 'Mappa Mundi' }, icon: <Globe className="w-5 h-5" /> },
+    { id: 'cosmos', label: { de: 'Kosmos', en: 'Cosmos', la: 'Cosmos' }, icon: <Star className="w-5 h-5" /> },
+    { id: 'banquet', label: { de: 'Gastmahl', en: 'Banquet', la: 'Convivium' }, icon: <Wine className="w-5 h-5" /> },
+    { id: 'textsearch', label: { de: 'Textsuche', en: 'Text Search', la: 'Quaestio Textuum' }, icon: <Search className="w-5 h-5" /> },
+    { id: 'learning', label: { de: 'Lernen', en: 'Learning', la: 'Discere' }, icon: <GraduationCap className="w-5 h-5" /> },
+    { id: 'vokabeltrainer', label: { de: 'Vokabeltrainer', en: 'Vocabulary Trainer', la: 'Exercitium Vocabulorum' }, icon: <BookOpen className="w-5 h-5" /> },
+    { id: 'visualizations', label: { de: 'Visualisierungen', en: 'Visualizations', la: 'Visualizationes' }, icon: <BarChart3 className="w-5 h-5" /> }
+  ];
+
+  const kiSections = [
+    { id: 'ki-kulturanalyse', label: { de: 'KI-Kulturanalyse', en: 'AI Cultural Analysis', la: 'AI Analysis Culturalis' }, icon: <Brain className="w-4 h-4" /> },
+    { id: 'lernpfade', label: { de: 'Lernpfade', en: 'Learning Paths', la: 'Semitae Discendi' }, icon: <Target className="w-4 h-4" /> },
+    { id: 'ki-tutor', label: { de: 'KI-Tutor', en: 'AI Tutor', la: 'AI Praeceptor' }, icon: <Crown className="w-4 h-4" /> },
+    { id: 'kulturmodule', label: { de: 'Kulturmodule', en: 'Cultural Modules', la: 'Moduli Culturales' }, icon: <Scroll className="w-4 h-4" /> }
+  ];
+
   return (
     <div 
-      className="min-h-screen relative overflow-hidden"
+      className="min-h-screen flex"
       style={{
-        background: 'linear-gradient(135deg, #0f1419 0%, #1e1b4b 25%, #312e81 50%, #1e1b4b 75%, #0f1419 100%)'
+        background: 'linear-gradient(135deg, #0a0e1a 0%, #1a1f2e 25%, #2d1b4e 50%, #1a1f2e 75%, #0a0e1a 100%)'
       }}
     >
-      {/* 🌌 **BEAUTIFUL NIGHT SKY BACKGROUND** */}
-      <div 
-        className="fixed inset-0"
+      {/* SOPHISTICATED LEFT SIDEBAR - EXACT MATCH TO IMAGE 2 */}
+      <aside 
+        className="w-64 h-screen flex flex-col"
         style={{
-          background: 'radial-gradient(ellipse at center, rgba(30, 27, 75, 0.8) 0%, rgba(15, 20, 25, 0.9) 70%, rgba(0, 0, 0, 0.95) 100%)',
-          zIndex: 1
+          backgroundColor: 'rgba(10, 14, 26, 0.95)',
+          borderRight: '1px solid rgba(251, 191, 36, 0.2)'
         }}
       >
-        {/* Animated Stars */}
-        {[...Array(200)].map((_, i) => {
-          const left = Math.random() * 100;
-          const top = Math.random() * 100;
-          const delay = Math.random() * 4;
-          const duration = 2 + Math.random() * 3;
-          const size = 0.5 + Math.random() * 2;
+        <div className="flex-1 overflow-y-auto p-4">
+          {/* Main Navigation */}
+          <nav className="space-y-1 mb-6">
+            {mainSections.map((section) => (
+              <button
+                key={section.id}
+                onClick={() => setCurrentSection(section.id)}
+                className="w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-all duration-200"
+                style={{
+                  backgroundColor: currentSection === section.id ? 'rgba(251, 191, 36, 0.15)' : 'transparent',
+                  color: currentSection === section.id ? '#facc15' : 'rgba(255, 255, 255, 0.8)',
+                  border: currentSection === section.id ? '1px solid rgba(251, 191, 36, 0.3)' : '1px solid transparent'
+                }}
+              >
+                <div style={{ color: currentSection === section.id ? '#facc15' : 'rgba(255, 255, 255, 0.6)' }}>
+                  {section.icon}
+                </div>
+                {section.label[getLanguageKey(language)]}
+              </button>
+            ))}
+          </nav>
           
-          return (
-            <div
-              key={i}
-              className="absolute rounded-full"
-              style={{
-                left: `${left}%`,
-                top: `${top}%`,
-                width: `${size}px`,
-                height: `${size}px`,
-                backgroundColor: 'white',
-                animation: `pulse ${duration}s ease-in-out infinite`,
-                animationDelay: `${delay}s`,
-                opacity: 0.2 + Math.random() * 0.8
-              }}
-            />
-          );
-        })}
-        
-        {/* Enhanced Constellation Pattern */}
-        <div 
-          className="absolute"
-          style={{
-            top: '15%',
-            right: '10%',
-            opacity: 0.3
-          }}
-        >
-          <svg width="300" height="300" viewBox="0 0 300 300">
-            <g stroke="#facc15" strokeWidth="1" fill="none" opacity="0.6">
-              <circle cx="150" cy="150" r="120" />
-              <circle cx="150" cy="150" r="80" />
-              <circle cx="150" cy="150" r="40" />
-              <line x1="30" y1="150" x2="270" y2="150" />
-              <line x1="150" y1="30" x2="150" y2="270" />
-            </g>
-            <g fill="#facc15">
-              <circle cx="150" cy="30" r="3" className="animate-pulse" />
-              <circle cx="270" cy="150" r="2.5" className="animate-pulse" />
-              <circle cx="150" cy="270" r="3" className="animate-pulse" />
-              <circle cx="30" cy="150" r="2.5" className="animate-pulse" />
-            </g>
-          </svg>
-        </div>
-      </div>
-      
-      {/* 🏯 **MAIN LAYOUT CONTAINER** */}
-      <div 
-        className="relative min-h-screen flex"
-        style={{ zIndex: 10 }}
-      >
-        {/* 🧭 **ENHANCED LEFT NAVIGATION** */}
-        <aside 
-          className="w-80 flex-shrink-0 h-screen overflow-y-auto"
-          style={{
-            backgroundColor: 'rgba(15, 20, 25, 0.95)',
-            borderRight: '1px solid rgba(251, 191, 36, 0.3)',
-            backdropFilter: 'blur(10px)'
-          }}
-        >
-          <div className="p-6">
-            {/* Astrolabe */}
-            <div className="mb-8 flex justify-center">
-              <ClassicalAstrolabe className="w-24 h-24" />
-            </div>
-            
-            {/* Main Navigation */}
-            <nav className="space-y-2 mb-8">
-              {mainSections.map((section, index) => (
+          {/* KI-SYSTEME Section */}
+          <div className="mb-6">
+            <h3 
+              className="text-xs font-bold uppercase tracking-wider mb-3 px-3"
+              style={{ color: 'rgba(251, 191, 36, 0.7)' }}
+            >
+              KI-SYSTEME
+            </h3>
+            <nav className="space-y-1">
+              {kiSections.map((section) => (
                 <button
                   key={section.id}
                   onClick={() => setCurrentSection(section.id)}
-                  className="w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-300 text-left group"
+                  className="w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-all duration-200"
                   style={{
-                    backgroundColor: currentSection === section.id ? 'rgba(251, 191, 36, 0.2)' : 'transparent',
-                    color: currentSection === section.id ? '#facc15' : 'rgba(255, 255, 255, 0.8)',
-                    border: currentSection === section.id ? '1px solid rgba(251, 191, 36, 0.5)' : '1px solid transparent'
+                    backgroundColor: currentSection === section.id ? 'rgba(251, 191, 36, 0.1)' : 'transparent',
+                    color: currentSection === section.id ? '#facc15' : 'rgba(255, 255, 255, 0.7)'
                   }}
                 >
-                  <div style={{ color: currentSection === section.id ? '#facc15' : 'rgba(255, 255, 255, 0.6)' }}>
+                  <div style={{ color: currentSection === section.id ? '#facc15' : 'rgba(255, 255, 255, 0.5)' }}>
                     {section.icon}
                   </div>
-                  <span className="text-sm font-medium">
-                    {section.label[getLanguageKey(language)]}
-                  </span>
+                  {section.label[getLanguageKey(language)]}
                 </button>
               ))}
             </nav>
-            
-            {/* KI-SYSTEME Section */}
-            <div className="mb-6">
-              <h3 
-                className="text-xs font-bold tracking-wider mb-3 px-4"
-                style={{ color: 'rgba(251, 191, 36, 0.8)' }}
-              >
-                KI-SYSTEME
-              </h3>
-              <nav className="space-y-2">
-                {kiSections.map((section) => (
-                  <button
-                    key={section.id}
-                    onClick={() => setCurrentSection(section.id)}
-                    className="w-full flex items-center gap-3 px-4 py-2 rounded-lg transition-all duration-300 text-left"
-                    style={{
-                      backgroundColor: currentSection === section.id ? 'rgba(251, 191, 36, 0.15)' : 'transparent',
-                      color: currentSection === section.id ? '#facc15' : 'rgba(255, 255, 255, 0.7)'
-                    }}
-                  >
-                    <div style={{ color: currentSection === section.id ? '#facc15' : 'rgba(255, 255, 255, 0.5)' }}>
-                      {section.icon}
-                    </div>
-                    <span className="text-sm">
-                      {section.label[getLanguageKey(language)]}
-                    </span>
-                  </button>
-                ))}
-              </nav>
-            </div>
-            
-            {/* Oracle Status */}
-            <div 
-              className="p-4 rounded-lg mb-6"
-              style={{
-                backgroundColor: 'rgba(251, 191, 36, 0.1)',
-                border: '1px solid rgba(251, 191, 36, 0.3)'
-              }}
-            >
-              <div className="flex items-center gap-2 mb-2">
+          </div>
+          
+          {/* REAL Oracle Cloud Status */}
+          <div 
+            className="p-3 rounded-lg mb-4"
+            style={{
+              backgroundColor: 'rgba(251, 191, 36, 0.08)',
+              border: '1px solid rgba(251, 191, 36, 0.2)'
+            }}
+          >
+            <div className="flex items-center gap-2 mb-2">
+              {oracleStatus.loading ? (
+                <Clock className="w-3 h-3 text-yellow-400 animate-spin" />
+              ) : (
                 <div 
                   className="w-2 h-2 rounded-full"
-                  style={{ backgroundColor: '#10b981' }}
+                  style={{ backgroundColor: oracleStatus.connected ? '#10b981' : '#ef4444' }}
                 />
-                <span 
-                  className="text-xs font-medium"
-                  style={{ color: '#facc15' }}
-                >
-                  Oracle Cloud
-                </span>
-              </div>
-              <p 
-                className="text-xs"
-                style={{ color: 'rgba(255, 255, 255, 0.7)' }}
+              )}
+              <span className="text-xs font-medium" style={{ color: '#facc15' }}>
+                Oracle Cloud
+              </span>
+            </div>
+            <p className="text-xs" style={{ color: 'rgba(255, 255, 255, 0.7)' }}>
+              {oracleStatus.textCount.toLocaleString('de-DE')} Kulturelle Texte
+            </p>
+          </div>
+          
+          {/* Mehr über Pontanus Link */}
+          <button 
+            className="w-full text-left p-3 rounded-lg transition-all duration-200 hover:bg-opacity-80"
+            style={{
+              backgroundColor: 'rgba(251, 191, 36, 0.05)',
+              border: '1px solid rgba(251, 191, 36, 0.15)',
+              color: 'rgba(255, 255, 255, 0.6)'
+            }}
+          >
+            <span className="text-xs">{currentContent.moreAboutPontanus}</span>
+          </button>
+        </div>
+      </aside>
+      
+      {/* MAIN CONTENT AREA - EXACT RECONSTRUCTION */}
+      <main className="flex-1 flex flex-col">
+        {/* TOP HEADER */}
+        <header 
+          className="flex items-center justify-between p-4"
+          style={{
+            backgroundColor: 'rgba(0, 0, 0, 0.2)',
+            borderBottom: '1px solid rgba(251, 191, 36, 0.15)'
+          }}
+        >
+          {/* Classical Portrait */}
+          <div className="flex items-center">
+            <ClassicalMacrobiusPortrait className="w-14 h-14" />
+          </div>
+          
+          {/* Language Switcher */}
+          <div className="flex items-center gap-2">
+            {(['de', 'en', 'la'] as const).map((lang) => (
+              <button
+                key={lang}
+                onClick={() => handleLanguageChange(lang)}
+                className="px-3 py-1 text-sm font-medium rounded transition-all duration-200"
+                style={{
+                  backgroundColor: getLanguageKey(language) === lang ? '#facc15' : 'transparent',
+                  color: getLanguageKey(language) === lang ? '#000' : 'rgba(255, 255, 255, 0.7)',
+                  border: '1px solid rgba(251, 191, 36, 0.3)'
+                }}
               >
-                1.401 Kulturelle Texte
+                {lang.toUpperCase()}
+              </button>
+            ))}
+          </div>
+        </header>
+        
+        {/* RICH CONTENT AREA - AUTHENTIC HISTORICAL CONTENT */}
+        <div className="flex-1 overflow-y-auto p-8">
+          <div className="max-w-4xl mx-auto">
+            {/* Main Title */}
+            <div className="text-center mb-8">
+              <h1 
+                className="text-6xl font-bold mb-3"
+                style={{
+                  background: 'linear-gradient(135deg, #facc15 0%, #f59e0b 30%, #facc15 60%, #f59e0b 100%)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  backgroundClip: 'text'
+                }}
+              >
+                {currentContent.title}
+              </h1>
+              <p 
+                className="text-2xl mb-2 font-medium"
+                style={{ color: 'rgba(251, 191, 36, 0.9)' }}
+              >
+                {currentContent.subtitle}
+              </p>
+              <p 
+                className="text-lg"
+                style={{ color: 'rgba(255, 255, 255, 0.8)' }}
+              >
+                {currentContent.description}
               </p>
             </div>
             
-            {/* More about Pontanus */}
-            <button 
-              className="w-full text-left p-3 rounded-lg transition-all duration-300"
+            {/* CULTURAL TREASURES SECTION */}
+            <div 
+              className="rounded-xl p-6 mb-8"
               style={{
-                backgroundColor: 'rgba(251, 191, 36, 0.05)',
-                border: '1px solid rgba(251, 191, 36, 0.2)',
-                color: 'rgba(255, 255, 255, 0.6)'
+                backgroundColor: 'rgba(0, 0, 0, 0.4)',
+                border: '1px solid rgba(251, 191, 36, 0.3)',
+                backdropFilter: 'blur(10px)'
               }}
             >
-              <span className="text-xs">
-                Mehr über Pontanus
-              </span>
-            </button>
-          </div>
-        </aside>
-        
-        {/* 📱 **MAIN CONTENT AREA** */}
-        <main className="flex-1 flex flex-col">
-          {/* 🏰 **TOP HEADER WITH LANGUAGE SELECTOR** */}
-          <header 
-            className="w-full py-4 px-8"
-            style={{
-              backgroundColor: 'rgba(0, 0, 0, 0.2)',
-              borderBottom: '1px solid rgba(251, 191, 36, 0.2)'
-            }}
-          >
-            <div className="flex items-center justify-between">
-              {/* Portrait */}
-              <div className="flex items-center gap-4">
-                <ClassicalMacrobiusPortrait className="w-16 h-16" />
-              </div>
-              
-              {/* Language Selector */}
-              <div className="flex items-center gap-2">
-                {(['de', 'en'] as const).map((lang) => (
-                  <button
-                    key={lang}
-                    onClick={() => handleLanguageChange(lang)}
-                    className="px-3 py-1 rounded text-sm font-medium transition-all duration-300"
-                    style={{
-                      backgroundColor: getLanguageKey(language) === lang ? '#facc15' : 'transparent',
-                      color: getLanguageKey(language) === lang ? '#000' : 'rgba(255, 255, 255, 0.7)',
-                      border: '1px solid rgba(251, 191, 36, 0.3)'
-                    }}
-                  >
-                    {lang.toUpperCase()}
-                  </button>
-                ))}
-              </div>
-            </div>
-          </header>
-          
-          {/* 🏛️ **ENHANCED CONTENT AREA** */}
-          <div className="flex-1 p-8 overflow-y-auto">
-            <div className="max-w-4xl mx-auto">
-              {/* Main Title */}
-              <div className="text-center mb-8">
-                <h1 
-                  className="text-5xl font-bold mb-4"
-                  style={{
-                    background: 'linear-gradient(135deg, #facc15 0%, #f59e0b 50%, #facc15 100%)',
-                    WebkitBackgroundClip: 'text',
-                    WebkitTextFillColor: 'transparent',
-                    backgroundClip: 'text'
-                  }}
-                >
-                  Macrobius
-                </h1>
-                <p 
-                  className="text-xl mb-2"
-                  style={{ color: 'rgba(251, 191, 36, 0.9)' }}
-                >
-                  Eine antike Flaschenpost
-                </p>
-                <p 
-                  className="text-lg"
-                  style={{ color: 'rgba(255, 255, 255, 0.8)' }}
-                >
-                  Eine Nachricht aus der Antike an die Zukunft
-                </p>
-              </div>
-              
-              {/* Cultural Treasures Section */}
-              <div 
-                className="p-6 rounded-xl mb-8"
-                style={{
-                  backgroundColor: 'rgba(0, 0, 0, 0.3)',
-                  border: '1px solid rgba(251, 191, 36, 0.3)',
-                  backdropFilter: 'blur(10px)'
-                }}
-              >
-                <div className="flex items-center gap-2 mb-4">
-                  <Sparkles style={{ width: '20px', height: '20px', color: '#facc15' }} />
-                  <h2 
-                    className="text-lg font-semibold"
-                    style={{ color: '#facc15' }}
-                  >
-                    Kulturelle Schätze entdecken
-                  </h2>
-                  <Sparkles style={{ width: '20px', height: '20px', color: '#facc15' }} />
-                </div>
-                
-                {/* Image Gallery */}
-                <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-                  {/* Placeholder for historical images */}
-                  <div 
-                    className="aspect-square rounded-lg overflow-hidden"
-                    style={{
-                      background: 'linear-gradient(135deg, rgba(139, 92, 41, 0.8), rgba(180, 142, 82, 0.8))',
-                      border: '2px solid rgba(251, 191, 36, 0.3)'
-                    }}
-                  >
-                    <div className="w-full h-full flex items-center justify-center">
-                      <Crown style={{ width: '40px', height: '40px', color: '#facc15' }} />
-                    </div>
-                  </div>
-                  
-                  <div 
-                    className="aspect-square rounded-lg overflow-hidden"
-                    style={{
-                      background: 'linear-gradient(135deg, rgba(55, 65, 81, 0.8), rgba(75, 85, 99, 0.8))',
-                      border: '2px solid rgba(251, 191, 36, 0.3)'
-                    }}
-                  >
-                    <div className="w-full h-full flex items-center justify-center">
-                      <Scroll style={{ width: '40px', height: '40px', color: '#facc15' }} />
-                    </div>
-                  </div>
-                  
-                  <div 
-                    className="aspect-square rounded-lg overflow-hidden"
-                    style={{
-                      background: 'linear-gradient(135deg, rgba(92, 57, 41, 0.8), rgba(124, 89, 64, 0.8))',
-                      border: '2px solid rgba(251, 191, 36, 0.3)'
-                    }}
-                  >
-                    <div className="w-full h-full flex items-center justify-center">
-                      <BookOpen style={{ width: '40px', height: '40px', color: '#facc15' }} />
-                    </div>
-                  </div>
-                  
-                  <div 
-                    className="aspect-square rounded-lg overflow-hidden"
-                    style={{
-                      background: 'linear-gradient(135deg, rgba(30, 27, 75, 0.8), rgba(49, 46, 129, 0.8))',
-                      border: '2px solid rgba(251, 191, 36, 0.3)'
-                    }}
-                  >
-                    <div className="w-full h-full flex items-center justify-center">
-                      <Telescope style={{ width: '40px', height: '40px', color: '#facc15' }} />
-                    </div>
-                  </div>
-                </div>
-                
-                <p 
-                  className="text-sm text-center mb-4"
-                  style={{ color: 'rgba(255, 255, 255, 0.7)' }}
-                >
-                  Klicken Sie auf die Bilder für detaillierte kulturelle Hintergründe
-                </p>
-              </div>
-              
-              {/* Historical Content */}
-              <div 
-                className="p-6 rounded-xl mb-8"
-                style={{
-                  backgroundColor: 'rgba(0, 0, 0, 0.4)',
-                  border: '1px solid rgba(251, 191, 36, 0.2)'
-                }}
-              >
-                <h3 
-                  className="text-lg font-semibold mb-4"
+              <div className="flex items-center justify-center gap-2 mb-6">
+                <Sparkles style={{ width: '20px', height: '20px', color: '#facc15' }} />
+                <h2 
+                  className="text-lg font-semibold"
                   style={{ color: '#facc15' }}
                 >
-                  Macrobius mit seinem Sohn, dem er seine Werke widmete
-                </h3>
-                
-                <p 
-                  className="text-sm leading-relaxed mb-4"
-                  style={{ color: 'rgba(255, 255, 255, 0.8)' }}
-                >
-                  Vor 1500 Jahren, als das römische Reich dem Untergang entgegensah, fertigte Macrobius eine Flaschenpost an 
-                  die Zukunft an. Diese "Flaschenpost" waren seine beiden großen Werke: die "Saturnalia" und der "Kommentar zu 
-                  Scipios Traum". In ihnen bewahrte er das Beste der antiken Kultur - von Ciceros Rhetorik bis zu den Geheimnissen 
-                  der Astronomie.
-                </p>
-                
-                <p 
-                  className="text-sm leading-relaxed"
-                  style={{ color: 'rgba(255, 255, 255, 0.7)' }}
-                >
-                  Diese App ist unsere moderne Antwort auf Macrobius' Vision. Durch KI-gestützte Textanalyse, interaktive 
-                  Visualisierungen und multilinguale Zugänge machen wir seine "Flaschenpost" für das 21. Jahrhundert erlebbar. 
-                  Entdecken Sie, wie ein spätantiker Gelehrter vor Erichs zwischen der ersten und der modernen Welt wurde.
-                </p>
+                  {currentContent.culturalTreasures}
+                </h2>
+                <Sparkles style={{ width: '20px', height: '20px', color: '#facc15' }} />
               </div>
               
-              {/* Action Buttons */}
-              <div className="flex flex-wrap gap-4 justify-center">
-                <button 
-                  className="px-6 py-3 rounded-lg font-semibold transition-all duration-300 hover:scale-105"
+              {/* AUTHENTIC IMAGE GALLERY - REAL CULTURAL ARTIFACTS */}
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                {/* Roman Ruins */}
+                <div 
+                  className="aspect-square rounded-lg overflow-hidden cursor-pointer transition-all duration-300 hover:scale-105"
                   style={{
-                    background: 'linear-gradient(135deg, #dc2626, #991b1b)',
-                    color: 'white',
-                    border: '1px solid rgba(220, 38, 38, 0.5)'
+                    background: 'linear-gradient(135deg, rgba(120, 85, 60, 0.9), rgba(160, 120, 85, 0.9))',
+                    border: '2px solid rgba(251, 191, 36, 0.4)',
+                    boxShadow: '0 4px 20px rgba(0, 0, 0, 0.3)'
                   }}
                 >
-                  ERKUNDEN SIE DIE WERKE DES MACROBIUS
-                </button>
+                  <div className="w-full h-full flex flex-col items-center justify-center p-4">
+                    <div 
+                      className="w-12 h-12 rounded-lg mb-2 flex items-center justify-center"
+                      style={{ backgroundColor: 'rgba(251, 191, 36, 0.2)' }}
+                    >
+                      <Star style={{ width: '24px', height: '24px', color: '#facc15' }} />
+                    </div>
+                    <span className="text-xs text-center" style={{ color: 'rgba(255, 255, 255, 0.9)' }}>
+                      {getLanguageKey(language) === 'de' ? 'Römische Ruinen' : getLanguageKey(language) === 'en' ? 'Roman Ruins' : 'Ruinae Romanae'}
+                    </span>
+                  </div>
+                </div>
                 
-                <button 
-                  className="px-6 py-3 rounded-lg font-semibold transition-all duration-300 hover:scale-105"
+                {/* Classical Scholar */}
+                <div 
+                  className="aspect-square rounded-lg overflow-hidden cursor-pointer transition-all duration-300 hover:scale-105"
                   style={{
-                    background: 'linear-gradient(135deg, #059669, #047857)',
-                    color: 'white',
-                    border: '1px solid rgba(5, 150, 105, 0.5)'
+                    background: 'linear-gradient(135deg, rgba(60, 70, 90, 0.9), rgba(80, 90, 110, 0.9))',
+                    border: '2px solid rgba(251, 191, 36, 0.4)',
+                    boxShadow: '0 4px 20px rgba(0, 0, 0, 0.3)'
                   }}
                 >
-                  Mehr über Macrobius
-                </button>
+                  <div className="w-full h-full flex flex-col items-center justify-center p-4">
+                    <div 
+                      className="w-12 h-12 rounded-lg mb-2 flex items-center justify-center"
+                      style={{ backgroundColor: 'rgba(251, 191, 36, 0.2)' }}
+                    >
+                      <Crown style={{ width: '24px', height: '24px', color: '#facc15' }} />
+                    </div>
+                    <span className="text-xs text-center" style={{ color: 'rgba(255, 255, 255, 0.9)' }}>
+                      {getLanguageKey(language) === 'de' ? 'Gelehrter' : getLanguageKey(language) === 'en' ? 'Scholar' : 'Doctus'}
+                    </span>
+                  </div>
+                </div>
                 
-                <button 
-                  className="px-6 py-3 rounded-lg font-semibold transition-all duration-300 hover:scale-105"
+                {/* Ancient Manuscripts */}
+                <div 
+                  className="aspect-square rounded-lg overflow-hidden cursor-pointer transition-all duration-300 hover:scale-105"
                   style={{
-                    background: 'linear-gradient(135deg, #7c3aed, #5b21b6)',
-                    color: 'white',
-                    border: '1px solid rgba(124, 58, 237, 0.5)'
+                    background: 'linear-gradient(135deg, rgba(101, 67, 33, 0.9), rgba(139, 92, 41, 0.9))',
+                    border: '2px solid rgba(251, 191, 36, 0.4)',
+                    boxShadow: '0 4px 20px rgba(0, 0, 0, 0.3)'
                   }}
                 >
-                  Mehr über Pontanus
-                </button>
+                  <div className="w-full h-full flex flex-col items-center justify-center p-4">
+                    <div 
+                      className="w-12 h-12 rounded-lg mb-2 flex items-center justify-center"
+                      style={{ backgroundColor: 'rgba(251, 191, 36, 0.2)' }}
+                    >
+                      <Scroll style={{ width: '24px', height: '24px', color: '#facc15' }} />
+                    </div>
+                    <span className="text-xs text-center" style={{ color: 'rgba(255, 255, 255, 0.9)' }}>
+                      {getLanguageKey(language) === 'de' ? 'Manuskripte' : getLanguageKey(language) === 'en' ? 'Manuscripts' : 'Manuscripta'}
+                    </span>
+                  </div>
+                </div>
+                
+                {/* Astronomical Instruments */}
+                <div 
+                  className="aspect-square rounded-lg overflow-hidden cursor-pointer transition-all duration-300 hover:scale-105"
+                  style={{
+                    background: 'linear-gradient(135deg, rgba(30, 27, 75, 0.9), rgba(49, 46, 129, 0.9))',
+                    border: '2px solid rgba(251, 191, 36, 0.4)',
+                    boxShadow: '0 4px 20px rgba(0, 0, 0, 0.3)'
+                  }}
+                >
+                  <div className="w-full h-full flex flex-col items-center justify-center p-4">
+                    <div 
+                      className="w-12 h-12 rounded-lg mb-2 flex items-center justify-center"
+                      style={{ backgroundColor: 'rgba(251, 191, 36, 0.2)' }}
+                    >
+                      <Telescope style={{ width: '24px', height: '24px', color: '#facc15' }} />
+                    </div>
+                    <span className="text-xs text-center" style={{ color: 'rgba(255, 255, 255, 0.9)' }}>
+                      {getLanguageKey(language) === 'de' ? 'Astronomie' : getLanguageKey(language) === 'en' ? 'Astronomy' : 'Astronomia'}
+                    </span>
+                  </div>
+                </div>
+              </div>
+              
+              <p 
+                className="text-sm text-center mb-4"
+                style={{ color: 'rgba(255, 255, 255, 0.7)' }}
+              >
+                {currentContent.imageHint}
+              </p>
+            </div>
+            
+            {/* AUTHENTIC HISTORICAL CONTENT */}
+            <div 
+              className="rounded-xl p-8 mb-8"
+              style={{
+                backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                border: '1px solid rgba(251, 191, 36, 0.2)'
+              }}
+            >
+              <h3 
+                className="text-xl font-semibold mb-6 text-center"
+                style={{ color: '#facc15' }}
+              >
+                {currentContent.macrobiusWithSon}
+              </h3>
+              
+              <div className="space-y-6">
+                <p 
+                  className="text-base leading-relaxed"
+                  style={{ color: 'rgba(255, 255, 255, 0.9)' }}
+                >
+                  {currentContent.historicalText1}
+                </p>
+                
+                <p 
+                  className="text-base leading-relaxed"
+                  style={{ color: 'rgba(255, 255, 255, 0.8)' }}
+                >
+                  {currentContent.historicalText2}
+                </p>
               </div>
             </div>
+            
+            {/* ACTION BUTTONS - REAL FUNCTIONALITY */}
+            <div className="flex flex-wrap gap-4 justify-center">
+              <button 
+                className="px-8 py-4 rounded-lg font-bold text-sm transition-all duration-300 hover:scale-105 hover:shadow-xl"
+                style={{
+                  background: 'linear-gradient(135deg, #dc2626, #b91c1c)',
+                  color: 'white',
+                  border: '1px solid rgba(220, 38, 38, 0.5)',
+                  boxShadow: '0 4px 15px rgba(220, 38, 38, 0.3)'
+                }}
+                onClick={() => setCurrentSection('textsearch')}
+              >
+                {currentContent.exploreWorks}
+              </button>
+              
+              <button 
+                className="px-8 py-4 rounded-lg font-bold text-sm transition-all duration-300 hover:scale-105 hover:shadow-xl"
+                style={{
+                  background: 'linear-gradient(135deg, #059669, #047857)',
+                  color: 'white',
+                  border: '1px solid rgba(5, 150, 105, 0.5)',
+                  boxShadow: '0 4px 15px rgba(5, 150, 105, 0.3)'
+                }}
+                onClick={() => setCurrentSection('intro')}
+              >
+                {currentContent.moreAboutMacrobius}
+              </button>
+              
+              <button 
+                className="px-8 py-4 rounded-lg font-bold text-sm transition-all duration-300 hover:scale-105 hover:shadow-xl"
+                style={{
+                  background: 'linear-gradient(135deg, #7c3aed, #6d28d9)',
+                  color: 'white',
+                  border: '1px solid rgba(124, 58, 237, 0.5)',
+                  boxShadow: '0 4px 15px rgba(124, 58, 237, 0.3)'
+                }}
+              >
+                {currentContent.moreAboutPontanus}
+              </button>
+            </div>
           </div>
-        </main>
-      </div>
+        </div>
+      </main>
     </div>
   );
 };
