@@ -1,240 +1,9 @@
 'use client';
 
-import React, { useState, useEffect, Suspense } from 'react';
+import React, { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import { useLanguage, Language } from '@/contexts/LanguageContext';
 import { cn } from '@/lib/utils';
-import ClassicalMacrobiusLayout from '@/components/ui/ClassicalMacrobiusLayout';
-
-// Safe UI Components Import with Fallbacks
-let EnhancedLoadingSpinner: React.ComponentType<any>;
-let EnhancedErrorBoundary: React.ComponentType<any>;
-
-try {
-  EnhancedLoadingSpinner = require('@/components/ui/EnhancedLoadingStates').EnhancedLoadingSpinner;
-  EnhancedErrorBoundary = require('@/components/ui/EnhancedErrorBoundary').default;
-} catch (error) {
-  console.warn('Enhanced components not available, using fallbacks');
-  EnhancedLoadingSpinner = () => <div className="w-8 h-8 border-4 border-yellow-400 border-t-transparent rounded-full animate-spin" />;
-  EnhancedErrorBoundary = ({ children }: any) => <div>{children}</div>;
-}
-
-// 🔧 **LANGUAGE CONVERSION UTILITIES**
-// Convert lowercase to uppercase Language format
-const convertToLanguage = (lang: 'de' | 'en' | 'la'): Language => {
-  switch(lang) {
-    case 'de': return 'DE';
-    case 'en': return 'EN';
-    case 'la': return 'LA';
-    default: return 'EN';
-  }
-};
-
-// 🎯 **UNIFIED PROP INTERFACES FOR COMPONENT COMPATIBILITY**
-interface UnifiedComponentProps {
-  language?: any;
-  vocabularyData?: any;
-  userProfile?: any;
-  isActive?: boolean;
-}
-
-// 🔧 **NEXT.JS DYNAMIC IMPORTS WITH SSR DISABLED**
-// Loading fallback component
-const LoadingFallback = () => (
-  <div className="min-h-[400px] flex items-center justify-center">
-    <EnhancedLoadingSpinner />
-  </div>
-);
-
-// Fallback components for SSR
-const QuizFallback = () => (
-  <div className="text-center py-12">
-    <h2 className="text-3xl font-bold text-white mb-6">Interaktive Quiz</h2>
-    <p className="text-white/80 mb-8">Testen Sie Ihr Wissen über Macrobius und die antike Kultur</p>
-    <div className="bg-gradient-to-br from-blue-500/10 to-purple-500/10 border border-blue-400/30 rounded-lg p-6">
-      <p className="text-white/90">KI-generierte Quizfragen basierend auf authentischen Texten...</p>
-      <div className="mt-4">
-        <EnhancedLoadingSpinner />
-      </div>
-    </div>
-  </div>
-);
-
-const TextSearchFallback = () => (
-  <div className="text-center py-12">
-    <h2 className="text-3xl font-bold text-white mb-6">Textsuche</h2>
-    <p className="text-white/80 mb-8">Durchsuchen Sie das komplette Macrobius-Korpus</p>
-    <div className="bg-gradient-to-br from-teal-500/10 to-cyan-500/10 border border-teal-400/30 rounded-lg p-6">
-      <p className="text-white/90">KI-gestützte semantische Suche durch 1.401 authentische Textpassagen...</p>
-      <div className="mt-4">
-        <EnhancedLoadingSpinner />
-      </div>
-    </div>
-  </div>
-);
-
-// 🎯 **CLIENT-ONLY DYNAMIC COMPONENTS**
-// Quiz component with tier fallback logic
-const DynamicQuizComponent = dynamic(
-  () => import('@/components/sections/QuizSection-SMART-GENERATION-COMPLETE')
-    .then(mod => ({
-      default: (props: UnifiedComponentProps) => {
-        const mappedProps = {
-          language: props.language || { code: 'de', name: 'Deutsch' },
-          vocabularyData: props.vocabularyData,
-          userProfile: props.userProfile,
-        };
-        return React.createElement(mod.default, mappedProps);
-      }
-    }))
-    .catch(() => 
-      import('@/components/sections/QuizSection')
-        .then(mod => ({
-          default: (props: UnifiedComponentProps) => {
-            const mappedProps = {
-              isActive: props.isActive !== false,
-              language: typeof props.language === 'object' ? props.language.code?.toUpperCase() || 'DE' : 'DE',
-            };
-            return React.createElement(mod.default, mappedProps);
-          }
-        }))
-        .catch(() => ({ default: QuizFallback }))
-    ),
-  {
-    ssr: false,
-    loading: LoadingFallback
-  }
-);
-
-// TextSearch component with tier fallback logic
-const DynamicTextSearchComponent = dynamic(
-  () => import('@/components/sections/MacrobiusTextProcessor-TIER2-COMPLETE')
-    .then(mod => ({
-      default: (props: UnifiedComponentProps) => {
-        const mappedProps = {
-          language: props.language || { code: 'de', name: 'Deutsch' },
-          vocabularyData: props.vocabularyData,
-          userProfile: props.userProfile,
-        };
-        return React.createElement(mod.default, mappedProps);
-      }
-    }))
-    .catch(() => 
-      import('@/components/sections/TextSearchSection')
-        .then(mod => ({
-          default: (props: UnifiedComponentProps) => {
-            const mappedProps = {
-              isActive: props.isActive !== false,
-              language: typeof props.language === 'object' ? props.language.code?.toUpperCase() || 'DE' : 'DE',
-            };
-            return React.createElement(mod.default, mappedProps);
-          }
-        }))
-        .catch(() => ({ default: TextSearchFallback }))
-    ),
-  {
-    ssr: false,
-    loading: LoadingFallback
-  }
-);
-
-// 📚 **SECTION COMPONENTS WITH SSR-SAFE LOADING**
-const IntroSection = React.lazy(() => 
-  import('@/components/sections/IntroSection').catch(() => 
-    ({ default: () => (
-      <div className="text-center py-12">
-        <h2 className="text-3xl font-bold text-white mb-6">Willkommen bei Macrobius</h2>
-        <p className="text-xl text-white/80 mb-8 leading-relaxed">Eine antike Flaschenpost - Eine Nachricht aus der Antike an die Zukunft</p>
-        <div className="bg-gradient-to-br from-yellow-400/10 to-amber-500/10 border border-yellow-400/30 rounded-lg p-6">
-          <p className="text-white/90 leading-relaxed">
-            Entdecken Sie die Weisheit des Macrobius Ambrosius Theodosius, des großen spätantiken Gelehrten. 
-            Tauchen Sie ein in die Welt der Saturnalien und erforschen Sie antike Kultur, Astronomie und Philosophie 
-            mit modernsten KI-gestützten Lernwerkzeugen.
-          </p>
-        </div>
-      </div>
-    ) })
-  )
-);
-
-// Wrapper components for dynamic imports
-const QuizSection: React.FC<UnifiedComponentProps> = (props) => {
-  return <DynamicQuizComponent {...props} />;
-};
-
-const TextSearchSection: React.FC<UnifiedComponentProps> = (props) => {
-  return <DynamicTextSearchComponent {...props} />;
-};
-
-const WorldMapSection = React.lazy(() => 
-  import('@/components/sections/WorldMapSection').catch(() => 
-    ({ default: () => (
-      <div className="text-center py-12">
-        <h2 className="text-3xl font-bold text-white mb-6">Weltkarte</h2>
-        <p className="text-white/80 mb-8">Erkunden Sie die geographische Welt des Macrobius</p>
-        <div className="bg-gradient-to-br from-green-500/10 to-blue-500/10 border border-green-400/30 rounded-lg p-6">
-          <p className="text-white/90">Interaktive Darstellung historischer Orte und Konzepte...</p>
-        </div>
-      </div>
-    ) })
-  )
-);
-
-const CosmosSection = React.lazy(() => 
-  import('@/components/sections/CosmosSection').catch(() => 
-    ({ default: () => (
-      <div className="text-center py-12">
-        <h2 className="text-3xl font-bold text-white mb-6">Kosmos</h2>
-        <p className="text-white/80 mb-8">Entdecken Sie die antike Kosmologie und Astronomie</p>
-        <div className="bg-gradient-to-br from-purple-500/10 to-pink-500/10 border border-purple-400/30 rounded-lg p-6">
-          <p className="text-white/90">Visualisierung antiker astronomischer Konzepte...</p>
-        </div>
-      </div>
-    ) })
-  )
-);
-
-const BanquetSection = React.lazy(() => 
-  import('@/components/sections/BanquetSection').catch(() => 
-    ({ default: () => (
-      <div className="text-center py-12">
-        <h2 className="text-3xl font-bold text-white mb-6">Gastmahl</h2>
-        <p className="text-white/80 mb-8">Erleben Sie die berühmten Saturnalien-Gespräche</p>
-        <div className="bg-gradient-to-br from-orange-500/10 to-red-500/10 border border-orange-400/30 rounded-lg p-6">
-          <p className="text-white/90">Immersive Darstellung der antiken Symposium-Kultur...</p>
-        </div>
-      </div>
-    ) })
-  )
-);
-
-const LearningSection = React.lazy(() => 
-  import('@/components/sections/LearningSection-enhanced-complete').catch(() => 
-    ({ default: () => (
-      <div className="text-center py-12">
-        <h2 className="text-3xl font-bold text-white mb-6">Lernen</h2>
-        <p className="text-white/80 mb-8">Personalisierte Lernpfade für Latein und antike Kultur</p>
-        <div className="bg-gradient-to-br from-emerald-500/10 to-green-500/10 border border-emerald-400/30 rounded-lg p-6">
-          <p className="text-white/90">Adaptive KI-Tutoring und Vokabeltraining...</p>
-        </div>
-      </div>
-    ) })
-  )
-);
-
-const VisualizationsSection = React.lazy(() => 
-  import('@/components/sections/VisualizationsSection').catch(() => 
-    ({ default: () => (
-      <div className="text-center py-12">
-        <h2 className="text-3xl font-bold text-white mb-6">Visualisierungen</h2>
-        <p className="text-white/80 mb-8">Datenvisualisierung und interaktive Analysen</p>
-        <div className="bg-gradient-to-br from-violet-500/10 to-purple-500/10 border border-violet-400/30 rounded-lg p-6">
-          <p className="text-white/90">Zeitleisten, Netzwerke und thematische Analysen...</p>
-        </div>
-      </div>
-    ) })
-  )
-);
 
 // Icons
 import { 
@@ -246,14 +15,137 @@ import {
   Search, 
   GraduationCap, 
   BarChart3,
-  Sparkles,
-  MapPin,
-  BookOpen,
   Wine,
   User
 } from 'lucide-react';
 
-// Section Configuration
+// 🔧 **SAFE UI COMPONENTS WITH FALLBACKS**
+const EnhancedLoadingSpinner = () => (
+  <div className="w-8 h-8 border-4 border-yellow-400 border-t-transparent rounded-full animate-spin" />
+);
+
+const EnhancedErrorBoundary: React.FC<{ children: React.ReactNode }> = ({ children }) => (
+  <div>{children}</div>
+);
+
+// 🔧 **LANGUAGE CONVERSION UTILITIES**
+const convertToLanguage = (lang: 'de' | 'en' | 'la'): Language => {
+  switch(lang) {
+    case 'de': return 'DE';
+    case 'en': return 'EN';
+    case 'la': return 'LA';
+    default: return 'EN';
+  }
+};
+
+// 🎯 **UNIFIED PROP INTERFACES**
+interface UnifiedComponentProps {
+  language?: any;
+  vocabularyData?: any;
+  userProfile?: any;
+  isActive?: boolean;
+}
+
+// 🔧 **LOADING FALLBACK COMPONENT**
+const LoadingFallback = () => (
+  <div className="min-h-[400px] flex items-center justify-center">
+    <EnhancedLoadingSpinner />
+  </div>
+);
+
+// 🔧 **STATIC FALLBACK COMPONENTS FOR SSR SAFETY**
+const createStaticFallback = (title: string, description: string, gradientClasses: string) => () => (
+  <div className="text-center py-12">
+    <h2 className="text-3xl font-bold text-white mb-6">{title}</h2>
+    <p className="text-white/80 mb-8">{description}</p>
+    <div className={cn("border border-opacity-30 rounded-lg p-6", gradientClasses)}>
+      <p className="text-white/90">Lade erweiterte Funktionen...</p>
+      <div className="mt-4 flex justify-center">
+        <EnhancedLoadingSpinner />
+      </div>
+    </div>
+  </div>
+);
+
+// 🎯 **ALL DYNAMIC COMPONENTS WITH SSR DISABLED**
+// Main layout component
+const ClassicalMacrobiusLayout = dynamic(
+  () => import('@/components/ui/ClassicalMacrobiusLayout'),
+  {
+    ssr: false,
+    loading: LoadingFallback
+  }
+);
+
+// Section components with fallbacks
+const IntroSection = dynamic(
+  () => import('@/components/sections/IntroSection'),
+  {
+    ssr: false,
+    loading: LoadingFallback
+  }
+);
+
+const QuizSection = dynamic(
+  () => import('@/components/sections/QuizSection-SMART-GENERATION-COMPLETE')
+    .catch(() => import('@/components/sections/QuizSection')),
+  {
+    ssr: false,
+    loading: LoadingFallback
+  }
+);
+
+const WorldMapSection = dynamic(
+  () => import('@/components/sections/WorldMapSection'),
+  {
+    ssr: false,
+    loading: LoadingFallback
+  }
+);
+
+const CosmosSection = dynamic(
+  () => import('@/components/sections/CosmosSection'),
+  {
+    ssr: false,
+    loading: LoadingFallback
+  }
+);
+
+const BanquetSection = dynamic(
+  () => import('@/components/sections/BanquetSection'),
+  {
+    ssr: false,
+    loading: LoadingFallback
+  }
+);
+
+const TextSearchSection = dynamic(
+  () => import('@/components/sections/MacrobiusTextProcessor-TIER2-COMPLETE')
+    .catch(() => import('@/components/sections/TextSearchSection')),
+  {
+    ssr: false,
+    loading: LoadingFallback
+  }
+);
+
+const LearningSection = dynamic(
+  () => import('@/components/sections/LearningSection-enhanced-complete')
+    .catch(() => import('@/components/sections/LearningSection')),
+  {
+    ssr: false,
+    loading: LoadingFallback
+  }
+);
+
+const VisualizationsSection = dynamic(
+  () => import('@/components/sections/VisualizationsSection'),
+  {
+    ssr: false,
+    loading: LoadingFallback
+  }
+);
+
+// 📚 **SECTION CONFIGURATION**
 interface AppSection {
   id: string;
   label: { de: string; en: string; la: string };
@@ -353,33 +245,37 @@ const appSections: AppSection[] = [
   }
 ];
 
-// Main App Component
+// 🎯 **MAIN APP COMPONENT WITH SSR SAFETY**
 const ClassicalMacrobiusApp: React.FC = () => {
-  const { language, setLanguage } = useLanguage();
-  
-  // State Management
+  // State Management with SSR-safe defaults
   const [currentSection, setCurrentSection] = useState('intro');
   const [isLoading, setIsLoading] = useState(true);
+  const [isClient, setIsClient] = useState(false);
   
-  // 🔧 **FIXED: Language Conversion Wrapper**
-  // Wrapper function to handle language format conversion
-  const handleLanguageChange = (lang: 'de' | 'en' | 'la') => {
-    const convertedLang = convertToLanguage(lang);
-    setLanguage(convertedLang);
-  };
+  // Safe language hook usage
+  const { language, setLanguage, isHydrated } = useLanguage();
   
-  // Enhanced Loading State
+  // 🔧 **CLIENT-SIDE INITIALIZATION**
   useEffect(() => {
+    setIsClient(true);
     const initializeApp = async () => {
       // Simulate app initialization
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      await new Promise(resolve => setTimeout(resolve, 1500));
       setIsLoading(false);
     };
     
     initializeApp();
   }, []);
   
-  // Navigation Items for Classical Layout
+  // 🔧 **SAFE LANGUAGE CHANGE HANDLER**
+  const handleLanguageChange = (lang: 'de' | 'en' | 'la') => {
+    if (isClient && isHydrated) {
+      const convertedLang = convertToLanguage(lang);
+      setLanguage(convertedLang);
+    }
+  };
+  
+  // 🔧 **SSR-SAFE NAVIGATION ITEMS**
   const navigationItems = appSections.map(section => ({
     id: section.id,
     label: section.label,
@@ -388,7 +284,7 @@ const ClassicalMacrobiusApp: React.FC = () => {
     active: currentSection === section.id
   }));
   
-  // Content Sections for Grid Display
+  // 🔧 **SSR-SAFE CONTENT SECTIONS**
   const contentSections = appSections.map(section => ({
     id: section.id,
     title: section.label,
@@ -397,16 +293,19 @@ const ClassicalMacrobiusApp: React.FC = () => {
     onClick: () => setCurrentSection(section.id)
   }));
   
-  // Current Section Rendering with Unified Props
+  // 🔧 **SAFE SECTION RENDERING**
   const renderCurrentSection = () => {
+    if (!isClient || !isHydrated) {
+      return <LoadingFallback />;
+    }
+    
     const section = appSections.find(s => s.id === currentSection);
-    if (!section) return null;
+    if (!section) return <LoadingFallback />;
     
     const Component = section.component;
     
-    // 🔧 **FIXED: Simplified Language Handling**
-    // LanguageContext returns language as 'DE' | 'EN' | 'LA' directly
-    const languageCode = language.toLowerCase(); // Convert to lowercase
+    // Safe language handling
+    const languageCode = language?.toLowerCase() || 'de';
     const languageName = language === 'DE' ? 'Deutsch' : language === 'EN' ? 'English' : 'Latina';
     
     // Unified props for all components
@@ -417,15 +316,11 @@ const ClassicalMacrobiusApp: React.FC = () => {
       isActive: true
     };
     
-    return (
-      <Suspense fallback={<LoadingFallback />}>
-        <Component {...unifiedProps} />
-      </Suspense>
-    );
+    return <Component {...unifiedProps} />;
   };
   
-  // Enhanced Loading Screen
-  if (isLoading) {
+  // 🔧 **ENHANCED LOADING SCREEN**
+  if (isLoading || !isClient || !isHydrated) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-950 via-purple-950 to-black">
         <div className="text-center space-y-8">
@@ -434,7 +329,9 @@ const ClassicalMacrobiusApp: React.FC = () => {
             <div className="w-32 h-32 rounded-full border-4 border-yellow-400 bg-gradient-to-br from-amber-900/80 to-yellow-900/80 backdrop-blur-sm flex items-center justify-center animate-pulse">
               <User className="w-16 h-16 text-yellow-400" />
             </div>
-            <div className="absolute -inset-4 rounded-full border border-yellow-400/30 animate-spin-slow" />
+            <div className="absolute -inset-4 rounded-full border border-yellow-400/30 animate-spin" style={{
+              animation: 'spin 3s linear infinite'
+            }} />
           </div>
           
           <div className="space-y-4">
@@ -452,6 +349,7 @@ const ClassicalMacrobiusApp: React.FC = () => {
     );
   }
   
+  // 🔧 **MAIN APP RENDER WITH SSR SAFETY**
   return (
     <ClassicalMacrobiusLayout
       navigationItems={navigationItems}
@@ -464,7 +362,7 @@ const ClassicalMacrobiusApp: React.FC = () => {
   );
 };
 
-// Enhanced Error Boundary Wrapper
+// 🔧 **ERROR BOUNDARY WRAPPER**
 const EnhancedApp: React.FC = () => {
   return (
     <EnhancedErrorBoundary>
