@@ -17,8 +17,7 @@ import {
   Brain,
   Target,
   Scroll,
-  Crown,
-  Telescope
+  Crown
 } from 'lucide-react';
 
 // Classical Portrait Component
@@ -428,7 +427,7 @@ const ClassicalMacrobiusApp = () => {
                       className="w-12 h-12 rounded-lg mb-2 flex items-center justify-center"
                       style={{ backgroundColor: 'rgba(251, 191, 36, 0.2)' }}
                     >
-                      <Telescope style={{ width: '24px', height: '24px', color: '#facc15' }} />
+                      <Star style={{ width: '24px', height: '24px', color: '#facc15' }} />
                     </div>
                     <span className="text-xs text-center" style={{ color: 'rgba(255, 255, 255, 0.9)' }}>
                       {getLanguageKey(language) === 'de' ? 'Astronomie' : getLanguageKey(language) === 'en' ? 'Astronomy' : 'Astronomia'}
