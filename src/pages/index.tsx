@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { cn } from '@/lib/utils';
 
-// Icons
+// Essential Icons
 import { 
   Home, 
   HelpCircle, 
@@ -23,9 +22,9 @@ import {
 } from 'lucide-react';
 
 // Classical Portrait Component
-const ClassicalMacrobiusPortrait: React.FC<{ className?: string }> = ({ className }) => {
+const ClassicalMacrobiusPortrait = ({ className = '' }) => {
   return (
-    <div className={cn("relative", className)}>
+    <div className={`relative ${className}`}>
       <div 
         className="w-full h-full rounded-full overflow-hidden"
         style={{
@@ -65,12 +64,12 @@ const ClassicalMacrobiusPortrait: React.FC<{ className?: string }> = ({ classNam
 };
 
 // Main App Component
-const ClassicalMacrobiusApp: React.FC = () => {
+const ClassicalMacrobiusApp = () => {
   const { language, setLanguage } = useLanguage();
   const [currentSection, setCurrentSection] = useState('intro');
   
-  // Language converter
-  const convertToLanguage = (lang: 'de' | 'en' | 'la') => {
+  // Language conversion functions
+  const convertToLanguage = (lang) => {
     switch(lang) {
       case 'de': return 'DE';
       case 'en': return 'EN';
@@ -79,7 +78,7 @@ const ClassicalMacrobiusApp: React.FC = () => {
     }
   };
 
-  const getLanguageKey = (lang: string): 'de' | 'en' | 'la' => {
+  const getLanguageKey = (lang) => {
     switch(lang) {
       case 'DE': return 'de';
       case 'EN': return 'en';
@@ -88,7 +87,7 @@ const ClassicalMacrobiusApp: React.FC = () => {
     }
   };
 
-  const handleLanguageChange = (lang: 'de' | 'en' | 'la') => {
+  const handleLanguageChange = (lang) => {
     setLanguage(convertToLanguage(lang));
   };
 
@@ -99,10 +98,9 @@ const ClassicalMacrobiusApp: React.FC = () => {
       subtitle: 'Eine antike Flaschenpost',
       description: 'Eine Nachricht aus der Antike an die Zukunft',
       culturalTreasures: 'Kulturelle Schätze entdecken',
-      imageHint: 'Klicken Sie auf die Bilder für detaillierte kulturelle Hintergründe',
       macrobiusWithSon: 'Macrobius mit seinem Sohn, dem er seine Werke widmete',
-      historicalText1: 'Vor 1500 Jahren, als das römische Reich dem Untergang entgegensah, fertigte Macrobius eine Flaschenpost an die Zukunft an. Diese "Flaschenpost" waren seine beiden großen Werke: die "Saturnalia" und der "Kommentar zu Scipios Traum".',
-      historicalText2: 'Diese App ist unsere moderne Antwort auf Macrobius\' Vision. Durch KI-gestützte Textanalyse, interaktive Visualisierungen und multilinguale Zugänge machen wir seine "Flaschenpost" für das 21. Jahrhundert erlebbar.',
+      historicalText1: 'Vor 1500 Jahren, als das römische Reich dem Untergang entgegensah, fertigte Macrobius eine Flaschenpost an die Zukunft an.',
+      historicalText2: 'Diese App ist unsere moderne Antwort auf Macrobius\' Vision.',
       exploreWorks: 'ERKUNDEN SIE DIE WERKE DES MACROBIUS',
       moreAboutMacrobius: 'Mehr über Macrobius',
       moreAboutPontanus: 'Mehr über Pontanus'
@@ -112,10 +110,9 @@ const ClassicalMacrobiusApp: React.FC = () => {
       subtitle: 'An Ancient Message in a Bottle',
       description: 'A Message from Antiquity to the Future',
       culturalTreasures: 'Discover Cultural Treasures',
-      imageHint: 'Click on the images for detailed cultural background',
       macrobiusWithSon: 'Macrobius with his son, to whom he dedicated his works',
-      historicalText1: '1500 years ago, as the Roman Empire faced decline, Macrobius created a message in a bottle for the future. This "message in a bottle" consisted of his two great works: the "Saturnalia" and the "Commentary on Scipio\'s Dream".',
-      historicalText2: 'This app is our modern response to Macrobius\' vision. Through AI-powered text analysis, interactive visualizations, and multilingual access, we make his "message in a bottle" accessible for the 21st century.',
+      historicalText1: '1500 years ago, as the Roman Empire faced decline, Macrobius created a message in a bottle for the future.',
+      historicalText2: 'This app is our modern response to Macrobius\' vision.',
       exploreWorks: 'EXPLORE THE WORKS OF MACROBIUS',
       moreAboutMacrobius: 'More about Macrobius',
       moreAboutPontanus: 'More about Pontanus'
@@ -125,10 +122,9 @@ const ClassicalMacrobiusApp: React.FC = () => {
       subtitle: 'Antiqua Epistula in Lagena',
       description: 'Nuntius ab Antiquitate ad Futurum',
       culturalTreasures: 'Thesauros Culturales Inveni',
-      imageHint: 'Imagines preme ad culturalem contextum detaliatum',
       macrobiusWithSon: 'Macrobius cum filio suo, cui opera sua dedicavit',
-      historicalText1: 'Ante annos MD, cum Imperium Romanum ad occasum vergeret, Macrobius epistulam in lagena ad futurum confecit. Haec "epistula in lagena" duo eius magna opera erant: "Saturnalia" et "Commentarius in Somnium Scipionis".',
-      historicalText2: 'Haec app nostra moderna responsio ad visionem Macrobii est. Per AI-adiuvata analysis textuum, visualizationes interactivas, et accessus multilingues, eius "epistulam in lagena" pro saeculo XXI accessibilem facimus.',
+      historicalText1: 'Ante annos MD, cum Imperium Romanum ad occasum vergeret, Macrobius epistulam in lagena ad futurum confecit.',
+      historicalText2: 'Haec app nostra moderna responsio ad visionem Macrobii est.',
       exploreWorks: 'OPERA MACROBII EXPLORA',
       moreAboutMacrobius: 'Plura de Macrobio',
       moreAboutPontanus: 'Plura de Pontano'
@@ -139,22 +135,22 @@ const ClassicalMacrobiusApp: React.FC = () => {
 
   // Navigation sections
   const mainSections = [
-    { id: 'intro', label: { de: 'Einführung', en: 'Introduction', la: 'Introductio' }, icon: <Home className="w-5 h-5" /> },
-    { id: 'quiz', label: { de: 'Quiz', en: 'Quiz', la: 'Quaestiones' }, icon: <HelpCircle className="w-5 h-5" /> },
-    { id: 'worldmap', label: { de: 'Weltkarte', en: 'World Map', la: 'Mappa Mundi' }, icon: <Globe className="w-5 h-5" /> },
-    { id: 'cosmos', label: { de: 'Kosmos', en: 'Cosmos', la: 'Cosmos' }, icon: <Star className="w-5 h-5" /> },
-    { id: 'banquet', label: { de: 'Gastmahl', en: 'Banquet', la: 'Convivium' }, icon: <Wine className="w-5 h-5" /> },
-    { id: 'textsearch', label: { de: 'Textsuche', en: 'Text Search', la: 'Quaestio Textuum' }, icon: <Search className="w-5 h-5" /> },
-    { id: 'learning', label: { de: 'Lernen', en: 'Learning', la: 'Discere' }, icon: <GraduationCap className="w-5 h-5" /> },
-    { id: 'vokabeltrainer', label: { de: 'Vokabeltrainer', en: 'Vocabulary Trainer', la: 'Exercitium Vocabulorum' }, icon: <BookOpen className="w-5 h-5" /> },
-    { id: 'visualizations', label: { de: 'Visualisierungen', en: 'Visualizations', la: 'Visualizationes' }, icon: <BarChart3 className="w-5 h-5" /> }
+    { id: 'intro', label: { de: 'Einführung', en: 'Introduction', la: 'Introductio' }, icon: Home },
+    { id: 'quiz', label: { de: 'Quiz', en: 'Quiz', la: 'Quaestiones' }, icon: HelpCircle },
+    { id: 'worldmap', label: { de: 'Weltkarte', en: 'World Map', la: 'Mappa Mundi' }, icon: Globe },
+    { id: 'cosmos', label: { de: 'Kosmos', en: 'Cosmos', la: 'Cosmos' }, icon: Star },
+    { id: 'banquet', label: { de: 'Gastmahl', en: 'Banquet', la: 'Convivium' }, icon: Wine },
+    { id: 'textsearch', label: { de: 'Textsuche', en: 'Text Search', la: 'Quaestio Textuum' }, icon: Search },
+    { id: 'learning', label: { de: 'Lernen', en: 'Learning', la: 'Discere' }, icon: GraduationCap },
+    { id: 'vokabeltrainer', label: { de: 'Vokabeltrainer', en: 'Vocabulary Trainer', la: 'Exercitium Vocabulorum' }, icon: BookOpen },
+    { id: 'visualizations', label: { de: 'Visualisierungen', en: 'Visualizations', la: 'Visualizationes' }, icon: BarChart3 }
   ];
 
   const kiSections = [
-    { id: 'ki-kulturanalyse', label: { de: 'KI-Kulturanalyse', en: 'AI Cultural Analysis', la: 'AI Analysis Culturalis' }, icon: <Brain className="w-4 h-4" /> },
-    { id: 'lernpfade', label: { de: 'Lernpfade', en: 'Learning Paths', la: 'Semitae Discendi' }, icon: <Target className="w-4 h-4" /> },
-    { id: 'ki-tutor', label: { de: 'KI-Tutor', en: 'AI Tutor', la: 'AI Praeceptor' }, icon: <Crown className="w-4 h-4" /> },
-    { id: 'kulturmodule', label: { de: 'Kulturmodule', en: 'Cultural Modules', la: 'Moduli Culturales' }, icon: <Scroll className="w-4 h-4" /> }
+    { id: 'ki-kulturanalyse', label: { de: 'KI-Kulturanalyse', en: 'AI Cultural Analysis', la: 'AI Analysis Culturalis' }, icon: Brain },
+    { id: 'lernpfade', label: { de: 'Lernpfade', en: 'Learning Paths', la: 'Semitae Discendi' }, icon: Target },
+    { id: 'ki-tutor', label: { de: 'KI-Tutor', en: 'AI Tutor', la: 'AI Praeceptor' }, icon: Crown },
+    { id: 'kulturmodule', label: { de: 'Kulturmodule', en: 'Cultural Modules', la: 'Moduli Culturales' }, icon: Scroll }
   ];
 
   return (
@@ -164,7 +160,7 @@ const ClassicalMacrobiusApp: React.FC = () => {
         background: 'linear-gradient(135deg, #0a0e1a 0%, #1a1f2e 25%, #2d1b4e 50%, #1a1f2e 75%, #0a0e1a 100%)'
       }}
     >
-      {/* SOPHISTICATED LEFT SIDEBAR */}
+      {/* LEFT SIDEBAR */}
       <aside 
         className="w-64 h-screen flex flex-col"
         style={{
@@ -175,23 +171,27 @@ const ClassicalMacrobiusApp: React.FC = () => {
         <div className="flex-1 overflow-y-auto p-4">
           {/* Main Navigation */}
           <nav className="space-y-1 mb-6">
-            {mainSections.map((section) => (
-              <button
-                key={section.id}
-                onClick={() => setCurrentSection(section.id)}
-                className="w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-all duration-200"
-                style={{
-                  backgroundColor: currentSection === section.id ? 'rgba(251, 191, 36, 0.15)' : 'transparent',
-                  color: currentSection === section.id ? '#facc15' : 'rgba(255, 255, 255, 0.8)',
-                  border: currentSection === section.id ? '1px solid rgba(251, 191, 36, 0.3)' : '1px solid transparent'
-                }}
-              >
-                <div style={{ color: currentSection === section.id ? '#facc15' : 'rgba(255, 255, 255, 0.6)' }}>
-                  {section.icon}
-                </div>
-                {section.label[getLanguageKey(language)]}
-              </button>
-            ))}
+            {mainSections.map((section) => {
+              const IconComponent = section.icon;
+              return (
+                <button
+                  key={section.id}
+                  onClick={() => setCurrentSection(section.id)}
+                  className="w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-all duration-200"
+                  style={{
+                    backgroundColor: currentSection === section.id ? 'rgba(251, 191, 36, 0.15)' : 'transparent',
+                    color: currentSection === section.id ? '#facc15' : 'rgba(255, 255, 255, 0.8)',
+                    border: currentSection === section.id ? '1px solid rgba(251, 191, 36, 0.3)' : '1px solid transparent'
+                  }}
+                >
+                  <IconComponent 
+                    className="w-5 h-5" 
+                    style={{ color: currentSection === section.id ? '#facc15' : 'rgba(255, 255, 255, 0.6)' }} 
+                  />
+                  {section.label[getLanguageKey(language)]}
+                </button>
+              );
+            })}
           </nav>
           
           {/* KI-SYSTEME Section */}
@@ -203,22 +203,26 @@ const ClassicalMacrobiusApp: React.FC = () => {
               KI-SYSTEME
             </h3>
             <nav className="space-y-1">
-              {kiSections.map((section) => (
-                <button
-                  key={section.id}
-                  onClick={() => setCurrentSection(section.id)}
-                  className="w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-all duration-200"
-                  style={{
-                    backgroundColor: currentSection === section.id ? 'rgba(251, 191, 36, 0.1)' : 'transparent',
-                    color: currentSection === section.id ? '#facc15' : 'rgba(255, 255, 255, 0.7)'
-                  }}
-                >
-                  <div style={{ color: currentSection === section.id ? '#facc15' : 'rgba(255, 255, 255, 0.5)' }}>
-                    {section.icon}
-                  </div>
-                  {section.label[getLanguageKey(language)]}
-                </button>
-              ))}
+              {kiSections.map((section) => {
+                const IconComponent = section.icon;
+                return (
+                  <button
+                    key={section.id}
+                    onClick={() => setCurrentSection(section.id)}
+                    className="w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-all duration-200"
+                    style={{
+                      backgroundColor: currentSection === section.id ? 'rgba(251, 191, 36, 0.1)' : 'transparent',
+                      color: currentSection === section.id ? '#facc15' : 'rgba(255, 255, 255, 0.7)'
+                    }}
+                  >
+                    <IconComponent 
+                      className="w-4 h-4" 
+                      style={{ color: currentSection === section.id ? '#facc15' : 'rgba(255, 255, 255, 0.5)' }} 
+                    />
+                    {section.label[getLanguageKey(language)]}
+                  </button>
+                );
+              })}
             </nav>
           </div>
           
@@ -275,7 +279,7 @@ const ClassicalMacrobiusApp: React.FC = () => {
           
           {/* Language Switcher */}
           <div className="flex items-center gap-2">
-            {(['de', 'en', 'la'] as const).map((lang) => (
+            {['de', 'en', 'la'].map((lang) => (
               <button
                 key={lang}
                 onClick={() => handleLanguageChange(lang)}
@@ -432,13 +436,6 @@ const ClassicalMacrobiusApp: React.FC = () => {
                   </div>
                 </div>
               </div>
-              
-              <p 
-                className="text-sm text-center mb-4"
-                style={{ color: 'rgba(255, 255, 255, 0.7)' }}
-              >
-                {currentContent.imageHint}
-              </p>
             </div>
             
             {/* HISTORICAL CONTENT */}
