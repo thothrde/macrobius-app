@@ -50,6 +50,120 @@
   }
 }
 
+/* Classical Macrobius Animations */
+@keyframes astrolabe-rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes constellation {
+  0%, 100% {
+    opacity: 0.3;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.2);
+  }
+}
+
+@keyframes classical-glow {
+  0%, 100% {
+    opacity: 0.3;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.6;
+    transform: scale(1.02);
+  }
+}
+
+@keyframes spin-slow {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes twinkle {
+  0%, 100% {
+    opacity: 0.3;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.5);
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 0 5px rgba(251, 191, 36, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(251, 191, 36, 0.6), 0 0 30px rgba(251, 191, 36, 0.4);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+/* Animation Classes */
+.animate-astrolabe {
+  animation: astrolabe-rotate 30s linear infinite;
+}
+
+.animate-constellation {
+  animation: constellation 4s ease-in-out infinite;
+}
+
+.animate-classical-glow {
+  animation: classical-glow 3s ease-in-out infinite;
+}
+
+.animate-spin-slow {
+  animation: spin-slow 20s linear infinite;
+}
+
+.animate-twinkle {
+  animation: twinkle 3s ease-in-out infinite;
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+.animate-shimmer {
+  animation: shimmer 2s infinite;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+  background-size: 200% 100%;
+}
+
 /* Classical Macrobius Styles */
 @layer base {
   * {
@@ -179,6 +293,28 @@
     @apply bg-gradient-to-r from-yellow-400/20 via-transparent to-amber-500/20;
     animation: spin-slow 20s linear infinite;
   }
+
+  /* Enhanced Gradients */
+  .bg-gradient-radial {
+    background: radial-gradient(circle, var(--tw-gradient-stops));
+  }
+
+  .bg-gradient-conic {
+    background: conic-gradient(var(--tw-gradient-stops));
+  }
+
+  /* Drop Shadow Effects */
+  .drop-shadow-glow {
+    filter: drop-shadow(0 0 8px rgba(251, 191, 36, 0.5));
+  }
+
+  .shadow-golden {
+    box-shadow: 0 10px 25px -5px rgba(251, 191, 36, 0.2), 0 4px 6px -2px rgba(251, 191, 36, 0.1);
+  }
+
+  .shadow-classical {
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.1);
+  }
 }
 
 /* Utility Classes */
@@ -218,10 +354,24 @@
   .delay-500 { animation-delay: 0.5s; }
   .delay-700 { animation-delay: 0.7s; }
   .delay-1000 { animation-delay: 1s; }
+  
+  /* Scale Utilities */
+  .scale-102 { transform: scale(1.02); }
+  .scale-105 { transform: scale(1.05); }
+  .scale-110 { transform: scale(1.1); }
+  .scale-125 { transform: scale(1.25); }
 }
 
 /* Custom Fonts */
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Cinzel:wght@400;600&display=swap');
+
+.font-classical {
+  font-family: 'Cinzel', serif;
+}
+
+.font-ancient {
+  font-family: 'Playfair Display', serif;
+}
 
 /* Responsive Design */
 @media (max-width: 768px) {
@@ -242,7 +392,14 @@
 @media (prefers-reduced-motion: reduce) {
   .astrolabe-ring,
   .constellation-star,
-  .portrait-glow {
+  .portrait-glow,
+  .animate-astrolabe,
+  .animate-constellation,
+  .animate-classical-glow,
+  .animate-spin-slow,
+  .animate-twinkle,
+  .animate-float,
+  .animate-pulse-glow {
     animation: none;
   }
 }
