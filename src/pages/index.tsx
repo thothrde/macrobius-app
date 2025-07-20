@@ -20,8 +20,16 @@ import {
   Crown
 } from 'lucide-react';
 
+// TypeScript interfaces
+interface ClassicalPortraitProps {
+  className?: string;
+}
+
+type LanguageCode = 'de' | 'en' | 'la';
+type LanguageKey = 'DE' | 'EN' | 'LA';
+
 // Classical Portrait Component
-const ClassicalMacrobiusPortrait = ({ className = '' }) => {
+const ClassicalMacrobiusPortrait: React.FC<ClassicalPortraitProps> = ({ className = '' }) => {
   return (
     <div className={`relative ${className}`}>
       <div 
@@ -63,12 +71,12 @@ const ClassicalMacrobiusPortrait = ({ className = '' }) => {
 };
 
 // Main App Component
-const ClassicalMacrobiusApp = () => {
+const ClassicalMacrobiusApp: React.FC = () => {
   const { language, setLanguage } = useLanguage();
-  const [currentSection, setCurrentSection] = useState('intro');
+  const [currentSection, setCurrentSection] = useState<string>('intro');
   
-  // Language conversion functions
-  const convertToLanguage = (lang) => {
+  // Language conversion functions with proper TypeScript types
+  const convertToLanguage = (lang: LanguageCode): LanguageKey => {
     switch(lang) {
       case 'de': return 'DE';
       case 'en': return 'EN';
@@ -77,7 +85,7 @@ const ClassicalMacrobiusApp = () => {
     }
   };
 
-  const getLanguageKey = (lang) => {
+  const getLanguageKey = (lang: LanguageKey): LanguageCode => {
     switch(lang) {
       case 'DE': return 'de';
       case 'EN': return 'en';
@@ -86,7 +94,7 @@ const ClassicalMacrobiusApp = () => {
     }
   };
 
-  const handleLanguageChange = (lang) => {
+  const handleLanguageChange = (lang: LanguageCode): void => {
     setLanguage(convertToLanguage(lang));
   };
 
@@ -278,7 +286,7 @@ const ClassicalMacrobiusApp = () => {
           
           {/* Language Switcher */}
           <div className="flex items-center gap-2">
-            {['de', 'en', 'la'].map((lang) => (
+            {(['de', 'en', 'la'] as const).map((lang) => (
               <button
                 key={lang}
                 onClick={() => handleLanguageChange(lang)}
