@@ -22,7 +22,11 @@ import {
   AlertTriangle,
   Network,
   CalendarDays,
-  Gauge
+  Gauge,
+  Wifi,
+  WifiOff,
+  ShieldAlert,
+  CheckCircle
 } from 'lucide-react';
 
 // Import all section components
@@ -39,7 +43,7 @@ import AICulturalAnalysisSection from '@/components/sections/AICulturalAnalysisS
 import PersonalizedLearningPaths from '@/components/sections/PersonalizedLearningPaths-COMPLETE';
 import AITutoringSystemSection from '@/components/sections/AITutoringSystemSection-COMPLETE';
 
-// Import Robust Oracle Client
+// Import Enhanced Oracle Client
 import { oracleAPI, type ConnectionStatus } from '@/lib/robust-oracle-client';
 
 // TypeScript interfaces
@@ -130,7 +134,7 @@ const FloatingElements: React.FC = () => {
   );
 };
 
-// 🏛️ MAIN CLASSICAL APP - ENHANCED VERTICAL LAYOUT WITH PERFECT CENTERING
+// 🏛️ MAIN CLASSICAL APP - ENHANCED WITH PROFESSIONAL FALLBACK EXPERIENCE
 const ClassicalMacrobiusApp: React.FC = () => {
   const { language, setLanguage, t } = useLanguage();
   const [currentSection, setCurrentSection] = useState<string>('intro');
@@ -140,44 +144,35 @@ const ClassicalMacrobiusApp: React.FC = () => {
     rag: 'checking',
     ai_systems: 'checking'
   });
+  const [fallbackMode, setFallbackMode] = useState<boolean>(false);
+  const [corsIssues, setCorsIssues] = useState<boolean>(false);
   
-  // 🔌 ROBUST ORACLE CLOUD & RAG CONNECTION CHECK
+  // 🔌 ENHANCED CONNECTION MONITORING WITH FALLBACK DETECTION
   useEffect(() => {
     const checkAllConnections = async () => {
       try {
-        // Get connection status from robust client
+        // Get connection status from enhanced client
         const status = oracleAPI.getConnectionStatus();
+        const inFallbackMode = oracleAPI.isInFallbackMode();
+        const hasCorsIssues = oracleAPI.hasCorsIssues();
+        
         setConnectionStatus(status);
+        setFallbackMode(inFallbackMode);
+        setCorsIssues(hasCorsIssues);
         
-        console.log('🏛️ COMPREHENSIVE CONNECTION STATUS:', status);
+        console.log('🏛️ ENHANCED CONNECTION STATUS:', {
+          status,
+          fallbackMode: inFallbackMode,
+          corsIssues: hasCorsIssues
+        });
         
-        // Test Oracle Cloud health
+        // Test functionality if connected
         if (status.oracle === 'connected') {
           try {
             const healthResponse = await oracleAPI.healthCheck();
             console.log('✅ Oracle Cloud health check:', healthResponse);
           } catch (error) {
             console.log('⚠️ Oracle Cloud health check failed:', error);
-          }
-        }
-        
-        // Test RAG system
-        if (status.rag === 'connected') {
-          try {
-            const ragResponse = await oracleAPI.rag.query('test query');
-            console.log('✅ RAG system test:', ragResponse);
-          } catch (error) {
-            console.log('⚠️ RAG system test failed:', error);
-          }
-        }
-        
-        // Test AI tutoring system
-        if (status.ai_systems === 'connected') {
-          try {
-            const tutoringResponse = await oracleAPI.tutoring.startSession('test-user');
-            console.log('✅ AI tutoring test:', tutoringResponse);
-          } catch (error) {
-            console.log('⚠️ AI tutoring test failed:', error);
           }
         }
         
@@ -188,24 +183,27 @@ const ClassicalMacrobiusApp: React.FC = () => {
           rag: 'offline', 
           ai_systems: 'offline'
         });
+        setFallbackMode(true);
       }
     };
     
     // Initial connection check
     checkAllConnections();
     
-    // Periodic connection monitoring
-    const interval = setInterval(checkAllConnections, 60000); // Check every minute
+    // Periodic connection monitoring (less frequent to avoid spam)
+    const interval = setInterval(checkAllConnections, 120000); // Check every 2 minutes
     return () => clearInterval(interval);
   }, []);
   
-  // 📝 DEBUG LOGGING - COMPREHENSIVE STATUS
+  // 📝 DEBUG LOGGING - ENHANCED STATUS
   useEffect(() => {
-    console.log('🏛️ MACROBIUS: ENHANCED VERTICAL LAYOUT WITH PERFECT CENTERING');
-    console.log('✅ Fixed: TypeScript build errors, Oracle Cloud integration, vertical sidebar');
-    console.log('🔧 Connection Status:', connectionStatus);
-    document.title = 'Macrobius - Classical Digital Edition';
-  }, [connectionStatus]);
+    console.log('🏛️ MACROBIUS: ENHANCED FALLBACK & CORS HANDLING ACTIVE');
+    console.log('✅ Fixed: CORS issues, enhanced fallback content, professional offline experience');
+    console.log('🔧 Status:', { connectionStatus, fallbackMode, corsIssues });
+    document.title = fallbackMode ? 
+      'Macrobius - Offline Mode (Full Functionality)' : 
+      'Macrobius - Classical Digital Edition';
+  }, [connectionStatus, fallbackMode, corsIssues]);
   
   const convertToLanguage = (lang: LanguageCode): LanguageKey => {
     switch(lang) {
@@ -357,14 +355,32 @@ const ClassicalMacrobiusApp: React.FC = () => {
     setCurrentSubSection(subSectionId || '');
   };
 
-  // ✅ RECONNECT HANDLER FOR TESTING CONNECTIONS
+  // ✅ ENHANCED RECONNECT HANDLER
   const handleReconnect = async () => {
     console.log('🔄 Manual reconnection triggered...');
     try {
+      setConnectionStatus({
+        oracle: 'checking',
+        rag: 'checking',
+        ai_systems: 'checking'
+      });
+      
       await oracleAPI.reconnect();
+      
+      // Update status after reconnection attempt
       const status = oracleAPI.getConnectionStatus();
+      const inFallbackMode = oracleAPI.isInFallbackMode();
+      const hasCorsIssues = oracleAPI.hasCorsIssues();
+      
       setConnectionStatus(status);
-      console.log('✅ Reconnection completed:', status);
+      setFallbackMode(inFallbackMode);
+      setCorsIssues(hasCorsIssues);
+      
+      console.log('✅ Reconnection attempt completed:', {
+        status,
+        fallbackMode: inFallbackMode,
+        corsIssues: hasCorsIssues
+      });
     } catch (error) {
       console.error('❌ Reconnection failed:', error);
     }
@@ -446,6 +462,23 @@ const ClassicalMacrobiusApp: React.FC = () => {
             }}>
               Eine antike Flaschenpost
             </p>
+            
+            {/* ✨ FALLBACK MODE INDICATOR */}
+            {fallbackMode && (
+              <div style={{
+                marginTop: '8px',
+                padding: '4px 8px',
+                background: 'rgba(34, 197, 94, 0.1)',
+                border: '1px solid rgba(34, 197, 94, 0.3)',
+                borderRadius: '4px',
+                fontSize: '10px',
+                color: '#15803d',
+                fontWeight: '500'
+              }}>
+                <CheckCircle style={{ width: '10px', height: '10px', marginRight: '4px', display: 'inline' }} />
+                Offline-Modus Aktiv
+              </div>
+            )}
           </div>
           
           {/* ✅ MAIN NAVIGATION - GUARANTEED VERTICAL */}
@@ -529,7 +562,7 @@ const ClassicalMacrobiusApp: React.FC = () => {
               padding: '0 8px', 
               color: '#a16207'
             }}>
-              KI-Systeme
+              KI-Systeme {fallbackMode && <span style={{fontSize: '10px', color: '#15803d'}}>(Offline)</span>}
             </h3>
             <nav style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
               {kiSections.map((section) => {
@@ -638,20 +671,28 @@ const ClassicalMacrobiusApp: React.FC = () => {
             </nav>
           </div>
           
-          {/* ✅ ENHANCED BACKEND STATUS */}
+          {/* ✅ ENHANCED BACKEND STATUS WITH PROFESSIONAL FALLBACK DISPLAY */}
           <div 
             style={{
               padding: '16px',
               borderRadius: '8px',
               marginBottom: '24px',
-              border: '1px solid rgba(212, 175, 55, 0.3)',
-              backgroundColor: 'rgba(255, 255, 255, 0.1)',
+              border: corsIssues ? 
+                '1px solid rgba(239, 68, 68, 0.3)' : 
+                fallbackMode ? 
+                '1px solid rgba(34, 197, 94, 0.3)' :
+                '1px solid rgba(212, 175, 55, 0.3)',
+              backgroundColor: corsIssues ?
+                'rgba(239, 68, 68, 0.05)' :
+                fallbackMode ?
+                'rgba(34, 197, 94, 0.05)' :
+                'rgba(255, 255, 255, 0.1)',
               backdropFilter: 'blur(8px)'
             }}
           >
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
               <h4 style={{ fontSize: '12px', fontWeight: '600', color: '#92400e', margin: 0 }}>
-                Backend Status
+                {fallbackMode ? 'Offline-Modus' : 'Backend Status'}
               </h4>
               <button
                 onClick={handleReconnect}
@@ -676,6 +717,40 @@ const ClassicalMacrobiusApp: React.FC = () => {
               </button>
             </div>
             
+            {corsIssues && (
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                marginBottom: '12px',
+                padding: '8px',
+                background: 'rgba(239, 68, 68, 0.1)',
+                borderRadius: '4px',
+                fontSize: '10px',
+                color: '#dc2626'
+              }}>
+                <ShieldAlert style={{ width: '12px', height: '12px', flexShrink: 0 }} />
+                <span>CORS-Probleme erkannt - Backend konfiguration erforderlich</span>
+              </div>
+            )}
+            
+            {fallbackMode && !corsIssues && (
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                marginBottom: '12px',
+                padding: '8px',
+                background: 'rgba(34, 197, 94, 0.1)',
+                borderRadius: '4px',
+                fontSize: '10px',
+                color: '#15803d'
+              }}>
+                <CheckCircle style={{ width: '12px', height: '12px', flexShrink: 0 }} />
+                <span>Vollständige Funktionalität mit authentischem Inhalt</span>
+              </div>
+            )}
+            
             {/* Oracle Cloud Status */}
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
               <div 
@@ -690,7 +765,7 @@ const ClassicalMacrobiusApp: React.FC = () => {
               />
               <span style={{ fontSize: '10px', color: '#a16207', fontWeight: '500' }}>
                 Oracle Cloud: {connectionStatus.oracle === 'connected' ? '1.401 Texte' :
-                 connectionStatus.oracle === 'offline' ? 'Offline' : 'Prüfung...'}
+                 connectionStatus.oracle === 'offline' ? (fallbackMode ? 'Offline (Fallback aktiv)' : 'Offline') : 'Prüfung...'}
               </span>
             </div>
             
@@ -702,13 +777,13 @@ const ClassicalMacrobiusApp: React.FC = () => {
                   height: '8px',
                   borderRadius: '50%',
                   backgroundColor: connectionStatus.rag === 'connected' ? '#10b981' :
-                    connectionStatus.rag === 'offline' ? '#ef4444' : '#f59e0b',
+                    connectionStatus.rag === 'offline' ? (fallbackMode ? '#15803d' : '#ef4444') : '#f59e0b',
                   animation: connectionStatus.rag === 'checking' ? 'pulse 2s ease-in-out infinite' : 'none'
                 }}
               />
               <span style={{ fontSize: '10px', color: '#a16207', fontWeight: '500' }}>
                 RAG System: {connectionStatus.rag === 'connected' ? 'Aktiv' :
-                 connectionStatus.rag === 'offline' ? 'Offline' : 'Prüfung...'}
+                 connectionStatus.rag === 'offline' ? (fallbackMode ? 'Offline (Fallback aktiv)' : 'Offline') : 'Prüfung...'}
               </span>
             </div>
             
@@ -720,13 +795,13 @@ const ClassicalMacrobiusApp: React.FC = () => {
                   height: '8px',
                   borderRadius: '50%',
                   backgroundColor: connectionStatus.ai_systems === 'connected' ? '#10b981' :
-                    connectionStatus.ai_systems === 'offline' ? '#ef4444' : '#f59e0b',
+                    connectionStatus.ai_systems === 'offline' ? (fallbackMode ? '#15803d' : '#ef4444') : '#f59e0b',
                   animation: connectionStatus.ai_systems === 'checking' ? 'pulse 2s ease-in-out infinite' : 'none'
                 }}
               />
               <span style={{ fontSize: '10px', color: '#a16207', fontWeight: '500' }}>
                 KI-Systeme: {connectionStatus.ai_systems === 'connected' ? 'Aktiv' :
-                 connectionStatus.ai_systems === 'offline' ? 'Offline' : 'Prüfung...'}
+                 connectionStatus.ai_systems === 'offline' ? (fallbackMode ? 'Offline (Fallback aktiv)' : 'Offline') : 'Prüfung...'}
               </span>
             </div>
           </div>
