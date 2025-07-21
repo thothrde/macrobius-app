@@ -184,7 +184,7 @@ const ClassicalMacrobiusApp: React.FC = () => {
     { id: 'kulturmodule', label: { de: 'Kulturmodule', en: 'Cultural Modules', la: 'Moduli Culturales' }, icon: Scroll }
   ];
 
-  // ✅ FIXED SECTION RENDERING - ALL SECTIONS WORK PROPERLY
+  // ✅ FIXED SECTION RENDERING - REMOVED INVALID isActive PROPS FROM AI COMPONENTS
   const renderSection = () => {
     console.log('🔍 Rendering section:', currentSection);
     
@@ -208,16 +208,16 @@ const ClassicalMacrobiusApp: React.FC = () => {
       case 'learning': 
         return <LearningSection isActive={true} language={language} />;
       
-      // ✅ FIXED: KI-SYSTEME SECTIONS NOW RENDER CORRECTLY
+      // ✅ FIXED: REMOVED isActive PROPS FROM AI COMPONENTS - ONLY PASS SUPPORTED PROPS
       case 'ki-kulturanalyse':
-        return <AICulturalAnalysisSection isActive={true} language={language} />;
+        return <AICulturalAnalysisSection language={language} />;
       case 'lernpfade':
-        return <PersonalizedLearningPaths isActive={true} language={language} />;
+        return <PersonalizedLearningPaths />;
       case 'ki-tutor':
-        return <AITutoringSystemSection isActive={true} language={language} />;
+        return <AITutoringSystemSection language={language} />;
       case 'kulturmodule':
         // For now, show cultural analysis as cultural modules are similar
-        return <AICulturalAnalysisSection isActive={true} language={language} />;
+        return <AICulturalAnalysisSection language={language} />;
       
       default: 
         return <IntroSection language={language} />;
