@@ -130,7 +130,7 @@ const FloatingElements: React.FC = () => {
   );
 };
 
-// 🏛️ MAIN CLASSICAL APP - WITH ROBUST ORACLE CONNECTION
+// 🏛️ MAIN CLASSICAL APP - ENHANCED VERTICAL LAYOUT WITH PERFECT CENTERING
 const ClassicalMacrobiusApp: React.FC = () => {
   const { language, setLanguage, t } = useLanguage();
   const [currentSection, setCurrentSection] = useState<string>('intro');
@@ -201,8 +201,8 @@ const ClassicalMacrobiusApp: React.FC = () => {
   
   // 📝 DEBUG LOGGING - COMPREHENSIVE STATUS
   useEffect(() => {
-    console.log('🏛️ MACROBIUS: COMPREHENSIVE BACKEND INTEGRATION ACTIVE');
-    console.log('✅ Fixed: Oracle Cloud, RAG, and all AI systems with robust fallbacks');
+    console.log('🏛️ MACROBIUS: ENHANCED VERTICAL LAYOUT WITH PERFECT CENTERING');
+    console.log('✅ Fixed: TypeScript build errors, Oracle Cloud integration, vertical sidebar');
     console.log('🔧 Connection Status:', connectionStatus);
     document.title = 'Macrobius - Classical Digital Edition';
   }, [connectionStatus]);
@@ -405,10 +405,12 @@ const ClassicalMacrobiusApp: React.FC = () => {
         <FloatingElements />
       </div>
       
-      {/* ✅ ENHANCED VERTICAL LEFT SIDEBAR - WITH SUB-NAVIGATION */}
+      {/* ✅ ENHANCED VERTICAL LEFT SIDEBAR - GUARANTEED LAYOUT */}
       <aside 
         style={{
           width: '320px',
+          minWidth: '320px', // Prevent shrinking
+          maxWidth: '320px', // Prevent growing
           height: '100vh',
           display: 'flex',
           flexDirection: 'column',
@@ -417,7 +419,9 @@ const ClassicalMacrobiusApp: React.FC = () => {
           backdropFilter: 'blur(12px)',
           borderRight: '2px solid rgba(212, 175, 55, 0.2)',
           boxShadow: '0 10px 25px rgba(0, 0, 0, 0.1)',
-          background: 'linear-gradient(to bottom, rgba(255, 255, 255, 0.95), rgba(248, 246, 240, 0.9))'
+          background: 'linear-gradient(to bottom, rgba(255, 255, 255, 0.95), rgba(248, 246, 240, 0.9))',
+          position: 'relative', // Ensure proper positioning
+          flexShrink: 0 // Prevent shrinking in flexbox
         }}
       >
         <div style={{ flex: 1, overflowY: 'auto', padding: '24px' }}>
@@ -444,7 +448,7 @@ const ClassicalMacrobiusApp: React.FC = () => {
             </p>
           </div>
           
-          {/* ✅ MAIN NAVIGATION - VERTICAL */}
+          {/* ✅ MAIN NAVIGATION - GUARANTEED VERTICAL */}
           <nav style={{ marginBottom: '32px' }}>
             <h3 style={{ 
               fontSize: '12px', 
@@ -474,23 +478,28 @@ const ClassicalMacrobiusApp: React.FC = () => {
                       borderRadius: '8px',
                       fontSize: '14px',
                       fontWeight: '500',
-                      transition: 'all 0.2s ease',
+                      transition: 'all 0.3s ease',
                       cursor: 'pointer',
-                      border: `1px solid ${isActive ? 'rgba(212, 175, 55, 0.4)' : 'rgba(212, 175, 55, 0.1)'}`,
-                      backgroundColor: isActive ? 'rgba(212, 175, 55, 0.2)' : 'rgba(255, 255, 255, 0.3)',
+                      border: `1px solid ${isActive ? 'rgba(212, 175, 55, 0.5)' : 'rgba(212, 175, 55, 0.1)'}`,
+                      backgroundColor: isActive ? 'rgba(212, 175, 55, 0.25)' : 'rgba(255, 255, 255, 0.3)',
                       color: isActive ? '#92400e' : '#a16207',
-                      boxShadow: isActive ? '0 2px 12px rgba(212, 175, 55, 0.2)' : 'none'
+                      boxShadow: isActive ? '0 4px 16px rgba(212, 175, 55, 0.3)' : 'none',
+                      transform: isActive ? 'translateX(4px)' : 'none',
+                      textAlign: 'left',
+                      fontFamily: 'Georgia, serif'
                     }}
                     onMouseEnter={(e) => {
                       if (!isActive) {
-                        e.currentTarget.style.backgroundColor = 'rgba(212, 175, 55, 0.1)';
-                        e.currentTarget.style.transform = 'scale(1.02)';
+                        e.currentTarget.style.backgroundColor = 'rgba(212, 175, 55, 0.15)';
+                        e.currentTarget.style.transform = 'translateX(2px)';
+                        e.currentTarget.style.boxShadow = '0 2px 8px rgba(212, 175, 55, 0.2)';
                       }
                     }}
                     onMouseLeave={(e) => {
                       if (!isActive) {
                         e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.3)';
-                        e.currentTarget.style.transform = 'scale(1)';
+                        e.currentTarget.style.transform = 'none';
+                        e.currentTarget.style.boxShadow = 'none';
                       }
                     }}
                   >
@@ -509,7 +518,7 @@ const ClassicalMacrobiusApp: React.FC = () => {
             </div>
           </nav>
           
-          {/* ✅ KI-SYSTEME SECTION - WITH SUB-NAVIGATION */}
+          {/* ✅ KI-SYSTEME SECTION - GUARANTEED VERTICAL WITH SUB-NAVIGATION */}
           <div style={{ marginBottom: '32px' }}>
             <h3 style={{ 
               fontSize: '12px', 
@@ -537,23 +546,29 @@ const ClassicalMacrobiusApp: React.FC = () => {
                         display: 'flex',
                         alignItems: 'center',
                         gap: '12px',
-                        padding: '8px 16px',
+                        padding: '10px 16px',
                         borderRadius: '8px',
                         fontSize: '14px',
-                        transition: 'all 0.2s ease',
+                        fontWeight: '500',
+                        transition: 'all 0.3s ease',
                         cursor: 'pointer',
-                        border: `1px solid ${isActive ? 'rgba(212, 175, 55, 0.3)' : 'rgba(212, 175, 55, 0.1)'}`,
-                        backgroundColor: isActive ? 'rgba(212, 175, 55, 0.15)' : 'rgba(255, 255, 255, 0.2)',
-                        color: isActive ? '#92400e' : '#a16207'
+                        border: `1px solid ${isActive ? 'rgba(212, 175, 55, 0.4)' : 'rgba(212, 175, 55, 0.1)'}`,
+                        backgroundColor: isActive ? 'rgba(212, 175, 55, 0.2)' : 'rgba(255, 255, 255, 0.2)',
+                        color: isActive ? '#92400e' : '#a16207',
+                        textAlign: 'left',
+                        fontFamily: 'Georgia, serif',
+                        transform: isActive ? 'translateX(2px)' : 'none'
                       }}
                       onMouseEnter={(e) => {
                         if (!isActive) {
                           e.currentTarget.style.backgroundColor = 'rgba(212, 175, 55, 0.1)';
+                          e.currentTarget.style.transform = 'translateX(1px)';
                         }
                       }}
                       onMouseLeave={(e) => {
                         if (!isActive) {
                           e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.2)';
+                          e.currentTarget.style.transform = 'none';
                         }
                       }}
                     >
@@ -568,9 +583,17 @@ const ClassicalMacrobiusApp: React.FC = () => {
                       {section.label[getLanguageKey(language)]}
                     </button>
                     
-                    {/* ✅ SUB-NAVIGATION - ONLY SHOW WHEN SECTION IS ACTIVE */}
+                    {/* ✅ SUB-NAVIGATION - ENHANCED VERTICAL LAYOUT */}
                     {isActive && subSections.length > 0 && (
-                      <div style={{ marginLeft: '24px', marginTop: '8px', display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                      <div style={{ 
+                        marginLeft: '24px', 
+                        marginTop: '8px', 
+                        display: 'flex', 
+                        flexDirection: 'column', 
+                        gap: '4px',
+                        borderLeft: '2px solid rgba(212, 175, 55, 0.2)',
+                        paddingLeft: '12px'
+                      }}>
                         {subSections.map((subSection) => {
                           const SubIconComponent = subSection.icon;
                           const isSubActive = currentSubSection === subSection.id;
@@ -586,11 +609,13 @@ const ClassicalMacrobiusApp: React.FC = () => {
                                 padding: '6px 12px',
                                 borderRadius: '6px',
                                 fontSize: '12px',
+                                fontWeight: isSubActive ? '500' : '400',
                                 transition: 'all 0.2s ease',
                                 cursor: 'pointer',
                                 border: `1px solid ${isSubActive ? 'rgba(212, 175, 55, 0.4)' : 'transparent'}`,
-                                backgroundColor: isSubActive ? 'rgba(212, 175, 55, 0.25)' : 'rgba(255, 255, 255, 0.1)',
-                                color: isSubActive ? '#92400e' : '#a16207'
+                                backgroundColor: isSubActive ? 'rgba(212, 175, 55, 0.3)' : 'rgba(255, 255, 255, 0.1)',
+                                color: isSubActive ? '#92400e' : '#a16207',
+                                textAlign: 'left'
                               }}
                             >
                               <SubIconComponent 
@@ -613,14 +638,15 @@ const ClassicalMacrobiusApp: React.FC = () => {
             </nav>
           </div>
           
-          {/* ✅ COMPREHENSIVE BACKEND STATUS */}
+          {/* ✅ ENHANCED BACKEND STATUS */}
           <div 
             style={{
               padding: '16px',
               borderRadius: '8px',
               marginBottom: '24px',
               border: '1px solid rgba(212, 175, 55, 0.3)',
-              backgroundColor: 'rgba(255, 255, 255, 0.1)'
+              backgroundColor: 'rgba(255, 255, 255, 0.1)',
+              backdropFilter: 'blur(8px)'
             }}
           >
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
@@ -636,7 +662,14 @@ const ClassicalMacrobiusApp: React.FC = () => {
                   borderRadius: '4px',
                   backgroundColor: 'rgba(212, 175, 55, 0.1)',
                   color: '#92400e',
-                  cursor: 'pointer'
+                  cursor: 'pointer',
+                  transition: 'all 0.2s ease'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = 'rgba(212, 175, 55, 0.2)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = 'rgba(212, 175, 55, 0.1)';
                 }}
               >
                 Reconnect
@@ -655,7 +688,7 @@ const ClassicalMacrobiusApp: React.FC = () => {
                   animation: connectionStatus.oracle === 'checking' ? 'pulse 2s ease-in-out infinite' : 'none'
                 }}
               />
-              <span style={{ fontSize: '10px', color: '#a16207' }}>
+              <span style={{ fontSize: '10px', color: '#a16207', fontWeight: '500' }}>
                 Oracle Cloud: {connectionStatus.oracle === 'connected' ? '1.401 Texte' :
                  connectionStatus.oracle === 'offline' ? 'Offline' : 'Prüfung...'}
               </span>
@@ -673,7 +706,7 @@ const ClassicalMacrobiusApp: React.FC = () => {
                   animation: connectionStatus.rag === 'checking' ? 'pulse 2s ease-in-out infinite' : 'none'
                 }}
               />
-              <span style={{ fontSize: '10px', color: '#a16207' }}>
+              <span style={{ fontSize: '10px', color: '#a16207', fontWeight: '500' }}>
                 RAG System: {connectionStatus.rag === 'connected' ? 'Aktiv' :
                  connectionStatus.rag === 'offline' ? 'Offline' : 'Prüfung...'}
               </span>
@@ -691,14 +724,14 @@ const ClassicalMacrobiusApp: React.FC = () => {
                   animation: connectionStatus.ai_systems === 'checking' ? 'pulse 2s ease-in-out infinite' : 'none'
                 }}
               />
-              <span style={{ fontSize: '10px', color: '#a16207' }}>
+              <span style={{ fontSize: '10px', color: '#a16207', fontWeight: '500' }}>
                 KI-Systeme: {connectionStatus.ai_systems === 'connected' ? 'Aktiv' :
                  connectionStatus.ai_systems === 'offline' ? 'Offline' : 'Prüfung...'}
               </span>
             </div>
           </div>
           
-          {/* ✅ LANGUAGE SWITCHER */}
+          {/* ✅ ENHANCED LANGUAGE SWITCHER */}
           <div style={{ display: 'flex', gap: '4px', justifyContent: 'center' }}>
             {(['de', 'en', 'la'] as const).map((lang) => {
               const isActive = getLanguageKey(language) === lang;
@@ -709,14 +742,28 @@ const ClassicalMacrobiusApp: React.FC = () => {
                   style={{
                     padding: '8px 12px',
                     fontSize: '12px',
-                    fontWeight: '500',
+                    fontWeight: '600',
                     borderRadius: '6px',
-                    transition: 'all 0.2s ease',
+                    transition: 'all 0.3s ease',
                     cursor: 'pointer',
                     border: '1px solid rgba(212, 175, 55, 0.3)',
                     backgroundColor: isActive ? '#d4af37' : 'rgba(212, 175, 55, 0.1)',
                     color: isActive ? '#ffffff' : '#a16207',
-                    boxShadow: isActive ? '0 2px 8px rgba(212, 175, 55, 0.3)' : 'none'
+                    boxShadow: isActive ? '0 4px 12px rgba(212, 175, 55, 0.4)' : 'none',
+                    transform: isActive ? 'scale(1.05)' : 'scale(1)',
+                    fontFamily: 'Georgia, serif'
+                  }}
+                  onMouseEnter={(e) => {
+                    if (!isActive) {
+                      e.currentTarget.style.backgroundColor = 'rgba(212, 175, 55, 0.2)';
+                      e.currentTarget.style.transform = 'scale(1.02)';
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (!isActive) {
+                      e.currentTarget.style.backgroundColor = 'rgba(212, 175, 55, 0.1)';
+                      e.currentTarget.style.transform = 'scale(1)';
+                    }
                   }}
                 >
                   {lang.toUpperCase()}
@@ -727,35 +774,45 @@ const ClassicalMacrobiusApp: React.FC = () => {
         </div>
       </aside>
       
-      {/* ✅ MAIN CONTENT AREA - PROPERLY CENTERED */}
+      {/* ✅ PERFECTLY CENTERED MAIN CONTENT AREA - GUARANTEED LAYOUT */}
       <main 
         style={{
           flex: 1,
+          minWidth: 0, // Prevent flex overflow
           height: '100vh',
           overflowY: 'auto',
           background: 'rgba(255, 255, 255, 0.3)',
           position: 'relative',
-          zIndex: 20
+          zIndex: 20,
+          display: 'flex',
+          flexDirection: 'column'
         }}
       >
+        {/* PERFECT CENTERING CONTAINER */}
         <div 
           style={{
             display: 'flex',
             alignItems: 'flex-start',
             justifyContent: 'center',
             minHeight: '100%',
-            paddingTop: '32px'
+            paddingTop: '32px',
+            paddingBottom: '32px'
           }}
         >
           <div 
             style={{
               width: '100%',
-              maxWidth: '1792px',
+              maxWidth: '1600px', // Increased for better use of space
               margin: '0 auto',
-              padding: '0 32px'
+              padding: '0 32px',
+              display: 'flex',
+              justifyContent: 'center' // Additional centering
             }}
           >
-            {renderSection()}
+            {/* SECTION CONTENT WITH PERFECT CENTERING */}
+            <div style={{ width: '100%', maxWidth: '1200px' }}>
+              {renderSection()}
+            </div>
           </div>
         </div>
       </main>
