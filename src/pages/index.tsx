@@ -47,6 +47,10 @@ interface ClassicalPortraitProps {
 type LanguageCode = 'de' | 'en' | 'la';
 type LanguageKey = 'DE' | 'EN' | 'LA';
 
+// ✅ FIXED: Proper type definitions for AI component props
+type CulturalAnalysisTab = 'analyze' | 'explore' | 'statistics';
+type LearningPathMode = 'dashboard' | 'daily_plan' | 'knowledge_gaps' | 'prerequisites' | 'ai_optimization';
+
 // 🏛️ CLASSICAL PORTRAIT
 const ClassicalMacrobiusPortrait: React.FC<ClassicalPortraitProps> = ({ className = '' }) => {
   return (
@@ -170,6 +174,31 @@ const ClassicalMacrobiusApp: React.FC = () => {
     setLanguage(convertToLanguage(lang));
   };
 
+  // ✅ FIXED: Type-safe helper functions for AI component props
+  const getValidCulturalAnalysisTab = (subsection: string): CulturalAnalysisTab => {
+    switch (subsection) {
+      case 'analyze':
+      case 'explore':
+      case 'statistics':
+        return subsection as CulturalAnalysisTab;
+      default:
+        return 'analyze';
+    }
+  };
+
+  const getValidLearningPathMode = (subsection: string): LearningPathMode => {
+    switch (subsection) {
+      case 'dashboard':
+      case 'daily_plan':
+      case 'knowledge_gaps':
+      case 'prerequisites':
+      case 'ai_optimization':
+        return subsection as LearningPathMode;
+      default:
+        return 'dashboard';
+    }
+  };
+
   // 📚 NAVIGATION SECTIONS
   const mainSections = [
     { id: 'intro', label: { de: 'Einführung', en: 'Introduction', la: 'Introductio' }, icon: Home },
@@ -212,7 +241,7 @@ const ClassicalMacrobiusApp: React.FC = () => {
     }
   };
 
-  // ✅ FIXED SECTION RENDERING - WITH SUB-SECTION SUPPORT
+  // ✅ FIXED SECTION RENDERING - WITH SUB-SECTION SUPPORT AND PROPER TYPE CASTING
   const renderSection = () => {
     console.log('🔍 Rendering section:', currentSection, 'subsection:', currentSubSection);
     
@@ -236,16 +265,30 @@ const ClassicalMacrobiusApp: React.FC = () => {
       case 'learning': 
         return <LearningSection isActive={true} language={language} />;
       
-      // ✅ FIXED: AI COMPONENTS WITH SUB-SECTION SUPPORT
+      // ✅ FIXED: AI COMPONENTS WITH PROPER TYPE CASTING AND SUB-SECTION SUPPORT
       case 'ki-kulturanalyse':
-        return <AICulturalAnalysisSection language={language} activeTab={currentSubSection || 'analyze'} />;
+        return (
+          <AICulturalAnalysisSection 
+            language={language} 
+            activeTab={getValidCulturalAnalysisTab(currentSubSection)} 
+          />
+        );
       case 'lernpfade':
-        return <PersonalizedLearningPaths currentMode={currentSubSection || 'dashboard'} />;
+        return (
+          <PersonalizedLearningPaths 
+            currentMode={getValidLearningPathMode(currentSubSection)} 
+          />
+        );
       case 'ki-tutor':
         return <AITutoringSystemSection language={language} />;
       case 'kulturmodule':
         // For now, show cultural analysis as cultural modules are similar
-        return <AICulturalAnalysisSection language={language} activeTab={currentSubSection || 'analyze'} />;
+        return (
+          <AICulturalAnalysisSection 
+            language={language} 
+            activeTab={getValidCulturalAnalysisTab(currentSubSection)} 
+          />
+        );
       
       default: 
         return <IntroSection language={language} />;
