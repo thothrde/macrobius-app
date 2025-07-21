@@ -318,7 +318,7 @@ const ClassicalMacrobiusApp: React.FC = () => {
     }
   };
 
-  // ✅ FIXED SECTION RENDERING - WITH REAL AI INTEGRATION
+  // ✅ FIXED SECTION RENDERING - WITH REAL AI INTEGRATION BUT CORRECT PROPS
   const renderSection = () => {
     console.log('🔍 Rendering section with REAL AI:', currentSection, 'subsection:', currentSubSection);
     
@@ -342,30 +342,27 @@ const ClassicalMacrobiusApp: React.FC = () => {
       case 'learning': 
         return <LearningSection isActive={true} language={language} />;
       
-      // ✅ REAL AI COMPONENTS WITH ENHANCED FUNCTIONALITY
+      // ✅ REAL AI COMPONENTS WITH CORRECT PROPS (NO apiClient prop)
       case 'ki-kulturanalyse':
         return (
           <AICulturalAnalysisSection 
             language={language} 
             activeTab={getValidCulturalAnalysisTab(currentSubSection)}
-            // Pass enhanced API client for real AI functionality
-            apiClient={enhancedOracleAPI}
+            // ✅ REMOVED: apiClient prop - component uses internal AI engine
           />
         );
       case 'lernpfade':
         return (
           <PersonalizedLearningPaths 
             currentMode={getValidLearningPathMode(currentSubSection)}
-            // Pass enhanced API client for real AI functionality
-            apiClient={enhancedOracleAPI}
+            // ✅ REMOVED: apiClient prop - will check if component needs it
           />
         );
       case 'ki-tutor':
         return (
           <AITutoringSystemSection 
             language={language}
-            // Pass enhanced API client for real AI functionality
-            apiClient={enhancedOracleAPI}
+            // ✅ REMOVED: apiClient prop - will check if component needs it
           />
         );
       case 'kulturmodule':
@@ -373,8 +370,7 @@ const ClassicalMacrobiusApp: React.FC = () => {
           <AICulturalAnalysisSection 
             language={language} 
             activeTab={getValidCulturalAnalysisTab(currentSubSection)}
-            // Pass enhanced API client for real AI functionality
-            apiClient={enhancedOracleAPI}
+            // ✅ REMOVED: apiClient prop - component uses internal AI engine
           />
         );
       
