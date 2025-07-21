@@ -39,37 +39,37 @@ interface ClassicalPortraitProps {
 type LanguageCode = 'de' | 'en' | 'la';
 type LanguageKey = 'DE' | 'EN' | 'LA';
 
-// Enhanced Classical Portrait Component
+// 🏛️ CLASSICAL ENHANCED PORTRAIT COMPONENT
 const ClassicalMacrobiusPortrait: React.FC<ClassicalPortraitProps> = ({ className = '' }) => {
   return (
     <div className={`relative ${className}`}>
       <div 
         className="w-full h-full rounded-full overflow-hidden"
         style={{
-          border: '3px solid #facc15',
-          background: 'linear-gradient(135deg, rgba(139, 92, 41, 0.2), rgba(180, 142, 82, 0.2))',
-          boxShadow: '0 0 20px rgba(251, 191, 36, 0.4)'
+          border: '2px solid #d4af37',
+          background: 'linear-gradient(135deg, rgba(212, 175, 55, 0.1), rgba(139, 92, 41, 0.1))',
+          boxShadow: '0 4px 20px rgba(212, 175, 55, 0.3)'
         }}
       >
         <img 
           src="/Macrobius-Portrait.jpg" 
           alt="Macrobius Classical Portrait"
           className="w-full h-full object-cover"
-          style={{ filter: 'sepia(20%) saturate(120%) brightness(110%)' }}
+          style={{ filter: 'sepia(15%) saturate(110%) brightness(105%)' }}
         />
         <div 
           className="absolute bottom-0 left-0 right-0 text-center py-1"
           style={{
-            background: 'linear-gradient(to top, rgba(251, 191, 36, 0.9), transparent)',
-            backdropFilter: 'blur(2px)'
+            background: 'linear-gradient(to top, rgba(212, 175, 55, 0.8), transparent)',
+            backdropFilter: 'blur(1px)'
           }}
         >
           <span 
             className="text-xs font-serif font-bold"
             style={{ 
-              color: '#1a1a1a', 
+              color: '#5d4e37', 
               letterSpacing: '0.05em',
-              textShadow: '0 1px 2px rgba(255,255,255,0.8)'
+              textShadow: '0 1px 2px rgba(255,255,255,0.6)'
             }}
           >
             MACROBIVS
@@ -80,74 +80,51 @@ const ClassicalMacrobiusPortrait: React.FC<ClassicalPortraitProps> = ({ classNam
   );
 };
 
-// Moving Stars Component with Enhanced Animation
-const MovingStars: React.FC = () => {
+// 🌟 SUBTLE CLASSICAL ANIMATION ELEMENTS
+const ClassicalDecorations: React.FC = () => {
   return (
     <div className="absolute inset-0 overflow-hidden pointer-events-none">
-      {/* Static Stars */}
-      {Array.from({ length: 80 }, (_, i) => (
+      {/* Subtle floating elements */}
+      {Array.from({ length: 12 }, (_, i) => (
         <div
-          key={`star-${i}`}
-          className="absolute rounded-full"
+          key={`decoration-${i}`}
+          className="absolute opacity-20"
           style={{
-            width: Math.random() * 3 + 1 + 'px',
-            height: Math.random() * 3 + 1 + 'px',
-            backgroundColor: '#facc15',
+            width: Math.random() * 4 + 2 + 'px',
+            height: Math.random() * 4 + 2 + 'px',
+            backgroundColor: '#d4af37',
+            borderRadius: '50%',
             top: Math.random() * 100 + '%',
             left: Math.random() * 100 + '%',
-            opacity: Math.random() * 0.9 + 0.1,
-            boxShadow: '0 0 10px rgba(251, 191, 36, 0.9)'
-          }}
-        />
-      ))}
-      
-      {/* Moving Stars - Enhanced */}
-      {Array.from({ length: 25 }, (_, i) => (
-        <div
-          key={`moving-star-${i}`}
-          className="absolute rounded-full animate-pulse"
-          style={{
-            width: '3px',
-            height: '3px',
-            backgroundColor: '#ffffff',
-            top: Math.random() * 100 + '%',
-            left: Math.random() * 100 + '%',
-            animation: `moveLeft ${4 + Math.random() * 8}s linear infinite`,
-            opacity: 0.9
+            animation: `float ${8 + Math.random() * 4}s ease-in-out infinite`,
+            animationDelay: `${Math.random() * 4}s`
           }}
         />
       ))}
       
       <style jsx>{`
-        @keyframes moveLeft {
-          from {
-            transform: translateX(100vw);
-          }
-          to {
-            transform: translateX(-100px);
-          }
+        @keyframes float {
+          0%, 100% { transform: translateY(0px) rotate(0deg); }
+          50% { transform: translateY(-10px) rotate(5deg); }
         }
       `}</style>
     </div>
   );
 };
 
-// Main App Component - COMPLETELY OVERRIDING SECTION SYSTEM
+// 🏛️ MAIN CLASSICAL MACROBIUS APP - COMPLETE REDESIGN
 const ClassicalMacrobiusApp: React.FC = () => {
   const { language, setLanguage, t } = useLanguage();
   const [currentSection, setCurrentSection] = useState<string>('intro');
   
-  // DEBUG: CRITICAL - Log to confirm this is loading
+  // ✅ DEBUG: Maintain functionality logging
   useEffect(() => {
-    console.log('🏛️ CRITICAL: CORRECT SIDEBAR LAYOUT IS LOADING! 🏛️');
-    console.log('If you see this message, the new layout should be visible!');
-    console.log('🚀 VERCEL BUILD FIX: TypeScript error resolved - forcing new deployment!');
-    console.log('✅ PROP FIX: Adding required isActive prop to section components!');
-    console.log('🔧 COMPREHENSIVE FIX: All section components now have proper isActive props!');
-    console.log('🌍 WORLDMAP FIX: Added required t function from language context!');
+    console.log('🏛️ CLASSICAL REDESIGN: Elegant layout loading!');
+    console.log('✅ ALL FUNCTIONALITY PRESERVED: Language switching, Oracle Cloud, Zero mock systems');
+    console.log('🎨 VISUAL ENHANCEMENT: Classical scholarly aesthetic restored');
     
-    // Force page title update to confirm changes
-    document.title = 'Macrobius - LEFT SIDEBAR LAYOUT ACTIVE';
+    // Update page title to reflect new design
+    document.title = 'Macrobius - Classical Digital Edition';
   }, []);
   
   const convertToLanguage = (lang: LanguageCode): LanguageKey => {
@@ -172,7 +149,7 @@ const ClassicalMacrobiusApp: React.FC = () => {
     setLanguage(convertToLanguage(lang));
   };
 
-  // Navigation sections
+  // 📚 NAVIGATION SECTIONS (PRESERVED)
   const mainSections = [
     { id: 'intro', label: { de: 'Einführung', en: 'Introduction', la: 'Introductio' }, icon: Home },
     { id: 'quiz', label: { de: 'Quiz', en: 'Quiz', la: 'Quaestiones' }, icon: HelpCircle },
@@ -192,12 +169,8 @@ const ClassicalMacrobiusApp: React.FC = () => {
     { id: 'kulturmodule', label: { de: 'Kulturmodule', en: 'Cultural Modules', la: 'Moduli Culturales' }, icon: Scroll }
   ];
 
-  // Render the correct section component
+  // ✅ RENDER SECTION (FUNCTIONALITY PRESERVED)
   const renderSection = () => {
-    // ✅ ULTIMATE FIX: All section components now receive exactly the props they need
-    // - language: Correct uppercase format (DE|EN|LA)
-    // - isActive: Added to ALL components that require it
-    // - t: Translation function for WorldMapSection
     switch(currentSection) {
       case 'intro': 
         return <IntroSection language={language} />;
@@ -224,159 +197,232 @@ const ClassicalMacrobiusApp: React.FC = () => {
 
   return (
     <div 
-      className="min-h-screen max-h-screen flex relative overflow-hidden"
+      className="min-h-screen"
       style={{
-        background: 'radial-gradient(ellipse at center, #1a1f2e 0%, #0f172a 40%, #020617 100%)',
+        background: `
+          linear-gradient(135deg, 
+            #faf7f0 0%, 
+            #f5f1e8 25%, 
+            #f0ebe2 50%, 
+            #ede5d8 75%, 
+            #e8dfc9 100%
+          )
+        `,
         backgroundImage: `
-          radial-gradient(circle at 25% 75%, rgba(120, 119, 198, 0.5) 0%, transparent 50%),
-          radial-gradient(circle at 75% 25%, rgba(255, 255, 255, 0.2) 0%, transparent 50%),
-          radial-gradient(circle at 50% 50%, rgba(120, 119, 198, 0.3) 0%, transparent 50%)
-        `
+          radial-gradient(circle at 20% 80%, rgba(212, 175, 55, 0.08) 0%, transparent 50%),
+          radial-gradient(circle at 80% 20%, rgba(139, 92, 41, 0.06) 0%, transparent 50%),
+          url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23d4af37' fill-opacity='0.03'%3E%3Cpath d='M20 20c0-5.5-4.5-10-10-10s-10 4.5-10 10 4.5 10 10 10 10-4.5 10-10zm10 0c0-5.5-4.5-10-10-10s-10 4.5-10 10 4.5 10 10 10 10-4.5 10-10z'/%3E%3C/g%3E%3C/svg%3E")
+        `,
+        minHeight: '100vh',
+        fontFamily: 'Georgia, serif'
       }}
     >
-      {/* BACKGROUND ASTROLABIUM - VERY PROMINENT */}
-      <div 
-        className="absolute top-4 right-4 opacity-20 pointer-events-none z-0"
-        style={{
-          width: '500px',
-          height: '500px',
-          backgroundImage: 'url(/Astrolab.jpg)',
-          backgroundSize: 'contain',
-          backgroundRepeat: 'no-repeat',
-          filter: 'sepia(40%) saturate(150%) brightness(130%) contrast(120%)'
-        }}
-      />
+      {/* 🌟 CLASSICAL DECORATIONS */}
+      <ClassicalDecorations />
       
-      {/* ENHANCED MOVING STARS */}
-      <MovingStars />
-      
-      {/* LEFT SIDEBAR - VERTICAL NAVIGATION - PROMINENT */}
-      <aside 
-        className="w-80 h-screen flex flex-col z-30"
+      {/* 🏛️ CLASSICAL HEADER WITH ASTROLABIUM */}
+      <header 
+        className="relative"
         style={{
-          backgroundColor: 'rgba(6, 10, 20, 0.98)',
-          borderRight: '3px solid rgba(251, 191, 36, 0.4)',
-          boxShadow: '6px 0 25px rgba(0, 0, 0, 0.6)'
+          background: 'linear-gradient(to bottom, rgba(212, 175, 55, 0.15), rgba(212, 175, 55, 0.05))',
+          borderBottom: '2px solid rgba(212, 175, 55, 0.3)',
+          boxShadow: '0 2px 10px rgba(212, 175, 55, 0.2)'
         }}
       >
-        <div className="flex-1 overflow-y-auto p-6">
-          {/* Header */}
-          <div className="mb-8 text-center">
-            <ClassicalMacrobiusPortrait className="w-16 h-16 mx-auto mb-4" />
-            <h1 className="text-xl font-bold" style={{ color: '#facc15' }}>
-              MACROBIUS
-            </h1>
-            <p className="text-xs" style={{ color: 'rgba(255, 255, 255, 0.7)' }}>
-              Eine antike Flaschenpost
-            </p>
+        {/* ASTROLABIUM BACKGROUND - SUBTLE */}
+        <div 
+          className="absolute top-0 right-0 opacity-10 pointer-events-none"
+          style={{
+            width: '200px',
+            height: '200px',
+            backgroundImage: 'url(/Astrolab.jpg)',
+            backgroundSize: 'contain',
+            backgroundRepeat: 'no-repeat',
+            filter: 'sepia(30%) saturate(120%) brightness(110%)'
+          }}
+        />
+        
+        <div className="container mx-auto px-6 py-4">
+          <div className="flex items-center justify-between">
+            {/* CLASSICAL TITLE WITH PORTRAIT */}
+            <div className="flex items-center space-x-4">
+              <ClassicalMacrobiusPortrait className="w-16 h-16" />
+              <div>
+                <h1 
+                  className="text-3xl font-bold"
+                  style={{ 
+                    color: '#5d4e37',
+                    textShadow: '2px 2px 4px rgba(212, 175, 55, 0.3)',
+                    fontFamily: 'Times New Roman, serif',
+                    letterSpacing: '0.02em'
+                  }}
+                >
+                  MACROBIUS
+                </h1>
+                <p 
+                  className="text-sm italic"
+                  style={{ color: '#8b7355' }}
+                >
+                  Eine antike Flaschenpost ins 21. Jahrhundert
+                </p>
+              </div>
+            </div>
+            
+            {/* ORACLE CLOUD STATUS & LANGUAGE SWITCHER */}
+            <div className="flex items-center space-x-6">
+              {/* Oracle Cloud Status */}
+              <div 
+                className="flex items-center space-x-2 px-3 py-2 rounded-lg"
+                style={{
+                  backgroundColor: 'rgba(212, 175, 55, 0.1)',
+                  border: '1px solid rgba(212, 175, 55, 0.3)'
+                }}
+              >
+                <div 
+                  className="w-2 h-2 rounded-full animate-pulse"
+                  style={{ backgroundColor: '#10b981' }}
+                />
+                <span 
+                  className="text-xs font-medium"
+                  style={{ color: '#5d4e37' }}
+                >
+                  Oracle Cloud: 1.401 Texte
+                </span>
+              </div>
+              
+              {/* Language Switcher */}
+              <div className="flex space-x-1">
+                {(['de', 'en'] as const).map((lang) => (
+                  <button
+                    key={lang}
+                    onClick={() => handleLanguageChange(lang)}
+                    className="px-3 py-1 text-sm font-medium rounded transition-all duration-200 hover:scale-105"
+                    style={{
+                      backgroundColor: getLanguageKey(language) === lang ? '#d4af37' : 'rgba(212, 175, 55, 0.1)',
+                      color: getLanguageKey(language) === lang ? '#ffffff' : '#5d4e37',
+                      border: '1px solid rgba(212, 175, 55, 0.4)',
+                      boxShadow: getLanguageKey(language) === lang ? '0 2px 8px rgba(212, 175, 55, 0.3)' : 'none'
+                    }}
+                  >
+                    {lang.toUpperCase()}
+                  </button>
+                ))}
+              </div>
+            </div>
           </div>
-          
-          {/* Main Navigation */}
-          <nav className="space-y-2 mb-8">
+        </div>
+      </header>
+      
+      {/* 📚 CLASSICAL HORIZONTAL NAVIGATION */}
+      <nav 
+        className="sticky top-0 z-40"
+        style={{
+          backgroundColor: 'rgba(245, 241, 232, 0.95)',
+          backdropFilter: 'blur(10px)',
+          borderBottom: '1px solid rgba(212, 175, 55, 0.2)',
+          boxShadow: '0 2px 10px rgba(212, 175, 55, 0.1)'
+        }}
+      >
+        <div className="container mx-auto px-6">
+          {/* Main Sections */}
+          <div className="flex items-center justify-center space-x-1 py-3 overflow-x-auto">
             {mainSections.map((section) => {
               const IconComponent = section.icon;
+              const isActive = currentSection === section.id;
               return (
                 <button
                   key={section.id}
                   onClick={() => setCurrentSection(section.id)}
-                  className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all duration-300 hover:scale-102"
+                  className="flex items-center space-x-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 hover:scale-105 whitespace-nowrap"
                   style={{
-                    backgroundColor: currentSection === section.id ? 'rgba(251, 191, 36, 0.2)' : 'rgba(255, 255, 255, 0.04)',
-                    color: currentSection === section.id ? '#facc15' : 'rgba(255, 255, 255, 0.9)',
-                    border: currentSection === section.id ? '1px solid rgba(251, 191, 36, 0.5)' : '1px solid rgba(255, 255, 255, 0.1)',
-                    boxShadow: currentSection === section.id ? '0 0 20px rgba(251, 191, 36, 0.3)' : 'none'
+                    backgroundColor: isActive ? 'rgba(212, 175, 55, 0.2)' : 'transparent',
+                    color: isActive ? '#5d4e37' : '#8b7355',
+                    border: isActive ? '1px solid rgba(212, 175, 55, 0.4)' : '1px solid transparent',
+                    boxShadow: isActive ? '0 2px 8px rgba(212, 175, 55, 0.2)' : 'none'
                   }}
                 >
                   <IconComponent 
-                    className="w-5 h-5" 
-                    style={{ color: currentSection === section.id ? '#facc15' : 'rgba(255, 255, 255, 0.8)' }} 
+                    className="w-4 h-4" 
+                    style={{ color: isActive ? '#d4af37' : '#8b7355' }} 
                   />
-                  {section.label[getLanguageKey(language)]}
+                  <span>{section.label[getLanguageKey(language)]}</span>
                 </button>
               );
             })}
-          </nav>
+          </div>
           
           {/* KI-SYSTEME Section */}
-          <div className="mb-8">
-            <h3 
-              className="text-xs font-bold uppercase tracking-wider mb-4 px-4"
-              style={{ color: 'rgba(251, 191, 36, 0.9)' }}
-            >
-              KI-SYSTEME
-            </h3>
-            <nav className="space-y-2">
-              {kiSections.map((section) => {
-                const IconComponent = section.icon;
-                return (
-                  <button
-                    key={section.id}
-                    onClick={() => setCurrentSection(section.id)}
-                    className="w-full flex items-center gap-3 px-4 py-2 rounded-lg text-sm transition-all duration-300"
-                    style={{
-                      backgroundColor: currentSection === section.id ? 'rgba(251, 191, 36, 0.15)' : 'rgba(255, 255, 255, 0.03)',
-                      color: currentSection === section.id ? '#facc15' : 'rgba(255, 255, 255, 0.8)',
-                      border: '1px solid rgba(255, 255, 255, 0.05)'
-                    }}
-                  >
-                    <IconComponent 
-                      className="w-4 h-4" 
-                      style={{ color: currentSection === section.id ? '#facc15' : 'rgba(255, 255, 255, 0.7)' }} 
-                    />
-                    {section.label[getLanguageKey(language)]}
-                  </button>
-                );
-              })}
-            </nav>
-          </div>
-          
-          {/* Oracle Cloud Status */}
           <div 
-            className="p-4 rounded-lg mb-4"
-            style={{
-              backgroundColor: 'rgba(251, 191, 36, 0.1)',
-              border: '1px solid rgba(251, 191, 36, 0.3)',
-              boxShadow: '0 0 15px rgba(251, 191, 36, 0.15)'
-            }}
+            className="border-t py-2"
+            style={{ borderColor: 'rgba(212, 175, 55, 0.2)' }}
           >
-            <div className="flex items-center gap-2 mb-2">
-              <div 
-                className="w-3 h-3 rounded-full animate-pulse"
-                style={{ backgroundColor: '#10b981' }}
-              />
-              <span className="text-xs font-semibold" style={{ color: '#facc15' }}>
-                Oracle Cloud
-              </span>
-            </div>
-            <p className="text-xs" style={{ color: 'rgba(255, 255, 255, 0.9)' }}>
-              1.401 Kulturelle Texte
-            </p>
-          </div>
-          
-          {/* Language Switcher */}
-          <div className="flex gap-2 justify-center">
-            {(['de', 'en'] as const).map((lang) => (
-              <button
-                key={lang}
-                onClick={() => handleLanguageChange(lang)}
-                className="px-3 py-1 text-xs font-medium rounded transition-all duration-200"
-                style={{
-                  backgroundColor: getLanguageKey(language) === lang ? '#facc15' : 'transparent',
-                  color: getLanguageKey(language) === lang ? '#000' : 'rgba(255, 255, 255, 0.8)',
-                  border: '1px solid rgba(251, 191, 36, 0.4)'
-                }}
+            <div className="flex items-center justify-center space-x-4">
+              <span 
+                className="text-xs font-bold uppercase tracking-wider"
+                style={{ color: '#d4af37' }}
               >
-                {lang.toUpperCase()}
-              </button>
-            ))}
+                KI-Systeme:
+              </span>
+              <div className="flex items-center space-x-1">
+                {kiSections.map((section) => {
+                  const IconComponent = section.icon;
+                  const isActive = currentSection === section.id;
+                  return (
+                    <button
+                      key={section.id}
+                      onClick={() => setCurrentSection(section.id)}
+                      className="flex items-center space-x-1 px-3 py-1 rounded text-xs font-medium transition-all duration-200 hover:scale-105"
+                      style={{
+                        backgroundColor: isActive ? 'rgba(212, 175, 55, 0.15)' : 'transparent',
+                        color: isActive ? '#5d4e37' : '#8b7355',
+                        border: isActive ? '1px solid rgba(212, 175, 55, 0.3)' : '1px solid transparent'
+                      }}
+                    >
+                      <IconComponent 
+                        className="w-3 h-3" 
+                        style={{ color: isActive ? '#d4af37' : '#8b7355' }} 
+                      />
+                      <span>{section.label[getLanguageKey(language)]}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
           </div>
         </div>
-      </aside>
+      </nav>
       
-      {/* MAIN CONTENT AREA - SECTION CONTENT */}
-      <main className="flex-1 h-screen overflow-y-auto bg-white">
+      {/* 📖 MAIN CONTENT AREA - CLASSICAL STYLING */}
+      <main 
+        className="container mx-auto px-6 py-8"
+        style={{
+          background: 'rgba(255, 255, 255, 0.6)',
+          backdropFilter: 'blur(5px)',
+          borderRadius: '10px',
+          margin: '20px auto',
+          maxWidth: '1400px',
+          boxShadow: '0 4px 20px rgba(212, 175, 55, 0.1)',
+          border: '1px solid rgba(212, 175, 55, 0.1)'
+        }}
+      >
         {renderSection()}
       </main>
+      
+      {/* 🏛️ CLASSICAL FOOTER */}
+      <footer 
+        className="text-center py-6"
+        style={{
+          background: 'linear-gradient(to top, rgba(212, 175, 55, 0.1), transparent)',
+          borderTop: '1px solid rgba(212, 175, 55, 0.2)'
+        }}
+      >
+        <p 
+          className="text-sm italic"
+          style={{ color: '#8b7355' }}
+        >
+          Macrobius Digital Edition - Verbindet antike Weisheit mit moderner Technologie
+        </p>
+      </footer>
     </div>
   );
 };
