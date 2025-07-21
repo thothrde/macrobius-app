@@ -11,10 +11,18 @@ import {
   Search, 
   GraduationCap, 
   BarChart3,
+  User,
+  Sparkles,
+  BookOpen,
   Brain,
   Target,
+  Scroll,
   Crown,
-  Scroll
+  Filter,
+  AlertTriangle,
+  Network,
+  CalendarDays,
+  Gauge
 } from 'lucide-react';
 
 // Import all section components
@@ -31,14 +39,23 @@ import AICulturalAnalysisSection from '@/components/sections/AICulturalAnalysisS
 import PersonalizedLearningPaths from '@/components/sections/PersonalizedLearningPaths-COMPLETE';
 import AITutoringSystemSection from '@/components/sections/AITutoringSystemSection-COMPLETE';
 
+// Import Robust Oracle Client
+import { oracleAPI, type ConnectionStatus } from '@/lib/robust-oracle-client';
+
 // TypeScript interfaces
+interface ClassicalPortraitProps {
+  className?: string;
+}
+
 type LanguageCode = 'de' | 'en' | 'la';
 type LanguageKey = 'DE' | 'EN' | 'LA';
+
+// ✅ FIXED: Proper type definitions for AI component props
 type CulturalAnalysisTab = 'analyze' | 'explore' | 'statistics';
 type LearningPathMode = 'dashboard' | 'daily_plan' | 'knowledge_gaps' | 'prerequisites' | 'ai_optimization';
 
-// 🏛️ CLASSICAL PORTRAIT COMPONENT
-const ClassicalMacrobiusPortrait: React.FC<{ className?: string }> = ({ className = '' }) => {
+// 🏛️ CLASSICAL PORTRAIT
+const ClassicalMacrobiusPortrait: React.FC<ClassicalPortraitProps> = ({ className = '' }) => {
   return (
     <div className={`relative ${className}`}>
       <div 
@@ -55,7 +72,7 @@ const ClassicalMacrobiusPortrait: React.FC<{ className?: string }> = ({ classNam
       >
         <img 
           src="/Macrobius-Portrait.jpg" 
-          alt="Macrobius Portrait"
+          alt="Macrobius Classical Portrait"
           style={{
             width: '100%',
             height: '100%',
@@ -83,51 +100,117 @@ const ClassicalMacrobiusPortrait: React.FC<{ className?: string }> = ({ classNam
   );
 };
 
-// 🏛️ MAIN CLASSICAL APP - FORCED INLINE STYLES TO GUARANTEE LAYOUT
+// 🌟 FLOATING ELEMENTS
+const FloatingElements: React.FC = () => {
+  return (
+    <div className="absolute inset-0 overflow-hidden pointer-events-none">
+      {Array.from({ length: 12 }, (_, i) => (
+        <div
+          key={`element-${i}`}
+          className="absolute rounded-full opacity-20"
+          style={{
+            width: Math.random() * 4 + 2 + 'px',
+            height: Math.random() * 4 + 2 + 'px',
+            backgroundColor: '#d4af37',
+            top: Math.random() * 100 + '%',
+            left: Math.random() * 100 + '%',
+            animation: `gentleFloat ${12 + Math.random() * 8}s ease-in-out infinite`,
+            animationDelay: `${Math.random() * 6}s`
+          }}
+        />
+      ))}
+      
+      <style jsx>{`
+        @keyframes gentleFloat {
+          0%, 100% { transform: translateY(0px) rotate(0deg); opacity: 0.2; }
+          50% { transform: translateY(-15px) rotate(3deg); opacity: 0.1; }
+        }
+      `}</style>
+    </div>
+  );
+};
+
+// 🏛️ MAIN CLASSICAL APP - WITH ROBUST ORACLE CONNECTION
 const ClassicalMacrobiusApp: React.FC = () => {
   const { language, setLanguage, t } = useLanguage();
   const [currentSection, setCurrentSection] = useState<string>('intro');
-  const [currentSubSection, setCurrentSubSection] = useState<string>('');
-  const [oracleStatus, setOracleStatus] = useState<'checking' | 'connected' | 'offline'>('offline');
+  const [currentSubSection, setCurrentSubSection] = useState<string>(''); // For sub-navigation
+  const [connectionStatus, setConnectionStatus] = useState<ConnectionStatus>({
+    oracle: 'checking',
+    rag: 'checking',
+    ai_systems: 'checking'
+  });
   
-  // 🔌 ORACLE CLOUD CONNECTION CHECK - WITH CORS FIX
+  // 🔌 ROBUST ORACLE CLOUD & RAG CONNECTION CHECK
   useEffect(() => {
-    const checkOracleConnection = async () => {
+    const checkAllConnections = async () => {
       try {
-        // Try to fetch from Oracle Cloud with no-cors mode to avoid CORS issues
-        const response = await fetch('http://152.70.184.232:8080/api/health', {
-          method: 'GET',
-          mode: 'no-cors', // This bypasses CORS but limits response access
-          headers: { 'Content-Type': 'application/json' },
-          signal: AbortSignal.timeout(3000)
-        });
+        // Get connection status from robust client
+        const status = oracleAPI.getConnectionStatus();
+        setConnectionStatus(status);
         
-        // In no-cors mode, we can't read the response, so we assume it's connected if no error
-        setOracleStatus('connected');
+        console.log('🏛️ COMPREHENSIVE CONNECTION STATUS:', status);
+        
+        // Test Oracle Cloud health
+        if (status.oracle === 'connected') {
+          try {
+            const healthResponse = await oracleAPI.healthCheck();
+            console.log('✅ Oracle Cloud health check:', healthResponse);
+          } catch (error) {
+            console.log('⚠️ Oracle Cloud health check failed:', error);
+          }
+        }
+        
+        // Test RAG system
+        if (status.rag === 'connected') {
+          try {
+            const ragResponse = await oracleAPI.rag.query('test query');
+            console.log('✅ RAG system test:', ragResponse);
+          } catch (error) {
+            console.log('⚠️ RAG system test failed:', error);
+          }
+        }
+        
+        // Test AI tutoring system
+        if (status.ai_systems === 'connected') {
+          try {
+            const tutoringResponse = await oracleAPI.tutoring.startSession('test-user');
+            console.log('✅ AI tutoring test:', tutoringResponse);
+          } catch (error) {
+            console.log('⚠️ AI tutoring test failed:', error);
+          }
+        }
+        
       } catch (error) {
-        console.log('Oracle Cloud connection failed, using offline mode:', error);
-        setOracleStatus('offline');
+        console.error('❌ Connection check failed:', error);
+        setConnectionStatus({
+          oracle: 'offline',
+          rag: 'offline', 
+          ai_systems: 'offline'
+        });
       }
     };
     
-    // Set initial status and check periodically
-    checkOracleConnection();
-    const interval = setInterval(checkOracleConnection, 60000); // Check every minute
+    // Initial connection check
+    checkAllConnections();
+    
+    // Periodic connection monitoring
+    const interval = setInterval(checkAllConnections, 60000); // Check every minute
     return () => clearInterval(interval);
   }, []);
   
-  // 📝 DEBUG LOGGING
+  // 📝 DEBUG LOGGING - COMPREHENSIVE STATUS
   useEffect(() => {
-    console.log('🏛️ MACROBIUS: INLINE STYLES VERSION - GUARANTEED VERTICAL SIDEBAR');
-    console.log('🔧 CORS FIX: Using no-cors mode for Oracle Cloud');
+    console.log('🏛️ MACROBIUS: COMPREHENSIVE BACKEND INTEGRATION ACTIVE');
+    console.log('✅ Fixed: Oracle Cloud, RAG, and all AI systems with robust fallbacks');
+    console.log('🔧 Connection Status:', connectionStatus);
     document.title = 'Macrobius - Classical Digital Edition';
-  }, []);
+  }, [connectionStatus]);
   
-  // Language conversion helpers
   const convertToLanguage = (lang: LanguageCode): LanguageKey => {
     switch(lang) {
       case 'de': return 'DE';
-      case 'en': return 'EN'; 
+      case 'en': return 'EN';
       case 'la': return 'LA';
       default: return 'DE';
     }
@@ -142,7 +225,11 @@ const ClassicalMacrobiusApp: React.FC = () => {
     }
   };
 
-  // Helper functions for AI component props
+  const handleLanguageChange = (lang: LanguageCode): void => {
+    setLanguage(convertToLanguage(lang));
+  };
+
+  // ✅ FIXED: Type-safe helper functions for AI component props
   const getValidCulturalAnalysisTab = (subsection: string): CulturalAnalysisTab => {
     switch (subsection) {
       case 'analyze':
@@ -176,7 +263,7 @@ const ClassicalMacrobiusApp: React.FC = () => {
     { id: 'banquet', label: { de: 'Gastmahl', en: 'Banquet', la: 'Convivium' }, icon: Wine },
     { id: 'textsearch', label: { de: 'Textsuche', en: 'Text Search', la: 'Quaestio Textuum' }, icon: Search },
     { id: 'learning', label: { de: 'Lernen', en: 'Learning', la: 'Discere' }, icon: GraduationCap },
-    { id: 'vokabeltrainer', label: { de: 'Vokabeltrainer', en: 'Vocabulary Trainer', la: 'Exercitium Vocabulorum' }, icon: BarChart3 },
+    { id: 'vokabeltrainer', label: { de: 'Vokabeltrainer', en: 'Vocabulary Trainer', la: 'Exercitium Vocabulorum' }, icon: BookOpen },
     { id: 'visualizations', label: { de: 'Visualisierungen', en: 'Visualizations', la: 'Visualizationes' }, icon: BarChart3 }
   ];
 
@@ -187,81 +274,107 @@ const ClassicalMacrobiusApp: React.FC = () => {
     { id: 'kulturmodule', label: { de: 'Kulturmodule', en: 'Cultural Modules', la: 'Moduli Culturales' }, icon: Scroll }
   ];
 
-  // Section rendering with proper component support
-  const renderSection = () => {
-    console.log('🔍 Rendering section:', currentSection, 'subsection:', currentSubSection);
-    
-    try {
-      switch(currentSection) {
-        case 'intro': 
-          return <IntroSection language={language} />;
-        case 'banquet': 
-          return <BanquetSection isActive={true} language={language} />;
-        case 'cosmos': 
-          return <CosmosSection isActive={true} language={language} />;
-        case 'quiz': 
-          return <QuizSection isActive={true} language={language} />;
-        case 'textsearch': 
-          return <TextSearchSection isActive={true} language={language} />;
-        case 'worldmap': 
-          return <WorldMapSection isActive={true} t={t} language={language} />;
-        case 'visualizations': 
-          return <VisualizationsSection isActive={true} language={language} />;
-        case 'vokabeltrainer': 
-          return <VocabularyTrainer isActive={true} language={language} />;
-        case 'learning': 
-          return <LearningSection isActive={true} language={language} />;
-        case 'ki-kulturanalyse':
-          return (
-            <AICulturalAnalysisSection 
-              language={language} 
-              activeTab={getValidCulturalAnalysisTab(currentSubSection)} 
-            />
-          );
-        case 'lernpfade':
-          return (
-            <PersonalizedLearningPaths 
-              currentMode={getValidLearningPathMode(currentSubSection)} 
-            />
-          );
-        case 'ki-tutor':
-          return <AITutoringSystemSection language={language} />;
-        case 'kulturmodule':
-          return (
-            <AICulturalAnalysisSection 
-              language={language} 
-              activeTab={getValidCulturalAnalysisTab(currentSubSection)} 
-            />
-          );
-        default: 
-          return <IntroSection language={language} />;
-      }
-    } catch (error) {
-      console.error('Error rendering section:', error);
-      return (
-        <div style={{ padding: '32px', textAlign: 'center' }}>
-          <h2 style={{ fontSize: '24px', fontWeight: 'bold', color: '#92400e', marginBottom: '16px' }}>
-            Section Loading...
-          </h2>
-          <p style={{ color: '#a16207' }}>
-            Please wait while the section loads.
-          </p>
-        </div>
-      );
+  // ✅ VERTICAL SUB-NAVIGATION FOR COMPLEX SECTIONS
+  const getSubSections = (sectionId: string) => {
+    switch(sectionId) {
+      case 'ki-kulturanalyse':
+        return [
+          { id: 'analyze', label: { de: 'KI-Analyse', en: 'AI Analysis', la: 'Analysis AI' }, icon: Brain },
+          { id: 'explore', label: { de: 'Themen-Explorer', en: 'Theme Explorer', la: 'Explorator Thematum' }, icon: Search },
+          { id: 'statistics', label: { de: 'Statistiken', en: 'Statistics', la: 'Statistica' }, icon: BarChart3 }
+        ];
+      case 'lernpfade':
+        return [
+          { id: 'dashboard', label: { de: 'Dashboard', en: 'Dashboard', la: 'Tabula Administrationis' }, icon: Gauge },
+          { id: 'daily_plan', label: { de: 'KI-Tagesplan', en: 'AI Daily Plan', la: 'Consilium AI Diurnum' }, icon: CalendarDays },
+          { id: 'knowledge_gaps', label: { de: 'KI-Wissenslücken', en: 'AI Knowledge Gaps', la: 'Lacunae AI Scientiae' }, icon: AlertTriangle },
+          { id: 'prerequisites', label: { de: 'KI-Voraussetzungen', en: 'AI Prerequisites', la: 'Requisita AI' }, icon: Network },
+          { id: 'ai_optimization', label: { de: 'KI-Optimierung', en: 'AI Optimization', la: 'Optimizatio AI' }, icon: Sparkles }
+        ];
+      default:
+        return [];
     }
   };
 
-  // Handle navigation
+  // ✅ FIXED SECTION RENDERING - WITH SUB-SECTION SUPPORT AND PROPER TYPE CASTING
+  const renderSection = () => {
+    console.log('🔍 Rendering section:', currentSection, 'subsection:', currentSubSection);
+    
+    switch(currentSection) {
+      case 'intro': 
+        return <IntroSection language={language} />;
+      case 'banquet': 
+        return <BanquetSection isActive={true} language={language} />;
+      case 'cosmos': 
+        return <CosmosSection isActive={true} language={language} />;
+      case 'quiz': 
+        return <QuizSection isActive={true} language={language} />;
+      case 'textsearch': 
+        return <TextSearchSection isActive={true} language={language} />;
+      case 'worldmap': 
+        return <WorldMapSection isActive={true} t={t} language={language} />;
+      case 'visualizations': 
+        return <VisualizationsSection isActive={true} language={language} />;
+      case 'vokabeltrainer': 
+        return <VocabularyTrainer isActive={true} language={language} />;
+      case 'learning': 
+        return <LearningSection isActive={true} language={language} />;
+      
+      // ✅ FIXED: AI COMPONENTS WITH PROPER TYPE CASTING AND SUB-SECTION SUPPORT
+      case 'ki-kulturanalyse':
+        return (
+          <AICulturalAnalysisSection 
+            language={language} 
+            activeTab={getValidCulturalAnalysisTab(currentSubSection)} 
+          />
+        );
+      case 'lernpfade':
+        return (
+          <PersonalizedLearningPaths 
+            currentMode={getValidLearningPathMode(currentSubSection)} 
+          />
+        );
+      case 'ki-tutor':
+        return <AITutoringSystemSection language={language} />;
+      case 'kulturmodule':
+        // For now, show cultural analysis as cultural modules are similar
+        return (
+          <AICulturalAnalysisSection 
+            language={language} 
+            activeTab={getValidCulturalAnalysisTab(currentSubSection)} 
+          />
+        );
+      
+      default: 
+        return <IntroSection language={language} />;
+    }
+  };
+
+  // Handle navigation with sub-section support
   const handleNavigation = (sectionId: string, subSectionId?: string) => {
     console.log('🔄 Navigating to:', sectionId, subSectionId ? `(${subSectionId})` : '');
     setCurrentSection(sectionId);
     setCurrentSubSection(subSectionId || '');
   };
 
+  // ✅ RECONNECT HANDLER FOR TESTING CONNECTIONS
+  const handleReconnect = async () => {
+    console.log('🔄 Manual reconnection triggered...');
+    try {
+      await oracleAPI.reconnect();
+      const status = oracleAPI.getConnectionStatus();
+      setConnectionStatus(status);
+      console.log('✅ Reconnection completed:', status);
+    } catch (error) {
+      console.error('❌ Reconnection failed:', error);
+    }
+  };
+
   return (
     <div 
       style={{
         minHeight: '100vh',
+        maxHeight: '100vh',
         display: 'flex',
         position: 'relative',
         overflow: 'hidden',
@@ -269,7 +382,7 @@ const ClassicalMacrobiusApp: React.FC = () => {
         fontFamily: 'Georgia, serif'
       }}
     >
-      {/* 🌟 ASTROLABIUM BACKGROUND */}
+      {/* ASTROLABIUM BACKGROUND */}
       <div 
         style={{
           position: 'absolute',
@@ -287,7 +400,12 @@ const ClassicalMacrobiusApp: React.FC = () => {
         }}
       />
       
-      {/* 🏛️ VERTICAL LEFT SIDEBAR - FORCED WITH INLINE STYLES */}
+      {/* FLOATING ELEMENTS */}
+      <div style={{ position: 'fixed', inset: 0, zIndex: 10 }}>
+        <FloatingElements />
+      </div>
+      
+      {/* ✅ ENHANCED VERTICAL LEFT SIDEBAR - WITH SUB-NAVIGATION */}
       <aside 
         style={{
           width: '320px',
@@ -326,7 +444,7 @@ const ClassicalMacrobiusApp: React.FC = () => {
             </p>
           </div>
           
-          {/* 🏛️ HAUPTNAVIGATION - VERTICAL */}
+          {/* ✅ MAIN NAVIGATION - VERTICAL */}
           <nav style={{ marginBottom: '32px' }}>
             <h3 style={{ 
               fontSize: '12px', 
@@ -391,7 +509,7 @@ const ClassicalMacrobiusApp: React.FC = () => {
             </div>
           </nav>
           
-          {/* 🏛️ KI-SYSTEME SECTION */}
+          {/* ✅ KI-SYSTEME SECTION - WITH SUB-NAVIGATION */}
           <div style={{ marginBottom: '32px' }}>
             <h3 style={{ 
               fontSize: '12px', 
@@ -404,95 +522,183 @@ const ClassicalMacrobiusApp: React.FC = () => {
             }}>
               KI-Systeme
             </h3>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            <nav style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
               {kiSections.map((section) => {
                 const IconComponent = section.icon;
                 const isActive = currentSection === section.id;
+                const subSections = getSubSections(section.id);
                 
                 return (
-                  <button
-                    key={section.id}
-                    onClick={() => handleNavigation(section.id)}
-                    style={{
-                      width: '100%',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '12px',
-                      padding: '8px 16px',
-                      borderRadius: '8px',
-                      fontSize: '14px',
-                      transition: 'all 0.2s ease',
-                      cursor: 'pointer',
-                      border: `1px solid ${isActive ? 'rgba(212, 175, 55, 0.3)' : 'rgba(212, 175, 55, 0.1)'}`,
-                      backgroundColor: isActive ? 'rgba(212, 175, 55, 0.15)' : 'rgba(255, 255, 255, 0.2)',
-                      color: isActive ? '#92400e' : '#a16207'
-                    }}
-                    onMouseEnter={(e) => {
-                      if (!isActive) {
-                        e.currentTarget.style.backgroundColor = 'rgba(212, 175, 55, 0.1)';
-                      }
-                    }}
-                    onMouseLeave={(e) => {
-                      if (!isActive) {
-                        e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.2)';
-                      }
-                    }}
-                  >
-                    <IconComponent 
-                      style={{ 
-                        width: '16px', 
-                        height: '16px', 
-                        color: isActive ? '#d4af37' : '#a16207',
-                        flexShrink: 0
-                      }} 
-                    />
-                    {section.label[getLanguageKey(language)]}
-                  </button>
+                  <div key={section.id}>
+                    <button
+                      onClick={() => handleNavigation(section.id)}
+                      style={{
+                        width: '100%',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '12px',
+                        padding: '8px 16px',
+                        borderRadius: '8px',
+                        fontSize: '14px',
+                        transition: 'all 0.2s ease',
+                        cursor: 'pointer',
+                        border: `1px solid ${isActive ? 'rgba(212, 175, 55, 0.3)' : 'rgba(212, 175, 55, 0.1)'}`,
+                        backgroundColor: isActive ? 'rgba(212, 175, 55, 0.15)' : 'rgba(255, 255, 255, 0.2)',
+                        color: isActive ? '#92400e' : '#a16207'
+                      }}
+                      onMouseEnter={(e) => {
+                        if (!isActive) {
+                          e.currentTarget.style.backgroundColor = 'rgba(212, 175, 55, 0.1)';
+                        }
+                      }}
+                      onMouseLeave={(e) => {
+                        if (!isActive) {
+                          e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.2)';
+                        }
+                      }}
+                    >
+                      <IconComponent 
+                        style={{ 
+                          width: '16px', 
+                          height: '16px', 
+                          color: isActive ? '#d4af37' : '#a16207',
+                          flexShrink: 0
+                        }} 
+                      />
+                      {section.label[getLanguageKey(language)]}
+                    </button>
+                    
+                    {/* ✅ SUB-NAVIGATION - ONLY SHOW WHEN SECTION IS ACTIVE */}
+                    {isActive && subSections.length > 0 && (
+                      <div style={{ marginLeft: '24px', marginTop: '8px', display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                        {subSections.map((subSection) => {
+                          const SubIconComponent = subSection.icon;
+                          const isSubActive = currentSubSection === subSection.id;
+                          return (
+                            <button
+                              key={subSection.id}
+                              onClick={() => handleNavigation(section.id, subSection.id)}
+                              style={{
+                                width: '100%',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '8px',
+                                padding: '6px 12px',
+                                borderRadius: '6px',
+                                fontSize: '12px',
+                                transition: 'all 0.2s ease',
+                                cursor: 'pointer',
+                                border: `1px solid ${isSubActive ? 'rgba(212, 175, 55, 0.4)' : 'transparent'}`,
+                                backgroundColor: isSubActive ? 'rgba(212, 175, 55, 0.25)' : 'rgba(255, 255, 255, 0.1)',
+                                color: isSubActive ? '#92400e' : '#a16207'
+                              }}
+                            >
+                              <SubIconComponent 
+                                style={{ 
+                                  width: '12px', 
+                                  height: '12px', 
+                                  color: isSubActive ? '#d4af37' : '#a16207',
+                                  flexShrink: 0
+                                }} 
+                              />
+                              {subSection.label[getLanguageKey(language)]}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
                 );
               })}
-            </div>
+            </nav>
           </div>
           
-          {/* 🏛️ ORACLE CLOUD STATUS */}
+          {/* ✅ COMPREHENSIVE BACKEND STATUS */}
           <div 
             style={{
               padding: '16px',
               borderRadius: '8px',
               marginBottom: '24px',
-              border: `1px solid ${oracleStatus === 'connected' 
-                ? 'rgba(34, 197, 94, 0.3)' 
-                : oracleStatus === 'offline' 
-                ? 'rgba(239, 68, 68, 0.3)' 
-                : 'rgba(245, 158, 11, 0.3)'}`,
-              backgroundColor: oracleStatus === 'connected' 
-                ? 'rgba(34, 197, 94, 0.1)' 
-                : oracleStatus === 'offline' 
-                ? 'rgba(239, 68, 68, 0.1)' 
-                : 'rgba(245, 158, 11, 0.1)'
+              border: '1px solid rgba(212, 175, 55, 0.3)',
+              backgroundColor: 'rgba(255, 255, 255, 0.1)'
             }}
           >
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
+              <h4 style={{ fontSize: '12px', fontWeight: '600', color: '#92400e', margin: 0 }}>
+                Backend Status
+              </h4>
+              <button
+                onClick={handleReconnect}
+                style={{
+                  fontSize: '10px',
+                  padding: '4px 8px',
+                  border: '1px solid #d4af37',
+                  borderRadius: '4px',
+                  backgroundColor: 'rgba(212, 175, 55, 0.1)',
+                  color: '#92400e',
+                  cursor: 'pointer'
+                }}
+              >
+                Reconnect
+              </button>
+            </div>
+            
+            {/* Oracle Cloud Status */}
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
               <div 
                 style={{
-                  width: '12px',
-                  height: '12px',
+                  width: '8px',
+                  height: '8px',
                   borderRadius: '50%',
-                  backgroundColor: oracleStatus === 'connected' ? '#10b981' :
-                    oracleStatus === 'offline' ? '#ef4444' : '#f59e0b',
-                  animation: oracleStatus === 'checking' ? 'pulse 2s ease-in-out infinite' : 'none'
+                  backgroundColor: connectionStatus.oracle === 'connected' ? '#10b981' :
+                    connectionStatus.oracle === 'offline' ? '#ef4444' : '#f59e0b',
+                  animation: connectionStatus.oracle === 'checking' ? 'pulse 2s ease-in-out infinite' : 'none'
                 }}
               />
-              <span style={{ fontSize: '12px', fontWeight: '600', color: '#92400e' }}>
-                Oracle Cloud
+              <span style={{ fontSize: '10px', color: '#a16207' }}>
+                Oracle Cloud: {connectionStatus.oracle === 'connected' ? '1.401 Texte' :
+                 connectionStatus.oracle === 'offline' ? 'Offline' : 'Prüfung...'}
               </span>
             </div>
-            <p style={{ fontSize: '12px', color: '#a16207', margin: 0 }}>
-              {oracleStatus === 'connected' ? '1.401 Kulturelle Texte' :
-               oracleStatus === 'offline' ? 'Offline - Fallback Modus' : 'Verbindung prüfen...'}
-            </p>
+            
+            {/* RAG System Status */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
+              <div 
+                style={{
+                  width: '8px',
+                  height: '8px',
+                  borderRadius: '50%',
+                  backgroundColor: connectionStatus.rag === 'connected' ? '#10b981' :
+                    connectionStatus.rag === 'offline' ? '#ef4444' : '#f59e0b',
+                  animation: connectionStatus.rag === 'checking' ? 'pulse 2s ease-in-out infinite' : 'none'
+                }}
+              />
+              <span style={{ fontSize: '10px', color: '#a16207' }}>
+                RAG System: {connectionStatus.rag === 'connected' ? 'Aktiv' :
+                 connectionStatus.rag === 'offline' ? 'Offline' : 'Prüfung...'}
+              </span>
+            </div>
+            
+            {/* AI Systems Status */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <div 
+                style={{
+                  width: '8px',
+                  height: '8px',
+                  borderRadius: '50%',
+                  backgroundColor: connectionStatus.ai_systems === 'connected' ? '#10b981' :
+                    connectionStatus.ai_systems === 'offline' ? '#ef4444' : '#f59e0b',
+                  animation: connectionStatus.ai_systems === 'checking' ? 'pulse 2s ease-in-out infinite' : 'none'
+                }}
+              />
+              <span style={{ fontSize: '10px', color: '#a16207' }}>
+                KI-Systeme: {connectionStatus.ai_systems === 'connected' ? 'Aktiv' :
+                 connectionStatus.ai_systems === 'offline' ? 'Offline' : 'Prüfung...'}
+              </span>
+            </div>
           </div>
           
-          {/* 🏛️ LANGUAGE SWITCHER */}
+          {/* ✅ LANGUAGE SWITCHER */}
           <div style={{ display: 'flex', gap: '4px', justifyContent: 'center' }}>
             {(['de', 'en', 'la'] as const).map((lang) => {
               const isActive = getLanguageKey(language) === lang;
@@ -521,7 +727,7 @@ const ClassicalMacrobiusApp: React.FC = () => {
         </div>
       </aside>
       
-      {/* 🏛️ MAIN CONTENT AREA - PROPERLY POSITIONED */}
+      {/* ✅ MAIN CONTENT AREA - PROPERLY CENTERED */}
       <main 
         style={{
           flex: 1,
