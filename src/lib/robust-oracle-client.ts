@@ -246,19 +246,48 @@ class RobustOracleClient {
       try {
         // Try different connection strategies
         const strategies = [
-          { mode: 'cors' as RequestMode, headers: { 'Content-Type': 'application/json' } },
-          { mode: 'no-cors' as RequestMode, headers: {} }
+          { 
+            mode: 'cors' as RequestMode, 
+            headers: { 'Content-Type': 'application/json' } as Record<string, string>
+          },
+          { 
+            mode: 'no-cors' as RequestMode, 
+            headers: {} as Record<string, string>
+          }
         ];
         
         for (const strategy of strategies) {
           try {
+            // Properly merge headers with correct typing
+            const mergedHeaders: Record<string, string> = {
+              ...strategy.headers
+            };
+            
+            // Add options headers if they exist and are the right type
+            if (options.headers) {
+              if (options.headers instanceof Headers) {
+                options.headers.forEach((value, key) => {
+                  mergedHeaders[key] = value;
+                });
+              } else if (Array.isArray(options.headers)) {
+                // Handle array format headers
+                options.headers.forEach(([key, value]) => {
+                  mergedHeaders[key] = value;
+                });
+              } else if (typeof options.headers === 'object') {
+                // Handle object format headers
+                Object.entries(options.headers).forEach(([key, value]) => {
+                  if (typeof value === 'string') {
+                    mergedHeaders[key] = value;
+                  }
+                });
+              }
+            }
+            
             const response = await fetch(url, {
               method: options.method || 'GET',
               mode: strategy.mode,
-              headers: {
-                ...strategy.headers,
-                ...options.headers
-              },
+              headers: mergedHeaders,
               body: options.body,
               signal: AbortSignal.timeout(this.timeout)
             });
