@@ -27,7 +27,10 @@ import {
   WifiOff,
   ShieldAlert,
   CheckCircle,
-  Zap
+  Zap,
+  Loader2,
+  RefreshCw,
+  Activity
 } from 'lucide-react';
 
 // Import all section components
@@ -44,8 +47,8 @@ import AICulturalAnalysisSection from '@/components/sections/AICulturalAnalysisS
 import PersonalizedLearningPaths from '@/components/sections/PersonalizedLearningPaths-COMPLETE';
 import AITutoringSystemSection from '@/components/sections/AITutoringSystemSection-COMPLETE';
 
-// Import Enhanced Oracle Client with Real AI
-import { enhancedOracleAPI, type ConnectionStatus } from '@/lib/enhanced-oracle-client-with-real-ai';
+// Import Enhanced API Client
+import { apiClient, MacrobiusAPI, getApiConnectionStatus } from '@/lib/enhanced-api-client-with-fallback';
 
 // TypeScript interfaces
 interface ClassicalPortraitProps {
@@ -54,17 +57,24 @@ interface ClassicalPortraitProps {
 
 type LanguageCode = 'de' | 'en' | 'la';
 type LanguageKey = 'DE' | 'EN' | 'LA';
-
-// ✅ FIXED: Proper type definitions for AI component props
 type CulturalAnalysisTab = 'analyze' | 'explore' | 'statistics';
 type LearningPathMode = 'dashboard' | 'daily_plan' | 'knowledge_gaps' | 'prerequisites' | 'ai_optimization';
 
-type ExtendedConnectionStatus = ConnectionStatus & { clientAI: 'available' | 'unavailable' };
+type ConnectionStatus = {
+  oracle: 'connected' | 'offline' | 'checking' | 'cors_error';
+  rag: 'connected' | 'offline' | 'checking';
+  ai_systems: 'connected' | 'offline' | 'checking';
+  corsIssues: boolean;
+  preferHTTPS: boolean;
+  currentURL: string;
+};
 
-// 🏛️ CLASSICAL PORTRAIT
+// 🏛️ ENHANCED CLASSICAL PORTRAIT WITH ANIMATIONS
 const ClassicalMacrobiusPortrait: React.FC<ClassicalPortraitProps> = ({ className = '' }) => {
+  const [imageLoaded, setImageLoaded] = useState(false);
+  
   return (
-    <div className={`relative ${className}`}>
+    <div className={`relative ${className}`} style={{ perspective: '1000px' }}>
       <div 
         style={{
           width: '64px',
@@ -73,18 +83,26 @@ const ClassicalMacrobiusPortrait: React.FC<ClassicalPortraitProps> = ({ classNam
           overflow: 'hidden',
           border: '2px solid #f59e0b',
           background: 'linear-gradient(135deg, rgba(212, 175, 55, 0.1), rgba(139, 92, 41, 0.1))',
-          boxShadow: '0 4px 12px rgba(212, 175, 55, 0.3)',
-          margin: '0 auto 16px'
+          boxShadow: imageLoaded 
+            ? '0 8px 32px rgba(212, 175, 55, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.1)' 
+            : '0 4px 12px rgba(212, 175, 55, 0.3)',
+          margin: '0 auto 16px',
+          transition: 'all 0.8s cubic-bezier(0.4, 0, 0.2, 1)',
+          transform: imageLoaded ? 'translateY(-2px) rotateY(5deg)' : 'translateY(0) rotateY(0deg)',
+          position: 'relative'
         }}
       >
         <img 
           src="/Macrobius-Portrait.jpg" 
           alt="Macrobius Classical Portrait"
+          onLoad={() => setImageLoaded(true)}
           style={{
             width: '100%',
             height: '100%',
             objectFit: 'cover',
-            filter: 'sepia(10%) saturate(110%) brightness(105%)'
+            filter: imageLoaded 
+              ? 'sepia(15%) saturate(120%) brightness(110%) contrast(105%)' 
+              : 'sepia(10%) saturate(110%) brightness(105%)'
           }}
         />
         <div 
@@ -95,115 +113,181 @@ const ClassicalMacrobiusPortrait: React.FC<ClassicalPortraitProps> = ({ classNam
             right: 0,
             textAlign: 'center',
             padding: '4px',
-            background: 'linear-gradient(to top, rgba(212, 175, 55, 0.9), transparent)'
+            background: 'linear-gradient(to top, rgba(212, 175, 55, 0.9), transparent)',
+            backdropFilter: 'blur(4px)'
           }}
         >
-          <span style={{ fontSize: '12px', fontWeight: 'bold', color: '#92400e' }}>
+          <span style={{ 
+            fontSize: '10px', 
+            fontWeight: 'bold', 
+            color: '#92400e',
+            textShadow: '0 1px 2px rgba(0,0,0,0.3)'
+          }}>
             MACROBIVS
           </span>
         </div>
+        
+        {/* Subtle glow effect */}
+        {imageLoaded && (
+          <div 
+            style={{
+              position: 'absolute',
+              inset: '-2px',
+              borderRadius: '50%',
+              background: 'conic-gradient(from 0deg, rgba(212, 175, 55, 0.3), rgba(212, 175, 55, 0.1), rgba(212, 175, 55, 0.3))',
+              zIndex: -1,
+              animation: 'gentleRotate 8s linear infinite'
+            }}
+          />
+        )}
       </div>
-    </div>
-  );
-};
-
-// 🌟 FLOATING ELEMENTS
-const FloatingElements: React.FC = () => {
-  return (
-    <div className="absolute inset-0 overflow-hidden pointer-events-none">
-      {Array.from({ length: 12 }, (_, i) => (
-        <div
-          key={`element-${i}`}
-          className="absolute rounded-full opacity-20"
-          style={{
-            width: Math.random() * 4 + 2 + 'px',
-            height: Math.random() * 4 + 2 + 'px',
-            backgroundColor: '#d4af37',
-            top: Math.random() * 100 + '%',
-            left: Math.random() * 100 + '%',
-            animation: `gentleFloat ${12 + Math.random() * 8}s ease-in-out infinite`,
-            animationDelay: `${Math.random() * 6}s`
-          }}
-        />
-      ))}
       
       <style jsx>{`
-        @keyframes gentleFloat {
-          0%, 100% { transform: translateY(0px) rotate(0deg); opacity: 0.2; }
-          50% { transform: translateY(-15px) rotate(3deg); opacity: 0.1; }
+        @keyframes gentleRotate {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
         }
       `}</style>
     </div>
   );
 };
 
-// 🏛️ MAIN CLASSICAL APP - ENHANCED WITH REAL AI FUNCTIONALITY
-const ClassicalMacrobiusApp: React.FC = () => {
-  const { language, setLanguage, t } = useLanguage();
-  const [currentSection, setCurrentSection] = useState<string>('intro');
-  const [currentSubSection, setCurrentSubSection] = useState<string>(''); // For sub-navigation
-  const [connectionStatus, setConnectionStatus] = useState<ExtendedConnectionStatus>({
-    oracle: 'checking',
-    rag: 'checking',
-    ai_systems: 'checking',
-    clientAI: 'available'
-  });
-  const [fallbackMode, setFallbackMode] = useState<boolean>(false);
-  const [corsIssues, setCorsIssues] = useState<boolean>(false);
-  const [realAIActive, setRealAIActive] = useState<boolean>(false);
-  
-  // 🔌 ENHANCED CONNECTION MONITORING WITH REAL AI STATUS
-  useEffect(() => {
-    const checkAllConnections = async () => {
-      try {
-        // Get enhanced connection status (includes client-side AI)
-        const status = enhancedOracleAPI.getConnectionStatus();
-        const inFallbackMode = enhancedOracleAPI.isInFallbackMode();
-        const hasCorsIssues = enhancedOracleAPI.hasCorsIssues();
+// 🌟 ENHANCED FLOATING ELEMENTS WITH PHYSICS
+const FloatingElements: React.FC = () => {
+  return (
+    <div className="absolute inset-0 overflow-hidden pointer-events-none">
+      {Array.from({ length: 15 }, (_, i) => {
+        const size = Math.random() * 6 + 2;
+        const delay = Math.random() * 8;
+        const duration = 12 + Math.random() * 16;
+        const xOffset = Math.random() * 40 - 20;
         
-        setConnectionStatus(status);
-        setFallbackMode(inFallbackMode);
-        setCorsIssues(hasCorsIssues);
-        setRealAIActive(status.clientAI === 'available');
-        
-        console.log('🏛️ ENHANCED AI-POWERED CONNECTION STATUS:', {
-          status,
-          fallbackMode: inFallbackMode,
-          corsIssues: hasCorsIssues,
-          realAIActive: status.clientAI === 'available'
-        });
-        
-        // Test AI functionality if client-side AI is available
-        if (status.clientAI === 'available') {
-          try {
-            // Quick test of client-side AI
-            const testResponse = await enhancedOracleAPI.cultural.analyze('Saturnalia', 'de');
-            console.log('✅ Client-side AI test successful:', testResponse.status);
-          } catch (error) {
-            console.log('⚠️ Client-side AI test failed:', error);
+        return (
+          <div
+            key={`element-${i}`}
+            className="absolute rounded-full"
+            style={{
+              width: size + 'px',
+              height: size + 'px',
+              backgroundColor: i % 3 === 0 ? '#d4af37' : i % 3 === 1 ? '#f59e0b' : '#92400e',
+              opacity: 0.15 + Math.random() * 0.1,
+              top: Math.random() * 100 + '%',
+              left: Math.random() * 100 + '%',
+              animation: `enhancedFloat ${duration}s ease-in-out infinite`,
+              animationDelay: `${delay}s`,
+              filter: 'blur(0.5px)'
+            }}
+          />
+        );
+      })}
+      
+      {/* Additional larger elements for depth */}
+      {Array.from({ length: 5 }, (_, i) => (
+        <div
+          key={`large-${i}`}
+          className="absolute rounded-full"
+          style={{
+            width: '8px',
+            height: '8px',
+            background: 'radial-gradient(circle, rgba(212, 175, 55, 0.2), rgba(212, 175, 55, 0.05))',
+            top: Math.random() * 100 + '%',
+            left: Math.random() * 100 + '%',
+            animation: `largeFloat ${20 + Math.random() * 10}s ease-in-out infinite`,
+            animationDelay: `${Math.random() * 10}s`
+          }}
+        />
+      ))}
+      
+      <style jsx>{`
+        @keyframes enhancedFloat {
+          0%, 100% { 
+            transform: translate(0px, 0px) rotate(0deg) scale(1); 
+            opacity: 0.15; 
+          }
+          25% { 
+            transform: translate(10px, -20px) rotate(5deg) scale(1.1); 
+            opacity: 0.25; 
+          }
+          50% { 
+            transform: translate(-5px, -35px) rotate(-3deg) scale(0.9); 
+            opacity: 0.1; 
+          }
+          75% { 
+            transform: translate(-15px, -20px) rotate(7deg) scale(1.05); 
+            opacity: 0.2; 
           }
         }
         
-        // Test backend functionality if connected
+        @keyframes largeFloat {
+          0%, 100% { 
+            transform: translate(0px, 0px) scale(1); 
+            opacity: 0.2; 
+          }
+          50% { 
+            transform: translate(-30px, -50px) scale(1.3); 
+            opacity: 0.05; 
+          }
+        }
+      `}</style>
+    </div>
+  );
+};
+
+// 🏛️ MAIN ENHANCED CLASSICAL APP
+const ClassicalMacrobiusApp: React.FC = () => {
+  const { language, setLanguage, t } = useLanguage();
+  const [currentSection, setCurrentSection] = useState<string>('intro');
+  const [currentSubSection, setCurrentSubSection] = useState<string>('');
+  const [connectionStatus, setConnectionStatus] = useState<ConnectionStatus>({
+    oracle: 'checking',
+    rag: 'checking',
+    ai_systems: 'checking',
+    corsIssues: false,
+    preferHTTPS: true,
+    currentURL: ''
+  });
+  const [fallbackMode, setFallbackMode] = useState<boolean>(false);
+  const [isReconnecting, setIsReconnecting] = useState<boolean>(false);
+  const [lastConnectionCheck, setLastConnectionCheck] = useState<number>(0);
+  
+  // 🔌 ENHANCED CONNECTION MONITORING WITH VISUAL FEEDBACK
+  useEffect(() => {
+    const checkAllConnections = async () => {
+      try {
+        const status = apiClient.getConnectionStatus();
+        const inFallbackMode = apiClient.isInFallbackMode();
+        
+        setConnectionStatus(status);
+        setFallbackMode(inFallbackMode);
+        setLastConnectionCheck(Date.now());
+        
+        console.log('🏛️ ENHANCED CONNECTION STATUS:', {
+          status,
+          fallbackMode: inFallbackMode,
+          timestamp: new Date().toLocaleTimeString()
+        });
+        
+        // Test backend health if connected
         if (status.oracle === 'connected') {
           try {
-            const healthResponse = await enhancedOracleAPI.healthCheck();
-            console.log('✅ Oracle Cloud health check:', healthResponse);
+            const healthResponse = await MacrobiusAPI.system.healthCheck();
+            console.log('✅ Backend health check successful:', healthResponse.status);
           } catch (error) {
-            console.log('⚠️ Oracle Cloud health check failed:', error);
+            console.log('⚠️ Backend health check failed:', error);
           }
         }
         
       } catch (error) {
-        console.error('❌ Enhanced connection check failed:', error);
+        console.error('❌ Connection check failed:', error);
         setConnectionStatus({
           oracle: 'offline',
           rag: 'offline', 
-          ai_systems: 'offline',
-          clientAI: 'available' // Client-side AI should still work
+          ai_systems: 'checking', // Client-side AI might still work
+          corsIssues: true,
+          preferHTTPS: true,
+          currentURL: ''
         });
         setFallbackMode(true);
-        setRealAIActive(true); // Client-side AI is the real AI
       }
     };
     
@@ -211,23 +295,25 @@ const ClassicalMacrobiusApp: React.FC = () => {
     checkAllConnections();
     
     // Periodic connection monitoring (less frequent to avoid spam)
-    const interval = setInterval(checkAllConnections, 120000); // Check every 2 minutes
+    const interval = setInterval(checkAllConnections, 90000); // Check every 1.5 minutes
     return () => clearInterval(interval);
   }, []);
   
-  // 📝 DEBUG LOGGING - REAL AI STATUS
+  // 📝 ENHANCED STATUS LOGGING
   useEffect(() => {
-    console.log('🏛️ MACROBIUS: REAL AI FUNCTIONALITY ACTIVE');
-    console.log('✅ Core Features: RAG System, Cultural Analysis, AI Tutoring - ALL OPERATIONAL');
-    console.log('🔧 Status:', { connectionStatus, fallbackMode, corsIssues, realAIActive });
+    console.log('🏛️ MACROBIUS: AI-POWERED LATIN EDUCATION PLATFORM');
+    console.log('✅ Core Features: RAG System, Cultural Analysis, AI Tutoring');
+    console.log('🔧 Enhanced Status:', { 
+      connectionStatus, 
+      fallbackMode, 
+      lastCheck: new Date(lastConnectionCheck).toLocaleTimeString() 
+    });
     
-    // Update document title to reflect AI status
-    document.title = realAIActive ? 
-      'Macrobius - AI-Powered Latin Education (Real AI Active)' : 
-      corsIssues ? 
-      'Macrobius - Backend Connection Issues' :
-      'Macrobius - Classical Digital Edition';
-  }, [connectionStatus, fallbackMode, corsIssues, realAIActive]);
+    // Enhanced document title with connection status
+    const statusEmoji = connectionStatus.oracle === 'connected' ? '🟢' : 
+                       connectionStatus.oracle === 'cors_error' ? '🟡' : '🔴';
+    document.title = `${statusEmoji} Macrobius - AI-Powered Latin Education`;
+  }, [connectionStatus, fallbackMode, lastConnectionCheck]);
   
   const convertToLanguage = (lang: LanguageCode): LanguageKey => {
     switch(lang) {
@@ -251,7 +337,7 @@ const ClassicalMacrobiusApp: React.FC = () => {
     setLanguage(convertToLanguage(lang));
   };
 
-  // ✅ FIXED: Type-safe helper functions for AI component props
+  // ✅ Type-safe helper functions for AI component props
   const getValidCulturalAnalysisTab = (subsection: string): CulturalAnalysisTab => {
     switch (subsection) {
       case 'analyze':
@@ -276,51 +362,160 @@ const ClassicalMacrobiusApp: React.FC = () => {
     }
   };
 
-  // 📚 NAVIGATION SECTIONS
+  // 📚 ENHANCED NAVIGATION SECTIONS WITH DESCRIPTIONS
   const mainSections = [
-    { id: 'intro', label: { de: 'Einführung', en: 'Introduction', la: 'Introductio' }, icon: Home },
-    { id: 'quiz', label: { de: 'Quiz', en: 'Quiz', la: 'Quaestiones' }, icon: HelpCircle },
-    { id: 'worldmap', label: { de: 'Weltkarte', en: 'World Map', la: 'Mappa Mundi' }, icon: Globe },
-    { id: 'cosmos', label: { de: 'Kosmos', en: 'Cosmos', la: 'Cosmos' }, icon: Star },
-    { id: 'banquet', label: { de: 'Gastmahl', en: 'Banquet', la: 'Convivium' }, icon: Wine },
-    { id: 'textsearch', label: { de: 'Textsuche', en: 'Text Search', la: 'Quaestio Textuum' }, icon: Search },
-    { id: 'learning', label: { de: 'Lernen', en: 'Learning', la: 'Discere' }, icon: GraduationCap },
-    { id: 'vokabeltrainer', label: { de: 'Vokabeltrainer', en: 'Vocabulary Trainer', la: 'Exercitium Vocabulorum' }, icon: BookOpen },
-    { id: 'visualizations', label: { de: 'Visualisierungen', en: 'Visualizations', la: 'Visualizationes' }, icon: BarChart3 }
+    { 
+      id: 'intro', 
+      label: { de: 'Einführung', en: 'Introduction', la: 'Introductio' }, 
+      icon: Home,
+      description: { de: 'Willkommen bei Macrobius', en: 'Welcome to Macrobius', la: 'Salve in Macrobium' }
+    },
+    { 
+      id: 'quiz', 
+      label: { de: 'Quiz', en: 'Quiz', la: 'Quaestiones' }, 
+      icon: HelpCircle,
+      description: { de: 'Interaktive Lernkontrolle', en: 'Interactive Learning', la: 'Quaestiones Interactivae' }
+    },
+    { 
+      id: 'worldmap', 
+      label: { de: 'Weltkarte', en: 'World Map', la: 'Mappa Mundi' }, 
+      icon: Globe,
+      description: { de: 'Geografische Visualisierung', en: 'Geographic Visualization', la: 'Visualizatio Geographica' }
+    },
+    { 
+      id: 'cosmos', 
+      label: { de: 'Kosmos', en: 'Cosmos', la: 'Cosmos' }, 
+      icon: Star,
+      description: { de: 'Astronomische Konzepte', en: 'Astronomical Concepts', la: 'Conceptus Astronomici' }
+    },
+    { 
+      id: 'banquet', 
+      label: { de: 'Gastmahl', en: 'Banquet', la: 'Convivium' }, 
+      icon: Wine,
+      description: { de: 'Römische Gastmähler', en: 'Roman Banquets', la: 'Convivia Romana' }
+    },
+    { 
+      id: 'textsearch', 
+      label: { de: 'Textsuche', en: 'Text Search', la: 'Quaestio Textuum' }, 
+      icon: Search,
+      description: { de: 'Erweiterte Textanalyse', en: 'Advanced Text Analysis', la: 'Analysis Textuum Provecta' }
+    },
+    { 
+      id: 'learning', 
+      label: { de: 'Lernen', en: 'Learning', la: 'Discere' }, 
+      icon: GraduationCap,
+      description: { de: 'Pädagogische Werkzeuge', en: 'Educational Tools', la: 'Instrumenta Paedagogica' }
+    },
+    { 
+      id: 'vokabeltrainer', 
+      label: { de: 'Vokabeltrainer', en: 'Vocabulary Trainer', la: 'Exercitium Vocabulorum' }, 
+      icon: BookOpen,
+      description: { de: 'Intelligentes SRS-System', en: 'Intelligent SRS System', la: 'Systema SRS Intelligens' }
+    },
+    { 
+      id: 'visualizations', 
+      label: { de: 'Visualisierungen', en: 'Visualizations', la: 'Visualizationes' }, 
+      icon: BarChart3,
+      description: { de: 'Datenvisualisierung', en: 'Data Visualization', la: 'Visualizatio Datorum' }
+    }
   ];
 
   const kiSections = [
-    { id: 'ki-kulturanalyse', label: { de: 'KI-Kulturanalyse', en: 'AI Cultural Analysis', la: 'AI Analysis Culturalis' }, icon: Brain },
-    { id: 'lernpfade', label: { de: 'Lernpfade', en: 'Learning Paths', la: 'Semitae Discendi' }, icon: Target },
-    { id: 'ki-tutor', label: { de: 'KI-Tutor', en: 'AI Tutor', la: 'AI Praeceptor' }, icon: Crown },
-    { id: 'kulturmodule', label: { de: 'Kulturmodule', en: 'Cultural Modules', la: 'Moduli Culturales' }, icon: Scroll }
+    { 
+      id: 'ki-kulturanalyse', 
+      label: { de: 'KI-Kulturanalyse', en: 'AI Cultural Analysis', la: 'AI Analysis Culturalis' }, 
+      icon: Brain,
+      tier: 3,
+      description: { de: 'Echte KI-Kulturanalyse', en: 'Real AI Cultural Analysis', la: 'Analysis AI Culturalis Vera' }
+    },
+    { 
+      id: 'lernpfade', 
+      label: { de: 'Lernpfade', en: 'Learning Paths', la: 'Semitae Discendi' }, 
+      icon: Target,
+      tier: 3,
+      description: { de: 'KI-optimierte Lernpfade', en: 'AI-Optimized Learning Paths', la: 'Semitae AI-Optimizatae' }
+    },
+    { 
+      id: 'ki-tutor', 
+      label: { de: 'KI-Tutor', en: 'AI Tutor', la: 'AI Praeceptor' }, 
+      icon: Crown,
+      tier: 3,
+      description: { de: 'Intelligenter AI-Tutor', en: 'Intelligent AI Tutor', la: 'AI Praeceptor Intelligens' }
+    },
+    { 
+      id: 'kulturmodule', 
+      label: { de: 'Kulturmodule', en: 'Cultural Modules', la: 'Moduli Culturales' }, 
+      icon: Scroll,
+      tier: 3,
+      description: { de: 'Erweiterte Kulturmodule', en: 'Advanced Cultural Modules', la: 'Moduli Culturales Provecti' }
+    }
   ];
 
-  // ✅ VERTICAL SUB-NAVIGATION FOR COMPLEX SECTIONS
+  // ✅ ENHANCED SUB-NAVIGATION WITH DESCRIPTIONS
   const getSubSections = (sectionId: string) => {
     switch(sectionId) {
       case 'ki-kulturanalyse':
         return [
-          { id: 'analyze', label: { de: 'KI-Analyse', en: 'AI Analysis', la: 'Analysis AI' }, icon: Brain },
-          { id: 'explore', label: { de: 'Themen-Explorer', en: 'Theme Explorer', la: 'Explorator Thematum' }, icon: Search },
-          { id: 'statistics', label: { de: 'Statistiken', en: 'Statistics', la: 'Statistica' }, icon: BarChart3 }
+          { 
+            id: 'analyze', 
+            label: { de: 'KI-Analyse', en: 'AI Analysis', la: 'Analysis AI' }, 
+            icon: Brain,
+            description: { de: 'Echte NLP-Analyse', en: 'Real NLP Analysis', la: 'Analysis NLP Vera' }
+          },
+          { 
+            id: 'explore', 
+            label: { de: 'Themen-Explorer', en: 'Theme Explorer', la: 'Explorator Thematum' }, 
+            icon: Search,
+            description: { de: 'Kulturelle Themenexploration', en: 'Cultural Theme Exploration', la: 'Exploratio Thematum Culturalium' }
+          },
+          { 
+            id: 'statistics', 
+            label: { de: 'Statistiken', en: 'Statistics', la: 'Statistica' }, 
+            icon: BarChart3,
+            description: { de: 'KI-generierte Statistiken', en: 'AI-Generated Statistics', la: 'Statistica AI-Generata' }
+          }
         ];
       case 'lernpfade':
         return [
-          { id: 'dashboard', label: { de: 'Dashboard', en: 'Dashboard', la: 'Tabula Administrationis' }, icon: Gauge },
-          { id: 'daily_plan', label: { de: 'KI-Tagesplan', en: 'AI Daily Plan', la: 'Consilium AI Diurnum' }, icon: CalendarDays },
-          { id: 'knowledge_gaps', label: { de: 'KI-Wissenslücken', en: 'AI Knowledge Gaps', la: 'Lacunae AI Scientiae' }, icon: AlertTriangle },
-          { id: 'prerequisites', label: { de: 'KI-Voraussetzungen', en: 'AI Prerequisites', la: 'Requisita AI' }, icon: Network },
-          { id: 'ai_optimization', label: { de: 'KI-Optimierung', en: 'AI Optimization', la: 'Optimizatio AI' }, icon: Sparkles }
+          { 
+            id: 'dashboard', 
+            label: { de: 'Dashboard', en: 'Dashboard', la: 'Tabula Administrationis' }, 
+            icon: Gauge,
+            description: { de: 'KI-Lern-Dashboard', en: 'AI Learning Dashboard', la: 'Tabula AI Discendi' }
+          },
+          { 
+            id: 'daily_plan', 
+            label: { de: 'KI-Tagesplan', en: 'AI Daily Plan', la: 'Consilium AI Diurnum' }, 
+            icon: CalendarDays,
+            description: { de: 'Intelligente Tagesplanung', en: 'Intelligent Daily Planning', la: 'Consilium Diurnum Intelligens' }
+          },
+          { 
+            id: 'knowledge_gaps', 
+            label: { de: 'KI-Wissenslücken', en: 'AI Knowledge Gaps', la: 'Lacunae AI Scientiae' }, 
+            icon: AlertTriangle,
+            description: { de: 'KI-Wissenslückenanalyse', en: 'AI Knowledge Gap Analysis', la: 'Analysis AI Lacunarum Scientiae' }
+          },
+          { 
+            id: 'prerequisites', 
+            label: { de: 'KI-Voraussetzungen', en: 'AI Prerequisites', la: 'Requisita AI' }, 
+            icon: Network,
+            description: { de: 'Intelligente Voraussetzungsmappierung', en: 'Intelligent Prerequisites Mapping', la: 'Mappatio AI Requisitorum' }
+          },
+          { 
+            id: 'ai_optimization', 
+            label: { de: 'KI-Optimierung', en: 'AI Optimization', la: 'Optimizatio AI' }, 
+            icon: Sparkles,
+            description: { de: 'ML-basierte Optimierung', en: 'ML-Based Optimization', la: 'Optimizatio ML-Basata' }
+          }
         ];
       default:
         return [];
     }
   };
 
-  // ✅ FIXED SECTION RENDERING - WITH REAL AI INTEGRATION BUT CORRECT PROPS
+  // ✅ SECTION RENDERING WITH ENHANCED PROPS
   const renderSection = () => {
-    console.log('🔍 Rendering section with REAL AI:', currentSection, 'subsection:', currentSubSection);
+    console.log('🔍 Rendering section with Enhanced AI:', currentSection, 'subsection:', currentSubSection);
     
     switch(currentSection) {
       case 'intro': 
@@ -342,27 +537,24 @@ const ClassicalMacrobiusApp: React.FC = () => {
       case 'learning': 
         return <LearningSection isActive={true} language={language} />;
       
-      // ✅ REAL AI COMPONENTS WITH CORRECT PROPS (NO apiClient prop)
+      // ✅ TIER 3 AI COMPONENTS WITH ENHANCED INTEGRATION
       case 'ki-kulturanalyse':
         return (
           <AICulturalAnalysisSection 
             language={language} 
             activeTab={getValidCulturalAnalysisTab(currentSubSection)}
-            // ✅ REMOVED: apiClient prop - component uses internal AI engine
           />
         );
       case 'lernpfade':
         return (
           <PersonalizedLearningPaths 
             currentMode={getValidLearningPathMode(currentSubSection)}
-            // ✅ REMOVED: apiClient prop - will check if component needs it
           />
         );
       case 'ki-tutor':
         return (
           <AITutoringSystemSection 
             language={language}
-            // ✅ REMOVED: apiClient prop - will check if component needs it
           />
         );
       case 'kulturmodule':
@@ -370,7 +562,6 @@ const ClassicalMacrobiusApp: React.FC = () => {
           <AICulturalAnalysisSection 
             language={language} 
             activeTab={getValidCulturalAnalysisTab(currentSubSection)}
-            // ✅ REMOVED: apiClient prop - component uses internal AI engine
           />
         );
       
@@ -379,46 +570,83 @@ const ClassicalMacrobiusApp: React.FC = () => {
     }
   };
 
-  // Handle navigation with sub-section support
+  // Enhanced navigation with animation feedback
   const handleNavigation = (sectionId: string, subSectionId?: string) => {
-    console.log('🔄 Navigating to:', sectionId, subSectionId ? `(${subSectionId})` : '');
+    console.log('🔄 Enhanced navigation to:', sectionId, subSectionId ? `(${subSectionId})` : '');
     setCurrentSection(sectionId);
     setCurrentSubSection(subSectionId || '');
   };
 
-  // ✅ ENHANCED RECONNECT HANDLER
+  // ✅ ENHANCED RECONNECT HANDLER WITH VISUAL FEEDBACK
   const handleReconnect = async () => {
-    console.log('🔄 Manual reconnection triggered...');
+    console.log('🔄 Enhanced reconnection initiated...');
+    setIsReconnecting(true);
+    
     try {
-      setConnectionStatus({
+      setConnectionStatus(prev => ({
+        ...prev,
         oracle: 'checking',
         rag: 'checking',
-        ai_systems: 'checking',
-        clientAI: 'available'
-      });
+        ai_systems: 'checking'
+      }));
       
-      await enhancedOracleAPI.reconnect();
+      await apiClient.reconnect();
       
       // Update status after reconnection attempt
-      const status = enhancedOracleAPI.getConnectionStatus();
-      const inFallbackMode = enhancedOracleAPI.isInFallbackMode();
-      const hasCorsIssues = enhancedOracleAPI.hasCorsIssues();
+      const status = apiClient.getConnectionStatus();
+      const inFallbackMode = apiClient.isInFallbackMode();
       
       setConnectionStatus(status);
       setFallbackMode(inFallbackMode);
-      setCorsIssues(hasCorsIssues);
-      setRealAIActive(status.clientAI === 'available');
+      setLastConnectionCheck(Date.now());
       
-      console.log('✅ Enhanced reconnection attempt completed:', {
+      console.log('✅ Enhanced reconnection completed:', {
         status,
         fallbackMode: inFallbackMode,
-        corsIssues: hasCorsIssues,
-        realAIActive: status.clientAI === 'available'
+        timestamp: new Date().toLocaleTimeString()
       });
     } catch (error) {
       console.error('❌ Enhanced reconnection failed:', error);
+    } finally {
+      setIsReconnecting(false);
     }
   };
+
+  // Connection status helper
+  const getConnectionStatusInfo = () => {
+    if (connectionStatus.oracle === 'connected') {
+      return {
+        color: '#10b981',
+        icon: CheckCircle,
+        text: 'Verbunden',
+        detail: `1.401 Texte verfügbar via ${connectionStatus.preferHTTPS ? 'HTTPS' : 'HTTP'}`
+      };
+    } else if (connectionStatus.corsIssues) {
+      return {
+        color: '#f59e0b',
+        icon: ShieldAlert,
+        text: 'CORS-Problem',
+        detail: 'Mixed Content Issue - Fallback aktiv'
+      };
+    } else if (connectionStatus.oracle === 'checking') {
+      return {
+        color: '#f59e0b',
+        icon: Loader2,
+        text: 'Prüfung...',
+        detail: 'Verbindungstest läuft'
+      };
+    } else {
+      return {
+        color: '#ef4444',
+        icon: WifiOff,
+        text: 'Offline',
+        detail: 'Fallback-Modus aktiv'
+      };
+    }
+  };
+
+  const statusInfo = getConnectionStatusInfo();
+  const StatusIcon = statusInfo.icon;
 
   return (
     <div 
@@ -432,13 +660,13 @@ const ClassicalMacrobiusApp: React.FC = () => {
         fontFamily: 'Georgia, serif'
       }}
     >
-      {/* ASTROLABIUM BACKGROUND */}
+      {/* ENHANCED ASTROLABIUM BACKGROUND WITH ANIMATION */}
       <div 
         style={{
           position: 'absolute',
           top: '16px',
           right: '16px',
-          opacity: 0.08,
+          opacity: 0.06,
           pointerEvents: 'none',
           zIndex: 0,
           width: '400px',
@@ -446,45 +674,47 @@ const ClassicalMacrobiusApp: React.FC = () => {
           backgroundImage: 'url(/Astrolab.jpg)',
           backgroundSize: 'contain',
           backgroundRepeat: 'no-repeat',
-          filter: 'sepia(20%) saturate(120%) brightness(110%)'
+          filter: 'sepia(20%) saturate(120%) brightness(110%)',
+          animation: 'astrolabRotate 120s linear infinite'
         }}
       />
       
-      {/* FLOATING ELEMENTS */}
+      {/* ENHANCED FLOATING ELEMENTS */}
       <div style={{ position: 'fixed', inset: 0, zIndex: 10 }}>
         <FloatingElements />
       </div>
       
-      {/* ✅ ENHANCED VERTICAL LEFT SIDEBAR - WITH REAL AI INDICATORS */}
+      {/* ✅ ENHANCED VERTICAL LEFT SIDEBAR */}
       <aside 
         style={{
-          width: '320px',
-          minWidth: '320px',
-          maxWidth: '320px',
+          width: '340px',
+          minWidth: '340px',
+          maxWidth: '340px',
           height: '100vh',
           display: 'flex',
           flexDirection: 'column',
           zIndex: 30,
           backgroundColor: 'rgba(255, 255, 255, 0.95)',
-          backdropFilter: 'blur(12px)',
+          backdropFilter: 'blur(16px)',
           borderRight: '2px solid rgba(212, 175, 55, 0.2)',
-          boxShadow: '0 10px 25px rgba(0, 0, 0, 0.1)',
+          boxShadow: '0 10px 40px rgba(0, 0, 0, 0.1)',
           background: 'linear-gradient(to bottom, rgba(255, 255, 255, 0.95), rgba(248, 246, 240, 0.9))',
           position: 'relative',
           flexShrink: 0
         }}
       >
-        <div style={{ flex: 1, overflowY: 'auto', padding: '24px' }}>
-          {/* HEADER */}
+        <div style={{ flex: 1, overflowY: 'auto', overflowX: 'hidden', padding: '24px' }}>
+          {/* ENHANCED HEADER */}
           <div style={{ marginBottom: '32px', textAlign: 'center' }}>
             <ClassicalMacrobiusPortrait />
             <h1 style={{ 
-              fontSize: '20px', 
+              fontSize: '24px', 
               fontWeight: 'bold', 
               color: '#92400e', 
               fontFamily: 'Times New Roman, serif', 
-              marginBottom: '4px',
-              margin: '0 0 4px 0'
+              marginBottom: '8px',
+              margin: '0 0 8px 0',
+              textShadow: '0 2px 4px rgba(146, 64, 14, 0.1)'
             }}>
               MACROBIUS
             </h1>
@@ -492,34 +722,42 @@ const ClassicalMacrobiusApp: React.FC = () => {
               fontSize: '14px', 
               color: '#a16207', 
               fontStyle: 'italic',
-              margin: 0
+              margin: '0 0 8px 0',
+              lineHeight: '1.4'
             }}>
               Eine antike Flaschenpost
             </p>
             
-            {/* ✨ REAL AI STATUS INDICATOR */}
-            {realAIActive && (
-              <div style={{
-                marginTop: '8px',
-                padding: '4px 8px',
-                background: 'rgba(16, 185, 129, 0.1)',
-                border: '1px solid rgba(16, 185, 129, 0.3)',
-                borderRadius: '4px',
-                fontSize: '10px',
-                color: '#059669',
-                fontWeight: '600',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: '4px'
-              }}>
-                <Zap style={{ width: '10px', height: '10px' }} />
-                Echte KI Aktiv
-              </div>
-            )}
+            {/* Enhanced AI Status Badge */}
+            <div style={{
+              marginTop: '12px',
+              padding: '6px 12px',
+              background: connectionStatus.oracle === 'connected' 
+                ? 'linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(16, 185, 129, 0.05))'
+                : 'linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(245, 158, 11, 0.05))',
+              border: `1px solid ${connectionStatus.oracle === 'connected' ? 'rgba(16, 185, 129, 0.3)' : 'rgba(245, 158, 11, 0.3)'}`,
+              borderRadius: '6px',
+              fontSize: '11px',
+              color: connectionStatus.oracle === 'connected' ? '#059669' : '#d97706',
+              fontWeight: '600',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '6px',
+              backdropFilter: 'blur(8px)'
+            }}>
+              <Activity 
+                style={{ 
+                  width: '12px', 
+                  height: '12px',
+                  animation: connectionStatus.oracle === 'checking' ? 'pulse 2s infinite' : 'none'
+                }} 
+              />
+              {connectionStatus.oracle === 'connected' ? 'KI-Systeme Aktiv' : 'Fallback-Modus'}
+            </div>
           </div>
           
-          {/* ✅ MAIN NAVIGATION - GUARANTEED VERTICAL */}
+          {/* ✅ ENHANCED MAIN NAVIGATION */}
           <nav style={{ marginBottom: '32px' }}>
             <h3 style={{ 
               fontSize: '12px', 
@@ -528,68 +766,92 @@ const ClassicalMacrobiusApp: React.FC = () => {
               letterSpacing: '0.1em', 
               marginBottom: '16px', 
               padding: '0 8px', 
-              color: '#a16207'
+              color: '#a16207',
+              borderBottom: '1px solid rgba(212, 175, 55, 0.1)',
+              paddingBottom: '8px'
             }}>
               Hauptnavigation
             </h3>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
               {mainSections.map((section) => {
                 const IconComponent = section.icon;
                 const isActive = currentSection === section.id;
                 return (
-                  <button
-                    key={section.id}
-                    onClick={() => handleNavigation(section.id)}
-                    style={{
-                      width: '100%',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '12px',
-                      padding: '12px 16px',
-                      borderRadius: '8px',
-                      fontSize: '14px',
-                      fontWeight: '500',
-                      transition: 'all 0.3s ease',
-                      cursor: 'pointer',
-                      border: `1px solid ${isActive ? 'rgba(212, 175, 55, 0.5)' : 'rgba(212, 175, 55, 0.1)'}`,
-                      backgroundColor: isActive ? 'rgba(212, 175, 55, 0.25)' : 'rgba(255, 255, 255, 0.3)',
-                      color: isActive ? '#92400e' : '#a16207',
-                      boxShadow: isActive ? '0 4px 16px rgba(212, 175, 55, 0.3)' : 'none',
-                      transform: isActive ? 'translateX(4px)' : 'none',
-                      textAlign: 'left',
-                      fontFamily: 'Georgia, serif'
-                    }}
-                    onMouseEnter={(e) => {
-                      if (!isActive) {
-                        e.currentTarget.style.backgroundColor = 'rgba(212, 175, 55, 0.15)';
-                        e.currentTarget.style.transform = 'translateX(2px)';
-                        e.currentTarget.style.boxShadow = '0 2px 8px rgba(212, 175, 55, 0.2)';
-                      }
-                    }}
-                    onMouseLeave={(e) => {
-                      if (!isActive) {
-                        e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.3)';
-                        e.currentTarget.style.transform = 'none';
-                        e.currentTarget.style.boxShadow = 'none';
-                      }
-                    }}
-                  >
-                    <IconComponent 
-                      style={{ 
-                        width: '20px', 
-                        height: '20px', 
-                        color: isActive ? '#d4af37' : '#a16207',
-                        flexShrink: 0
-                      }} 
-                    />
-                    {section.label[getLanguageKey(language)]}
-                  </button>
+                  <div key={section.id}>
+                    <button
+                      onClick={() => handleNavigation(section.id)}
+                      style={{
+                        width: '100%',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '12px',
+                        padding: '12px 16px',
+                        borderRadius: '10px',
+                        fontSize: '14px',
+                        fontWeight: '500',
+                        transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+                        cursor: 'pointer',
+                        border: `1px solid ${isActive ? 'rgba(212, 175, 55, 0.5)' : 'rgba(212, 175, 55, 0.1)'}`,
+                        backgroundColor: isActive 
+                          ? 'linear-gradient(135deg, rgba(212, 175, 55, 0.25), rgba(212, 175, 55, 0.15))'
+                          : 'rgba(255, 255, 255, 0.3)',
+                        background: isActive 
+                          ? 'linear-gradient(135deg, rgba(212, 175, 55, 0.25), rgba(212, 175, 55, 0.15))'
+                          : 'rgba(255, 255, 255, 0.3)',
+                        color: isActive ? '#92400e' : '#a16207',
+                        boxShadow: isActive 
+                          ? '0 8px 25px rgba(212, 175, 55, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.3)' 
+                          : '0 2px 4px rgba(0, 0, 0, 0.02)',
+                        transform: isActive ? 'translateX(6px) scale(1.02)' : 'none',
+                        textAlign: 'left',
+                        fontFamily: 'Georgia, serif',
+                        backdropFilter: 'blur(8px)'
+                      }}
+                      onMouseEnter={(e) => {
+                        if (!isActive) {
+                          e.currentTarget.style.backgroundColor = 'rgba(212, 175, 55, 0.15)';
+                          e.currentTarget.style.transform = 'translateX(3px) scale(1.01)';
+                          e.currentTarget.style.boxShadow = '0 4px 12px rgba(212, 175, 55, 0.2)';
+                        }
+                      }}
+                      onMouseLeave={(e) => {
+                        if (!isActive) {
+                          e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.3)';
+                          e.currentTarget.style.transform = 'none';
+                          e.currentTarget.style.boxShadow = '0 2px 4px rgba(0, 0, 0, 0.02)';
+                        }
+                      }}
+                    >
+                      <IconComponent 
+                        style={{ 
+                          width: '18px', 
+                          height: '18px', 
+                          color: isActive ? '#d4af37' : '#a16207',
+                          flexShrink: 0,
+                          filter: isActive ? 'drop-shadow(0 2px 4px rgba(212, 175, 55, 0.3))' : 'none'
+                        }} 
+                      />
+                      <div style={{ flex: 1 }}>
+                        <div style={{ fontWeight: '600' }}>
+                          {section.label[getLanguageKey(language)]}
+                        </div>
+                        <div style={{ 
+                          fontSize: '11px', 
+                          opacity: 0.7, 
+                          marginTop: '2px',
+                          lineHeight: '1.2'
+                        }}>
+                          {section.description?.[getLanguageKey(language)]}
+                        </div>
+                      </div>
+                    </button>
+                  </div>
                 );
               })}
             </div>
           </nav>
           
-          {/* ✅ KI-SYSTEME SECTION - WITH REAL AI INDICATORS */}
+          {/* ✅ TIER 3 AI SYSTEMS SECTION - ENHANCED */}
           <div style={{ marginBottom: '32px' }}>
             <h3 style={{ 
               fontSize: '12px', 
@@ -601,24 +863,25 @@ const ClassicalMacrobiusApp: React.FC = () => {
               color: '#a16207',
               display: 'flex',
               alignItems: 'center',
-              gap: '8px'
+              gap: '8px',
+              borderBottom: '1px solid rgba(212, 175, 55, 0.1)',
+              paddingBottom: '8px'
             }}>
-              KI-Systeme 
-              {realAIActive && (
-                <span style={{
-                  fontSize: '10px', 
-                  color: '#059669',
-                  background: 'rgba(16, 185, 129, 0.1)',
-                  padding: '2px 6px',
-                  borderRadius: '3px',
-                  fontWeight: '600'
-                }}>
-                  <Zap style={{ width: '8px', height: '8px', marginRight: '2px', display: 'inline' }} />
-                  AI
-                </span>
-              )}
+              Tier 3 KI-Systeme
+              <span style={{
+                fontSize: '9px', 
+                color: '#059669',
+                background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(16, 185, 129, 0.05))',
+                padding: '2px 6px',
+                borderRadius: '4px',
+                fontWeight: '700',
+                border: '1px solid rgba(16, 185, 129, 0.2)'
+              }}>
+                <Zap style={{ width: '8px', height: '8px', marginRight: '2px', display: 'inline' }} />
+                ERWEITERT
+              </span>
             </h3>
-            <nav style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            <nav style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
               {kiSections.map((section) => {
                 const IconComponent = section.icon;
                 const isActive = currentSection === section.id;
@@ -633,29 +896,40 @@ const ClassicalMacrobiusApp: React.FC = () => {
                         display: 'flex',
                         alignItems: 'center',
                         gap: '12px',
-                        padding: '10px 16px',
-                        borderRadius: '8px',
+                        padding: '12px 16px',
+                        borderRadius: '10px',
                         fontSize: '14px',
                         fontWeight: '500',
-                        transition: 'all 0.3s ease',
+                        transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
                         cursor: 'pointer',
                         border: `1px solid ${isActive ? 'rgba(212, 175, 55, 0.4)' : 'rgba(212, 175, 55, 0.1)'}`,
-                        backgroundColor: isActive ? 'rgba(212, 175, 55, 0.2)' : 'rgba(255, 255, 255, 0.2)',
+                        backgroundColor: isActive 
+                          ? 'linear-gradient(135deg, rgba(212, 175, 55, 0.2), rgba(212, 175, 55, 0.1))'
+                          : 'rgba(255, 255, 255, 0.2)',
+                        background: isActive 
+                          ? 'linear-gradient(135deg, rgba(212, 175, 55, 0.2), rgba(212, 175, 55, 0.1))'
+                          : 'rgba(255, 255, 255, 0.2)',
                         color: isActive ? '#92400e' : '#a16207',
                         textAlign: 'left',
                         fontFamily: 'Georgia, serif',
-                        transform: isActive ? 'translateX(2px)' : 'none'
+                        transform: isActive ? 'translateX(4px)' : 'none',
+                        backdropFilter: 'blur(8px)',
+                        boxShadow: isActive 
+                          ? '0 6px 20px rgba(212, 175, 55, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.2)' 
+                          : '0 2px 4px rgba(0, 0, 0, 0.02)'
                       }}
                       onMouseEnter={(e) => {
                         if (!isActive) {
                           e.currentTarget.style.backgroundColor = 'rgba(212, 175, 55, 0.1)';
-                          e.currentTarget.style.transform = 'translateX(1px)';
+                          e.currentTarget.style.transform = 'translateX(2px)';
+                          e.currentTarget.style.boxShadow = '0 4px 12px rgba(212, 175, 55, 0.15)';
                         }
                       }}
                       onMouseLeave={(e) => {
                         if (!isActive) {
                           e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.2)';
                           e.currentTarget.style.transform = 'none';
+                          e.currentTarget.style.boxShadow = '0 2px 4px rgba(0, 0, 0, 0.02)';
                         }
                       }}
                     >
@@ -664,22 +938,45 @@ const ClassicalMacrobiusApp: React.FC = () => {
                           width: '16px', 
                           height: '16px', 
                           color: isActive ? '#d4af37' : '#a16207',
-                          flexShrink: 0
+                          flexShrink: 0,
+                          filter: isActive ? 'drop-shadow(0 2px 4px rgba(212, 175, 55, 0.3))' : 'none'
                         }} 
                       />
-                      {section.label[getLanguageKey(language)]}
-                      {realAIActive && (
+                      <div style={{ flex: 1 }}>
+                        <div style={{ fontWeight: '600' }}>
+                          {section.label[getLanguageKey(language)]}
+                        </div>
+                        <div style={{ 
+                          fontSize: '10px', 
+                          opacity: 0.7, 
+                          marginTop: '2px',
+                          lineHeight: '1.2'
+                        }}>
+                          {section.description?.[getLanguageKey(language)]}
+                        </div>
+                      </div>
+                      <div style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '4px'
+                      }}>
+                        <span style={{
+                          fontSize: '8px',
+                          color: '#059669',
+                          fontWeight: '700'
+                        }}>
+                          T{section.tier}
+                        </span>
                         <Zap style={{ 
                           width: '12px', 
                           height: '12px', 
                           color: '#059669',
-                          marginLeft: 'auto',
                           flexShrink: 0
                         }} />
-                      )}
+                      </div>
                     </button>
                     
-                    {/* SUB-NAVIGATION */}
+                    {/* ENHANCED SUB-NAVIGATION */}
                     {isActive && subSections.length > 0 && (
                       <div style={{ 
                         marginLeft: '24px', 
@@ -688,9 +985,10 @@ const ClassicalMacrobiusApp: React.FC = () => {
                         flexDirection: 'column', 
                         gap: '4px',
                         borderLeft: '2px solid rgba(212, 175, 55, 0.2)',
-                        paddingLeft: '12px'
+                        paddingLeft: '12px',
+                        position: 'relative'
                       }}>
-                        {subSections.map((subSection) => {
+                        {subSections.map((subSection, index) => {
                           const SubIconComponent = subSection.icon;
                           const isSubActive = currentSubSection === subSection.id;
                           return (
@@ -702,16 +1000,36 @@ const ClassicalMacrobiusApp: React.FC = () => {
                                 display: 'flex',
                                 alignItems: 'center',
                                 gap: '8px',
-                                padding: '6px 12px',
+                                padding: '8px 12px',
                                 borderRadius: '6px',
                                 fontSize: '12px',
-                                fontWeight: isSubActive ? '500' : '400',
-                                transition: 'all 0.2s ease',
+                                fontWeight: isSubActive ? '600' : '400',
+                                transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
                                 cursor: 'pointer',
                                 border: `1px solid ${isSubActive ? 'rgba(212, 175, 55, 0.4)' : 'transparent'}`,
-                                backgroundColor: isSubActive ? 'rgba(212, 175, 55, 0.3)' : 'rgba(255, 255, 255, 0.1)',
+                                backgroundColor: isSubActive 
+                                  ? 'linear-gradient(135deg, rgba(212, 175, 55, 0.3), rgba(212, 175, 55, 0.2))'
+                                  : 'rgba(255, 255, 255, 0.1)',
+                                background: isSubActive 
+                                  ? 'linear-gradient(135deg, rgba(212, 175, 55, 0.3), rgba(212, 175, 55, 0.2))'
+                                  : 'rgba(255, 255, 255, 0.1)',
                                 color: isSubActive ? '#92400e' : '#a16207',
-                                textAlign: 'left'
+                                textAlign: 'left',
+                                transform: isSubActive ? 'translateX(2px)' : 'none',
+                                backdropFilter: 'blur(4px)',
+                                opacity: isSubActive ? 1 : 0.8
+                              }}
+                              onMouseEnter={(e) => {
+                                e.currentTarget.style.opacity = '1';
+                                e.currentTarget.style.backgroundColor = isSubActive 
+                                  ? 'linear-gradient(135deg, rgba(212, 175, 55, 0.3), rgba(212, 175, 55, 0.2))'
+                                  : 'rgba(212, 175, 55, 0.15)';
+                              }}
+                              onMouseLeave={(e) => {
+                                e.currentTarget.style.opacity = isSubActive ? '1' : '0.8';
+                                e.currentTarget.style.backgroundColor = isSubActive 
+                                  ? 'linear-gradient(135deg, rgba(212, 175, 55, 0.3), rgba(212, 175, 55, 0.2))'
+                                  : 'rgba(255, 255, 255, 0.1)';
                               }}
                             >
                               <SubIconComponent 
@@ -722,7 +1040,19 @@ const ClassicalMacrobiusApp: React.FC = () => {
                                   flexShrink: 0
                                 }} 
                               />
-                              {subSection.label[getLanguageKey(language)]}
+                              <div style={{ flex: 1 }}>
+                                <div>
+                                  {subSection.label[getLanguageKey(language)]}
+                                </div>
+                                <div style={{ 
+                                  fontSize: '9px', 
+                                  opacity: 0.6, 
+                                  marginTop: '1px',
+                                  lineHeight: '1.2'
+                                }}>
+                                  {subSection.description?.[getLanguageKey(language)]}
+                                </div>
+                              </div>
                             </button>
                           );
                         })}
@@ -734,139 +1064,147 @@ const ClassicalMacrobiusApp: React.FC = () => {
             </nav>
           </div>
           
-          {/* ✅ ENHANCED BACKEND STATUS WITH REAL AI DISPLAY */}
+          {/* ✅ ENHANCED BACKEND STATUS DISPLAY */}
           <div 
             style={{
               padding: '16px',
-              borderRadius: '8px',
+              borderRadius: '12px',
               marginBottom: '24px',
-              border: realAIActive ? 
-                '1px solid rgba(16, 185, 129, 0.3)' :
-                corsIssues ? 
-                '1px solid rgba(239, 68, 68, 0.3)' : 
-                '1px solid rgba(212, 175, 55, 0.3)',
-              backgroundColor: realAIActive ?
-                'rgba(16, 185, 129, 0.05)' :
-                corsIssues ?
-                'rgba(239, 68, 68, 0.05)' :
-                'rgba(255, 255, 255, 0.1)',
-              backdropFilter: 'blur(8px)'
+              border: `1px solid ${statusInfo.color}40`,
+              background: `linear-gradient(135deg, ${statusInfo.color}08, ${statusInfo.color}04)`,
+              backdropFilter: 'blur(12px)',
+              position: 'relative',
+              overflow: 'hidden'
             }}
           >
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
-              <h4 style={{ fontSize: '12px', fontWeight: '600', color: '#92400e', margin: 0 }}>
-                {realAIActive ? 'KI-Systeme Aktiv' : 'Backend Status'}
+              <h4 style={{ fontSize: '13px', fontWeight: '700', color: '#92400e', margin: 0 }}>
+                Verbindungsstatus
               </h4>
               <button
                 onClick={handleReconnect}
+                disabled={isReconnecting}
                 style={{
                   fontSize: '10px',
-                  padding: '4px 8px',
+                  padding: '6px 10px',
                   border: '1px solid #d4af37',
-                  borderRadius: '4px',
-                  backgroundColor: 'rgba(212, 175, 55, 0.1)',
-                  color: '#92400e',
-                  cursor: 'pointer',
-                  transition: 'all 0.2s ease'
+                  borderRadius: '6px',
+                  backgroundColor: isReconnecting ? 'rgba(212, 175, 55, 0.05)' : 'rgba(212, 175, 55, 0.1)',
+                  color: isReconnecting ? '#a16207' : '#92400e',
+                  cursor: isReconnecting ? 'not-allowed' : 'pointer',
+                  transition: 'all 0.3s ease',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '4px',
+                  fontWeight: '600'
                 }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.backgroundColor = 'rgba(212, 175, 55, 0.2)';
+                  if (!isReconnecting) {
+                    e.currentTarget.style.backgroundColor = 'rgba(212, 175, 55, 0.2)';
+                    e.currentTarget.style.transform = 'scale(1.05)';
+                  }
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.backgroundColor = 'rgba(212, 175, 55, 0.1)';
+                  if (!isReconnecting) {
+                    e.currentTarget.style.backgroundColor = 'rgba(212, 175, 55, 0.1)';
+                    e.currentTarget.style.transform = 'scale(1)';
+                  }
                 }}
               >
-                Reconnect
+                <RefreshCw 
+                  style={{ 
+                    width: '10px', 
+                    height: '10px',
+                    animation: isReconnecting ? 'spin 1s linear infinite' : 'none'
+                  }} 
+                />
+                {isReconnecting ? 'Verbinden...' : 'Neuverbindung'}
               </button>
             </div>
             
-            {/* REAL AI STATUS */}
-            {realAIActive && (
-              <div style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '8px',
-                marginBottom: '12px',
-                padding: '8px',
-                background: 'rgba(16, 185, 129, 0.1)',
-                borderRadius: '4px',
-                fontSize: '10px',
-                color: '#059669'
-              }}>
-                <Zap style={{ width: '12px', height: '12px', flexShrink: 0 }} />
-                <span>
-                  <strong>Echte KI:</strong> RAG-System, Kulturanalyse, AI-Tutoring - Voll funktionsfähig
+            {/* Main Connection Status */}
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '12px',
+              marginBottom: '12px',
+              padding: '12px',
+              background: `linear-gradient(135deg, ${statusInfo.color}10, ${statusInfo.color}05)`,
+              borderRadius: '8px',
+              border: `1px solid ${statusInfo.color}20`
+            }}>
+              <StatusIcon 
+                style={{ 
+                  width: '16px', 
+                  height: '16px', 
+                  color: statusInfo.color,
+                  flexShrink: 0,
+                  animation: connectionStatus.oracle === 'checking' ? 'spin 2s linear infinite' : 'none'
+                }} 
+              />
+              <div style={{ flex: 1 }}>
+                <div style={{ fontSize: '12px', fontWeight: '600', color: '#92400e' }}>
+                  Oracle Cloud: {statusInfo.text}
+                </div>
+                <div style={{ fontSize: '10px', color: '#a16207', opacity: 0.8, marginTop: '2px' }}>
+                  {statusInfo.detail}
+                </div>
+              </div>
+            </div>
+            
+            {/* Additional Status Details */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <div 
+                  style={{
+                    width: '8px',
+                    height: '8px',
+                    borderRadius: '50%',
+                    backgroundColor: connectionStatus.oracle === 'connected' ? '#10b981' : '#ef4444',
+                    boxShadow: `0 0 8px ${connectionStatus.oracle === 'connected' ? '#10b981' : '#ef4444'}40`
+                  }}
+                />
+                <span style={{ fontSize: '10px', color: '#a16207', fontWeight: '500' }}>
+                  RAG-System: {connectionStatus.oracle === 'connected' ? 'Oracle Cloud Backend' : 'Client-Side Fallback'}
                 </span>
               </div>
-            )}
-            
-            {corsIssues && !realAIActive && (
-              <div style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '8px',
-                marginBottom: '12px',
-                padding: '8px',
-                background: 'rgba(239, 68, 68, 0.1)',
-                borderRadius: '4px',
-                fontSize: '10px',
-                color: '#dc2626'
-              }}>
-                <ShieldAlert style={{ width: '12px', height: '12px', flexShrink: 0 }} />
-                <span>Backend-Verbindungsprobleme - KI-Systeme verwenden lokale Verarbeitung</span>
+              
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <div 
+                  style={{
+                    width: '8px',
+                    height: '8px',
+                    borderRadius: '50%',
+                    backgroundColor: '#10b981', // Client-side AI is always available
+                    boxShadow: '0 0 8px #10b98140'
+                  }}
+                />
+                <span style={{ fontSize: '10px', color: '#a16207', fontWeight: '500' }}>
+                  Client-KI: Kulturanalyse & Tutoring Aktiv
+                </span>
               </div>
-            )}
-            
-            {/* Connection Status Details */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
-              <div 
-                style={{
-                  width: '8px',
-                  height: '8px',
-                  borderRadius: '50%',
-                  backgroundColor: connectionStatus.oracle === 'connected' ? '#10b981' :
-                    connectionStatus.oracle === 'offline' ? '#ef4444' : '#f59e0b',
-                  animation: connectionStatus.oracle === 'checking' ? 'pulse 2s ease-in-out infinite' : 'none'
-                }}
-              />
-              <span style={{ fontSize: '10px', color: '#a16207', fontWeight: '500' }}>
-                Oracle Cloud: {connectionStatus.oracle === 'connected' ? '1.401 Texte' :
-                 connectionStatus.oracle === 'offline' ? 'Offline' : 'Prüfung...'}
-              </span>
+              
+              {lastConnectionCheck > 0 && (
+                <div style={{ fontSize: '9px', color: '#a16207', opacity: 0.6, marginTop: '4px' }}>
+                  Letzte Prüfung: {new Date(lastConnectionCheck).toLocaleTimeString('de-DE')}
+                </div>
+              )}
             </div>
             
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
-              <div 
-                style={{
-                  width: '8px',
-                  height: '8px',
-                  borderRadius: '50%',
-                  backgroundColor: connectionStatus.clientAI === 'available' ? '#10b981' : '#ef4444',
-                }}
-              />
-              <span style={{ fontSize: '10px', color: '#a16207', fontWeight: '500' }}>
-                Client-KI: {connectionStatus.clientAI === 'available' ? 'Vollständig Aktiv' : 'Nicht verfügbar'}
-              </span>
-            </div>
-            
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <div 
-                style={{
-                  width: '8px',
-                  height: '8px',
-                  borderRadius: '50%',
-                  backgroundColor: (connectionStatus.oracle === 'connected' || connectionStatus.clientAI === 'available') ? '#10b981' : '#ef4444',
-                }}
-              />
-              <span style={{ fontSize: '10px', color: '#a16207', fontWeight: '500' }}>
-                RAG-System: {connectionStatus.oracle === 'connected' ? 'Oracle Cloud' : 
-                            connectionStatus.clientAI === 'available' ? 'Client-KI Aktiv' : 'Offline'}
-              </span>
-            </div>
+            {/* Background decoration */}
+            <div style={{
+              position: 'absolute',
+              top: '-50%',
+              right: '-50%',
+              width: '200%',
+              height: '200%',
+              background: `radial-gradient(circle, ${statusInfo.color}05, transparent 70%)`,
+              pointerEvents: 'none'
+            }} />
           </div>
           
-          {/* LANGUAGE SWITCHER */}
-          <div style={{ display: 'flex', gap: '4px', justifyContent: 'center' }}>
+          {/* ENHANCED LANGUAGE SWITCHER */}
+          <div style={{ display: 'flex', gap: '6px', justifyContent: 'center' }}>
             {(['de', 'en', 'la'] as const).map((lang) => {
               const isActive = getLanguageKey(language) === lang;
               return (
@@ -874,29 +1212,40 @@ const ClassicalMacrobiusApp: React.FC = () => {
                   key={lang}
                   onClick={() => setLanguage(convertToLanguage(lang))}
                   style={{
-                    padding: '8px 12px',
+                    padding: '10px 14px',
                     fontSize: '12px',
-                    fontWeight: '600',
-                    borderRadius: '6px',
-                    transition: 'all 0.3s ease',
+                    fontWeight: '700',
+                    borderRadius: '8px',
+                    transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
                     cursor: 'pointer',
-                    border: '1px solid rgba(212, 175, 55, 0.3)',
-                    backgroundColor: isActive ? '#d4af37' : 'rgba(212, 175, 55, 0.1)',
+                    border: `1px solid rgba(212, 175, 55, 0.3)`,
+                    backgroundColor: isActive 
+                      ? 'linear-gradient(135deg, #d4af37, #f59e0b)'
+                      : 'rgba(212, 175, 55, 0.1)',
+                    background: isActive 
+                      ? 'linear-gradient(135deg, #d4af37, #f59e0b)'
+                      : 'rgba(212, 175, 55, 0.1)',
                     color: isActive ? '#ffffff' : '#a16207',
-                    boxShadow: isActive ? '0 4px 12px rgba(212, 175, 55, 0.4)' : 'none',
-                    transform: isActive ? 'scale(1.05)' : 'scale(1)',
-                    fontFamily: 'Georgia, serif'
+                    boxShadow: isActive 
+                      ? '0 8px 25px rgba(212, 175, 55, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.3)' 
+                      : '0 2px 4px rgba(0, 0, 0, 0.1)',
+                    transform: isActive ? 'scale(1.08) translateY(-2px)' : 'scale(1)',
+                    fontFamily: 'Georgia, serif',
+                    backdropFilter: 'blur(8px)',
+                    textShadow: isActive ? '0 1px 2px rgba(0, 0, 0, 0.2)' : 'none'
                   }}
                   onMouseEnter={(e) => {
                     if (!isActive) {
                       e.currentTarget.style.backgroundColor = 'rgba(212, 175, 55, 0.2)';
-                      e.currentTarget.style.transform = 'scale(1.02)';
+                      e.currentTarget.style.transform = 'scale(1.04) translateY(-1px)';
+                      e.currentTarget.style.boxShadow = '0 4px 12px rgba(212, 175, 55, 0.3)';
                     }
                   }}
                   onMouseLeave={(e) => {
                     if (!isActive) {
                       e.currentTarget.style.backgroundColor = 'rgba(212, 175, 55, 0.1)';
                       e.currentTarget.style.transform = 'scale(1)';
+                      e.currentTarget.style.boxShadow = '0 2px 4px rgba(0, 0, 0, 0.1)';
                     }
                   }}
                 >
@@ -908,7 +1257,7 @@ const ClassicalMacrobiusApp: React.FC = () => {
         </div>
       </aside>
       
-      {/* MAIN CONTENT AREA */}
+      {/* ENHANCED MAIN CONTENT AREA */}
       <main 
         style={{
           flex: 1,
@@ -919,7 +1268,8 @@ const ClassicalMacrobiusApp: React.FC = () => {
           position: 'relative',
           zIndex: 20,
           display: 'flex',
-          flexDirection: 'column'
+          flexDirection: 'column',
+          backdropFilter: 'blur(8px)'
         }}
       >
         <div 
@@ -948,6 +1298,43 @@ const ClassicalMacrobiusApp: React.FC = () => {
           </div>
         </div>
       </main>
+      
+      {/* Global CSS animations */}
+      <style jsx global>{`
+        @keyframes astrolabRotate {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
+        }
+        
+        @keyframes pulse {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0.5; }
+        }
+        
+        @keyframes spin {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
+        }
+        
+        /* Smooth scrollbar for sidebar */
+        aside div:first-child::-webkit-scrollbar {
+          width: 4px;
+        }
+        
+        aside div:first-child::-webkit-scrollbar-track {
+          background: rgba(212, 175, 55, 0.1);
+          border-radius: 2px;
+        }
+        
+        aside div:first-child::-webkit-scrollbar-thumb {
+          background: rgba(212, 175, 55, 0.3);
+          border-radius: 2px;
+        }
+        
+        aside div:first-child::-webkit-scrollbar-thumb:hover {
+          background: rgba(212, 175, 55, 0.5);
+        }
+      `}</style>
     </div>
   );
 };
