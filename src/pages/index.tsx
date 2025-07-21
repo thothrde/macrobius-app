@@ -17,7 +17,12 @@ import {
   Brain,
   Target,
   Scroll,
-  Crown
+  Crown,
+  Filter,
+  AlertTriangle,
+  Network,
+  CalendarDays,
+  Gauge
 } from 'lucide-react';
 
 // Import all section components
@@ -104,10 +109,11 @@ const FloatingElements: React.FC = () => {
   );
 };
 
-// 🏛️ MAIN CLASSICAL APP - FIXED CRITICAL ISSUES
+// 🏛️ MAIN CLASSICAL APP - FIXED WITH VERTICAL SUB-NAVIGATION
 const ClassicalMacrobiusApp: React.FC = () => {
   const { language, setLanguage, t } = useLanguage();
   const [currentSection, setCurrentSection] = useState<string>('intro');
+  const [currentSubSection, setCurrentSubSection] = useState<string>(''); // For sub-navigation
   const [oracleStatus, setOracleStatus] = useState<'checking' | 'connected' | 'offline'>('checking');
   
   // 🔌 ORACLE CLOUD CONNECTION CHECK
@@ -184,9 +190,31 @@ const ClassicalMacrobiusApp: React.FC = () => {
     { id: 'kulturmodule', label: { de: 'Kulturmodule', en: 'Cultural Modules', la: 'Moduli Culturales' }, icon: Scroll }
   ];
 
-  // ✅ FIXED SECTION RENDERING - REMOVED INVALID isActive PROPS FROM AI COMPONENTS
+  // ✅ VERTICAL SUB-NAVIGATION FOR COMPLEX SECTIONS
+  const getSubSections = (sectionId: string) => {
+    switch(sectionId) {
+      case 'ki-kulturanalyse':
+        return [
+          { id: 'analyze', label: { de: 'KI-Analyse', en: 'AI Analysis', la: 'Analysis AI' }, icon: Brain },
+          { id: 'explore', label: { de: 'Themen-Explorer', en: 'Theme Explorer', la: 'Explorator Thematum' }, icon: Search },
+          { id: 'statistics', label: { de: 'Statistiken', en: 'Statistics', la: 'Statistica' }, icon: BarChart3 }
+        ];
+      case 'lernpfade':
+        return [
+          { id: 'dashboard', label: { de: 'Dashboard', en: 'Dashboard', la: 'Tabula Administrationis' }, icon: Gauge },
+          { id: 'daily_plan', label: { de: 'KI-Tagesplan', en: 'AI Daily Plan', la: 'Consilium AI Diurnum' }, icon: CalendarDays },
+          { id: 'knowledge_gaps', label: { de: 'KI-Wissenslücken', en: 'AI Knowledge Gaps', la: 'Lacunae AI Scientiae' }, icon: AlertTriangle },
+          { id: 'prerequisites', label: { de: 'KI-Voraussetzungen', en: 'AI Prerequisites', la: 'Requisita AI' }, icon: Network },
+          { id: 'ai_optimization', label: { de: 'KI-Optimierung', en: 'AI Optimization', la: 'Optimizatio AI' }, icon: Sparkles }
+        ];
+      default:
+        return [];
+    }
+  };
+
+  // ✅ FIXED SECTION RENDERING - WITH SUB-SECTION SUPPORT
   const renderSection = () => {
-    console.log('🔍 Rendering section:', currentSection);
+    console.log('🔍 Rendering section:', currentSection, 'subsection:', currentSubSection);
     
     switch(currentSection) {
       case 'intro': 
@@ -208,20 +236,27 @@ const ClassicalMacrobiusApp: React.FC = () => {
       case 'learning': 
         return <LearningSection isActive={true} language={language} />;
       
-      // ✅ FIXED: REMOVED isActive PROPS FROM AI COMPONENTS - ONLY PASS SUPPORTED PROPS
+      // ✅ FIXED: AI COMPONENTS WITH SUB-SECTION SUPPORT
       case 'ki-kulturanalyse':
-        return <AICulturalAnalysisSection language={language} />;
+        return <AICulturalAnalysisSection language={language} activeTab={currentSubSection || 'analyze'} />;
       case 'lernpfade':
-        return <PersonalizedLearningPaths />;
+        return <PersonalizedLearningPaths currentMode={currentSubSection || 'dashboard'} />;
       case 'ki-tutor':
         return <AITutoringSystemSection language={language} />;
       case 'kulturmodule':
         // For now, show cultural analysis as cultural modules are similar
-        return <AICulturalAnalysisSection language={language} />;
+        return <AICulturalAnalysisSection language={language} activeTab={currentSubSection || 'analyze'} />;
       
       default: 
         return <IntroSection language={language} />;
     }
+  };
+
+  // Handle navigation with sub-section support
+  const handleNavigation = (sectionId: string, subSectionId?: string) => {
+    console.log('🔄 Navigating to:', sectionId, subSectionId ? `(${subSectionId})` : '');
+    setCurrentSection(sectionId);
+    setCurrentSubSection(subSectionId || '');
   };
 
   return (
@@ -250,7 +285,7 @@ const ClassicalMacrobiusApp: React.FC = () => {
         <FloatingElements />
       </div>
       
-      {/* ✅ FIXED: VERTICAL LEFT SIDEBAR - AS REQUESTED */}
+      {/* ✅ ENHANCED VERTICAL LEFT SIDEBAR - WITH SUB-NAVIGATION */}
       <aside 
         className="w-80 h-screen flex flex-col z-30 bg-white/90 backdrop-blur-sm border-r-2 border-amber-200 shadow-lg"
         style={{
@@ -280,10 +315,7 @@ const ClassicalMacrobiusApp: React.FC = () => {
               return (
                 <button
                   key={section.id}
-                  onClick={() => {
-                    console.log('🔄 Navigating to:', section.id);
-                    setCurrentSection(section.id);
-                  }}
+                  onClick={() => handleNavigation(section.id)}
                   className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all duration-200 hover:scale-102"
                   style={{
                     backgroundColor: isActive ? 'rgba(212, 175, 55, 0.2)' : 'rgba(255, 255, 255, 0.3)',
@@ -302,7 +334,7 @@ const ClassicalMacrobiusApp: React.FC = () => {
             })}
           </nav>
           
-          {/* ✅ FIXED: KI-SYSTEME SECTION - PROPER NAVIGATION */}
+          {/* ✅ KI-SYSTEME SECTION - WITH SUB-NAVIGATION */}
           <div className="mb-8">
             <h3 className="text-xs font-bold uppercase tracking-wider mb-4 px-2 text-amber-700">
               KI-Systeme
@@ -311,26 +343,54 @@ const ClassicalMacrobiusApp: React.FC = () => {
               {kiSections.map((section) => {
                 const IconComponent = section.icon;
                 const isActive = currentSection === section.id;
+                const subSections = getSubSections(section.id);
+                
                 return (
-                  <button
-                    key={section.id}
-                    onClick={() => {
-                      console.log('🤖 Navigating to KI-System:', section.id);
-                      setCurrentSection(section.id);
-                    }}
-                    className="w-full flex items-center gap-3 px-4 py-2 rounded-lg text-sm transition-all duration-200"
-                    style={{
-                      backgroundColor: isActive ? 'rgba(212, 175, 55, 0.15)' : 'rgba(255, 255, 255, 0.2)',
-                      color: isActive ? '#92400e' : '#a16207',
-                      border: isActive ? '1px solid rgba(212, 175, 55, 0.3)' : '1px solid rgba(212, 175, 55, 0.1)'
-                    }}
-                  >
-                    <IconComponent 
-                      className="w-4 h-4" 
-                      style={{ color: isActive ? '#d4af37' : '#a16207' }} 
-                    />
-                    {section.label[getLanguageKey(language)]}
-                  </button>
+                  <div key={section.id}>
+                    <button
+                      onClick={() => handleNavigation(section.id)}
+                      className="w-full flex items-center gap-3 px-4 py-2 rounded-lg text-sm transition-all duration-200"
+                      style={{
+                        backgroundColor: isActive ? 'rgba(212, 175, 55, 0.15)' : 'rgba(255, 255, 255, 0.2)',
+                        color: isActive ? '#92400e' : '#a16207',
+                        border: isActive ? '1px solid rgba(212, 175, 55, 0.3)' : '1px solid rgba(212, 175, 55, 0.1)'
+                      }}
+                    >
+                      <IconComponent 
+                        className="w-4 h-4" 
+                        style={{ color: isActive ? '#d4af37' : '#a16207' }} 
+                      />
+                      {section.label[getLanguageKey(language)]}
+                    </button>
+                    
+                    {/* ✅ SUB-NAVIGATION - ONLY SHOW WHEN SECTION IS ACTIVE */}
+                    {isActive && subSections.length > 0 && (
+                      <div className="ml-6 mt-2 space-y-1">
+                        {subSections.map((subSection) => {
+                          const SubIconComponent = subSection.icon;
+                          const isSubActive = currentSubSection === subSection.id;
+                          return (
+                            <button
+                              key={subSection.id}
+                              onClick={() => handleNavigation(section.id, subSection.id)}
+                              className="w-full flex items-center gap-2 px-3 py-1.5 rounded text-xs transition-all duration-200"
+                              style={{
+                                backgroundColor: isSubActive ? 'rgba(212, 175, 55, 0.25)' : 'rgba(255, 255, 255, 0.1)',
+                                color: isSubActive ? '#92400e' : '#a16207',
+                                border: isSubActive ? '1px solid rgba(212, 175, 55, 0.4)' : '1px solid transparent'
+                              }}
+                            >
+                              <SubIconComponent 
+                                className="w-3 h-3" 
+                                style={{ color: isSubActive ? '#d4af37' : '#a16207' }} 
+                              />
+                              {subSection.label[getLanguageKey(language)]}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
                 );
               })}
             </nav>
@@ -369,7 +429,7 @@ const ClassicalMacrobiusApp: React.FC = () => {
             </p>
           </div>
           
-          {/* ✅ FIXED: LANGUAGE SWITCHER - NOW WITH LATIN */}
+          {/* ✅ LANGUAGE SWITCHER */}
           <div className="flex gap-1 justify-center">
             {(['de', 'en', 'la'] as const).map((lang) => (
               <button
