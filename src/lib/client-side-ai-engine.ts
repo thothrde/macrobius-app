@@ -32,17 +32,51 @@ interface RAGResponse {
   confidence: number;
 }
 
+// ✅ FIXED: Proper TypeScript interfaces for NLP model
+interface NLPModel {
+  sentimentPatterns: {
+    positive: string[];
+    negative: string[];
+    neutral: string[];
+  };
+  thematicKeywords: {
+    [key: string]: string[];
+  };
+  grammaticalFeatures: {
+    [key: string]: RegExp;
+  };
+}
+
+interface LatinCorpusEntry {
+  id: number;
+  latin_text: string;
+  english: string;
+  german: string;
+  work: string;
+  book: number;
+  chapter: number;
+  themes: string[];
+  difficulty: string;
+  cultural_significance: string;
+}
+
 /**
  * 🧠 REAL CLIENT-SIDE AI ENGINE
  * Provides genuine AI functionality without backend dependencies
  */
 class ClientSideAIEngine {
-  private latinCorpus: any[];
-  private nlpModel: any;
+  private latinCorpus: LatinCorpusEntry[];
+  private nlpModel: NLPModel;
   private initialized: boolean = false;
 
   constructor() {
     this.latinCorpus = [];
+    // Initialize with proper typing
+    this.nlpModel = {
+      sentimentPatterns: { positive: [], negative: [], neutral: [] },
+      thematicKeywords: {},
+      grammaticalFeatures: {}
+    };
     this.initializeAIEngine();
   }
 
@@ -142,7 +176,7 @@ class ClientSideAIEngine {
    * 🧠 INITIALIZE NLP PROCESSING
    */
   private async initializeNLP(): Promise<void> {
-    // Use browser-native text processing and pattern recognition
+    // Use browser-native text processing and pattern recognition with proper typing
     this.nlpModel = {
       // Sentiment analysis patterns
       sentimentPatterns: {
@@ -151,7 +185,7 @@ class ClientSideAIEngine {
         neutral: ['interim', 'autem', 'enim', 'quidem', 'vero']
       },
       
-      // Thematic keywords
+      // Thematic keywords - properly typed
       thematicKeywords: {
         'Roman Festivals': ['Saturnalia', 'festum', 'celebratio', 'religione'],
         'Philosophy': ['sapientia', 'natura', 'anima', 'ratio', 'veritas'],
@@ -340,19 +374,20 @@ class ClientSideAIEngine {
 
   // PRIVATE HELPER METHODS FOR REAL AI PROCESSING
   
-  private findRelevantPassages(text: string): any[] {
+  private findRelevantPassages(text: string): LatinCorpusEntry[] {
     return this.latinCorpus.filter(passage => {
       const similarity = this.calculateTextSimilarity(text, passage.latin_text + ' ' + passage.cultural_significance);
       return similarity > 0.3;
     }).slice(0, 5);
   }
   
-  private extractThemes(text: string, passages: any[]): Array<{name: string; confidence: number; description: string; examples: string[]}> {
+  // ✅ FIXED: Proper TypeScript typing for extractThemes method
+  private extractThemes(text: string, passages: LatinCorpusEntry[]): Array<{name: string; confidence: number; description: string; examples: string[]}> {
     const themes: {[key: string]: {count: number; examples: string[]}} = {};
     
-    // Analyze text for thematic keywords
-    Object.entries(this.nlpModel.thematicKeywords).forEach(([theme, keywords]) => {
-      const matches = keywords.filter(keyword => text.toLowerCase().includes(keyword.toLowerCase()));
+    // Analyze text for thematic keywords - NOW PROPERLY TYPED
+    Object.entries(this.nlpModel.thematicKeywords).forEach(([theme, keywords]: [string, string[]]) => {
+      const matches = keywords.filter((keyword: string) => text.toLowerCase().includes(keyword.toLowerCase()));
       if (matches.length > 0) {
         themes[theme] = {
           count: matches.length,
@@ -379,7 +414,7 @@ class ClientSideAIEngine {
     }));
   }
   
-  private generateCulturalContext(themes: any[], passages: any[]): string {
+  private generateCulturalContext(themes: any[], passages: LatinCorpusEntry[]): string {
     if (themes.length === 0) return 'Allgemeiner kultureller Kontext der römischen Spätantike.';
     
     const mainTheme = themes[0].name;
@@ -444,17 +479,17 @@ class ClientSideAIEngine {
     return expanded;
   }
   
-  private retrieveRelevantPassages(query: string, limit: number = 5): any[] {
+  private retrieveRelevantPassages(query: string, limit: number = 5): LatinCorpusEntry[] {
     return this.latinCorpus
       .map(passage => ({
         ...passage,
         relevance: this.calculateRelevance(query, passage)
       }))
-      .sort((a, b) => b.relevance - a.relevance)
+      .sort((a, b) => (b as any).relevance - (a as any).relevance)
       .slice(0, limit);
   }
   
-  private generateContextualAnswer(query: string, passages: any[], language: 'de' | 'en' | 'la'): string {
+  private generateContextualAnswer(query: string, passages: LatinCorpusEntry[], language: 'de' | 'en' | 'la'): string {
     if (passages.length === 0) {
       return language === 'de' ? 
         'Basierend auf der Macrobius-Tradition können wir allgemeine Prinzipien der römischen Bildung und Kultur verstehen.' :
@@ -504,7 +539,7 @@ class ClientSideAIEngine {
             'cultura et educatio Romana inter se connexae erant');
   }
   
-  private calculateRelevance(query: string, passage: any): number {
+  private calculateRelevance(query: string, passage: LatinCorpusEntry): number {
     const queryWords = query.toLowerCase().split(/\s+/);
     const passageText = (passage.latin_text + ' ' + passage.english + ' ' + passage.german + ' ' + passage.cultural_significance).toLowerCase();
     
@@ -522,8 +557,8 @@ class ClientSideAIEngine {
     return intersection.size / union.size;
   }
   
-  private calculateConfidence(query: string, passages: any[], answer: string): number {
-    const avgRelevance = passages.reduce((sum, p) => sum + (p.relevance || 0), 0) / passages.length;
+  private calculateConfidence(query: string, passages: LatinCorpusEntry[], answer: string): number {
+    const avgRelevance = passages.reduce((sum, p) => sum + (this.calculateRelevance(query, p)), 0) / passages.length;
     const answerLength = answer.length;
     const optimalLength = 200; // Optimal answer length
     
