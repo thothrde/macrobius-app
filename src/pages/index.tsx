@@ -114,6 +114,7 @@ const FloatingElements: React.FC = () => {
 };
 
 // 🏛️ MAIN CLASSICAL APP - FIXED WITH VERTICAL SUB-NAVIGATION
+// 🔧 DEPLOYMENT VERSION: 2025-01-21 - Vertical Sidebar Fixed
 const ClassicalMacrobiusApp: React.FC = () => {
   const { language, setLanguage, t } = useLanguage();
   const [currentSection, setCurrentSection] = useState<string>('intro');
@@ -145,10 +146,11 @@ const ClassicalMacrobiusApp: React.FC = () => {
     return () => clearInterval(interval);
   }, []);
   
-  // 📝 DEBUG LOGGING
+  // 📝 DEBUG LOGGING - FORCE FRESH DEPLOYMENT
   useEffect(() => {
-    console.log('🏛️ MACROBIUS: Navigation fixes applied!');
+    console.log('🏛️ MACROBIUS: VERTICAL SIDEBAR VERSION DEPLOYED - 2025-01-21');
     console.log('✅ Fixed: Vertical navigation only, centered content, full page switching');
+    console.log('🔧 Deployment triggered to fix Vercel caching issue');
     document.title = 'Macrobius - Classical Digital Edition';
   }, []);
   
