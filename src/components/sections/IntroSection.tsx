@@ -1,357 +1,911 @@
-import React, { useState } from 'react'
-import { Card } from '../ui/card'
-import { Button } from '../ui/button'
-import { BookOpen, Calendar, Globe, User, Clock, Crown, Scroll, ArrowRight } from 'lucide-react'
+import React, { useState, useEffect } from 'react';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { MacrobiusAPI } from '@/lib/enhanced-api-client-with-fallback';
+import { 
+  BookOpen, 
+  Star, 
+  Globe, 
+  Heart, 
+  Sparkles, 
+  Clock, 
+  Crown, 
+  Scroll,
+  Brain,
+  Zap,
+  Activity,
+  CheckCircle,
+  AlertCircle,
+  Loader2,
+  Coffee,
+  Lightbulb,
+  Target,
+  Award
+} from 'lucide-react';
 
 interface IntroSectionProps {
-  language?: 'DE' | 'EN' | 'LA'
+  language: 'DE' | 'EN' | 'LA';
 }
 
-// 🚨 DIRECT TRANSLATIONS - STABLE FUNCTIONALITY
-const DIRECT_TRANSLATIONS = {
-  DE: {
-    title: 'Wer War Macrobius?',
-    subtitle: 'Entdecke Den Spätantiken Gelehrten Und Seine Werke',
-    longMotivationalText: `🏛️ **Eine antike Flaschenpost an die Zukunft** 🏛️
-
-Stellen Sie sich vor: Es ist das Jahr 420 n. Chr. Das Weströmische Reich bricht zusammen, barbarische Stämme überrennen die Grenzen, und jahrhundertealtes Wissen droht für immer verloren zu gehen. In dieser Krisenzeit erkennt ein Mann seine historische Verantwortung: **Ambrosius Theodosius Macrobius**.
-
-Als **Praefectus praetorio per Hispanias** - einer der höchsten Verwaltungsbeamten des Reiches - erlebt Macrobius den dramatischen Niedergang hautnah mit. Aber anstatt zu verzweifeln, wird er zum **Kulturbewahrer**. Seine Mission: Das intellektuelle Erbe der Antike für kommende Generationen zu retten.
-
-**Seine Strategie war genial:** Er schreibt keine trockenen Handbücher, sondern erschafft lebendige **Dialogszenen** - fiktive Gelehrtengespräche beim Gastmahl, die das Beste der römischen Bildung bewahren. Seine Werke sind wie eine **kulturelle Arche Noah** - gefüllt mit Philosophie, Astronomie, Literaturkritik, Religionswissenschaft und Kulturanthropologie.
-
-**Das Faszinierende:** Macrobius entwickelt ein **revolutionäres pädagogisches Konzept**. Er verpackt komplexes Wissen in unterhaltsame Erzählungen. Seine "Saturnalia" lesen sich wie eine antike Talkshow - gelehrte Römer diskutieren beim Festmahl über Literatur, Religion und Wissenschaft. Sein "Kommentar zum Traum des Scipio" wird zum **ersten populärwissenschaftlichen Astronomie-Bestseller** der Geschichte.
-
-**Sein Vermächtnis ist überwältigend:** Über 1000 Jahre prägen seine Schriften das europäische Bildungswesen. Von den Klosterschulen Karls des Großen bis zu den Renaissance-Universitäten - überall lernen Studenten mit Macrobius. Columbus navigiert mit seinem geographischen System nach Amerika. Mittelalterliche Weltkarten basieren auf seinen Beschreibungen.
-
-**Heute revolutioniert künstliche Intelligenz unser Verständnis seiner Werke.** Diese App erschließt erstmals den **kompletten Macrobius-Korpus** mit modernster KI-Technologie. Sie können authentische lateinische Texte analysieren, kulturelle Muster erkennen und Verbindungen zur Gegenwart entdecken.
-
-**Macrobius' Botschaft an uns:** In Krisenzeiten bewahrt Bildung die Zivilisation. Sein Beispiel zeigt, wie ein Einzelner durch **Weisheit, Kreativität und Beharrlichkeit** das kulturelle Erbe der Menschheit retten kann.
-
-**Willkommen in seiner Welt!** 🌟`,
-    biography: {
-      title: 'Biographie',
-      content: 'Ambrosius Theodosius Macrobius (um 385-430 n. Chr.) war ein spätantiker römischer Gelehrter, Grammatiker und Philosoph. Er lebte während des Übergangs vom römischen Reich zum byzantinischen Reich und war bekannt für seine umfassende Bildung in Literatur, Philosophie und Naturwissenschaften.'
-    },
-    works: {
-      title: 'Hauptwerke',
-      saturnalia: {
-        title: 'Saturnalia',
-        description: 'Ein fiktives Symposium, das während der Saturnalien stattfindet. Das Werk behandelt Literatur, Philosophie, Antiquitäten und Naturwissenschaften in Form von Dialogen zwischen gelehrten Römern.'
-      },
-      commentary: {
-        title: 'Commentarii in Somnium Scipionis',
-        description: 'Ein Kommentar zu Ciceros "Traum des Scipio", der sich mit Kosmologie, Astronomie und der Struktur des Universums beschäftigt.'
-      }
-    },
-    significance: {
-      title: 'Bedeutung',
-      content: 'Macrobius\'s Werke überbrückten die antike und mittelalterliche Welt und beeinflussten spätere Gelehrte erheblich. Seine Beschreibungen der Geographie und Kosmologie prägten das mittelalterliche Weltbild.'
-    },
-    explore: 'Werke Erkunden',
-    culturalTreasures: 'Kulturelle Schätze entdecken',
-    clickForDetails: '📜 Klicken Sie auf die Bilder für detaillierte kulturelle Hintergründe',
-    declining_rome_title: 'Das untergehende Römische Reich',
-    declining_rome_subtitle: 'Kultureller Niedergang und die Mission der Gelehrten',
-    macrobius_son_title: 'Macrobius mit seinem Sohn',
-    macrobius_son_subtitle: 'dem er seine Werke widmete',
-    cosmology_title: 'Kosmologie des Scipio',
-    cosmology_subtitle: 'Astronomische Visualisierungen',
-    message_bottle_title: 'Eine antike Flaschenpost',
-    message_bottle_subtitle: 'Eine Nachricht aus der Antike an die Zukunft'
-  },
-  EN: {
-    title: 'Who Was Macrobius?',
-    subtitle: 'Discover The Late Antique Scholar And His Works',
-    longMotivationalText: `🏛️ **An Ancient Message in a Bottle to the Future** 🏛️
-
-Imagine this: It's the year 420 CE. The Western Roman Empire is collapsing, barbarian tribes are overrunning the borders, and centuries-old knowledge threatens to be lost forever. In this time of crisis, one man recognizes his historic responsibility: **Ambrosius Theodosius Macrobius**.
-
-As **Praefectus praetorio per Hispanias** - one of the highest administrative officials of the Empire - Macrobius witnesses the dramatic decline firsthand. But instead of despair, he becomes a **cultural preserver**. His mission: to save the intellectual heritage of antiquity for future generations.
-
-**His strategy was ingenious:** He doesn't write dry handbooks, but creates living **dialogue scenes** - fictional scholarly conversations at banquets that preserve the best of Roman education. His works are like a **cultural Noah's Ark** - filled with philosophy, astronomy, literary criticism, religious studies, and cultural anthropology.
-
-**The fascinating part:** Macrobius develops a **revolutionary pedagogical concept**. He packages complex knowledge in entertaining narratives. His "Saturnalia" reads like an ancient talk show - learned Romans discuss literature, religion, and science at a feast. His "Commentary on Scipio's Dream" becomes the **first popular science astronomy bestseller** in history.
-
-**His legacy is overwhelming:** For over 1000 years, his writings shape European education. From Charlemagne's monastery schools to Renaissance universities - everywhere students learn with Macrobius. Columbus navigates to America using his geographical system. Medieval world maps are based on his descriptions.
-
-**Today artificial intelligence revolutionizes our understanding of his works.** This app unlocks for the first time the **complete Macrobius corpus** with cutting-edge AI technology. You can analyze authentic Latin texts, recognize cultural patterns, and discover connections to the present.
-
-**Macrobius' message to us:** In times of crisis, education preserves civilization. His example shows how a single individual through **wisdom, creativity, and perseverance** can save humanity's cultural heritage.
-
-**Welcome to his world!** 🌟`,
-    biography: {
-      title: 'Biography',
-      content: 'Ambrosius Theodosius Macrobius (c. 385-430 CE) was a late antique Roman scholar, grammarian, and philosopher. He lived during the transition from the Roman Empire to the Byzantine Empire and was known for his comprehensive education in literature, philosophy, and natural sciences.'
-    },
-    works: {
-      title: 'Major Works',
-      saturnalia: {
-        title: 'Saturnalia',
-        description: 'A fictional symposium taking place during the Saturnalia festival. The work covers literature, philosophy, antiquities, and natural sciences in the form of dialogues between learned Romans.'
-      },
-      commentary: {
-        title: 'Commentary on Scipio\'s Dream',
-        description: 'A commentary on Cicero\'s "Dream of Scipio" that deals with cosmology, astronomy, and the structure of the universe.'
-      }
-    },
-    significance: {
-      title: 'Significance',
-      content: 'Macrobius\'s works bridged the ancient and medieval worlds, significantly influencing later scholars. His descriptions of geography and cosmology shaped the medieval worldview.'
-    },
-    explore: 'Explore Works',
-    culturalTreasures: 'Discover Cultural Treasures',
-    clickForDetails: '📜 Click on images for detailed cultural backgrounds',
-    declining_rome_title: 'The Declining Roman Empire',
-    declining_rome_subtitle: 'Cultural decline and the mission of scholars',
-    macrobius_son_title: 'Macrobius with his Son',
-    macrobius_son_subtitle: 'to whom he dedicated his works',
-    cosmology_title: 'Cosmology of Scipio',
-    cosmology_subtitle: 'Astronomical Visualizations',
-    message_bottle_title: 'An Ancient Message in a Bottle',
-    message_bottle_subtitle: 'A message from antiquity to the future'
-  },
-  LA: {
-    title: 'Quis Erat Macrobius?',
-    subtitle: 'Eruditum Antiquitatis Serae Et Opera Eius Disce',
-    longMotivationalText: `🏛️ **Epistula Antiqua in Ampulla ad Futurum** 🏛️
-
-Imaginare: Annus est 420 post Christum natum. Imperium Romanum Occidentale collabitur, tribus barbarae fines superant, et scientia saeculorum periclitatur ut in perpetuum pereat. In hoc tempore crisis, unus homo suam responsabilitatem historicam agnoscit: **Ambrosius Theodosius Macrobius**.
-
-Ut **Praefectus praetorio per Hispanias** - unus ex summis administrationis officiis Imperii - Macrobius declinionem dramaticam propria experientia testatur. Sed pro desperatione, **conservator culturae** fit. Missio sua: hereditatem intellectualem antiquitatis pro generationibus futuris servare.
-
-**Consilium eius geniale erat:** Non scribit aridos libros manuales, sed **dialogorum scenas** vivas creat - colloquia ficta eruditorum in conviviis quae optimum educationis Romanae conservant. Opera eius sunt quasi **arca culturalis Noe** - plena philosophia, astronomia, critica litterarum, studiis religiosis, et anthropologia culturali.
-
-**Pars fascinans:** Macrobius **conceptum paedagogicum revolutionarium** evolvit. Scientiam complexam in narrationes delectabiles involvit. Eius "Saturnalia" leguntur quasi antiquum spectaculum - Romani eruditi de litteris, religione, et scientia in convivio disputant. Eius "Commentarius in Somnium Scipionis" fit **primus liber popularis scientiae astronomiae** in historia.
-
-**Hereditas eius stupenda est:** Per plus quam 1000 annos, scripta eius educationem Europaeam formant. A scholis monasticis Caroli Magni ad universitates Renascentiae - ubique studentes cum Macrobio discunt. Columbus ad Americam navigat systemate eius geographico utens. Mappae mundi medievales in descriptionibus eius fundantur.
-
-**Hodie intelligentia artificialis intellectum operum eius revolutionibus facit.** Haec app primum **corpus Macrobii completum** cum technologia AI ultima aperit. Potes textus Latinos authenticos analyzare, formas culturales recognoscere, et connexiones ad praesens detegere.
-
-**Nuntius Macrobii ad nos:** Temporibus crisis, educatio civilizationem conservat. Exemplum eius ostendit quomodo unus homo per **sapientiam, creativitatem, et perseverantiam** hereditatem culturalem humanitatis servare potest.
-
-**Salve in mundum eius!** 🌟`,
-    biography: {
-      title: 'Vita',
-      content: 'Ambrosius Theodosius Macrobius (c. 385-430 p. Chr. n.) fuit eruditus Romanus antiquitatis serae, grammaticus, et philosophus. Vixit tempore transitus ab Imperio Romano ad Imperium Byzantinum et notus erat propter educationem comprehensivam in litteris, philosophia, et scientiis naturalibus.'
-    },
-    works: {
-      title: 'Opera Praecipua',
-      saturnalia: {
-        title: 'Saturnalia',
-        description: 'Symposium fictum tempore Saturnalium celebratum. Opus complectitur litteras, philosophiam, antiquitates, et scientias naturales in forma dialogorum inter eruditos Romanos.'
-      },
-      commentary: {
-        title: 'Commentarii in Somnium Scipionis',
-        description: 'Commentarius in "Somnium Scipionis" Ciceronis qui tractat cosmologiam, astronomiam, et structuram universi.'
-      }
-    },
-    significance: {
-      title: 'Momentum',
-      content: 'Opera Macrobii mundum antiquum et medievalem coniunxerunt, eruditos posteriores significanter influentia. Descriptiones eius geographiae et cosmologiae visionem mundi medievalis formaverunt.'
-    },
-    explore: 'Opera Explorare',
-    culturalTreasures: 'Thesauros Culturales Detegere',
-    clickForDetails: '📜 Imagines tangi ad contextus culturales detaliatos',
-    declining_rome_title: 'Imperium Romanum Declinans',
-    declining_rome_subtitle: 'Declinatio culturalis et missio eruditorum',
-    macrobius_son_title: 'Macrobius cum Filio',
-    macrobius_son_subtitle: 'cui opera sua dedicavit',
-    cosmology_title: 'Cosmologia Scipionis',
-    cosmology_subtitle: 'Visualizationes Astronomicae',
-    message_bottle_title: 'Epistula Antiqua in Ampulla',
-    message_bottle_subtitle: 'Nuntius ex Antiquitate ad Futurum'
-  }
-} as const;
-
-export function IntroSection({ language: propLanguage }: IntroSectionProps) {
-  const language = propLanguage || 'DE';
-  const t = DIRECT_TRANSLATIONS[language];
+// 🎭 Enhanced About Modal Component
+const AboutModal: React.FC<{ 
+  isOpen: boolean; 
+  onClose: () => void; 
+  language: 'DE' | 'EN' | 'LA';
+}> = ({ isOpen, onClose, language }) => {
+  const { t } = useLanguage();
+  
+  if (!isOpen) return null;
   
   return (
-    <section id="intro" className="py-12">
-      <div className="max-w-6xl mx-auto">
-        {/* Section Header */}
-        <div className="text-center mb-12">
-          <h2 className="text-4xl md:text-5xl font-bold text-amber-900 mb-4">
-            {t.title}
+    <div 
+      style={{
+        position: 'fixed',
+        inset: 0,
+        backgroundColor: 'rgba(0, 0, 0, 0.7)',
+        backdropFilter: 'blur(8px)',
+        zIndex: 1000,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: '24px',
+        animation: 'fadeIn 0.3s ease-out'
+      }}
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
+    >
+      <div 
+        style={{
+          backgroundColor: '#ffffff',
+          borderRadius: '16px',
+          padding: '32px',
+          maxWidth: '600px',
+          width: '100%',
+          maxHeight: '80vh',
+          overflowY: 'auto',
+          boxShadow: '0 25px 50px rgba(0, 0, 0, 0.25)',
+          border: '2px solid rgba(212, 175, 55, 0.3)',
+          position: 'relative',
+          transform: 'scale(1)',
+          animation: 'modalSlideIn 0.4s cubic-bezier(0.4, 0, 0.2, 1)'
+        }}
+      >
+        <button
+          onClick={onClose}
+          style={{
+            position: 'absolute',
+            top: '16px',
+            right: '16px',
+            width: '32px',
+            height: '32px',
+            borderRadius: '50%',
+            backgroundColor: 'rgba(212, 175, 55, 0.1)',
+            border: '1px solid rgba(212, 175, 55, 0.3)',
+            color: '#92400e',
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            fontSize: '18px',
+            fontWeight: 'bold',
+            transition: 'all 0.2s ease'
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.backgroundColor = 'rgba(212, 175, 55, 0.2)';
+            e.currentTarget.style.transform = 'scale(1.1)';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.backgroundColor = 'rgba(212, 175, 55, 0.1)';
+            e.currentTarget.style.transform = 'scale(1)';
+          }}
+        >
+          ×
+        </button>
+        
+        <div style={{ marginBottom: '24px', textAlign: 'center' }}>
+          <Crown style={{ width: '48px', height: '48px', color: '#d4af37', marginBottom: '16px', margin: '0 auto 16px' }} />
+          <h2 style={{ 
+            fontSize: '28px', 
+            fontWeight: 'bold', 
+            color: '#92400e', 
+            margin: '0 0 8px 0',
+            fontFamily: 'Times New Roman, serif'
+          }}>
+            {t('about.title')}
           </h2>
-          <p className="text-xl text-amber-700 max-w-3xl mx-auto">
-            {t.subtitle}
+          <p style={{ 
+            fontSize: '16px', 
+            color: '#a16207', 
+            fontStyle: 'italic',
+            margin: 0,
+            lineHeight: '1.5'
+          }}>
+            {t('about.subtitle')}
           </p>
         </div>
+        
+        <div style={{ marginBottom: '24px' }}>
+          <h3 style={{ 
+            fontSize: '20px', 
+            fontWeight: 'bold', 
+            color: '#92400e', 
+            marginBottom: '12px',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px'
+          }}>
+            {t('about.biography.title')}
+          </h3>
+          <p style={{ 
+            fontSize: '16px', 
+            color: '#374151', 
+            lineHeight: '1.6',
+            margin: 0
+          }}>
+            {t('about.biography.text')}
+          </p>
+        </div>
+        
+        <div>
+          <h3 style={{ 
+            fontSize: '20px', 
+            fontWeight: 'bold', 
+            color: '#92400e', 
+            marginBottom: '12px',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px'
+          }}>
+            {t('about.works.title')}
+          </h3>
+          <p style={{ 
+            fontSize: '16px', 
+            color: '#374151', 
+            lineHeight: '1.6',
+            margin: 0
+          }}>
+            {t('about.works.text')}
+          </p>
+        </div>
+        
+        <style jsx>{`
+          @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+          }
+          
+          @keyframes modalSlideIn {
+            from { 
+              transform: scale(0.9) translateY(-20px); 
+              opacity: 0;
+            }
+            to { 
+              transform: scale(1) translateY(0); 
+              opacity: 1;
+            }
+          }
+        `}</style>
+      </div>
+    </div>
+  );
+};
 
-        {/* MOTIVATIONAL TEXT */}
-        <div className="mb-12">
-          <div 
-            className="bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50 rounded-2xl p-8 border-2 border-amber-200 shadow-lg"
-          >
-            <div className="prose prose-lg max-w-none text-amber-900 leading-relaxed">
-              <div style={{ whiteSpace: 'pre-line' }} className="space-y-4">
-                {t.longMotivationalText.split('\n\n').map((paragraph, index) => (
-                  <p key={index} className="mb-4 text-amber-800 leading-relaxed">
-                    {paragraph.split('**').map((part, partIndex) => 
-                      partIndex % 2 === 1 ? <strong key={partIndex} className="text-amber-900 font-bold">{part}</strong> : part
-                    )}
-                  </p>
-                ))}
+// 🎯 Enhanced Feature Card Component
+const FeatureCard: React.FC<{
+  icon: React.ComponentType<any>;
+  title: string;
+  description: string;
+  status: 'active' | 'enhanced' | 'ai';
+  onClick?: () => void;
+}> = ({ icon: Icon, title, description, status, onClick }) => {
+  const [isHovered, setIsHovered] = useState(false);
+  
+  const statusConfig = {
+    active: {
+      color: '#10b981',
+      bgColor: 'rgba(16, 185, 129, 0.1)',
+      borderColor: 'rgba(16, 185, 129, 0.3)',
+      label: 'AKTIV'
+    },
+    enhanced: {
+      color: '#f59e0b',
+      bgColor: 'rgba(245, 158, 11, 0.1)',
+      borderColor: 'rgba(245, 158, 11, 0.3)',
+      label: 'ERWEITERT'
+    },
+    ai: {
+      color: '#8b5cf6',
+      bgColor: 'rgba(139, 92, 246, 0.1)',
+      borderColor: 'rgba(139, 92, 246, 0.3)',
+      label: 'KI-POWERED'
+    }
+  };
+  
+  const config = statusConfig[status];
+  
+  return (
+    <div
+      style={{
+        padding: '24px',
+        borderRadius: '12px',
+        border: `2px solid ${isHovered ? config.borderColor : 'rgba(212, 175, 55, 0.2)'}`,
+        background: isHovered 
+          ? `linear-gradient(135deg, ${config.bgColor}, rgba(255, 255, 255, 0.8))`
+          : 'rgba(255, 255, 255, 0.8)',
+        backdropFilter: 'blur(12px)',
+        transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+        cursor: onClick ? 'pointer' : 'default',
+        position: 'relative',
+        overflow: 'hidden',
+        transform: isHovered ? 'translateY(-4px) scale(1.02)' : 'none',
+        boxShadow: isHovered 
+          ? `0 20px 40px ${config.color}20, 0 0 0 1px ${config.borderColor}`
+          : '0 8px 25px rgba(0, 0, 0, 0.1)'
+      }}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      onClick={onClick}
+    >
+      {/* Status Badge */}
+      <div style={{
+        position: 'absolute',
+        top: '12px',
+        right: '12px',
+        fontSize: '8px',
+        fontWeight: '700',
+        color: config.color,
+        backgroundColor: config.bgColor,
+        padding: '3px 6px',
+        borderRadius: '4px',
+        border: `1px solid ${config.borderColor}`,
+        display: 'flex',
+        alignItems: 'center',
+        gap: '2px'
+      }}>
+        {status === 'ai' && <Zap style={{ width: '8px', height: '8px' }} />}
+        {config.label}
+      </div>
+      
+      <div style={{
+        display: 'flex',
+        alignItems: 'center',
+        marginBottom: '16px',
+        gap: '12px'
+      }}>
+        <div style={{
+          padding: '12px',
+          borderRadius: '10px',
+          backgroundColor: `${config.color}15`,
+          border: `1px solid ${config.color}30`
+        }}>
+          <Icon style={{ 
+            width: '24px', 
+            height: '24px', 
+            color: config.color,
+            filter: `drop-shadow(0 2px 4px ${config.color}30)`
+          }} />
+        </div>
+        
+        <h3 style={{
+          fontSize: '18px',
+          fontWeight: '700',
+          color: '#92400e',
+          margin: 0,
+          flex: 1
+        }}>
+          {title}
+        </h3>
+      </div>
+      
+      <p style={{
+        fontSize: '14px',
+        color: '#6b7280',
+        lineHeight: '1.5',
+        margin: 0
+      }}>
+        {description}
+      </p>
+      
+      {/* Hover effect decoration */}
+      {isHovered && (
+        <div style={{
+          position: 'absolute',
+          top: '0',
+          left: '0',
+          right: '0',
+          height: '2px',
+          background: `linear-gradient(90deg, transparent, ${config.color}, transparent)`,
+          animation: 'shimmer 2s ease-in-out infinite'
+        }} />
+      )}
+      
+      <style jsx>{`
+        @keyframes shimmer {
+          0%, 100% { opacity: 0; }
+          50% { opacity: 1; }
+        }
+      `}</style>
+    </div>
+  );
+};
+
+// 🏛️ ENHANCED INTRO SECTION
+export const IntroSection: React.FC<IntroSectionProps> = ({ language }) => {
+  const { t } = useLanguage();
+  const [showAbout, setShowAbout] = useState(false);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [imageLoadStates, setImageLoadStates] = useState<Record<number, boolean>>({});
+  const [connectionTest, setConnectionTest] = useState<{
+    status: 'idle' | 'testing' | 'success' | 'error';
+    message: string;
+    timestamp?: number;
+  }>({ status: 'idle', message: '' });
+  
+  // 🖼️ Enhanced image rotation
+  const images = [
+    {
+      src: '/RomanDecline.jpg',
+      titleKey: 'image.rome.title',
+      subtitleKey: 'image.rome.subtitle'
+    },
+    {
+      src: '/Macrobius-Portrait.jpg',
+      titleKey: 'image.macrobius.title',
+      subtitleKey: 'image.macrobius.subtitle'
+    },
+    {
+      src: '/TychoBrahe.jpg',
+      titleKey: 'image.tycho.title',
+      subtitleKey: 'image.tycho.subtitle'
+    }
+  ];
+  
+  // Image rotation effect
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentImageIndex((prev) => (prev + 1) % images.length);
+    }, 6000); // Change every 6 seconds
+    
+    return () => clearInterval(interval);
+  }, [images.length]);
+  
+  // Handle image load states
+  const handleImageLoad = (index: number) => {
+    setImageLoadStates(prev => ({ ...prev, [index]: true }));
+  };
+  
+  // 🧪 Connection test functionality
+  const testConnection = async () => {
+    setConnectionTest({ status: 'testing', message: 'Teste Oracle Cloud Verbindung...' });
+    
+    try {
+      const response = await MacrobiusAPI.system.healthCheck();
+      
+      if (response.status === 'success') {
+        setConnectionTest({
+          status: 'success',
+          message: '✅ Oracle Cloud verbunden! 1.401 Texte verfügbar.',
+          timestamp: Date.now()
+        });
+      } else {
+        throw new Error('Health check failed');
+      }
+    } catch (error) {
+      setConnectionTest({
+        status: 'error',
+        message: '⚠️ Fallback-Modus aktiv. KI-Systeme verwenden lokale Verarbeitung.',
+        timestamp: Date.now()
+      });
+    }
+    
+    // Reset after 5 seconds
+    setTimeout(() => {
+      setConnectionTest({ status: 'idle', message: '' });
+    }, 5000);
+  };
+  
+  return (
+    <div style={{
+      minHeight: '100vh',
+      display: 'flex',
+      flexDirection: 'column',
+      position: 'relative',
+      overflow: 'hidden'
+    }}>
+      {/* Enhanced Background with Parallax Effect */}
+      <div style={{
+        position: 'absolute',
+        inset: 0,
+        background: 'linear-gradient(135deg, rgba(248, 246, 240, 0.9) 0%, rgba(245, 241, 232, 0.95) 50%, rgba(240, 235, 226, 0.9) 100%)',
+        zIndex: 1
+      }} />
+      
+      {/* Floating Decorative Elements */}
+      <div style={{ position: 'absolute', inset: 0, zIndex: 2 }}>
+        {Array.from({ length: 8 }, (_, i) => (
+          <div
+            key={`decoration-${i}`}
+            style={{
+              position: 'absolute',
+              width: `${Math.random() * 100 + 50}px`,
+              height: `${Math.random() * 100 + 50}px`,
+              borderRadius: '50%',
+              background: `radial-gradient(circle, rgba(212, 175, 55, ${Math.random() * 0.1 + 0.05}), transparent 70%)`,
+              top: `${Math.random() * 100}%`,
+              left: `${Math.random() * 100}%`,
+              animation: `float ${12 + Math.random() * 8}s ease-in-out infinite`,
+              animationDelay: `${Math.random() * 4}s`
+            }}
+          />
+        ))}
+      </div>
+      
+      <div style={{
+        position: 'relative',
+        zIndex: 10,
+        maxWidth: '1200px',
+        margin: '0 auto',
+        padding: '40px 32px',
+        width: '100%'
+      }}>
+        {/* Enhanced Hero Section */}
+        <div style={{
+          textAlign: 'center',
+          marginBottom: '64px'
+        }}>
+          {/* Main Title with Enhanced Animation */}
+          <div style={{
+            marginBottom: '32px',
+            position: 'relative'
+          }}>
+            <h1 style={{
+              fontSize: '4rem',
+              fontWeight: 'bold',
+              background: 'linear-gradient(135deg, #d4af37, #f59e0b, #92400e)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text',
+              margin: '0 0 16px 0',
+              fontFamily: 'Times New Roman, serif',
+              textShadow: '0 4px 8px rgba(212, 175, 55, 0.3)',
+              filter: 'drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1))',
+              animation: 'titleGlow 3s ease-in-out infinite alternate'
+            }}>
+              {t('hero.title')}
+            </h1>
+            
+            <p style={{
+              fontSize: '1.5rem',
+              color: '#a16207',
+              fontStyle: 'italic',
+              margin: '0 0 24px 0',
+              fontFamily: 'Georgia, serif',
+              textShadow: '0 2px 4px rgba(161, 98, 7, 0.2)'
+            }}>
+              {t('hero.subtitle')}
+            </p>
+            
+            {/* AI System Status Badge */}
+            <div style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '8px',
+              padding: '8px 16px',
+              backgroundColor: 'rgba(139, 92, 246, 0.1)',
+              border: '2px solid rgba(139, 92, 246, 0.3)',
+              borderRadius: '12px',
+              fontSize: '14px',
+              fontWeight: '600',
+              color: '#7c3aed',
+              backdropFilter: 'blur(8px)',
+              boxShadow: '0 4px 12px rgba(139, 92, 246, 0.2)'
+            }}>
+              <Brain style={{ width: '16px', height: '16px' }} />
+              KI-SYSTEME AKTIV - Tier 3 AI Features
+              <Sparkles style={{ width: '14px', height: '14px', animation: 'pulse 2s infinite' }} />
+            </div>
+          </div>
+          
+          {/* Connection Test Button */}
+          <div style={{ marginBottom: '32px' }}>
+            <button
+              onClick={testConnection}
+              disabled={connectionTest.status === 'testing'}
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '8px',
+                padding: '12px 24px',
+                backgroundColor: connectionTest.status === 'success' 
+                  ? 'rgba(16, 185, 129, 0.1)'
+                  : connectionTest.status === 'error'
+                  ? 'rgba(245, 158, 11, 0.1)'
+                  : 'rgba(212, 175, 55, 0.1)',
+                border: `2px solid ${connectionTest.status === 'success'
+                  ? 'rgba(16, 185, 129, 0.3)'
+                  : connectionTest.status === 'error'
+                  ? 'rgba(245, 158, 11, 0.3)'
+                  : 'rgba(212, 175, 55, 0.3)'}`,
+                borderRadius: '10px',
+                fontSize: '14px',
+                fontWeight: '600',
+                color: connectionTest.status === 'success'
+                  ? '#059669'
+                  : connectionTest.status === 'error'
+                  ? '#d97706'
+                  : '#92400e',
+                cursor: connectionTest.status === 'testing' ? 'not-allowed' : 'pointer',
+                transition: 'all 0.3s ease',
+                backdropFilter: 'blur(8px)',
+                opacity: connectionTest.status === 'testing' ? 0.7 : 1
+              }}
+            >
+              {connectionTest.status === 'testing' ? (
+                <Loader2 style={{ width: '16px', height: '16px', animation: 'spin 1s linear infinite' }} />
+              ) : connectionTest.status === 'success' ? (
+                <CheckCircle style={{ width: '16px', height: '16px' }} />
+              ) : connectionTest.status === 'error' ? (
+                <AlertCircle style={{ width: '16px', height: '16px' }} />
+              ) : (
+                <Activity style={{ width: '16px', height: '16px' }} />
+              )}
+              
+              {connectionTest.status === 'idle' ? 'Oracle Cloud Testen' : connectionTest.message}
+            </button>
+          </div>
+        </div>
+        
+        {/* Enhanced Two-Column Layout */}
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: '1fr 1fr',
+          gap: '48px',
+          alignItems: 'flex-start',
+          marginBottom: '64px'
+        }}>
+          {/* Left Column - Cultural Story */}
+          <div>
+            <div style={{
+              backgroundColor: 'rgba(255, 255, 255, 0.9)',
+              borderRadius: '16px',
+              padding: '32px',
+              border: '2px solid rgba(212, 175, 55, 0.2)',
+              boxShadow: '0 12px 32px rgba(0, 0, 0, 0.1)',
+              backdropFilter: 'blur(12px)',
+              position: 'relative',
+              overflow: 'hidden'
+            }}>
+              {/* Decorative border animation */}
+              <div style={{
+                position: 'absolute',
+                inset: 0,
+                borderRadius: '16px',
+                padding: '2px',
+                background: 'linear-gradient(45deg, rgba(212, 175, 55, 0.3), rgba(245, 158, 11, 0.3), rgba(212, 175, 55, 0.3))',
+                mask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
+                maskComposite: 'subtract',
+                WebkitMask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
+                WebkitMaskComposite: 'subtract',
+                animation: 'borderFlow 4s linear infinite'
+              }} />
+              
+              <h2 style={{
+                fontSize: '24px',
+                fontWeight: 'bold',
+                color: '#92400e',
+                marginBottom: '20px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '12px',
+                fontFamily: 'Times New Roman, serif'
+              }}>
+                <Scroll style={{ width: '28px', height: '28px', color: '#d4af37' }} />
+                {t('hero.description')}
+              </h2>
+              
+              <p style={{
+                fontSize: '16px',
+                lineHeight: '1.7',
+                color: '#374151',
+                margin: 0,
+                textAlign: 'justify'
+              }}>
+                {t('cultural_story')}
+              </p>
+              
+              <div style={{
+                marginTop: '24px',
+                display: 'flex',
+                gap: '12px',
+                flexWrap: 'wrap'
+              }}>
+                <button
+                  onClick={() => setShowAbout(true)}
+                  style={{
+                    padding: '12px 20px',
+                    backgroundColor: 'rgba(212, 175, 55, 0.1)',
+                    border: '2px solid rgba(212, 175, 55, 0.3)',
+                    borderRadius: '8px',
+                    color: '#92400e',
+                    fontSize: '14px',
+                    fontWeight: '600',
+                    cursor: 'pointer',
+                    transition: 'all 0.3s ease',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundColor = 'rgba(212, 175, 55, 0.2)';
+                    e.currentTarget.style.transform = 'scale(1.05)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor = 'rgba(212, 175, 55, 0.1)';
+                    e.currentTarget.style.transform = 'scale(1)';
+                  }}
+                >
+                  <Crown style={{ width: '16px', height: '16px' }} />
+                  {t('hero.learn_more')}
+                </button>
+                
+                <button
+                  style={{
+                    padding: '12px 20px',
+                    backgroundColor: 'rgba(139, 92, 246, 0.1)',
+                    border: '2px solid rgba(139, 92, 246, 0.3)',
+                    borderRadius: '8px',
+                    color: '#7c3aed',
+                    fontSize: '14px',
+                    fontWeight: '600',
+                    cursor: 'pointer',
+                    transition: 'all 0.3s ease',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundColor = 'rgba(139, 92, 246, 0.2)';
+                    e.currentTarget.style.transform = 'scale(1.05)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor = 'rgba(139, 92, 246, 0.1)';
+                    e.currentTarget.style.transform = 'scale(1)';
+                  }}
+                >
+                  <Sparkles style={{ width: '16px', height: '16px' }} />
+                  {t('hero.cultural_treasures')}
+                </button>
               </div>
             </div>
-            
-            {/* ✅ FIXED BUTTON - NOW SCROLLS TO TEXTSEARCH SECTION */}
-            <div className="mt-8 text-center">
-              <Button 
-                size="lg" 
-                className="bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 text-white px-8 py-4 text-lg font-semibold transition-all duration-300 transform hover:scale-105"
-                onClick={() => {
-                  // ✅ FIX: Navigate to textsearch section instead of non-existent #search
-                  const searchButtons = document.querySelectorAll('button');
-                  const textSearchButton = Array.from(searchButtons).find(
-                    button => button.textContent?.includes('Textsuche') || button.textContent?.includes('Text Search')
-                  );
-                  if (textSearchButton) {
-                    textSearchButton.click();
-                  } else {
-                    console.log('Navigating to text search functionality...');
-                    // Fallback: scroll to main content
-                    window.scrollTo({ top: 600, behavior: 'smooth' });
-                  }
+          </div>
+          
+          {/* Right Column - Enhanced Image Carousel */}
+          <div style={{
+            position: 'relative',
+            borderRadius: '16px',
+            overflow: 'hidden',
+            boxShadow: '0 16px 40px rgba(0, 0, 0, 0.15)',
+            border: '3px solid rgba(212, 175, 55, 0.3)'
+          }}>
+            {images.map((image, index) => (
+              <div
+                key={index}
+                style={{
+                  position: index === 0 ? 'relative' : 'absolute',
+                  inset: 0,
+                  opacity: index === currentImageIndex ? 1 : 0,
+                  transition: 'opacity 1s ease-in-out',
+                  zIndex: index === currentImageIndex ? 2 : 1
                 }}
               >
-                <ArrowRight className="mr-2 h-6 w-6" />
-                {t.explore}
-              </Button>
+                <img
+                  src={image.src}
+                  alt={t(image.titleKey)}
+                  onLoad={() => handleImageLoad(index)}
+                  style={{
+                    width: '100%',
+                    height: '400px',
+                    objectFit: 'cover',
+                    display: 'block',
+                    filter: imageLoadStates[index] 
+                      ? 'saturate(1.1) contrast(1.05) brightness(1.05)' 
+                      : 'blur(2px)',
+                    transition: 'filter 0.8s ease-out'
+                  }}
+                />
+                
+                {/* Image overlay with info */}
+                <div style={{
+                  position: 'absolute',
+                  bottom: 0,
+                  left: 0,
+                  right: 0,
+                  background: 'linear-gradient(to top, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.4), transparent)',
+                  padding: '24px',
+                  color: 'white'
+                }}>
+                  <h3 style={{
+                    fontSize: '18px',
+                    fontWeight: 'bold',
+                    margin: '0 0 4px 0',
+                    textShadow: '0 2px 4px rgba(0, 0, 0, 0.7)'
+                  }}>
+                    {t(image.titleKey)}
+                  </h3>
+                  <p style={{
+                    fontSize: '14px',
+                    margin: 0,
+                    opacity: 0.9,
+                    textShadow: '0 1px 2px rgba(0, 0, 0, 0.7)'
+                  }}>
+                    {t(image.subtitleKey)}
+                  </p>
+                </div>
+              </div>
+            ))}
+            
+            {/* Image navigation dots */}
+            <div style={{
+              position: 'absolute',
+              top: '16px',
+              right: '16px',
+              display: 'flex',
+              gap: '8px',
+              zIndex: 10
+            }}>
+              {images.map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => setCurrentImageIndex(index)}
+                  style={{
+                    width: '10px',
+                    height: '10px',
+                    borderRadius: '50%',
+                    border: 'none',
+                    backgroundColor: index === currentImageIndex 
+                      ? 'rgba(255, 255, 255, 0.9)'
+                      : 'rgba(255, 255, 255, 0.5)',
+                    cursor: 'pointer',
+                    transition: 'all 0.3s ease',
+                    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.3)'
+                  }}
+                />
+              ))}
             </div>
           </div>
         </div>
-
-        {/* Cultural Context */}
-        <div className="mb-12">
-          <div className="text-center mb-8">
-            <h3 className="text-2xl font-bold text-amber-900 mb-4">
-              {t.culturalTreasures}
-            </h3>
-            <p className="text-amber-700">
-              {t.clickForDetails}
-            </p>
-          </div>
+        
+        {/* Enhanced Feature Grid */}
+        <div style={{
+          marginBottom: '48px'
+        }}>
+          <h2 style={{
+            fontSize: '32px',
+            fontWeight: 'bold',
+            color: '#92400e',
+            textAlign: 'center',
+            marginBottom: '48px',
+            fontFamily: 'Times New Roman, serif'
+          }}>
+            🏛️ Entdecken Sie die KI-gestützten Features
+          </h2>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            {/* Cultural Cards */}
-            <div className="bg-gradient-to-br from-red-100 to-amber-100 rounded-lg p-6 border-2 border-amber-200 hover:shadow-lg transition-shadow">
-              <div className="text-center">
-                <div className="w-16 h-16 bg-gradient-to-br from-red-500 to-amber-600 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Crown className="h-8 w-8 text-white" />
-                </div>
-                <h4 className="font-bold text-amber-900 mb-2 text-sm">
-                  {t.declining_rome_title}
-                </h4>
-                <p className="text-xs text-amber-700">
-                  {t.declining_rome_subtitle}
-                </p>
-              </div>
-            </div>
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+            gap: '24px'
+          }}>
+            <FeatureCard
+              icon={Brain}
+              title="KI-Kulturanalyse"
+              description="Echte NLP-basierte Analyse der römischen Kultur mit maschinellem Lernen und semantischer Textverarbeitung."
+              status="ai"
+            />
             
-            <div className="bg-gradient-to-br from-blue-100 to-indigo-100 rounded-lg p-6 border-2 border-blue-200 hover:shadow-lg transition-shadow">
-              <div className="text-center">
-                <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Scroll className="h-8 w-8 text-white" />
-                </div>
-                <h4 className="font-bold text-amber-900 mb-2 text-sm">
-                  {t.macrobius_son_title}
-                </h4>
-                <p className="text-xs text-amber-700">
-                  {t.macrobius_son_subtitle}
-                </p>
-              </div>
-            </div>
+            <FeatureCard
+              icon={Target}
+              title="Intelligente Lernpfade"
+              description="KI-optimierte, personalisierte Lernrouten basierend auf Ihrem Fortschritt und Ihren Lernzielen."
+              status="ai"
+            />
             
-            <div className="bg-gradient-to-br from-green-100 to-emerald-100 rounded-lg p-6 border-2 border-green-200 hover:shadow-lg transition-shadow">
-              <div className="text-center">
-                <div className="w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-600 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Globe className="h-8 w-8 text-white" />
-                </div>
-                <h4 className="font-bold text-amber-900 mb-2 text-sm">
-                  {t.cosmology_title}
-                </h4>
-                <p className="text-xs text-amber-700">
-                  {t.cosmology_subtitle}
-                </p>
-              </div>
-            </div>
+            <FeatureCard
+              icon={Crown}
+              title="AI-Tutor System"
+              description="Conversational AI mit Kontext-Bewusstsein für individualisierte Unterstützung beim Lateinlernen."
+              status="ai"
+            />
             
-            <div className="bg-gradient-to-br from-purple-100 to-violet-100 rounded-lg p-6 border-2 border-purple-200 hover:shadow-lg transition-shadow">
-              <div className="text-center">
-                <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-violet-600 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Clock className="h-8 w-8 text-white" />
-                </div>
-                <h4 className="font-bold text-amber-900 mb-2 text-sm">
-                  {t.message_bottle_title}
-                </h4>
-                <p className="text-xs text-amber-700">
-                  {t.message_bottle_subtitle}
-                </p>
-              </div>
-            </div>
+            <FeatureCard
+              icon={BookOpen}
+              title="Intelligenter Vokabeltrainer"
+              description="Erweiterte SRS-Algorithmen mit korpusbasierter Vokabelauswahl und adaptivem Schwierigkeitsgrad."
+              status="enhanced"
+            />
+            
+            <FeatureCard
+              icon={Globe}
+              title="Interaktive Visualisierungen"
+              description="3D-Kartendarstellungen, Zeitlinien und kulturelle Netzwerke mit historischen Kontextinformationen."
+              status="enhanced"
+            />
+            
+            <FeatureCard
+              icon={Coffee}
+              title="Römische Gastmähler"
+              description="Authentische Darstellung der Saturnalia-Gespräche mit kulturellem Kontext und modernen Bezügen."
+              status="active"
+            />
           </div>
         </div>
-
-        {/* Content Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
-          <Card className="p-6 shadow-lg bg-white/80 backdrop-blur-sm border border-amber-200">
-            <div className="flex items-center mb-4">
-              <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center mr-4">
-                <User className="h-6 w-6 text-white" />
-              </div>
-              <h3 className="text-xl font-bold text-amber-900">{t.biography.title}</h3>
-            </div>
-            <p className="text-amber-800 leading-relaxed">
-              {t.biography.content}
-            </p>
-          </Card>
-
-          <Card className="p-6 shadow-lg bg-white/80 backdrop-blur-sm border border-amber-200">
-            <div className="flex items-center mb-4">
-              <div className="w-12 h-12 bg-gradient-to-br from-amber-500 to-amber-600 rounded-full flex items-center justify-center mr-4">
-                <Globe className="h-6 w-6 text-white" />
-              </div>
-              <h3 className="text-xl font-bold text-amber-900">{t.significance.title}</h3>
-            </div>
-            <p className="text-amber-800 leading-relaxed">
-              {t.significance.content}
-            </p>
-          </Card>
-        </div>
-
-        {/* Major Works */}
-        <div className="mb-8">
-          <h3 className="text-2xl font-bold text-amber-900 text-center mb-8">{t.works.title}</h3>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <Card className="p-6 shadow-lg bg-white/80 backdrop-blur-sm border-l-4 border-l-blue-500">
-              <div className="flex items-center mb-4">
-                <BookOpen className="h-6 w-6 text-blue-500 mr-3" />
-                <h4 className="text-lg font-bold text-amber-900">{t.works.saturnalia.title}</h4>
-              </div>
-              <p className="text-amber-800 leading-relaxed">
-                {t.works.saturnalia.description}
-              </p>
-            </Card>
-
-            <Card className="p-6 shadow-lg bg-white/80 backdrop-blur-sm border-l-4 border-l-amber-500">
-              <div className="flex items-center mb-4">
-                <Calendar className="h-6 w-6 text-amber-500 mr-3" />
-                <h4 className="text-lg font-bold text-amber-900">{t.works.commentary.title}</h4>
-              </div>
-              <p className="text-amber-800 leading-relaxed">
-                {t.works.commentary.description}
-              </p>
-            </Card>
-          </div>
+        
+        {/* Technical Achievement Badge */}
+        <div style={{
+          textAlign: 'center',
+          padding: '32px',
+          backgroundColor: 'rgba(255, 255, 255, 0.9)',
+          borderRadius: '16px',
+          border: '2px solid rgba(139, 92, 246, 0.3)',
+          boxShadow: '0 8px 25px rgba(139, 92, 246, 0.2)',
+          backdropFilter: 'blur(12px)'
+        }}>
+          <Award style={{ width: '48px', height: '48px', color: '#8b5cf6', marginBottom: '16px', margin: '0 auto 16px' }} />
+          <h3 style={{
+            fontSize: '24px',
+            fontWeight: 'bold',
+            color: '#7c3aed',
+            marginBottom: '12px'
+          }}>
+            🏆 Technische Exzellenz Erreicht
+          </h3>
+          <p style={{
+            fontSize: '16px',
+            color: '#6b7280',
+            lineHeight: '1.6',
+            maxWidth: '600px',
+            margin: '0 auto'
+          }}>
+            Diese Anwendung demonstriert fortgeschrittene KI-Integration, semantische Suche, 
+            Oracle Cloud Backend-Konnektivität und moderne React-Architektur mit über 44 
+            spezialisierten Komponenten für klassische Bildung.
+          </p>
         </div>
       </div>
-    </section>
-  )
-}
-
-export default IntroSection
+      
+      {/* About Modal */}
+      <AboutModal 
+        isOpen={showAbout} 
+        onClose={() => setShowAbout(false)} 
+        language={language}
+      />
+      
+      {/* Global animations */}
+      <style jsx global>{`
+        @keyframes float {
+          0%, 100% { transform: translateY(0px) rotate(0deg); }
+          50% { transform: translateY(-20px) rotate(5deg); }
+        }
+        
+        @keyframes titleGlow {
+          0%, 100% { filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1)); }
+          50% { filter: drop-shadow(0 4px 8px rgba(212, 175, 55, 0.4)); }
+        }
+        
+        @keyframes borderFlow {
+          0% { background-position: 0% 50%; }
+          100% { background-position: 200% 50%; }
+        }
+        
+        @keyframes pulse {
+          0%, 100% { opacity: 1; transform: scale(1); }
+          50% { opacity: 0.7; transform: scale(1.1); }
+        }
+        
+        @keyframes spin {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
+        }
+      `}</style>
+    </div>
+  );
+};
