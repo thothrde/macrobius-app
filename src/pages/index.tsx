@@ -147,8 +147,8 @@ const ClassicalMacrobiusApp: React.FC = () => {
   
   // 📝 DEBUG LOGGING
   useEffect(() => {
-    console.log('🏛️ MACROBIUS: Critical fixes applied!');
-    console.log('✅ Fixed: Latin language, navigation, KI-Systeme, vertical sidebar');
+    console.log('🏛️ MACROBIUS: Navigation fixes applied!');
+    console.log('✅ Fixed: Vertical navigation only, centered content, full page switching');
     document.title = 'Macrobius - Classical Digital Edition';
   }, []);
   
@@ -493,10 +493,12 @@ const ClassicalMacrobiusApp: React.FC = () => {
         </div>
       </aside>
       
-      {/* ✅ MAIN CONTENT AREA - SECTION CONTENT */}
+      {/* ✅ MAIN CONTENT AREA - PROPERLY CENTERED */}
       <main className="flex-1 h-screen overflow-y-auto" style={{ background: 'rgba(255, 255, 255, 0.3)' }}>
-        <div className="relative z-20 p-8">
-          {renderSection()}
+        <div className="relative z-20 flex items-center justify-center min-h-full">
+          <div className="w-full max-w-7xl mx-auto px-8 py-8">
+            {renderSection()}
+          </div>
         </div>
       </main>
     </div>
