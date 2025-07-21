@@ -39,37 +39,35 @@ interface ClassicalPortraitProps {
 type LanguageCode = 'de' | 'en' | 'la';
 type LanguageKey = 'DE' | 'EN' | 'LA';
 
-// 🏛️ CLASSICAL ENHANCED PORTRAIT COMPONENT
+// 🏛️ RESTORED CLASSICAL PORTRAIT - MATCHING ORIGINAL STYLE
 const ClassicalMacrobiusPortrait: React.FC<ClassicalPortraitProps> = ({ className = '' }) => {
   return (
     <div className={`relative ${className}`}>
       <div 
-        className="w-full h-full rounded-full overflow-hidden"
+        className="w-full h-full rounded-full overflow-hidden border-2 border-amber-400"
         style={{
-          border: '2px solid #d4af37',
           background: 'linear-gradient(135deg, rgba(212, 175, 55, 0.1), rgba(139, 92, 41, 0.1))',
-          boxShadow: '0 4px 20px rgba(212, 175, 55, 0.3)'
+          boxShadow: '0 4px 12px rgba(212, 175, 55, 0.3)'
         }}
       >
         <img 
           src="/Macrobius-Portrait.jpg" 
           alt="Macrobius Classical Portrait"
           className="w-full h-full object-cover"
-          style={{ filter: 'sepia(15%) saturate(110%) brightness(105%)' }}
+          style={{ filter: 'sepia(10%) saturate(110%) brightness(105%)' }}
         />
         <div 
           className="absolute bottom-0 left-0 right-0 text-center py-1"
           style={{
-            background: 'linear-gradient(to top, rgba(212, 175, 55, 0.8), transparent)',
-            backdropFilter: 'blur(1px)'
+            background: 'linear-gradient(to top, rgba(212, 175, 55, 0.9), transparent)',
+            backdropFilter: 'blur(2px)'
           }}
         >
           <span 
-            className="text-xs font-serif font-bold"
+            className="text-xs font-serif font-bold text-amber-900"
             style={{ 
-              color: '#5d4e37', 
               letterSpacing: '0.05em',
-              textShadow: '0 1px 2px rgba(255,255,255,0.6)'
+              textShadow: '0 1px 2px rgba(255,255,255,0.8)'
             }}
           >
             MACROBIVS
@@ -80,50 +78,76 @@ const ClassicalMacrobiusPortrait: React.FC<ClassicalPortraitProps> = ({ classNam
   );
 };
 
-// 🌟 SUBTLE CLASSICAL ANIMATION ELEMENTS
-const ClassicalDecorations: React.FC = () => {
+// 🌟 SUBTLE CLASSICAL ELEMENTS
+const FloatingElements: React.FC = () => {
   return (
     <div className="absolute inset-0 overflow-hidden pointer-events-none">
-      {/* Subtle floating elements */}
-      {Array.from({ length: 12 }, (_, i) => (
+      {Array.from({ length: 8 }, (_, i) => (
         <div
-          key={`decoration-${i}`}
-          className="absolute opacity-20"
+          key={`element-${i}`}
+          className="absolute rounded-full opacity-20"
           style={{
-            width: Math.random() * 4 + 2 + 'px',
-            height: Math.random() * 4 + 2 + 'px',
+            width: Math.random() * 6 + 3 + 'px',
+            height: Math.random() * 6 + 3 + 'px',
             backgroundColor: '#d4af37',
-            borderRadius: '50%',
             top: Math.random() * 100 + '%',
             left: Math.random() * 100 + '%',
-            animation: `float ${8 + Math.random() * 4}s ease-in-out infinite`,
-            animationDelay: `${Math.random() * 4}s`
+            animation: `gentleFloat ${12 + Math.random() * 8}s ease-in-out infinite`,
+            animationDelay: `${Math.random() * 6}s`
           }}
         />
       ))}
       
       <style jsx>{`
-        @keyframes float {
-          0%, 100% { transform: translateY(0px) rotate(0deg); }
-          50% { transform: translateY(-10px) rotate(5deg); }
+        @keyframes gentleFloat {
+          0%, 100% { transform: translateY(0px) rotate(0deg); opacity: 0.2; }
+          50% { transform: translateY(-20px) rotate(5deg); opacity: 0.1; }
         }
       `}</style>
     </div>
   );
 };
 
-// 🏛️ MAIN CLASSICAL MACROBIUS APP - COMPLETE REDESIGN
+// 🏛️ MAIN CLASSICAL APP - RESTORED ELEGANCE
 const ClassicalMacrobiusApp: React.FC = () => {
   const { language, setLanguage, t } = useLanguage();
   const [currentSection, setCurrentSection] = useState<string>('intro');
+  const [oracleStatus, setOracleStatus] = useState<'checking' | 'connected' | 'offline'>('checking');
   
-  // ✅ DEBUG: Maintain functionality logging
+  // 🔌 ORACLE CLOUD CONNECTION CHECK
   useEffect(() => {
-    console.log('🏛️ CLASSICAL REDESIGN: Elegant layout loading!');
-    console.log('✅ ALL FUNCTIONALITY PRESERVED: Language switching, Oracle Cloud, Zero mock systems');
-    console.log('🎨 VISUAL ENHANCEMENT: Classical scholarly aesthetic restored');
+    const checkOracleConnection = async () => {
+      try {
+        const response = await fetch('http://152.70.184.232:8080/api/health', {
+          method: 'GET',
+          headers: { 'Content-Type': 'application/json' },
+          signal: AbortSignal.timeout(5000) // 5 second timeout
+        });
+        
+        if (response.ok) {
+          setOracleStatus('connected');
+          console.log('✅ Oracle Cloud: Connected successfully!');
+        } else {
+          setOracleStatus('offline');
+          console.warn('⚠️ Oracle Cloud: Server responded with error');
+        }
+      } catch (error) {
+        setOracleStatus('offline');
+        console.warn('⚠️ Oracle Cloud: Connection failed - using offline mode');
+      }
+    };
     
-    // Update page title to reflect new design
+    checkOracleConnection();
+    
+    // Check periodically every 30 seconds
+    const interval = setInterval(checkOracleConnection, 30000);
+    return () => clearInterval(interval);
+  }, []);
+  
+  // 📝 DEBUG LOGGING
+  useEffect(() => {
+    console.log('🏛️ CLASSICAL MACROBIUS APP: Functionality restored!');
+    console.log('🔧 FIXES APPLIED: Button navigation, Oracle status, visual improvements');
     document.title = 'Macrobius - Classical Digital Edition';
   }, []);
   
@@ -149,7 +173,7 @@ const ClassicalMacrobiusApp: React.FC = () => {
     setLanguage(convertToLanguage(lang));
   };
 
-  // 📚 NAVIGATION SECTIONS (PRESERVED)
+  // 📚 NAVIGATION SECTIONS
   const mainSections = [
     { id: 'intro', label: { de: 'Einführung', en: 'Introduction', la: 'Introductio' }, icon: Home },
     { id: 'quiz', label: { de: 'Quiz', en: 'Quiz', la: 'Quaestiones' }, icon: HelpCircle },
@@ -169,7 +193,7 @@ const ClassicalMacrobiusApp: React.FC = () => {
     { id: 'kulturmodule', label: { de: 'Kulturmodule', en: 'Cultural Modules', la: 'Moduli Culturales' }, icon: Scroll }
   ];
 
-  // ✅ RENDER SECTION (FUNCTIONALITY PRESERVED)
+  // ✅ SECTION RENDERING - FUNCTIONALITY PRESERVED
   const renderSection = () => {
     switch(currentSection) {
       case 'intro': 
@@ -196,112 +220,121 @@ const ClassicalMacrobiusApp: React.FC = () => {
   };
 
   return (
-    <div 
-      className="min-h-screen"
-      style={{
-        background: `
-          linear-gradient(135deg, 
-            #faf7f0 0%, 
-            #f5f1e8 25%, 
-            #f0ebe2 50%, 
-            #ede5d8 75%, 
-            #e8dfc9 100%
-          )
-        `,
-        backgroundImage: `
-          radial-gradient(circle at 20% 80%, rgba(212, 175, 55, 0.08) 0%, transparent 50%),
-          radial-gradient(circle at 80% 20%, rgba(139, 92, 41, 0.06) 0%, transparent 50%),
-          url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23d4af37' fill-opacity='0.03'%3E%3Cpath d='M20 20c0-5.5-4.5-10-10-10s-10 4.5-10 10 4.5 10 10 10 10-4.5 10-10zm10 0c0-5.5-4.5-10-10-10s-10 4.5-10 10 4.5 10 10 10 10-4.5 10-10z'/%3E%3C/g%3E%3C/svg%3E")
-        `,
-        minHeight: '100vh',
-        fontFamily: 'Georgia, serif'
-      }}
-    >
-      {/* 🌟 CLASSICAL DECORATIONS */}
-      <ClassicalDecorations />
-      
-      {/* 🏛️ CLASSICAL HEADER WITH ASTROLABIUM */}
-      <header 
-        className="relative"
+    <div className="min-h-screen" style={{ fontFamily: 'Georgia, serif' }}>
+      {/* 🌅 RESTORED CLASSICAL GRADIENT BACKGROUND */}
+      <div 
+        className="fixed inset-0 z-0"
         style={{
-          background: 'linear-gradient(to bottom, rgba(212, 175, 55, 0.15), rgba(212, 175, 55, 0.05))',
-          borderBottom: '2px solid rgba(212, 175, 55, 0.3)',
-          boxShadow: '0 2px 10px rgba(212, 175, 55, 0.2)'
+          background: `
+            linear-gradient(135deg, 
+              #f8f6f0 0%, 
+              #f5f1e8 25%, 
+              #f0ebe2 50%, 
+              #ede5d8 75%, 
+              #ebe1d0 100%
+            )
+          `,
+          backgroundImage: `
+            radial-gradient(circle at 25% 75%, rgba(212, 175, 55, 0.04) 0%, transparent 50%),
+            radial-gradient(circle at 75% 25%, rgba(139, 92, 41, 0.03) 0%, transparent 50%)
+          `
+        }}
+      />
+      
+      {/* 🌟 FLOATING ELEMENTS */}
+      <div className="fixed inset-0 z-10">
+        <FloatingElements />
+      </div>
+      
+      {/* 🏛️ CLASSICAL HEADER */}
+      <header 
+        className="relative z-20 bg-white/70 backdrop-blur-sm border-b border-amber-200 shadow-sm"
+        style={{
+          background: 'linear-gradient(to bottom, rgba(255, 255, 255, 0.9), rgba(248, 246, 240, 0.8))'
         }}
       >
-        {/* ASTROLABIUM BACKGROUND - SUBTLE */}
+        {/* ASTROLABIUM BACKGROUND - ELEGANT PLACEMENT */}
         <div 
-          className="absolute top-0 right-0 opacity-10 pointer-events-none"
+          className="absolute top-0 right-0 opacity-5 pointer-events-none"
           style={{
-            width: '200px',
-            height: '200px',
+            width: '180px',
+            height: '180px',
             backgroundImage: 'url(/Astrolab.jpg)',
             backgroundSize: 'contain',
             backgroundRepeat: 'no-repeat',
-            filter: 'sepia(30%) saturate(120%) brightness(110%)'
+            filter: 'sepia(20%) saturate(120%) brightness(110%)'
           }}
         />
         
-        <div className="container mx-auto px-6 py-4">
+        <div className="max-w-7xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            {/* CLASSICAL TITLE WITH PORTRAIT */}
+            {/* TITLE WITH PORTRAIT */}
             <div className="flex items-center space-x-4">
-              <ClassicalMacrobiusPortrait className="w-16 h-16" />
+              <ClassicalMacrobiusPortrait className="w-14 h-14" />
               <div>
                 <h1 
-                  className="text-3xl font-bold"
+                  className="text-2xl font-bold text-amber-900"
                   style={{ 
-                    color: '#5d4e37',
-                    textShadow: '2px 2px 4px rgba(212, 175, 55, 0.3)',
                     fontFamily: 'Times New Roman, serif',
-                    letterSpacing: '0.02em'
+                    textShadow: '1px 1px 2px rgba(212, 175, 55, 0.2)'
                   }}
                 >
                   MACROBIUS
                 </h1>
-                <p 
-                  className="text-sm italic"
-                  style={{ color: '#8b7355' }}
-                >
-                  Eine antike Flaschenpost ins 21. Jahrhundert
+                <p className="text-sm text-amber-700 italic">
+                  Eine antike Flaschenpost
                 </p>
               </div>
             </div>
             
-            {/* ORACLE CLOUD STATUS & LANGUAGE SWITCHER */}
-            <div className="flex items-center space-x-6">
-              {/* Oracle Cloud Status */}
+            {/* STATUS & CONTROLS */}
+            <div className="flex items-center space-x-4">
+              {/* ORACLE CLOUD STATUS - IMPROVED */}
               <div 
-                className="flex items-center space-x-2 px-3 py-2 rounded-lg"
+                className="flex items-center space-x-2 px-3 py-2 rounded-lg border"
                 style={{
-                  backgroundColor: 'rgba(212, 175, 55, 0.1)',
-                  border: '1px solid rgba(212, 175, 55, 0.3)'
+                  backgroundColor: oracleStatus === 'connected' 
+                    ? 'rgba(34, 197, 94, 0.1)' 
+                    : oracleStatus === 'offline' 
+                    ? 'rgba(239, 68, 68, 0.1)' 
+                    : 'rgba(245, 158, 11, 0.1)',
+                  borderColor: oracleStatus === 'connected' 
+                    ? 'rgba(34, 197, 94, 0.3)' 
+                    : oracleStatus === 'offline' 
+                    ? 'rgba(239, 68, 68, 0.3)' 
+                    : 'rgba(245, 158, 11, 0.3)'
                 }}
               >
                 <div 
-                  className="w-2 h-2 rounded-full animate-pulse"
-                  style={{ backgroundColor: '#10b981' }}
+                  className={`w-2 h-2 rounded-full ${
+                    oracleStatus === 'connected' ? 'bg-green-500' :
+                    oracleStatus === 'offline' ? 'bg-red-500' : 'bg-yellow-500'
+                  } ${oracleStatus === 'checking' ? 'animate-pulse' : ''}`}
                 />
-                <span 
-                  className="text-xs font-medium"
-                  style={{ color: '#5d4e37' }}
-                >
-                  Oracle Cloud: 1.401 Texte
+                <span className="text-xs font-medium text-amber-900">
+                  Oracle Cloud: {
+                    oracleStatus === 'connected' ? '1.401 Texte' :
+                    oracleStatus === 'offline' ? 'Offline' : 'Prüfung...'
+                  }
                 </span>
               </div>
               
-              {/* Language Switcher */}
+              {/* LANGUAGE SWITCHER */}
               <div className="flex space-x-1">
                 {(['de', 'en'] as const).map((lang) => (
                   <button
                     key={lang}
                     onClick={() => handleLanguageChange(lang)}
-                    className="px-3 py-1 text-sm font-medium rounded transition-all duration-200 hover:scale-105"
+                    className="px-3 py-2 text-sm font-medium rounded-lg transition-all duration-200 hover:scale-105"
                     style={{
-                      backgroundColor: getLanguageKey(language) === lang ? '#d4af37' : 'rgba(212, 175, 55, 0.1)',
-                      color: getLanguageKey(language) === lang ? '#ffffff' : '#5d4e37',
-                      border: '1px solid rgba(212, 175, 55, 0.4)',
-                      boxShadow: getLanguageKey(language) === lang ? '0 2px 8px rgba(212, 175, 55, 0.3)' : 'none'
+                      backgroundColor: getLanguageKey(language) === lang 
+                        ? '#d4af37' 
+                        : 'rgba(212, 175, 55, 0.1)',
+                      color: getLanguageKey(language) === lang ? '#ffffff' : '#92400e',
+                      border: '1px solid rgba(212, 175, 55, 0.3)',
+                      boxShadow: getLanguageKey(language) === lang 
+                        ? '0 2px 8px rgba(212, 175, 55, 0.3)' 
+                        : 'none'
                     }}
                   >
                     {lang.toUpperCase()}
@@ -313,18 +346,15 @@ const ClassicalMacrobiusApp: React.FC = () => {
         </div>
       </header>
       
-      {/* 📚 CLASSICAL HORIZONTAL NAVIGATION */}
+      {/* 📚 HORIZONTAL NAVIGATION - IMPROVED */}
       <nav 
-        className="sticky top-0 z-40"
+        className="relative z-20 bg-white/80 backdrop-blur-sm border-b border-amber-100 shadow-sm"
         style={{
-          backgroundColor: 'rgba(245, 241, 232, 0.95)',
-          backdropFilter: 'blur(10px)',
-          borderBottom: '1px solid rgba(212, 175, 55, 0.2)',
-          boxShadow: '0 2px 10px rgba(212, 175, 55, 0.1)'
+          background: 'linear-gradient(to bottom, rgba(255, 255, 255, 0.9), rgba(248, 246, 240, 0.8))'
         }}
       >
-        <div className="container mx-auto px-6">
-          {/* Main Sections */}
+        <div className="max-w-7xl mx-auto px-4">
+          {/* MAIN SECTIONS */}
           <div className="flex items-center justify-center space-x-1 py-3 overflow-x-auto">
             {mainSections.map((section) => {
               const IconComponent = section.icon;
@@ -333,17 +363,17 @@ const ClassicalMacrobiusApp: React.FC = () => {
                 <button
                   key={section.id}
                   onClick={() => setCurrentSection(section.id)}
-                  className="flex items-center space-x-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 hover:scale-105 whitespace-nowrap"
+                  className="flex items-center space-x-2 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 hover:scale-105 whitespace-nowrap"
                   style={{
-                    backgroundColor: isActive ? 'rgba(212, 175, 55, 0.2)' : 'transparent',
-                    color: isActive ? '#5d4e37' : '#8b7355',
-                    border: isActive ? '1px solid rgba(212, 175, 55, 0.4)' : '1px solid transparent',
-                    boxShadow: isActive ? '0 2px 8px rgba(212, 175, 55, 0.2)' : 'none'
+                    backgroundColor: isActive ? 'rgba(212, 175, 55, 0.15)' : 'transparent',
+                    color: isActive ? '#92400e' : '#a16207',
+                    border: isActive ? '1px solid rgba(212, 175, 55, 0.3)' : '1px solid transparent',
+                    boxShadow: isActive ? '0 2px 8px rgba(212, 175, 55, 0.15)' : 'none'
                   }}
                 >
                   <IconComponent 
                     className="w-4 h-4" 
-                    style={{ color: isActive ? '#d4af37' : '#8b7355' }} 
+                    style={{ color: isActive ? '#d4af37' : '#a16207' }} 
                   />
                   <span>{section.label[getLanguageKey(language)]}</span>
                 </button>
@@ -351,16 +381,10 @@ const ClassicalMacrobiusApp: React.FC = () => {
             })}
           </div>
           
-          {/* KI-SYSTEME Section */}
-          <div 
-            className="border-t py-2"
-            style={{ borderColor: 'rgba(212, 175, 55, 0.2)' }}
-          >
+          {/* KI-SYSTEME */}
+          <div className="border-t border-amber-100 py-2">
             <div className="flex items-center justify-center space-x-4">
-              <span 
-                className="text-xs font-bold uppercase tracking-wider"
-                style={{ color: '#d4af37' }}
-              >
+              <span className="text-xs font-bold uppercase tracking-wider text-amber-700">
                 KI-Systeme:
               </span>
               <div className="flex items-center space-x-1">
@@ -371,16 +395,16 @@ const ClassicalMacrobiusApp: React.FC = () => {
                     <button
                       key={section.id}
                       onClick={() => setCurrentSection(section.id)}
-                      className="flex items-center space-x-1 px-3 py-1 rounded text-xs font-medium transition-all duration-200 hover:scale-105"
+                      className="flex items-center space-x-1 px-2 py-1 rounded text-xs font-medium transition-all duration-200 hover:scale-105"
                       style={{
-                        backgroundColor: isActive ? 'rgba(212, 175, 55, 0.15)' : 'transparent',
-                        color: isActive ? '#5d4e37' : '#8b7355',
-                        border: isActive ? '1px solid rgba(212, 175, 55, 0.3)' : '1px solid transparent'
+                        backgroundColor: isActive ? 'rgba(212, 175, 55, 0.1)' : 'transparent',
+                        color: isActive ? '#92400e' : '#a16207',
+                        border: isActive ? '1px solid rgba(212, 175, 55, 0.2)' : '1px solid transparent'
                       }}
                     >
                       <IconComponent 
                         className="w-3 h-3" 
-                        style={{ color: isActive ? '#d4af37' : '#8b7355' }} 
+                        style={{ color: isActive ? '#d4af37' : '#a16207' }} 
                       />
                       <span>{section.label[getLanguageKey(language)]}</span>
                     </button>
@@ -392,35 +416,32 @@ const ClassicalMacrobiusApp: React.FC = () => {
         </div>
       </nav>
       
-      {/* 📖 MAIN CONTENT AREA - CLASSICAL STYLING */}
-      <main 
-        className="container mx-auto px-6 py-8"
-        style={{
-          background: 'rgba(255, 255, 255, 0.6)',
-          backdropFilter: 'blur(5px)',
-          borderRadius: '10px',
-          margin: '20px auto',
-          maxWidth: '1400px',
-          boxShadow: '0 4px 20px rgba(212, 175, 55, 0.1)',
-          border: '1px solid rgba(212, 175, 55, 0.1)'
-        }}
-      >
-        {renderSection()}
+      {/* 📖 MAIN CONTENT */}
+      <main className="relative z-20">
+        <div 
+          className="max-w-7xl mx-auto p-6"
+          style={{
+            background: 'rgba(255, 255, 255, 0.4)',
+            backdropFilter: 'blur(10px)',
+            borderRadius: '12px',
+            margin: '20px auto',
+            boxShadow: '0 4px 20px rgba(212, 175, 55, 0.08)',
+            border: '1px solid rgba(212, 175, 55, 0.1)'
+          }}
+        >
+          {renderSection()}
+        </div>
       </main>
       
-      {/* 🏛️ CLASSICAL FOOTER */}
+      {/* 🏛️ FOOTER */}
       <footer 
-        className="text-center py-6"
+        className="relative z-20 text-center py-4 border-t border-amber-100"
         style={{
-          background: 'linear-gradient(to top, rgba(212, 175, 55, 0.1), transparent)',
-          borderTop: '1px solid rgba(212, 175, 55, 0.2)'
+          background: 'linear-gradient(to top, rgba(212, 175, 55, 0.05), transparent)'
         }}
       >
-        <p 
-          className="text-sm italic"
-          style={{ color: '#8b7355' }}
-        >
-          Macrobius Digital Edition - Verbindet antike Weisheit mit moderner Technologie
+        <p className="text-sm italic text-amber-800">
+          Macrobius Digital Edition - Antike Weisheit für das 21. Jahrhundert
         </p>
       </footer>
     </div>

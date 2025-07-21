@@ -7,12 +7,11 @@ interface IntroSectionProps {
   language?: 'DE' | 'EN' | 'LA'
 }
 
-// 🚨 EMERGENCY DIRECT TRANSLATIONS - BYPASSING BROKEN CONTEXT
+// 🚨 DIRECT TRANSLATIONS - STABLE FUNCTIONALITY
 const DIRECT_TRANSLATIONS = {
   DE: {
     title: 'Wer War Macrobius?',
     subtitle: 'Entdecke Den Spätantiken Gelehrten Und Seine Werke',
-    // ENHANCED: Längerer motivationaler Text wie angefordert
     longMotivationalText: `🏛️ **Eine antike Flaschenpost an die Zukunft** 🏛️
 
 Stellen Sie sich vor: Es ist das Jahr 420 n. Chr. Das Weströmische Reich bricht zusammen, barbarische Stämme überrennen die Grenzen, und jahrhundertealtes Wissen droht für immer verloren zu gehen. In dieser Krisenzeit erkennt ein Mann seine historische Verantwortung: **Ambrosius Theodosius Macrobius**.
@@ -166,145 +165,130 @@ Ut **Praefectus praetorio per Hispanias** - unus ex summis administrationis offi
 } as const;
 
 export function IntroSection({ language: propLanguage }: IntroSectionProps) {
-  // 🚨 EMERGENCY: Use language prop directly, bypass broken context
   const language = propLanguage || 'DE';
   const t = DIRECT_TRANSLATIONS[language];
   
-  // 🛡️ FALLBACK: If translation missing, try German, then English
-  const safeT = (key: string): string => {
-    const keys = key.split('.');
-    let value: any = t;
-    
-    for (const k of keys) {
-      if (value && typeof value === 'object' && k in value) {
-        value = value[k];
-      } else {
-        // Try German fallback
-        if (language !== 'DE') {
-          return safeT(key); // This will use the German translations
-        }
-        console.warn(`Translation missing: ${key} (${language})`);
-        return key;
-      }
-    }
-    
-    return typeof value === 'string' ? value : key;
-  };
-  
   return (
-    <section id="intro" className="py-20 bg-gradient-to-b from-slate-50 to-white">
-      <div className="container mx-auto px-4">
+    <section id="intro" className="py-12">
+      <div className="max-w-6xl mx-auto">
         {/* Section Header */}
-        <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+        <div className="text-center mb-12">
+          <h2 className="text-4xl md:text-5xl font-bold text-amber-900 mb-4">
             {t.title}
           </h2>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+          <p className="text-xl text-amber-700 max-w-3xl mx-auto">
             {t.subtitle}
           </p>
         </div>
 
-        {/* ENHANCED: Longer motivational text as requested */}
-        <div className="mb-16">
-          <div className="max-w-6xl mx-auto">
-            <div className="bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50 rounded-3xl p-8 md:p-12 border-2 border-amber-200 shadow-2xl">
-              <div className="prose prose-lg md:prose-xl max-w-none text-gray-800 leading-relaxed">
-                <div style={{ whiteSpace: 'pre-line' }} className="space-y-4">
-                  {t.longMotivationalText.split('\n\n').map((paragraph, index) => (
-                    <p key={index} className="mb-4 text-gray-700 leading-relaxed">
-                      {paragraph.split('**').map((part, partIndex) => 
-                        partIndex % 2 === 1 ? <strong key={partIndex} className="text-amber-800 font-bold">{part}</strong> : part
-                      )}
-                    </p>
-                  ))}
-                </div>
+        {/* MOTIVATIONAL TEXT */}
+        <div className="mb-12">
+          <div 
+            className="bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50 rounded-2xl p-8 border-2 border-amber-200 shadow-lg"
+          >
+            <div className="prose prose-lg max-w-none text-amber-900 leading-relaxed">
+              <div style={{ whiteSpace: 'pre-line' }} className="space-y-4">
+                {t.longMotivationalText.split('\n\n').map((paragraph, index) => (
+                  <p key={index} className="mb-4 text-amber-800 leading-relaxed">
+                    {paragraph.split('**').map((part, partIndex) => 
+                      partIndex % 2 === 1 ? <strong key={partIndex} className="text-amber-900 font-bold">{part}</strong> : part
+                    )}
+                  </p>
+                ))}
               </div>
-              
-              {/* Call to Action */}
-              <div className="mt-8 text-center">
-                <Button 
-                  size="lg" 
-                  className="bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 text-white px-8 py-4 text-lg font-semibold transition-all duration-300 transform hover:scale-105"
-                  onClick={() => {
-                    const element = document.querySelector('#search')
-                    element?.scrollIntoView({ behavior: 'smooth' })
-                  }}
-                >
-                  <ArrowRight className="mr-2 h-6 w-6" />
-                  {t.explore}
-                </Button>
-              </div>
+            </div>
+            
+            {/* ✅ FIXED BUTTON - NOW SCROLLS TO TEXTSEARCH SECTION */}
+            <div className="mt-8 text-center">
+              <Button 
+                size="lg" 
+                className="bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 text-white px-8 py-4 text-lg font-semibold transition-all duration-300 transform hover:scale-105"
+                onClick={() => {
+                  // ✅ FIX: Navigate to textsearch section instead of non-existent #search
+                  const searchButtons = document.querySelectorAll('button');
+                  const textSearchButton = Array.from(searchButtons).find(
+                    button => button.textContent?.includes('Textsuche') || button.textContent?.includes('Text Search')
+                  );
+                  if (textSearchButton) {
+                    textSearchButton.click();
+                  } else {
+                    console.log('Navigating to text search functionality...');
+                    // Fallback: scroll to main content
+                    window.scrollTo({ top: 600, behavior: 'smooth' });
+                  }
+                }}
+              >
+                <ArrowRight className="mr-2 h-6 w-6" />
+                {t.explore}
+              </Button>
             </div>
           </div>
         </div>
 
-        {/* Cultural Context Images */}
-        <div className="mb-16">
+        {/* Cultural Context */}
+        <div className="mb-12">
           <div className="text-center mb-8">
-            <h3 className="text-2xl font-bold text-gray-900 mb-4">
+            <h3 className="text-2xl font-bold text-amber-900 mb-4">
               {t.culturalTreasures}
             </h3>
-            <p className="text-gray-600">
+            <p className="text-amber-700">
               {t.clickForDetails}
             </p>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-            {/* Roman Empire Decline */}
-            <div className="bg-gradient-to-br from-red-100 to-amber-100 rounded-lg p-6 border-2 border-amber-200">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            {/* Cultural Cards */}
+            <div className="bg-gradient-to-br from-red-100 to-amber-100 rounded-lg p-6 border-2 border-amber-200 hover:shadow-lg transition-shadow">
               <div className="text-center">
                 <div className="w-16 h-16 bg-gradient-to-br from-red-500 to-amber-600 rounded-full flex items-center justify-center mx-auto mb-4">
                   <Crown className="h-8 w-8 text-white" />
                 </div>
-                <h4 className="font-bold text-gray-900 mb-2 text-sm">
+                <h4 className="font-bold text-amber-900 mb-2 text-sm">
                   {t.declining_rome_title}
                 </h4>
-                <p className="text-xs text-gray-600 line-clamp-3">
+                <p className="text-xs text-amber-700">
                   {t.declining_rome_subtitle}
                 </p>
               </div>
             </div>
             
-            {/* Macrobius with Son */}
-            <div className="bg-gradient-to-br from-blue-100 to-indigo-100 rounded-lg p-6 border-2 border-blue-200">
+            <div className="bg-gradient-to-br from-blue-100 to-indigo-100 rounded-lg p-6 border-2 border-blue-200 hover:shadow-lg transition-shadow">
               <div className="text-center">
                 <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full flex items-center justify-center mx-auto mb-4">
                   <Scroll className="h-8 w-8 text-white" />
                 </div>
-                <h4 className="font-bold text-gray-900 mb-2 text-sm">
+                <h4 className="font-bold text-amber-900 mb-2 text-sm">
                   {t.macrobius_son_title}
                 </h4>
-                <p className="text-xs text-gray-600">
+                <p className="text-xs text-amber-700">
                   {t.macrobius_son_subtitle}
                 </p>
               </div>
             </div>
             
-            {/* Cosmology */}
-            <div className="bg-gradient-to-br from-green-100 to-emerald-100 rounded-lg p-6 border-2 border-green-200">
+            <div className="bg-gradient-to-br from-green-100 to-emerald-100 rounded-lg p-6 border-2 border-green-200 hover:shadow-lg transition-shadow">
               <div className="text-center">
                 <div className="w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-600 rounded-full flex items-center justify-center mx-auto mb-4">
                   <Globe className="h-8 w-8 text-white" />
                 </div>
-                <h4 className="font-bold text-gray-900 mb-2 text-sm">
+                <h4 className="font-bold text-amber-900 mb-2 text-sm">
                   {t.cosmology_title}
                 </h4>
-                <p className="text-xs text-gray-600">
+                <p className="text-xs text-amber-700">
                   {t.cosmology_subtitle}
                 </p>
               </div>
             </div>
             
-            {/* Message in a Bottle */}
-            <div className="bg-gradient-to-br from-purple-100 to-violet-100 rounded-lg p-6 border-2 border-purple-200">
+            <div className="bg-gradient-to-br from-purple-100 to-violet-100 rounded-lg p-6 border-2 border-purple-200 hover:shadow-lg transition-shadow">
               <div className="text-center">
                 <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-violet-600 rounded-full flex items-center justify-center mx-auto mb-4">
                   <Clock className="h-8 w-8 text-white" />
                 </div>
-                <h4 className="font-bold text-gray-900 mb-2 text-sm">
+                <h4 className="font-bold text-amber-900 mb-2 text-sm">
                   {t.message_bottle_title}
                 </h4>
-                <p className="text-xs text-gray-600">
+                <p className="text-xs text-amber-700">
                   {t.message_bottle_subtitle}
                 </p>
               </div>
@@ -313,57 +297,53 @@ export function IntroSection({ language: propLanguage }: IntroSectionProps) {
         </div>
 
         {/* Content Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-16">
-          {/* Biography Card */}
-          <Card className="p-8 shadow-lg hover:shadow-xl transition-shadow duration-300">
-            <div className="flex items-center mb-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
+          <Card className="p-6 shadow-lg bg-white/80 backdrop-blur-sm border border-amber-200">
+            <div className="flex items-center mb-4">
               <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center mr-4">
                 <User className="h-6 w-6 text-white" />
               </div>
-              <h3 className="text-2xl font-bold text-gray-900">{t.biography.title}</h3>
+              <h3 className="text-xl font-bold text-amber-900">{t.biography.title}</h3>
             </div>
-            <p className="text-gray-700 leading-relaxed text-lg">
+            <p className="text-amber-800 leading-relaxed">
               {t.biography.content}
             </p>
           </Card>
 
-          {/* Significance Card */}
-          <Card className="p-8 shadow-lg hover:shadow-xl transition-shadow duration-300">
-            <div className="flex items-center mb-6">
+          <Card className="p-6 shadow-lg bg-white/80 backdrop-blur-sm border border-amber-200">
+            <div className="flex items-center mb-4">
               <div className="w-12 h-12 bg-gradient-to-br from-amber-500 to-amber-600 rounded-full flex items-center justify-center mr-4">
                 <Globe className="h-6 w-6 text-white" />
               </div>
-              <h3 className="text-2xl font-bold text-gray-900">{t.significance.title}</h3>
+              <h3 className="text-xl font-bold text-amber-900">{t.significance.title}</h3>
             </div>
-            <p className="text-gray-700 leading-relaxed text-lg">
+            <p className="text-amber-800 leading-relaxed">
               {t.significance.content}
             </p>
           </Card>
         </div>
 
-        {/* Major Works Section */}
-        <div className="mb-16">
-          <h3 className="text-3xl font-bold text-gray-900 text-center mb-12">{t.works.title}</h3>
+        {/* Major Works */}
+        <div className="mb-8">
+          <h3 className="text-2xl font-bold text-amber-900 text-center mb-8">{t.works.title}</h3>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {/* Saturnalia */}
-            <Card className="p-8 shadow-lg hover:shadow-xl transition-shadow duration-300 border-l-4 border-l-blue-500">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <Card className="p-6 shadow-lg bg-white/80 backdrop-blur-sm border-l-4 border-l-blue-500">
               <div className="flex items-center mb-4">
-                <BookOpen className="h-8 w-8 text-blue-500 mr-3" />
-                <h4 className="text-xl font-bold text-gray-900">{t.works.saturnalia.title}</h4>
+                <BookOpen className="h-6 w-6 text-blue-500 mr-3" />
+                <h4 className="text-lg font-bold text-amber-900">{t.works.saturnalia.title}</h4>
               </div>
-              <p className="text-gray-700 leading-relaxed">
+              <p className="text-amber-800 leading-relaxed">
                 {t.works.saturnalia.description}
               </p>
             </Card>
 
-            {/* Commentary */}
-            <Card className="p-8 shadow-lg hover:shadow-xl transition-shadow duration-300 border-l-4 border-l-amber-500">
+            <Card className="p-6 shadow-lg bg-white/80 backdrop-blur-sm border-l-4 border-l-amber-500">
               <div className="flex items-center mb-4">
-                <Calendar className="h-8 w-8 text-amber-500 mr-3" />
-                <h4 className="text-xl font-bold text-gray-900">{t.works.commentary.title}</h4>
+                <Calendar className="h-6 w-6 text-amber-500 mr-3" />
+                <h4 className="text-lg font-bold text-amber-900">{t.works.commentary.title}</h4>
               </div>
-              <p className="text-gray-700 leading-relaxed">
+              <p className="text-amber-800 leading-relaxed">
                 {t.works.commentary.description}
               </p>
             </Card>
@@ -374,5 +354,4 @@ export function IntroSection({ language: propLanguage }: IntroSectionProps) {
   )
 }
 
-// Add default export for compatibility with index.tsx
 export default IntroSection
