@@ -547,12 +547,17 @@ class ClientSideAIEngine {
     return matches.length / queryWords.length;
   }
   
+  // ✅ FIXED: ES2015 compatibility issue with Set iteration
   private calculateTextSimilarity(text1: string, text2: string): number {
     const words1 = new Set(text1.toLowerCase().split(/\s+/));
     const words2 = new Set(text2.toLowerCase().split(/\s+/));
     
-    const intersection = new Set([...words1].filter(word => words2.has(word)));
-    const union = new Set([...words1, ...words2]);
+    // Use Array.from() instead of spread operator for better compatibility
+    const words1Array = Array.from(words1);
+    const words2Array = Array.from(words2);
+    
+    const intersection = new Set(words1Array.filter(word => words2.has(word)));
+    const union = new Set([...words1Array, ...words2Array]);
     
     return intersection.size / union.size;
   }
