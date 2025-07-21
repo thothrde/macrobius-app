@@ -6,7 +6,6 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { MacrobiusAPI, MacrobiusVocabulary, MacrobiusPassage } from '../../lib/enhanced-api-client-with-fallback';
 import { useLanguage } from '@/contexts/LanguageContext';
 import {
@@ -398,17 +397,18 @@ interface PersonalizedLearningPathsProps {
   vocabularyData?: any; // From corpus expansion
   quizData?: any; // From smart quiz generation
   className?: string;
+  currentMode?: ModeType; // ✅ NEW: Control from vertical sidebar
 }
 
 const PersonalizedLearningPathsSection: React.FC<PersonalizedLearningPathsProps> = ({ 
   userProfile, 
   vocabularyData, 
   quizData,
-  className = ''
+  className = '',
+  currentMode = 'dashboard' // ✅ NEW: Accept from vertical sidebar
 }) => {
   const { language } = useLanguage();
   // Enhanced State Management for Real AI-Powered Daily Plans & Knowledge Gaps
-  const [currentMode, setCurrentMode] = useState<ModeType>('dashboard');
   const [dailyPlan, setDailyPlan] = useState<DailyLearningPlan | null>(null);
   const [knowledgeGaps, setKnowledgeGaps] = useState<KnowledgeGap[]>([]);
   const [prerequisiteMap, setPrerequisiteMap] = useState<PrerequisiteMap[]>([]);
@@ -600,6 +600,95 @@ const PersonalizedLearningPathsSection: React.FC<PersonalizedLearningPathsProps>
     initializeAISystems();
   }, [userProfile]);
 
+  // ✅ RENDER CONTENT BASED ON CURRENT MODE FROM VERTICAL SIDEBAR
+  const renderModeContent = () => {
+    switch(currentMode) {
+      case 'dashboard':
+        return (
+          <Card className="bg-white/10 backdrop-blur-sm border border-yellow-400/30">
+            <CardContent className="text-center py-12">
+              <Cpu className="w-12 h-12 text-yellow-400 mx-auto mb-4" />
+              <h3 className="text-xl font-semibold mb-2 text-white">Real AI Learning Paths System</h3>
+              <p className="text-white/70 mb-4">Authentic AI-powered personalized learning with real knowledge gap detection</p>
+              <div className="flex justify-center space-x-4">
+                <Button className="bg-green-600 hover:bg-green-700">
+                  <PlayCircle className="w-4 h-4 mr-2" />
+                  Start AI Session
+                </Button>
+                <Button className="bg-orange-600 hover:bg-orange-700">
+                  <Brain className="w-4 h-4 mr-2" />
+                  Analyze Knowledge Gaps
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        );
+        
+      case 'daily_plan':
+        return (
+          <Card className="bg-white/10 backdrop-blur-sm border border-yellow-400/30">
+            <CardContent className="text-center py-12">
+              <CalendarDays className="w-12 h-12 text-yellow-400 mx-auto mb-4" />
+              <h3 className="text-xl font-semibold mb-2 text-white">AI Daily Learning Plans</h3>
+              <p className="text-white/70 mb-4">Real machine learning powered daily planning with adaptive scheduling</p>
+              <Button className="bg-blue-600 hover:bg-blue-700">
+                <Wand2 className="w-4 h-4 mr-2" />
+                Generate AI Plan
+              </Button>
+            </CardContent>
+          </Card>
+        );
+        
+      case 'knowledge_gaps':
+        return (
+          <Card className="bg-white/10 backdrop-blur-sm border border-yellow-400/30">
+            <CardContent className="text-center py-12">
+              <AlertTriangle className="w-12 h-12 text-yellow-400 mx-auto mb-4" />
+              <h3 className="text-xl font-semibold mb-2 text-white">AI Knowledge Gap Detection</h3>
+              <p className="text-white/70 mb-4">Authentic automatic detection and remediation of learning weaknesses</p>
+              <Button className="bg-red-600 hover:bg-red-700">
+                <Brain className="w-4 h-4 mr-2" />
+                Analyze AI Gaps
+              </Button>
+            </CardContent>
+          </Card>
+        );
+        
+      case 'prerequisites':
+        return (
+          <Card className="bg-white/10 backdrop-blur-sm border border-yellow-400/30">
+            <CardContent className="text-center py-12">
+              <Network className="w-12 h-12 text-yellow-400 mx-auto mb-4" />
+              <h3 className="text-xl font-semibold mb-2 text-white">Real AI Prerequisite Mapping</h3>
+              <p className="text-white/70 mb-4">Authentic AI-generated learning pathways with skill dependencies</p>
+              <Button className="bg-purple-600 hover:bg-purple-700">
+                <Network className="w-4 h-4 mr-2" />
+                Generate AI Prerequisites Map
+              </Button>
+            </CardContent>
+          </Card>
+        );
+        
+      case 'ai_optimization':
+        return (
+          <Card className="bg-white/10 backdrop-blur-sm border border-yellow-400/30">
+            <CardContent className="text-center py-12">
+              <Sparkles className="w-12 h-12 text-yellow-400 mx-auto mb-4" />
+              <h3 className="text-xl font-semibold mb-2 text-white">Real AI Optimization</h3>
+              <p className="text-white/70 mb-4">Authentic cognitive pattern analysis and machine learning acceleration</p>
+              <Button className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700">
+                <Sparkles className="w-4 h-4 mr-2" />
+                Apply Real AI Optimization
+              </Button>
+            </CardContent>
+          </Card>
+        );
+        
+      default:
+        return renderModeContent(); // Fallback to dashboard
+    }
+  };
+
   return (
     <section id="personalized-learning-complete" className="py-20 bg-gradient-to-br from-emerald-900 via-teal-900 to-cyan-900 min-h-screen">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -616,7 +705,15 @@ const PersonalizedLearningPathsSection: React.FC<PersonalizedLearningPathsProps>
           <p className="text-xl text-white/90 max-w-4xl mx-auto mb-4">
             {currentTranslations.subtitle}
           </p>
-          <div className="flex items-center justify-center space-x-6 text-sm">
+          
+          {/* Current Active Mode Display */}
+          <div className="flex justify-center mt-8">
+            <div className="text-sm text-white/70 bg-white/10 px-4 py-2 rounded-lg border border-white/20">
+              📍 {currentTranslations.modes[currentMode]} • Real AI System Active
+            </div>
+          </div>
+          
+          <div className="flex items-center justify-center space-x-6 text-sm mt-4">
             <div className={`flex items-center space-x-2 ${
               backendStatus === 'connected' ? 'text-green-400' :
               backendStatus === 'error' ? 'text-red-400' : 'text-yellow-400'
@@ -652,108 +749,11 @@ const PersonalizedLearningPathsSection: React.FC<PersonalizedLearningPathsProps>
           </Card>
         )}
 
+        {/* ✅ REMOVED HORIZONTAL TAB NAVIGATION - NOW CONTROLLED BY VERTICAL SIDEBAR */}
+        
         {/* Main Content */}
         <div className="max-w-6xl mx-auto">
-          <Tabs value={currentMode} onValueChange={(value: string) => setCurrentMode(value as ModeType)}>
-            <TabsList className="grid w-full grid-cols-5 mb-8 bg-white/10 backdrop-blur-sm">
-              <TabsTrigger value="dashboard" className="text-white">
-                <Gauge className="w-4 h-4 mr-2" />
-                {currentTranslations.modes.dashboard}
-              </TabsTrigger>
-              <TabsTrigger value="daily_plan" className="text-white">
-                <CalendarDays className="w-4 h-4 mr-2" />
-                {currentTranslations.modes.daily_plan}
-              </TabsTrigger>
-              <TabsTrigger value="knowledge_gaps" className="text-white">
-                <AlertTriangle className="w-4 h-4 mr-2" />
-                {currentTranslations.modes.knowledge_gaps}
-              </TabsTrigger>
-              <TabsTrigger value="prerequisites" className="text-white">
-                <Network className="w-4 h-4 mr-2" />
-                {currentTranslations.modes.prerequisites}
-              </TabsTrigger>
-              <TabsTrigger value="ai_optimization" className="text-white">
-                <Sparkles className="w-4 h-4 mr-2" />
-                {currentTranslations.modes.ai_optimization}
-              </TabsTrigger>
-            </TabsList>
-            
-            <TabsContent value="dashboard">
-              <Card className="bg-white/10 backdrop-blur-sm border border-yellow-400/30">
-                <CardContent className="text-center py-12">
-                  <Cpu className="w-12 h-12 text-yellow-400 mx-auto mb-4" />
-                  <h3 className="text-xl font-semibold mb-2 text-white">Real AI Learning Paths System</h3>
-                  <p className="text-white/70 mb-4">Authentic AI-powered personalized learning with real knowledge gap detection</p>
-                  <div className="flex justify-center space-x-4">
-                    <Button className="bg-green-600 hover:bg-green-700">
-                      <PlayCircle className="w-4 h-4 mr-2" />
-                      Start AI Session
-                    </Button>
-                    <Button className="bg-orange-600 hover:bg-orange-700">
-                      <Brain className="w-4 h-4 mr-2" />
-                      Analyze Knowledge Gaps
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            </TabsContent>
-            
-            <TabsContent value="daily_plan">
-              <Card className="bg-white/10 backdrop-blur-sm border border-yellow-400/30">
-                <CardContent className="text-center py-12">
-                  <CalendarDays className="w-12 h-12 text-yellow-400 mx-auto mb-4" />
-                  <h3 className="text-xl font-semibold mb-2 text-white">AI Daily Learning Plans</h3>
-                  <p className="text-white/70 mb-4">Real machine learning powered daily planning with adaptive scheduling</p>
-                  <Button className="bg-blue-600 hover:bg-blue-700">
-                    <Wand2 className="w-4 h-4 mr-2" />
-                    Generate AI Plan
-                  </Button>
-                </CardContent>
-              </Card>
-            </TabsContent>
-            
-            <TabsContent value="knowledge_gaps">
-              <Card className="bg-white/10 backdrop-blur-sm border border-yellow-400/30">
-                <CardContent className="text-center py-12">
-                  <AlertTriangle className="w-12 h-12 text-yellow-400 mx-auto mb-4" />
-                  <h3 className="text-xl font-semibold mb-2 text-white">AI Knowledge Gap Detection</h3>
-                  <p className="text-white/70 mb-4">Authentic automatic detection and remediation of learning weaknesses</p>
-                  <Button className="bg-red-600 hover:bg-red-700">
-                    <Brain className="w-4 h-4 mr-2" />
-                    Analyze AI Gaps
-                  </Button>
-                </CardContent>
-              </Card>
-            </TabsContent>
-            
-            <TabsContent value="prerequisites">
-              <Card className="bg-white/10 backdrop-blur-sm border border-yellow-400/30">
-                <CardContent className="text-center py-12">
-                  <Network className="w-12 h-12 text-yellow-400 mx-auto mb-4" />
-                  <h3 className="text-xl font-semibold mb-2 text-white">Real AI Prerequisite Mapping</h3>
-                  <p className="text-white/70 mb-4">Authentic AI-generated learning pathways with skill dependencies</p>
-                  <Button className="bg-purple-600 hover:bg-purple-700">
-                    <Network className="w-4 h-4 mr-2" />
-                    Generate AI Prerequisites Map
-                  </Button>
-                </CardContent>
-              </Card>
-            </TabsContent>
-            
-            <TabsContent value="ai_optimization">
-              <Card className="bg-white/10 backdrop-blur-sm border border-yellow-400/30">
-                <CardContent className="text-center py-12">
-                  <Sparkles className="w-12 h-12 text-yellow-400 mx-auto mb-4" />
-                  <h3 className="text-xl font-semibold mb-2 text-white">Real AI Optimization</h3>
-                  <p className="text-white/70 mb-4">Authentic cognitive pattern analysis and machine learning acceleration</p>
-                  <Button className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700">
-                    <Sparkles className="w-4 h-4 mr-2" />
-                    Apply Real AI Optimization
-                  </Button>
-                </CardContent>
-              </Card>
-            </TabsContent>
-          </Tabs>
+          {renderModeContent()}
         </div>
       </div>
     </section>
