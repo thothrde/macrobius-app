@@ -1,7 +1,8 @@
 /**
- * 🏦 AI CULTURAL ANALYSIS SECTION - FIXED INTERFACE COMPLIANCE
+ * 🏦 AI CULTURAL ANALYSIS SECTION - VERTICAL NAVIGATION FIXED
  * Revolutionary interface for AI-powered cultural theme detection and analysis
  * Processes authentic Macrobius content with intelligent pattern recognition
+ * ✅ FIXED: No horizontal navigation - uses vertical left sidebar navigation
  */
 
 import React, { useState, useEffect } from 'react';
@@ -36,6 +37,7 @@ import { useLanguage } from '@/contexts/LanguageContext';
 interface AnalysisProps {
   className?: string;
   language?: 'DE' | 'EN' | 'LA';
+  activeTab?: 'analyze' | 'explore' | 'statistics'; // ✅ NEW: Control from vertical sidebar
 }
 
 // FIXED: Complete German translations without placeholders
@@ -171,7 +173,7 @@ const translations = {
   }
 };
 
-export default function AICulturalAnalysisSectionFixed({ className = '', language: propLanguage }: AnalysisProps) {
+export default function AICulturalAnalysisSectionFixed({ className = '', language: propLanguage, activeTab = 'analyze' }: AnalysisProps) {
   const { language: contextLanguage } = useLanguage();
   const currentLanguage = propLanguage || contextLanguage || 'DE';
   const t = translations[currentLanguage];
@@ -182,7 +184,6 @@ export default function AICulturalAnalysisSectionFixed({ className = '', languag
   const [culturalThemes, setCulturalThemes] = useState<CulturalTheme[]>([]);
   const [selectedThemes, setSelectedThemes] = useState<string[]>([]);
   const [searchResults, setSearchResults] = useState<EnhancedMacrobiusPassage[]>([]);
-  const [activeTab, setActiveTab] = useState<'analyze' | 'explore' | 'statistics'>('analyze');
   const [statistics, setStatistics] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -490,38 +491,16 @@ export default function AICulturalAnalysisSectionFixed({ className = '', languag
             {t.description}
           </p>
 
-          {/* FIXED: Language indicator without placeholders */}
+          {/* Current Active Tab Display */}
           <div className="flex justify-center mt-8">
             <div className="text-sm text-gray-600 bg-white px-4 py-2 rounded-lg border border-gray-200">
-              {t.languageIndicator}
+              📍 {activeTab === 'analyze' ? t.tabs.analyze : activeTab === 'explore' ? t.tabs.explore : t.tabs.statistics} • {t.languageIndicator}
             </div>
           </div>
         </motion.div>
 
-        {/* Tab Navigation */}
-        <div className="flex justify-center mb-12">
-          <div className="flex bg-white rounded-xl p-2 shadow-lg border border-gray-200">
-            {[
-              { id: 'analyze', label: t.tabs.analyze, icon: Brain },
-              { id: 'explore', label: t.tabs.explore, icon: Search },
-              { id: 'statistics', label: t.tabs.statistics, icon: BarChart3 }
-            ].map(({ id, label, icon: Icon }) => (
-              <button
-                key={id}
-                onClick={() => setActiveTab(id as any)}
-                className={`flex items-center px-6 py-3 rounded-lg font-medium transition-all duration-300 ${
-                  activeTab === id
-                    ? 'bg-blue-500 text-white shadow-md'
-                    : 'text-gray-600 hover:text-blue-600 hover:bg-blue-50'
-                }`}
-              >
-                <Icon className="h-5 w-5 mr-2" />
-                {label}
-              </button>
-            ))}
-          </div>
-        </div>
-
+        {/* ✅ REMOVED HORIZONTAL TAB NAVIGATION - NOW CONTROLLED BY VERTICAL SIDEBAR */}
+        
         <AnimatePresence mode="wait">
           {/* AI Analysis Tab */}
           {activeTab === 'analyze' && (
