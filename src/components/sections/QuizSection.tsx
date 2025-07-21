@@ -1,549 +1,1020 @@
-import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { CheckCircle, XCircle, RotateCcw, Trophy, BookOpen, Star } from 'lucide-react';
+import React, { useState, useEffect, useCallback } from 'react';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { MacrobiusAPI } from '@/lib/enhanced-api-client-with-fallback';
+import {
+  HelpCircle,
+  CheckCircle,
+  XCircle,
+  Clock,
+  Trophy,
+  Star,
+  Brain,
+  Target,
+  Zap,
+  BookOpen,
+  Award,
+  TrendingUp,
+  RotateCcw,
+  Sparkles,
+  Activity,
+  Gauge,
+  Users,
+  Crown,
+  Loader2,
+  AlertCircle
+} from 'lucide-react';
 
 interface QuizSectionProps {
   isActive: boolean;
-  language?: 'DE' | 'EN' | 'LA';
+  language: 'DE' | 'EN' | 'LA';
 }
-
-// 🚨 EMERGENCY DIRECT TRANSLATIONS - BYPASSING BROKEN CONTEXT
-const DIRECT_TRANSLATIONS = {
-  DE: {
-    title: 'Macrobius Quiz',
-    subtitle: 'Testen Sie Ihr Wissen über den antiken Gelehrten',
-    question_progress: 'Frage {current} von {total}',
-    score_display: 'Score: {score}/{total}',
-    difficulty_easy: 'Einfach',
-    difficulty_medium: 'Mittel',
-    difficulty_hard: 'Schwer',
-    answer_correct: '✓ Richtig!',
-    answer_incorrect: '✗ Falsch!',
-    next_question: 'Nächste Frage',
-    finish_quiz: 'Quiz beenden',
-    complete_title: 'Quiz abgeschlossen!',
-    success_rate: 'Erfolgsquote',
-    correct_answers: 'Richtige Antworten',
-    total_questions: 'Gesamtfragen',
-    repeat_quiz: 'Quiz wiederholen',
-    start_quiz: 'Quiz starten',
-    // Score Messages
-    score_excellent: '🎆 Ausgezeichnet! Sie sind ein Macrobius-Experte!',
-    score_good: '😊 Sehr gut! Sie kennen sich gut mit Macrobius aus.',
-    score_ok: '📚 Nicht schlecht! Es lohnt sich, mehr über Macrobius zu lernen.',
-    score_improve: '📜 Noch Raum für Verbesserung. Entdecken Sie mehr über Macrobius!',
-    // Quiz Questions
-    question1: 'Welche zwei Hauptwerke schrieb Macrobius?',
-    question1_option1: 'Saturnalia und Commentarii in Somnium Scipionis',
-    question1_option2: 'De Re Publica und De Officiis',
-    question1_option3: 'Metamorphosen und Ars Amatoria',
-    question1_option4: 'Confessiones und De Civitate Dei',
-    question1_explanation: 'Macrobius\' zwei Hauptwerke sind die "Saturnalia" (Gespräche während der Saturnalien) und die "Commentarii in Somnium Scipionis" (Kommentar zu Scipios Traum).',
-    
-    question2: 'Wie viele Klimazonen beschrieb Macrobius?',
-    question2_option1: 'Drei',
-    question2_option2: 'Fünf',
-    question2_option3: 'Sieben',
-    question2_option4: 'Neun',
-    question2_explanation: 'Macrobius teilte die Erde in fünf Klimazonen: zwei kalte Polarzonen, zwei gemäßigte Zonen und eine heiße Äquatorzone.',
-    
-    question3: 'Was bedeutet "Sphärenharmonie" in Macrobius\' Kosmologie?',
-    question3_option1: 'Die Planeten bewegen sich zufällig',
-    question3_option2: 'Die Himmelskörper erzeugen durch ihre Bewegung Musik',
-    question3_option3: 'Die Sterne sind stumm',
-    question3_option4: 'Nur die Sonne macht Geräusche',
-    question3_explanation: 'Nach Macrobius erzeugen die Planetenbewegungen eine kosmische Musik - die Sphärenharmonie -, die nur reine Seelen hören können.',
-    
-    question4: 'In welchem Jahrhundert lebte Macrobius?',
-    question4_option1: '4. Jahrhundert',
-    question4_option2: '5. Jahrhundert',
-    question4_option3: '6. Jahrhundert',
-    question4_option4: '7. Jahrhundert',
-    question4_explanation: 'Macrobius Ambrosius Theodosius lebte im 5. Jahrhundert n. Chr. (ca. 385-430), zur Zeit des untergehenden Weströmischen Reiches.',
-    
-    question5: 'Was war Macrobius\' wichtigster Beitrag zur Erhaltung antiker Kultur?',
-    question5_option1: 'Er schrieb Gedichte',
-    question5_option2: 'Er bewahrte Wissen in dialogischer Form',
-    question5_option3: 'Er baute Bibliotheken',
-    question5_option4: 'Er lehrte an Universitäten',
-    question5_explanation: 'Macrobius bewahrte das Wissen der Antike, indem er es in unterhaltsamen Dialogformen präsentierte, die über Jahrhunderte überlebten.'
-  },
-  EN: {
-    title: 'Macrobius Quiz',
-    subtitle: 'Test Your Knowledge About the Ancient Scholar',
-    question_progress: 'Question {current} of {total}',
-    score_display: 'Score: {score}/{total}',
-    difficulty_easy: 'Easy',
-    difficulty_medium: 'Medium',
-    difficulty_hard: 'Hard',
-    answer_correct: '✓ Correct!',
-    answer_incorrect: '✗ Incorrect!',
-    next_question: 'Next Question',
-    finish_quiz: 'Finish Quiz',
-    complete_title: 'Quiz Complete!',
-    success_rate: 'Success Rate',
-    correct_answers: 'Correct Answers',
-    total_questions: 'Total Questions',
-    repeat_quiz: 'Repeat Quiz',
-    start_quiz: 'Start Quiz',
-    // Score Messages
-    score_excellent: '🎆 Excellent! You are a Macrobius expert!',
-    score_good: '😊 Very good! You know Macrobius well.',
-    score_ok: '📚 Not bad! It\'s worth learning more about Macrobius.',
-    score_improve: '📜 Room for improvement. Discover more about Macrobius!',
-    // Quiz Questions
-    question1: 'Which two major works did Macrobius write?',
-    question1_option1: 'Saturnalia and Commentary on Scipio\'s Dream',
-    question1_option2: 'De Re Publica and De Officiis',
-    question1_option3: 'Metamorphoses and Ars Amatoria',
-    question1_option4: 'Confessions and City of God',
-    question1_explanation: 'Macrobius\' two major works are the "Saturnalia" (conversations during the Saturnalia festival) and the "Commentary on Scipio\'s Dream".',
-    
-    question2: 'How many climate zones did Macrobius describe?',
-    question2_option1: 'Three',
-    question2_option2: 'Five',
-    question2_option3: 'Seven',
-    question2_option4: 'Nine',
-    question2_explanation: 'Macrobius divided the Earth into five climate zones: two cold polar zones, two temperate zones, and one hot equatorial zone.',
-    
-    question3: 'What does "Music of the Spheres" mean in Macrobius\' cosmology?',
-    question3_option1: 'Planets move randomly',
-    question3_option2: 'Celestial bodies create music through their movement',
-    question3_option3: 'Stars are silent',
-    question3_option4: 'Only the sun makes sounds',
-    question3_explanation: 'According to Macrobius, planetary movements create cosmic music - the harmony of the spheres - that only pure souls can hear.',
-    
-    question4: 'In which century did Macrobius live?',
-    question4_option1: '4th century',
-    question4_option2: '5th century',
-    question4_option3: '6th century',
-    question4_option4: '7th century',
-    question4_explanation: 'Macrobius Ambrosius Theodosius lived in the 5th century CE (ca. 385-430), during the time of the declining Western Roman Empire.',
-    
-    question5: 'What was Macrobius\' most important contribution to preserving ancient culture?',
-    question5_option1: 'He wrote poetry',
-    question5_option2: 'He preserved knowledge in dialogue form',
-    question5_option3: 'He built libraries',
-    question5_option4: 'He taught at universities',
-    question5_explanation: 'Macrobius preserved ancient knowledge by presenting it in entertaining dialogue forms that survived for centuries.'
-  },
-  LA: {
-    title: 'Quaestiones Macrobii',
-    subtitle: 'Scientiam Tuam De Erudito Antiquo Proba',
-    question_progress: 'Quaestio {current} ex {total}',
-    score_display: 'Numerus: {score}/{total}',
-    difficulty_easy: 'Facilis',
-    difficulty_medium: 'Medius',
-    difficulty_hard: 'Difficilis',
-    answer_correct: '✓ Rectum!',
-    answer_incorrect: '✗ Falsum!',
-    next_question: 'Quaestio Sequens',
-    finish_quiz: 'Quaestiones Finire',
-    complete_title: 'Quaestiones Completae!',
-    success_rate: 'Ratio Successus',
-    correct_answers: 'Responsiones Rectae',
-    total_questions: 'Quaestiones Totae',
-    repeat_quiz: 'Quaestiones Iterare',
-    start_quiz: 'Quaestiones Incipere',
-    // Score Messages
-    score_excellent: '🎆 Excellens! Tu es peritus Macrobii!',
-    score_good: '😊 Valde bene! Macrobium bene nosti.',
-    score_ok: '📚 Non male! Operae pretium est plus de Macrobio discere.',
-    score_improve: '📜 Locus emendationis. Plura de Macrobio inveni!',
-    // Quiz Questions
-    question1: 'Quae duo opera praecipua Macrobius scripsit?',
-    question1_option1: 'Saturnalia et Commentarii in Somnium Scipionis',
-    question1_option2: 'De Re Publica et De Officiis',
-    question1_option3: 'Metamorphoses et Ars Amatoria',
-    question1_option4: 'Confessiones et De Civitate Dei',
-    question1_explanation: 'Duo opera praecipua Macrobii sunt "Saturnalia" (colloquia tempore Saturnalium) et "Commentarii in Somnium Scipionis".',
-    
-    question2: 'Quot zonas climatis Macrobius descripsit?',
-    question2_option1: 'Tres',
-    question2_option2: 'Quinque',
-    question2_option3: 'Septem',
-    question2_option4: 'Novem',
-    question2_explanation: 'Macrobius terram in quinque zonas climatis divisit: duas zonas frigidas polares, duas temperatas, et unam torridam aequatorialem.',
-    
-    question3: 'Quid significat "Harmonia Sphaerarum" in cosmologia Macrobii?',
-    question3_option1: 'Planetae casu moventur',
-    question3_option2: 'Corpora caelestia per motum musicam creant',
-    question3_option3: 'Stellae silent',
-    question3_option4: 'Solum sol sonos facit',
-    question3_explanation: 'Secundum Macrobium, motus planetarum musicam cosmicam creant - harmoniam sphaerarum - quam solae animae purae audire possunt.',
-    
-    question4: 'Quo saeculo Macrobius vixit?',
-    question4_option1: 'Saeculo quarto',
-    question4_option2: 'Saeculo quinto',
-    question4_option3: 'Saeculo sexto',
-    question4_option4: 'Saeculo septimo',
-    question4_explanation: 'Macrobius Ambrosius Theodosius saeculo quinto post Christum vixit (ca. 385-430), tempore Imperii Romani Occidentalis declinantis.',
-    
-    question5: 'Quid fuit contributio Macrobii maxima ad culturam antiquam conservandam?',
-    question5_option1: 'Carmina scripsit',
-    question5_option2: 'Scientiam in forma dialogorum conservavit',
-    question5_option3: 'Bibliothecas aedificavit',
-    question5_option4: 'In universitatibus docuit',
-    question5_explanation: 'Macrobius scientiam antiquam conservavit eam in formis dialogorum delectabilibus praesens quae per saecula supervixerunt.'
-  }
-} as const;
 
 interface Question {
-  id: number;
-  question: string;
-  options: string[];
-  correctAnswer: number;
+  id: string;
+  type: 'multiple_choice' | 'true_false' | 'fill_blank';
+  question_text: string;
+  options?: string[];
+  correct_answer: string | number;
   explanation: string;
-  difficulty: 'easy' | 'medium' | 'hard';
+  difficulty_level: number;
+  cultural_theme: string;
+  learning_objective: string;
+  time_estimated: number;
+  hints: string[];
+  latin_text_source?: string;
 }
 
-function QuizSection({ isActive, language = 'DE' }: QuizSectionProps) {
-  const t = DIRECT_TRANSLATIONS[language];
+interface QuizSession {
+  id: string;
+  questions: Question[];
+  currentQuestionIndex: number;
+  answers: (string | number | null)[];
+  startTime: number;
+  endTime?: number;
+  score: number;
+  totalQuestions: number;
+}
+
+interface QuizStats {
+  totalQuizzesCompleted: number;
+  averageScore: number;
+  bestScore: number;
+  totalTimeSpent: number;
+  strengthAreas: string[];
+  improvementAreas: string[];
+  currentStreak: number;
+  difficultyProgression: number[];
+}
+
+// 🎯 Enhanced Question Component
+const QuestionCard: React.FC<{
+  question: Question;
+  selectedAnswer: string | number | null;
+  onAnswerSelect: (answer: string | number) => void;
+  showResults: boolean;
+  isCorrect: boolean;
+  timeRemaining?: number;
+}> = ({ question, selectedAnswer, onAnswerSelect, showResults, isCorrect, timeRemaining }) => {
+  const [isHovered, setIsHovered] = useState(false);
+  const [showHint, setShowHint] = useState(false);
   
-  // Generate questions based on current language
-  const questions: Question[] = [
-    {
-      id: 1,
-      question: t.question1,
-      options: [t.question1_option1, t.question1_option2, t.question1_option3, t.question1_option4],
-      correctAnswer: 0,
-      explanation: t.question1_explanation,
-      difficulty: 'easy'
-    },
-    {
-      id: 2,
-      question: t.question2,
-      options: [t.question2_option1, t.question2_option2, t.question2_option3, t.question2_option4],
-      correctAnswer: 1,
-      explanation: t.question2_explanation,
-      difficulty: 'medium'
-    },
-    {
-      id: 3,
-      question: t.question3,
-      options: [t.question3_option1, t.question3_option2, t.question3_option3, t.question3_option4],
-      correctAnswer: 1,
-      explanation: t.question3_explanation,
-      difficulty: 'hard'
-    },
-    {
-      id: 4,
-      question: t.question4,
-      options: [t.question4_option1, t.question4_option2, t.question4_option3, t.question4_option4],
-      correctAnswer: 1,
-      explanation: t.question4_explanation,
-      difficulty: 'easy'
-    },
-    {
-      id: 5,
-      question: t.question5,
-      options: [t.question5_option1, t.question5_option2, t.question5_option3, t.question5_option4],
-      correctAnswer: 1,
-      explanation: t.question5_explanation,
-      difficulty: 'medium'
-    }
-  ];
-
-  const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
-  const [showExplanation, setShowExplanation] = useState(false);
-  const [score, setScore] = useState(0);
-  const [quizCompleted, setQuizCompleted] = useState(false);
-  const [quizStarted, setQuizStarted] = useState(false);
-  const [userAnswers, setUserAnswers] = useState<(number | null)[]>(new Array(questions.length).fill(null));
-
-  const handleAnswerSelect = (answerIndex: number) => {
-    if (selectedAnswer !== null) return; // Prevent changing answer
-    
-    setSelectedAnswer(answerIndex);
-    setShowExplanation(true);
-    
-    // Update user answers
-    const newAnswers = [...userAnswers];
-    newAnswers[currentQuestion] = answerIndex;
-    setUserAnswers(newAnswers);
-    
-    // Update score if correct
-    if (answerIndex === questions[currentQuestion].correctAnswer) {
-      setScore(score + 1);
-    }
-  };
-
-  const handleNextQuestion = () => {
-    if (currentQuestion < questions.length - 1) {
-      setCurrentQuestion(currentQuestion + 1);
-      setSelectedAnswer(null);
-      setShowExplanation(false);
-    } else {
-      setQuizCompleted(true);
-    }
-  };
-
-  const resetQuiz = () => {
-    setCurrentQuestion(0);
-    setSelectedAnswer(null);
-    setShowExplanation(false);
-    setScore(0);
-    setQuizCompleted(false);
-    setQuizStarted(false);
-    setUserAnswers(new Array(questions.length).fill(null));
-  };
-
-  const startQuiz = () => {
-    setQuizStarted(true);
-  };
-
-  const getScoreMessage = () => {
-    const percentage = (score / questions.length) * 100;
-    if (percentage >= 80) return t.score_excellent;
-    if (percentage >= 60) return t.score_good;
-    if (percentage >= 40) return t.score_ok;
-    return t.score_improve;
-  };
-
-  const getDifficultyColor = (difficulty: string) => {
-    switch (difficulty) {
-      case 'easy': return 'text-green-400 bg-green-500/20';
-      case 'medium': return 'text-yellow-400 bg-yellow-500/20';
-      case 'hard': return 'text-red-400 bg-red-500/20';
-      default: return 'text-gray-400 bg-gray-500/20';
-    }
-  };
-
-  if (!isActive) return null;
-
+  const difficultyColor = {
+    1: '#10b981', 2: '#10b981', 3: '#f59e0b', 4: '#f59e0b', 5: '#ef4444', 6: '#ef4444', 7: '#7c3aed'
+  }[Math.min(question.difficulty_level, 7)] || '#6b7280';
+  
   return (
-    <section className="min-h-screen flex items-center justify-center px-4 py-20">
-      <div className="max-w-4xl mx-auto">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="bg-white/10 backdrop-blur-md rounded-xl border border-white/20 p-8"
-        >
-          {!quizStarted ? (
-            // Quiz Introduction
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="text-center"
-            >
-              <div className="flex items-center justify-center space-x-3 mb-6">
-                <BookOpen className="w-8 h-8 text-yellow-400" />
-                <h2 className="text-4xl font-bold text-yellow-400">{t.title}</h2>
-                <Star className="w-8 h-8 text-yellow-400" />
-              </div>
-              
-              <p className="text-xl text-white/90 mb-8">
-                {t.subtitle}
-              </p>
-              
-              <div className="bg-blue-500/20 border border-blue-400/50 rounded-lg p-6 mb-8">
-                <h3 className="text-lg font-semibold text-blue-300 mb-4">
-                  📋 Quiz Information
-                </h3>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-white/80">
-                  <div className="text-center">
-                    <div className="text-2xl font-bold text-yellow-400">{questions.length}</div>
-                    <div className="text-sm">{t.total_questions}</div>
-                  </div>
-                  <div className="text-center">
-                    <div className="text-2xl font-bold text-green-400">3</div>
-                    <div className="text-sm">Difficulty Levels</div>
-                  </div>
-                  <div className="text-center">
-                    <div className="text-2xl font-bold text-blue-400">5</div>
-                    <div className="text-sm">Minutes</div>
-                  </div>
-                </div>
-              </div>
-              
-              <button
-                onClick={startQuiz}
-                className="px-8 py-4 bg-yellow-400 text-black rounded-xl font-semibold text-lg hover:bg-yellow-500 transition-all transform hover:scale-105"
-              >
-                🚀 {t.start_quiz}
-              </button>
-            </motion.div>
-          ) : !quizCompleted ? (
-            // Quiz Questions
-            <div>
-              {/* Progress and Score */}
-              <div className="flex justify-between items-center mb-6">
-                <div className="flex items-center space-x-4">
-                  <span className="text-white/80">
-                    {t.question_progress.replace('{current}', (currentQuestion + 1).toString()).replace('{total}', questions.length.toString())}
-                  </span>
-                  <span className={`px-3 py-1 rounded-full text-xs font-semibold ${getDifficultyColor(questions[currentQuestion].difficulty)}`}>
-                    {t[`difficulty_${questions[currentQuestion].difficulty}` as keyof typeof t]}
-                  </span>
-                </div>
-                <span className="text-yellow-400 font-semibold">
-                  {t.score_display.replace('{score}', score.toString()).replace('{total}', questions.length.toString())}
-                </span>
-              </div>
-
-              {/* Progress Bar */}
-              <div className="w-full bg-white/20 rounded-full h-2 mb-8">
-                <div 
-                  className="bg-yellow-400 h-2 rounded-full transition-all duration-300"
-                  style={{ width: `${((currentQuestion + 1) / questions.length) * 100}%` }}
-                />
-              </div>
-
-              {/* Question */}
-              <motion.div
-                key={currentQuestion}
-                initial={{ opacity: 0, x: 50 }}
-                animate={{ opacity: 1, x: 0 }}
-                className="mb-8"
-              >
-                <h3 className="text-2xl font-bold text-white mb-6">
-                  {questions[currentQuestion].question}
-                </h3>
-
-                {/* Answer Options */}
-                <div className="space-y-3">
-                  {questions[currentQuestion].options.map((option, index) => {
-                    let buttonClass = 'w-full p-4 rounded-lg border-2 text-left transition-all hover:bg-white/10';
-                    
-                    if (selectedAnswer === null) {
-                      buttonClass += ' border-white/30 text-white/90 hover:border-yellow-400';
-                    } else {
-                      if (index === questions[currentQuestion].correctAnswer) {
-                        buttonClass += ' border-green-400 bg-green-500/20 text-green-300';
-                      } else if (index === selectedAnswer) {
-                        buttonClass += ' border-red-400 bg-red-500/20 text-red-300';
-                      } else {
-                        buttonClass += ' border-white/20 text-white/60';
-                      }
-                    }
-
-                    return (
-                      <button
-                        key={index}
-                        onClick={() => handleAnswerSelect(index)}
-                        className={buttonClass}
-                        disabled={selectedAnswer !== null}
-                      >
-                        <div className="flex items-center space-x-3">
-                          <span className="w-6 h-6 rounded-full border-2 flex items-center justify-center text-sm font-bold">
-                            {String.fromCharCode(65 + index)}
-                          </span>
-                          <span>{option}</span>
-                          {selectedAnswer !== null && index === questions[currentQuestion].correctAnswer && (
-                            <CheckCircle className="w-5 h-5 text-green-400 ml-auto" />
-                          )}
-                          {selectedAnswer === index && index !== questions[currentQuestion].correctAnswer && (
-                            <XCircle className="w-5 h-5 text-red-400 ml-auto" />
-                          )}
-                        </div>
-                      </button>
-                    );
-                  })}
-                </div>
-              </motion.div>
-
-              {/* Explanation */}
-              <AnimatePresence>
-                {showExplanation && (
-                  <motion.div
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: 'auto' }}
-                    exit={{ opacity: 0, height: 0 }}
-                    className="mb-6"
-                  >
-                    <div className={`p-4 rounded-lg border-2 ${
-                      selectedAnswer === questions[currentQuestion].correctAnswer 
-                        ? 'border-green-400 bg-green-500/20'
-                        : 'border-red-400 bg-red-500/20'
-                    }`}>
-                      <div className="flex items-center space-x-2 mb-2">
-                        {selectedAnswer === questions[currentQuestion].correctAnswer ? (
-                          <>
-                            <CheckCircle className="w-5 h-5 text-green-400" />
-                            <span className="font-semibold text-green-300">{t.answer_correct}</span>
-                          </>
-                        ) : (
-                          <>
-                            <XCircle className="w-5 h-5 text-red-400" />
-                            <span className="font-semibold text-red-300">{t.answer_incorrect}</span>
-                          </>
-                        )}
-                      </div>
-                      <p className="text-white/90">
-                        {questions[currentQuestion].explanation}
-                      </p>
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-
-              {/* Next Button */}
-              {showExplanation && (
-                <div className="text-center">
-                  <button
-                    onClick={handleNextQuestion}
-                    className="px-6 py-3 bg-yellow-400 text-black rounded-lg font-semibold hover:bg-yellow-500 transition-all"
-                  >
-                    {currentQuestion < questions.length - 1 ? t.next_question : t.finish_quiz}
-                  </button>
-                </div>
-              )}
+    <div
+      style={{
+        backgroundColor: 'rgba(255, 255, 255, 0.95)',
+        borderRadius: '20px',
+        padding: '32px',
+        border: `2px solid ${showResults ? (isCorrect ? '#10b981' : '#ef4444') : 'rgba(212, 175, 55, 0.3)'}`,
+        boxShadow: showResults
+          ? `0 20px 40px ${isCorrect ? '#10b98120' : '#ef444420'}`
+          : '0 12px 32px rgba(0, 0, 0, 0.1)',
+        backdropFilter: 'blur(12px)',
+        transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+        position: 'relative',
+        overflow: 'hidden'
+      }}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
+      {/* Question Header */}
+      <div style={{
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'flex-start',
+        marginBottom: '24px',
+        flexWrap: 'wrap',
+        gap: '16px'
+      }}>
+        <div style={{ flex: 1 }}>
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '12px',
+            marginBottom: '8px'
+          }}>
+            <div style={{
+              padding: '6px',
+              borderRadius: '8px',
+              backgroundColor: `${difficultyColor}15`,
+              border: `1px solid ${difficultyColor}30`
+            }}>
+              <Brain style={{ width: '16px', height: '16px', color: difficultyColor }} />
             </div>
-          ) : (
-            // Quiz Results
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              className="text-center"
-            >
-              <div className="flex items-center justify-center space-x-3 mb-6">
-                <Trophy className="w-8 h-8 text-yellow-400" />
-                <h2 className="text-4xl font-bold text-yellow-400">{t.complete_title}</h2>
-                <Trophy className="w-8 h-8 text-yellow-400" />
-              </div>
-              
-              <div className="bg-gradient-to-br from-yellow-500/20 to-orange-500/20 border border-yellow-400/50 rounded-xl p-8 mb-8">
-                <div className="text-6xl font-bold text-yellow-400 mb-4">
-                  {score}/{questions.length}
-                </div>
-                <div className="text-2xl text-white/90 mb-4">
-                  {Math.round((score / questions.length) * 100)}% {t.success_rate}
-                </div>
-                <p className="text-lg text-white/80">
-                  {getScoreMessage()}
-                </p>
-              </div>
-              
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-                <div className="bg-green-500/20 border border-green-400/50 rounded-lg p-4">
-                  <div className="text-2xl font-bold text-green-400">{score}</div>
-                  <div className="text-green-300">{t.correct_answers}</div>
-                </div>
-                <div className="bg-red-500/20 border border-red-400/50 rounded-lg p-4">
-                  <div className="text-2xl font-bold text-red-400">{questions.length - score}</div>
-                  <div className="text-red-300">Incorrect</div>
-                </div>
-                <div className="bg-blue-500/20 border border-blue-400/50 rounded-lg p-4">
-                  <div className="text-2xl font-bold text-blue-400">{questions.length}</div>
-                  <div className="text-blue-300">{t.total_questions}</div>
-                </div>
-              </div>
-              
-              <button
-                onClick={resetQuiz}
-                className="px-8 py-4 bg-yellow-400 text-black rounded-xl font-semibold text-lg hover:bg-yellow-500 transition-all transform hover:scale-105 flex items-center space-x-2 mx-auto"
-              >
-                <RotateCcw className="w-5 h-5" />
-                <span>{t.repeat_quiz}</span>
-              </button>
-            </motion.div>
+            
+            <span style={{
+              fontSize: '12px',
+              fontWeight: '600',
+              color: difficultyColor,
+              textTransform: 'uppercase',
+              letterSpacing: '0.5px'
+            }}>
+              Schwierigkeit {question.difficulty_level}/7
+            </span>
+            
+            <span style={{
+              fontSize: '12px',
+              color: '#6b7280',
+              backgroundColor: 'rgba(107, 114, 128, 0.1)',
+              padding: '3px 8px',
+              borderRadius: '6px'
+            }}>
+              {question.cultural_theme}
+            </span>
+          </div>
+          
+          {timeRemaining !== undefined && timeRemaining > 0 && (
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+              color: timeRemaining < 10 ? '#ef4444' : '#6b7280',
+              fontSize: '12px',
+              fontWeight: '500'
+            }}>
+              <Clock style={{ width: '14px', height: '14px' }} />
+              {timeRemaining}s verbleibend
+            </div>
           )}
-        </motion.div>
+        </div>
+        
+        <div style={{ display: 'flex', gap: '8px' }}>
+          {question.hints.length > 0 && (
+            <button
+              onClick={() => setShowHint(!showHint)}
+              style={{
+                padding: '8px 12px',
+                backgroundColor: 'rgba(139, 92, 246, 0.1)',
+                border: '1px solid rgba(139, 92, 246, 0.3)',
+                borderRadius: '6px',
+                color: '#7c3aed',
+                fontSize: '12px',
+                fontWeight: '600',
+                cursor: 'pointer',
+                transition: 'all 0.2s ease',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '4px'
+              }}
+            >
+              <Sparkles style={{ width: '12px', height: '12px' }} />
+              {showHint ? 'Hinweis verbergen' : 'Hinweis'}
+            </button>
+          )}
+          
+          {showResults && (
+            <div style={{
+              padding: '8px 12px',
+              backgroundColor: isCorrect ? 'rgba(16, 185, 129, 0.1)' : 'rgba(239, 68, 68, 0.1)',
+              border: `1px solid ${isCorrect ? 'rgba(16, 185, 129, 0.3)' : 'rgba(239, 68, 68, 0.3)'}`,
+              borderRadius: '6px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px'
+            }}>
+              {isCorrect ? (
+                <CheckCircle style={{ width: '14px', height: '14px', color: '#10b981' }} />
+              ) : (
+                <XCircle style={{ width: '14px', height: '14px', color: '#ef4444' }} />
+              )}
+              <span style={{
+                fontSize: '12px',
+                fontWeight: '600',
+                color: isCorrect ? '#059669' : '#dc2626'
+              }}>
+                {isCorrect ? 'Richtig!' : 'Falsch'}
+              </span>
+            </div>
+          )}
+        </div>
       </div>
-    </section>
+      
+      {/* Hint Display */}
+      {showHint && question.hints.length > 0 && (
+        <div style={{
+          marginBottom: '20px',
+          padding: '16px',
+          backgroundColor: 'rgba(139, 92, 246, 0.05)',
+          border: '1px solid rgba(139, 92, 246, 0.2)',
+          borderRadius: '10px',
+          borderLeft: '4px solid #7c3aed'
+        }}>
+          <div style={{ fontSize: '14px', color: '#7c3aed', marginBottom: '4px', fontWeight: '600' }}>
+            💡 Hinweis:
+          </div>
+          <div style={{ fontSize: '14px', color: '#4b5563', lineHeight: '1.5' }}>
+            {question.hints[0]}
+          </div>
+        </div>
+      )}
+      
+      {/* Question Text */}
+      <div style={{
+        marginBottom: '24px'
+      }}>
+        <h3 style={{
+          fontSize: '20px',
+          fontWeight: '600',
+          color: '#1f2937',
+          lineHeight: '1.4',
+          margin: 0
+        }}>
+          {question.question_text}
+        </h3>
+        
+        {question.latin_text_source && (
+          <div style={{
+            marginTop: '12px',
+            padding: '16px',
+            backgroundColor: 'rgba(212, 175, 55, 0.05)',
+            border: '1px solid rgba(212, 175, 55, 0.2)',
+            borderRadius: '10px',
+            borderLeft: '4px solid #d4af37'
+          }}>
+            <div style={{ fontSize: '12px', color: '#92400e', marginBottom: '4px', fontWeight: '600' }}>
+              📜 Aus dem Macrobius-Korpus:
+            </div>
+            <div style={{
+              fontSize: '14px',
+              fontStyle: 'italic',
+              color: '#374151',
+              lineHeight: '1.5'
+            }}>
+              "{question.latin_text_source}"
+            </div>
+          </div>
+        )}
+      </div>
+      
+      {/* Answer Options */}
+      {question.type === 'multiple_choice' && question.options && (
+        <div style={{
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '12px'
+        }}>
+          {question.options.map((option, index) => {
+            const isSelected = selectedAnswer === index;
+            const isCorrectOption = question.correct_answer === index;
+            
+            let optionStyle = {
+              padding: '16px 20px',
+              borderRadius: '12px',
+              border: '2px solid',
+              cursor: showResults ? 'default' : 'pointer',
+              transition: 'all 0.3s ease',
+              fontSize: '16px',
+              fontWeight: '500',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              opacity: showResults && !isCorrectOption && !isSelected ? 0.5 : 1
+            };
+            
+            if (showResults) {
+              if (isCorrectOption) {
+                optionStyle = {
+                  ...optionStyle,
+                  backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                  borderColor: '#10b981',
+                  color: '#059669'
+                };
+              } else if (isSelected) {
+                optionStyle = {
+                  ...optionStyle,
+                  backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                  borderColor: '#ef4444',
+                  color: '#dc2626'
+                };
+              } else {
+                optionStyle = {
+                  ...optionStyle,
+                  backgroundColor: 'rgba(107, 114, 128, 0.05)',
+                  borderColor: 'rgba(107, 114, 128, 0.2)',
+                  color: '#6b7280'
+                };
+              }
+            } else {
+              optionStyle = {
+                ...optionStyle,
+                backgroundColor: isSelected 
+                  ? 'rgba(212, 175, 55, 0.1)' 
+                  : 'rgba(255, 255, 255, 0.5)',
+                borderColor: isSelected 
+                  ? '#d4af37' 
+                  : 'rgba(212, 175, 55, 0.3)',
+                color: isSelected ? '#92400e' : '#374151',
+                transform: isSelected ? 'scale(1.02)' : 'none',
+                boxShadow: isSelected ? '0 4px 12px rgba(212, 175, 55, 0.3)' : 'none'
+              };
+            }
+            
+            return (
+              <button
+                key={index}
+                onClick={() => !showResults && onAnswerSelect(index)}
+                style={optionStyle}
+                onMouseEnter={(e) => {
+                  if (!showResults && !isSelected) {
+                    e.currentTarget.style.backgroundColor = 'rgba(212, 175, 55, 0.05)';
+                    e.currentTarget.style.transform = 'translateX(4px)';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (!showResults && !isSelected) {
+                    e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.5)';
+                    e.currentTarget.style.transform = 'none';
+                  }
+                }}
+              >
+                <span>{String.fromCharCode(65 + index)}. {option}</span>
+                
+                {showResults && isCorrectOption && (
+                  <CheckCircle style={{ width: '20px', height: '20px', color: '#10b981' }} />
+                )}
+                {showResults && isSelected && !isCorrectOption && (
+                  <XCircle style={{ width: '20px', height: '20px', color: '#ef4444' }} />
+                )}
+              </button>
+            );
+          })}
+        </div>
+      )}
+      
+      {/* Explanation */}
+      {showResults && question.explanation && (
+        <div style={{
+          marginTop: '24px',
+          padding: '20px',
+          backgroundColor: isCorrect ? 'rgba(16, 185, 129, 0.05)' : 'rgba(239, 68, 68, 0.05)',
+          border: `1px solid ${isCorrect ? 'rgba(16, 185, 129, 0.2)' : 'rgba(239, 68, 68, 0.2)'}`,
+          borderRadius: '12px',
+          borderLeft: `4px solid ${isCorrect ? '#10b981' : '#ef4444'}`
+        }}>
+          <div style={{
+            fontSize: '14px',
+            color: isCorrect ? '#059669' : '#dc2626',
+            marginBottom: '8px',
+            fontWeight: '600',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '6px'
+          }}>
+            <BookOpen style={{ width: '16px', height: '16px' }} />
+            Erklärung:
+          </div>
+          <div style={{
+            fontSize: '14px',
+            color: '#374151',
+            lineHeight: '1.6'
+          }}>
+            {question.explanation}
+          </div>
+        </div>
+      )}
+      
+      {/* Animated background effect */}
+      {isHovered && (
+        <div style={{
+          position: 'absolute',
+          top: '0',
+          left: '-100%',
+          width: '100%',
+          height: '100%',
+          background: 'linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.1), transparent)',
+          animation: 'shimmer 2s ease-in-out infinite',
+          pointerEvents: 'none'
+        }} />
+      )}
+    </div>
   );
-}
+};
+
+// 📊 Enhanced Stats Panel
+const StatsPanel: React.FC<{ stats: QuizStats }> = ({ stats }) => {
+  return (
+    <div style={{
+      display: 'grid',
+      gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+      gap: '16px',
+      marginBottom: '32px'
+    }}>
+      <div style={{
+        padding: '20px',
+        backgroundColor: 'rgba(16, 185, 129, 0.1)',
+        border: '2px solid rgba(16, 185, 129, 0.3)',
+        borderRadius: '12px',
+        textAlign: 'center'
+      }}>
+        <Trophy style={{ width: '24px', height: '24px', color: '#10b981', marginBottom: '8px', margin: '0 auto 8px' }} />
+        <div style={{ fontSize: '24px', fontWeight: 'bold', color: '#059669' }}>
+          {stats.bestScore}%
+        </div>
+        <div style={{ fontSize: '12px', color: '#059669', fontWeight: '600' }}>
+          Beste Punktzahl
+        </div>
+      </div>
+      
+      <div style={{
+        padding: '20px',
+        backgroundColor: 'rgba(245, 158, 11, 0.1)',
+        border: '2px solid rgba(245, 158, 11, 0.3)',
+        borderRadius: '12px',
+        textAlign: 'center'
+      }}>
+        <TrendingUp style={{ width: '24px', height: '24px', color: '#f59e0b', marginBottom: '8px', margin: '0 auto 8px' }} />
+        <div style={{ fontSize: '24px', fontWeight: 'bold', color: '#d97706' }}>
+          {stats.averageScore}%
+        </div>
+        <div style={{ fontSize: '12px', color: '#d97706', fontWeight: '600' }}>
+          Durchschnitt
+        </div>
+      </div>
+      
+      <div style={{
+        padding: '20px',
+        backgroundColor: 'rgba(139, 92, 246, 0.1)',
+        border: '2px solid rgba(139, 92, 246, 0.3)',
+        borderRadius: '12px',
+        textAlign: 'center'
+      }}>
+        <Activity style={{ width: '24px', height: '24px', color: '#8b5cf6', marginBottom: '8px', margin: '0 auto 8px' }} />
+        <div style={{ fontSize: '24px', fontWeight: 'bold', color: '#7c3aed' }}>
+          {stats.currentStreak}
+        </div>
+        <div style={{ fontSize: '12px', color: '#7c3aed', fontWeight: '600' }}>
+          Aktuelle Serie
+        </div>
+      </div>
+      
+      <div style={{
+        padding: '20px',
+        backgroundColor: 'rgba(212, 175, 55, 0.1)',
+        border: '2px solid rgba(212, 175, 55, 0.3)',
+        borderRadius: '12px',
+        textAlign: 'center'
+      }}>
+        <Clock style={{ width: '24px', height: '24px', color: '#d4af37', marginBottom: '8px', margin: '0 auto 8px' }} />
+        <div style={{ fontSize: '24px', fontWeight: 'bold', color: '#92400e' }}>
+          {Math.round(stats.totalTimeSpent / 60)}
+        </div>
+        <div style={{ fontSize: '12px', color: '#92400e', fontWeight: '600' }}>
+          Minuten gelernt
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// 🧠 MAIN QUIZ SECTION COMPONENT
+const QuizSection: React.FC<QuizSectionProps> = ({ isActive, language }) => {
+  const { t } = useLanguage();
+  const [currentSession, setCurrentSession] = useState<QuizSession | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [showResults, setShowResults] = useState(false);
+  const [selectedAnswer, setSelectedAnswer] = useState<string | number | null>(null);
+  const [timeRemaining, setTimeRemaining] = useState<number>(0);
+  const [stats, setStats] = useState<QuizStats>({
+    totalQuizzesCompleted: 0,
+    averageScore: 0,
+    bestScore: 0,
+    totalTimeSpent: 0,
+    strengthAreas: [],
+    improvementAreas: [],
+    currentStreak: 0,
+    difficultyProgression: []
+  });
+  const [error, setError] = useState<string | null>(null);
+  
+  // Load user stats on mount
+  useEffect(() => {
+    if (isActive) {
+      loadUserStats();
+    }
+  }, [isActive]);
+  
+  // Timer effect
+  useEffect(() => {
+    if (timeRemaining > 0 && !showResults) {
+      const timer = setTimeout(() => {
+        setTimeRemaining(timeRemaining - 1);
+      }, 1000);
+      
+      return () => clearTimeout(timer);
+    } else if (timeRemaining === 0 && currentSession && !showResults) {
+      // Time's up - show results
+      handleAnswerSubmit();
+    }
+  }, [timeRemaining, showResults, currentSession]);
+  
+  const loadUserStats = async () => {
+    try {
+      const response = await MacrobiusAPI.analytics.getUserPerformance();
+      if (response.status === 'success' && response.data) {
+        setStats({
+          totalQuizzesCompleted: response.data.total_quizzes_taken || 0,
+          averageScore: Math.round((response.data.average_accuracy || 0) * 100),
+          bestScore: Math.round((response.data.vocabulary_retention || 0.8) * 100),
+          totalTimeSpent: response.data.total_time_spent || 0,
+          strengthAreas: response.data.strongest_areas || [],
+          improvementAreas: response.data.improvement_areas || [],
+          currentStreak: response.data.current_streak || 0,
+          difficultyProgression: response.data.difficulty_progression || []
+        });
+      }
+    } catch (error) {
+      console.warn('Failed to load user stats:', error);
+    }
+  };
+  
+  const startNewQuiz = async () => {
+    setIsLoading(true);
+    setError(null);
+    
+    try {
+      // Generate adaptive quiz based on user performance
+      const quizRequest = {
+        user_profile: {
+          current_level: Math.max(1, Math.round(stats.averageScore / 15)),
+          strengths: stats.strengthAreas,
+          weaknesses: stats.improvementAreas,
+          recent_performance: stats.averageScore / 100
+        },
+        preferences: {
+          question_count: 5,
+          difficulty_range: [3, 6],
+          cultural_themes: ['Roman History', 'Philosophy', 'Literature'],
+          include_latin_sources: true,
+          adaptive_difficulty: true
+        }
+      };
+      
+      const response = await MacrobiusAPI.quiz.generateAdaptive(quizRequest);
+      
+      if (response.status === 'success' && response.data.questions) {
+        const newSession: QuizSession = {
+          id: `quiz_${Date.now()}`,
+          questions: response.data.questions,
+          currentQuestionIndex: 0,
+          answers: new Array(response.data.questions.length).fill(null),
+          startTime: Date.now(),
+          score: 0,
+          totalQuestions: response.data.questions.length
+        };
+        
+        setCurrentSession(newSession);
+        setSelectedAnswer(null);
+        setShowResults(false);
+        
+        // Set timer for current question
+        const currentQuestion = newSession.questions[0];
+        setTimeRemaining(currentQuestion.time_estimated || 30);
+      } else {
+        throw new Error('Failed to generate quiz questions');
+      }
+    } catch (error) {
+      console.error('Failed to start quiz:', error);
+      setError('Fehler beim Laden des Quiz. Bitte versuchen Sie es erneut.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+  
+  const handleAnswerSelect = useCallback((answer: string | number) => {
+    setSelectedAnswer(answer);
+  }, []);
+  
+  const handleAnswerSubmit = async () => {
+    if (!currentSession) return;
+    
+    const currentQuestion = currentSession.questions[currentSession.currentQuestionIndex];
+    const isCorrect = selectedAnswer === currentQuestion.correct_answer;
+    
+    // Update session with answer
+    const updatedAnswers = [...currentSession.answers];
+    updatedAnswers[currentSession.currentQuestionIndex] = selectedAnswer;
+    
+    const updatedSession = {
+      ...currentSession,
+      answers: updatedAnswers,
+      score: isCorrect ? currentSession.score + 1 : currentSession.score
+    };
+    
+    setCurrentSession(updatedSession);
+    setShowResults(true);
+    
+    // Submit answer to backend for analytics
+    try {
+      await MacrobiusAPI.quiz.submitAnswer({
+        session_id: currentSession.id,
+        question_id: currentQuestion.id,
+        user_answer: selectedAnswer,
+        correct_answer: currentQuestion.correct_answer,
+        response_time: (currentQuestion.time_estimated || 30) - timeRemaining,
+        difficulty_level: currentQuestion.difficulty_level
+      });
+    } catch (error) {
+      console.warn('Failed to submit answer for analytics:', error);
+    }
+  };
+  
+  const handleNextQuestion = () => {
+    if (!currentSession) return;
+    
+    if (currentSession.currentQuestionIndex < currentSession.questions.length - 1) {
+      // Move to next question
+      const nextIndex = currentSession.currentQuestionIndex + 1;
+      const updatedSession = {
+        ...currentSession,
+        currentQuestionIndex: nextIndex
+      };
+      
+      setCurrentSession(updatedSession);
+      setSelectedAnswer(null);
+      setShowResults(false);
+      
+      // Set timer for next question
+      const nextQuestion = currentSession.questions[nextIndex];
+      setTimeRemaining(nextQuestion.time_estimated || 30);
+    } else {
+      // Quiz completed
+      completeQuiz();
+    }
+  };
+  
+  const completeQuiz = async () => {
+    if (!currentSession) return;
+    
+    const finalSession = {
+      ...currentSession,
+      endTime: Date.now()
+    };
+    
+    // Submit completed quiz for analytics
+    try {
+      await MacrobiusAPI.quiz.completeSession({
+        session_id: finalSession.id,
+        total_questions: finalSession.totalQuestions,
+        correct_answers: finalSession.score,
+        total_time: finalSession.endTime! - finalSession.startTime,
+        difficulty_levels: finalSession.questions.map(q => q.difficulty_level)
+      });
+      
+      // Reload stats
+      await loadUserStats();
+    } catch (error) {
+      console.warn('Failed to submit quiz completion:', error);
+    }
+    
+    setCurrentSession(null);
+    setShowResults(false);
+  };
+  
+  if (!isActive) return null;
+  
+  const currentQuestion = currentSession?.questions[currentSession.currentQuestionIndex];
+  const isQuizCompleted = currentSession && currentSession.currentQuestionIndex >= currentSession.questions.length;
+  const progress = currentSession ? ((currentSession.currentQuestionIndex + (showResults ? 1 : 0)) / currentSession.questions.length) * 100 : 0;
+  
+  return (
+    <div style={{
+      maxWidth: '1000px',
+      margin: '0 auto',
+      padding: '32px',
+      minHeight: '100vh'
+    }}>
+      {/* Header */}
+      <div style={{
+        textAlign: 'center',
+        marginBottom: '48px'
+      }}>
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: '12px',
+          marginBottom: '16px'
+        }}>
+          <Brain style={{ width: '32px', height: '32px', color: '#8b5cf6' }} />
+          <h1 style={{
+            fontSize: '36px',
+            fontWeight: 'bold',
+            background: 'linear-gradient(135deg, #8b5cf6, #d4af37)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            margin: 0,
+            fontFamily: 'Times New Roman, serif'
+          }}>
+            Intelligentes Quiz System
+          </h1>
+          <Zap style={{ width: '28px', height: '28px', color: '#f59e0b', animation: 'pulse 2s infinite' }} />
+        </div>
+        
+        <p style={{
+          fontSize: '18px',
+          color: '#6b7280',
+          margin: '0 0 24px 0',
+          maxWidth: '600px',
+          marginLeft: 'auto',
+          marginRight: 'auto',
+          lineHeight: '1.6'
+        }}>
+          KI-generierte Fragen basierend auf dem authentischen Macrobius-Korpus mit 
+          adaptiver Schwierigkeitsanpassung und kulturellem Kontext.
+        </p>
+        
+        {/* AI Status Badge */}
+        <div style={{
+          display: 'inline-flex',
+          alignItems: 'center',
+          gap: '8px',
+          padding: '8px 16px',
+          backgroundColor: 'rgba(139, 92, 246, 0.1)',
+          border: '2px solid rgba(139, 92, 246, 0.3)',
+          borderRadius: '12px',
+          fontSize: '14px',
+          fontWeight: '600',
+          color: '#7c3aed'
+        }}>
+          <Target style={{ width: '16px', height: '16px' }} />
+          TIER 3 KI - Adaptive Fragengenerierung
+          <Activity style={{ width: '14px', height: '14px' }} />
+        </div>
+      </div>
+      
+      {/* Error Display */}
+      {error && (
+        <div style={{
+          padding: '16px 20px',
+          backgroundColor: 'rgba(239, 68, 68, 0.1)',
+          border: '2px solid rgba(239, 68, 68, 0.3)',
+          borderRadius: '12px',
+          color: '#dc2626',
+          marginBottom: '24px',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '12px'
+        }}>
+          <AlertCircle style={{ width: '20px', height: '20px' }} />
+          {error}
+        </div>
+      )}
+      
+      {/* Stats Panel */}
+      <StatsPanel stats={stats} />
+      
+      {/* Quiz Content */}
+      {!currentSession && !isLoading && (
+        <div style={{
+          textAlign: 'center',
+          padding: '48px 32px',
+          backgroundColor: 'rgba(255, 255, 255, 0.9)',
+          borderRadius: '20px',
+          border: '2px solid rgba(212, 175, 55, 0.3)',
+          boxShadow: '0 12px 32px rgba(0, 0, 0, 0.1)',
+          backdropFilter: 'blur(12px)'
+        }}>
+          <Crown style={{ width: '64px', height: '64px', color: '#d4af37', marginBottom: '24px', margin: '0 auto 24px' }} />
+          <h2 style={{
+            fontSize: '28px',
+            fontWeight: 'bold',
+            color: '#1f2937',
+            marginBottom: '16px'
+          }}>
+            Bereit für ein neues Quiz?
+          </h2>
+          <p style={{
+            fontSize: '16px',
+            color: '#6b7280',
+            marginBottom: '32px',
+            maxWidth: '500px',
+            margin: '0 auto 32px'
+          }}>
+            Testen Sie Ihr Wissen über die römische Kultur anhand authentischer 
+            Textpassagen aus Macrobius' Werken. Das System passt sich automatisch 
+            an Ihr Kenntnisstand an.
+          </p>
+          
+          <button
+            onClick={startNewQuiz}
+            style={{
+              padding: '16px 32px',
+              backgroundColor: '#8b5cf6',
+              border: 'none',
+              borderRadius: '12px',
+              color: 'white',
+              fontSize: '18px',
+              fontWeight: '600',
+              cursor: 'pointer',
+              transition: 'all 0.3s ease',
+              boxShadow: '0 4px 12px rgba(139, 92, 246, 0.3)',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '12px'
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = '#7c3aed';
+              e.currentTarget.style.transform = 'scale(1.05)';
+              e.currentTarget.style.boxShadow = '0 8px 25px rgba(139, 92, 246, 0.4)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = '#8b5cf6';
+              e.currentTarget.style.transform = 'scale(1)';
+              e.currentTarget.style.boxShadow = '0 4px 12px rgba(139, 92, 246, 0.3)';
+            }}
+          >
+            <Zap style={{ width: '20px', height: '20px' }} />
+            Neues Quiz starten
+          </button>
+        </div>
+      )}
+      
+      {isLoading && (
+        <div style={{
+          textAlign: 'center',
+          padding: '48px 32px',
+          backgroundColor: 'rgba(255, 255, 255, 0.9)',
+          borderRadius: '20px',
+          border: '2px solid rgba(212, 175, 55, 0.3)',
+          boxShadow: '0 12px 32px rgba(0, 0, 0, 0.1)',
+          backdropFilter: 'blur(12px)'
+        }}>
+          <Loader2 style={{ width: '48px', height: '48px', color: '#8b5cf6', animation: 'spin 1s linear infinite', marginBottom: '24px', margin: '0 auto 24px' }} />
+          <h2 style={{
+            fontSize: '24px',
+            fontWeight: 'bold',
+            color: '#1f2937',
+            marginBottom: '16px'
+          }}>
+            KI generiert personalisierte Fragen...
+          </h2>
+          <p style={{
+            fontSize: '16px',
+            color: '#6b7280'
+          }}>
+            Analysiere Ihr Lernprofil und wähle optimale Schwierigkeit aus 1.401 Textpassagen.
+          </p>
+        </div>
+      )}
+      
+      {/* Active Quiz */}
+      {currentSession && currentQuestion && (
+        <div>
+          {/* Progress Bar */}
+          <div style={{
+            marginBottom: '32px',
+            backgroundColor: 'rgba(107, 114, 128, 0.1)',
+            borderRadius: '12px',
+            overflow: 'hidden',
+            height: '8px',
+            position: 'relative'
+          }}>
+            <div style={{
+              height: '100%',
+              backgroundColor: '#8b5cf6',
+              borderRadius: '12px',
+              width: `${progress}%`,
+              transition: 'width 0.5s ease',
+              background: 'linear-gradient(90deg, #8b5cf6, #d4af37)'
+            }} />
+            
+            <div style={{
+              position: 'absolute',
+              top: '-32px',
+              left: '50%',
+              transform: 'translateX(-50%)',
+              fontSize: '14px',
+              fontWeight: '600',
+              color: '#6b7280'
+            }}>
+              Frage {currentSession.currentQuestionIndex + 1} von {currentSession.totalQuestions}
+            </div>
+          </div>
+          
+          {/* Question Card */}
+          <QuestionCard
+            question={currentQuestion}
+            selectedAnswer={selectedAnswer}
+            onAnswerSelect={handleAnswerSelect}
+            showResults={showResults}
+            isCorrect={selectedAnswer === currentQuestion.correct_answer}
+            timeRemaining={timeRemaining}
+          />
+          
+          {/* Action Buttons */}
+          <div style={{
+            display: 'flex',
+            justifyContent: 'center',
+            gap: '16px',
+            marginTop: '32px'
+          }}>
+            {!showResults ? (
+              <button
+                onClick={handleAnswerSubmit}
+                disabled={selectedAnswer === null}
+                style={{
+                  padding: '12px 24px',
+                  backgroundColor: selectedAnswer !== null ? '#10b981' : '#d1d5db',
+                  border: 'none',
+                  borderRadius: '10px',
+                  color: 'white',
+                  fontSize: '16px',
+                  fontWeight: '600',
+                  cursor: selectedAnswer !== null ? 'pointer' : 'not-allowed',
+                  transition: 'all 0.3s ease',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px'
+                }}
+              >
+                <CheckCircle style={{ width: '18px', height: '18px' }} />
+                Antwort bestätigen
+              </button>
+            ) : (
+              <button
+                onClick={handleNextQuestion}
+                style={{
+                  padding: '12px 24px',
+                  backgroundColor: '#8b5cf6',
+                  border: 'none',
+                  borderRadius: '10px',
+                  color: 'white',
+                  fontSize: '16px',
+                  fontWeight: '600',
+                  cursor: 'pointer',
+                  transition: 'all 0.3s ease',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = '#7c3aed';
+                  e.currentTarget.style.transform = 'scale(1.05)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = '#8b5cf6';
+                  e.currentTarget.style.transform = 'scale(1)';
+                }}
+              >
+                {currentSession.currentQuestionIndex < currentSession.questions.length - 1 ? (
+                  <>
+                    Nächste Frage
+                    <Target style={{ width: '18px', height: '18px' }} />
+                  </>
+                ) : (
+                  <>
+                    Quiz abschließen
+                    <Trophy style={{ width: '18px', height: '18px' }} />
+                  </>
+                )}
+              </button>
+            )}
+          </div>
+        </div>
+      )}
+      
+      {/* Global Animations */}
+      <style jsx>{`
+        @keyframes shimmer {
+          0% { transform: translateX(-100%); }
+          100% { transform: translateX(100%); }
+        }
+        
+        @keyframes pulse {
+          0%, 100% { opacity: 1; transform: scale(1); }
+          50% { opacity: 0.7; transform: scale(1.05); }
+        }
+        
+        @keyframes spin {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
+        }
+      `}</style>
+    </div>
+  );
+};
 
 export default QuizSection;
