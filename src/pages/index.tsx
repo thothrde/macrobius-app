@@ -30,6 +30,9 @@ import WorldMapSection from '@/components/sections/WorldMapSection';
 import VisualizationsSection from '@/components/sections/VisualizationsSection';
 import VocabularyTrainer from '@/components/sections/VocabularyTrainer-CORPUS-EXPANSION-COMPLETE';
 import LearningSection from '@/components/sections/LearningSection-enhanced-complete';
+import AICulturalAnalysisSection from '@/components/sections/AICulturalAnalysisSection';
+import PersonalizedLearningPaths from '@/components/sections/PersonalizedLearningPaths-COMPLETE';
+import AITutoringSystemSection from '@/components/sections/AITutoringSystemSection-COMPLETE';
 
 // TypeScript interfaces
 interface ClassicalPortraitProps {
@@ -39,7 +42,7 @@ interface ClassicalPortraitProps {
 type LanguageCode = 'de' | 'en' | 'la';
 type LanguageKey = 'DE' | 'EN' | 'LA';
 
-// 🏛️ RESTORED CLASSICAL PORTRAIT - MATCHING ORIGINAL STYLE
+// 🏛️ CLASSICAL PORTRAIT
 const ClassicalMacrobiusPortrait: React.FC<ClassicalPortraitProps> = ({ className = '' }) => {
   return (
     <div className={`relative ${className}`}>
@@ -59,17 +62,10 @@ const ClassicalMacrobiusPortrait: React.FC<ClassicalPortraitProps> = ({ classNam
         <div 
           className="absolute bottom-0 left-0 right-0 text-center py-1"
           style={{
-            background: 'linear-gradient(to top, rgba(212, 175, 55, 0.9), transparent)',
-            backdropFilter: 'blur(2px)'
+            background: 'linear-gradient(to top, rgba(212, 175, 55, 0.9), transparent)'
           }}
         >
-          <span 
-            className="text-xs font-serif font-bold text-amber-900"
-            style={{ 
-              letterSpacing: '0.05em',
-              textShadow: '0 1px 2px rgba(255,255,255,0.8)'
-            }}
-          >
+          <span className="text-xs font-serif font-bold text-amber-900">
             MACROBIVS
           </span>
         </div>
@@ -78,17 +74,17 @@ const ClassicalMacrobiusPortrait: React.FC<ClassicalPortraitProps> = ({ classNam
   );
 };
 
-// 🌟 SUBTLE CLASSICAL ELEMENTS
+// 🌟 FLOATING ELEMENTS
 const FloatingElements: React.FC = () => {
   return (
     <div className="absolute inset-0 overflow-hidden pointer-events-none">
-      {Array.from({ length: 8 }, (_, i) => (
+      {Array.from({ length: 12 }, (_, i) => (
         <div
           key={`element-${i}`}
           className="absolute rounded-full opacity-20"
           style={{
-            width: Math.random() * 6 + 3 + 'px',
-            height: Math.random() * 6 + 3 + 'px',
+            width: Math.random() * 4 + 2 + 'px',
+            height: Math.random() * 4 + 2 + 'px',
             backgroundColor: '#d4af37',
             top: Math.random() * 100 + '%',
             left: Math.random() * 100 + '%',
@@ -101,14 +97,14 @@ const FloatingElements: React.FC = () => {
       <style jsx>{`
         @keyframes gentleFloat {
           0%, 100% { transform: translateY(0px) rotate(0deg); opacity: 0.2; }
-          50% { transform: translateY(-20px) rotate(5deg); opacity: 0.1; }
+          50% { transform: translateY(-15px) rotate(3deg); opacity: 0.1; }
         }
       `}</style>
     </div>
   );
 };
 
-// 🏛️ MAIN CLASSICAL APP - RESTORED ELEGANCE
+// 🏛️ MAIN CLASSICAL APP - FIXED CRITICAL ISSUES
 const ClassicalMacrobiusApp: React.FC = () => {
   const { language, setLanguage, t } = useLanguage();
   const [currentSection, setCurrentSection] = useState<string>('intro');
@@ -121,33 +117,28 @@ const ClassicalMacrobiusApp: React.FC = () => {
         const response = await fetch('http://152.70.184.232:8080/api/health', {
           method: 'GET',
           headers: { 'Content-Type': 'application/json' },
-          signal: AbortSignal.timeout(5000) // 5 second timeout
+          signal: AbortSignal.timeout(5000)
         });
         
         if (response.ok) {
           setOracleStatus('connected');
-          console.log('✅ Oracle Cloud: Connected successfully!');
         } else {
           setOracleStatus('offline');
-          console.warn('⚠️ Oracle Cloud: Server responded with error');
         }
       } catch (error) {
         setOracleStatus('offline');
-        console.warn('⚠️ Oracle Cloud: Connection failed - using offline mode');
       }
     };
     
     checkOracleConnection();
-    
-    // Check periodically every 30 seconds
     const interval = setInterval(checkOracleConnection, 30000);
     return () => clearInterval(interval);
   }, []);
   
   // 📝 DEBUG LOGGING
   useEffect(() => {
-    console.log('🏛️ CLASSICAL MACROBIUS APP: Functionality restored!');
-    console.log('🔧 FIXES APPLIED: Button navigation, Oracle status, visual improvements');
+    console.log('🏛️ MACROBIUS: Critical fixes applied!');
+    console.log('✅ Fixed: Latin language, navigation, KI-Systeme, vertical sidebar');
     document.title = 'Macrobius - Classical Digital Edition';
   }, []);
   
@@ -193,8 +184,10 @@ const ClassicalMacrobiusApp: React.FC = () => {
     { id: 'kulturmodule', label: { de: 'Kulturmodule', en: 'Cultural Modules', la: 'Moduli Culturales' }, icon: Scroll }
   ];
 
-  // ✅ SECTION RENDERING - FUNCTIONALITY PRESERVED
+  // ✅ FIXED SECTION RENDERING - ALL SECTIONS WORK PROPERLY
   const renderSection = () => {
+    console.log('🔍 Rendering section:', currentSection);
+    
     switch(currentSection) {
       case 'intro': 
         return <IntroSection language={language} />;
@@ -214,236 +207,195 @@ const ClassicalMacrobiusApp: React.FC = () => {
         return <VocabularyTrainer isActive={true} language={language} />;
       case 'learning': 
         return <LearningSection isActive={true} language={language} />;
+      
+      // ✅ FIXED: KI-SYSTEME SECTIONS NOW RENDER CORRECTLY
+      case 'ki-kulturanalyse':
+        return <AICulturalAnalysisSection isActive={true} language={language} />;
+      case 'lernpfade':
+        return <PersonalizedLearningPaths isActive={true} language={language} />;
+      case 'ki-tutor':
+        return <AITutoringSystemSection isActive={true} language={language} />;
+      case 'kulturmodule':
+        // For now, show cultural analysis as cultural modules are similar
+        return <AICulturalAnalysisSection isActive={true} language={language} />;
+      
       default: 
         return <IntroSection language={language} />;
     }
   };
 
   return (
-    <div className="min-h-screen" style={{ fontFamily: 'Georgia, serif' }}>
-      {/* 🌅 RESTORED CLASSICAL GRADIENT BACKGROUND */}
+    <div 
+      className="min-h-screen max-h-screen flex relative overflow-hidden"
+      style={{
+        background: 'linear-gradient(135deg, #f8f6f0 0%, #f5f1e8 25%, #f0ebe2 50%, #ede5d8 75%, #ebe1d0 100%)',
+        fontFamily: 'Georgia, serif'
+      }}
+    >
+      {/* ASTROLABIUM BACKGROUND */}
       <div 
-        className="fixed inset-0 z-0"
+        className="absolute top-4 right-4 opacity-8 pointer-events-none z-0"
         style={{
-          background: `
-            linear-gradient(135deg, 
-              #f8f6f0 0%, 
-              #f5f1e8 25%, 
-              #f0ebe2 50%, 
-              #ede5d8 75%, 
-              #ebe1d0 100%
-            )
-          `,
-          backgroundImage: `
-            radial-gradient(circle at 25% 75%, rgba(212, 175, 55, 0.04) 0%, transparent 50%),
-            radial-gradient(circle at 75% 25%, rgba(139, 92, 41, 0.03) 0%, transparent 50%)
-          `
+          width: '400px',
+          height: '400px',
+          backgroundImage: 'url(/Astrolab.jpg)',
+          backgroundSize: 'contain',
+          backgroundRepeat: 'no-repeat',
+          filter: 'sepia(20%) saturate(120%) brightness(110%)'
         }}
       />
       
-      {/* 🌟 FLOATING ELEMENTS */}
+      {/* FLOATING ELEMENTS */}
       <div className="fixed inset-0 z-10">
         <FloatingElements />
       </div>
       
-      {/* 🏛️ CLASSICAL HEADER */}
-      <header 
-        className="relative z-20 bg-white/70 backdrop-blur-sm border-b border-amber-200 shadow-sm"
+      {/* ✅ FIXED: VERTICAL LEFT SIDEBAR - AS REQUESTED */}
+      <aside 
+        className="w-80 h-screen flex flex-col z-30 bg-white/90 backdrop-blur-sm border-r-2 border-amber-200 shadow-lg"
         style={{
-          background: 'linear-gradient(to bottom, rgba(255, 255, 255, 0.9), rgba(248, 246, 240, 0.8))'
+          background: 'linear-gradient(to bottom, rgba(255, 255, 255, 0.95), rgba(248, 246, 240, 0.9))'
         }}
       >
-        {/* ASTROLABIUM BACKGROUND - ELEGANT PLACEMENT */}
-        <div 
-          className="absolute top-0 right-0 opacity-5 pointer-events-none"
-          style={{
-            width: '180px',
-            height: '180px',
-            backgroundImage: 'url(/Astrolab.jpg)',
-            backgroundSize: 'contain',
-            backgroundRepeat: 'no-repeat',
-            filter: 'sepia(20%) saturate(120%) brightness(110%)'
-          }}
-        />
-        
-        <div className="max-w-7xl mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            {/* TITLE WITH PORTRAIT */}
-            <div className="flex items-center space-x-4">
-              <ClassicalMacrobiusPortrait className="w-14 h-14" />
-              <div>
-                <h1 
-                  className="text-2xl font-bold text-amber-900"
-                  style={{ 
-                    fontFamily: 'Times New Roman, serif',
-                    textShadow: '1px 1px 2px rgba(212, 175, 55, 0.2)'
-                  }}
-                >
-                  MACROBIUS
-                </h1>
-                <p className="text-sm text-amber-700 italic">
-                  Eine antike Flaschenpost
-                </p>
-              </div>
-            </div>
-            
-            {/* STATUS & CONTROLS */}
-            <div className="flex items-center space-x-4">
-              {/* ORACLE CLOUD STATUS - IMPROVED */}
-              <div 
-                className="flex items-center space-x-2 px-3 py-2 rounded-lg border"
-                style={{
-                  backgroundColor: oracleStatus === 'connected' 
-                    ? 'rgba(34, 197, 94, 0.1)' 
-                    : oracleStatus === 'offline' 
-                    ? 'rgba(239, 68, 68, 0.1)' 
-                    : 'rgba(245, 158, 11, 0.1)',
-                  borderColor: oracleStatus === 'connected' 
-                    ? 'rgba(34, 197, 94, 0.3)' 
-                    : oracleStatus === 'offline' 
-                    ? 'rgba(239, 68, 68, 0.3)' 
-                    : 'rgba(245, 158, 11, 0.3)'
-                }}
-              >
-                <div 
-                  className={`w-2 h-2 rounded-full ${
-                    oracleStatus === 'connected' ? 'bg-green-500' :
-                    oracleStatus === 'offline' ? 'bg-red-500' : 'bg-yellow-500'
-                  } ${oracleStatus === 'checking' ? 'animate-pulse' : ''}`}
-                />
-                <span className="text-xs font-medium text-amber-900">
-                  Oracle Cloud: {
-                    oracleStatus === 'connected' ? '1.401 Texte' :
-                    oracleStatus === 'offline' ? 'Offline' : 'Prüfung...'
-                  }
-                </span>
-              </div>
-              
-              {/* LANGUAGE SWITCHER */}
-              <div className="flex space-x-1">
-                {(['de', 'en'] as const).map((lang) => (
-                  <button
-                    key={lang}
-                    onClick={() => handleLanguageChange(lang)}
-                    className="px-3 py-2 text-sm font-medium rounded-lg transition-all duration-200 hover:scale-105"
-                    style={{
-                      backgroundColor: getLanguageKey(language) === lang 
-                        ? '#d4af37' 
-                        : 'rgba(212, 175, 55, 0.1)',
-                      color: getLanguageKey(language) === lang ? '#ffffff' : '#92400e',
-                      border: '1px solid rgba(212, 175, 55, 0.3)',
-                      boxShadow: getLanguageKey(language) === lang 
-                        ? '0 2px 8px rgba(212, 175, 55, 0.3)' 
-                        : 'none'
-                    }}
-                  >
-                    {lang.toUpperCase()}
-                  </button>
-                ))}
-              </div>
-            </div>
+        <div className="flex-1 overflow-y-auto p-6">
+          {/* HEADER */}
+          <div className="mb-8 text-center">
+            <ClassicalMacrobiusPortrait className="w-16 h-16 mx-auto mb-4" />
+            <h1 className="text-xl font-bold text-amber-900" style={{ fontFamily: 'Times New Roman, serif' }}>
+              MACROBIUS
+            </h1>
+            <p className="text-sm text-amber-700 italic">
+              Eine antike Flaschenpost
+            </p>
           </div>
-        </div>
-      </header>
-      
-      {/* 📚 HORIZONTAL NAVIGATION - IMPROVED */}
-      <nav 
-        className="relative z-20 bg-white/80 backdrop-blur-sm border-b border-amber-100 shadow-sm"
-        style={{
-          background: 'linear-gradient(to bottom, rgba(255, 255, 255, 0.9), rgba(248, 246, 240, 0.8))'
-        }}
-      >
-        <div className="max-w-7xl mx-auto px-4">
-          {/* MAIN SECTIONS */}
-          <div className="flex items-center justify-center space-x-1 py-3 overflow-x-auto">
+          
+          {/* ✅ MAIN NAVIGATION - VERTICAL */}
+          <nav className="space-y-2 mb-8">
+            <h3 className="text-xs font-bold uppercase tracking-wider mb-4 px-2 text-amber-700">
+              Hauptnavigation
+            </h3>
             {mainSections.map((section) => {
               const IconComponent = section.icon;
               const isActive = currentSection === section.id;
               return (
                 <button
                   key={section.id}
-                  onClick={() => setCurrentSection(section.id)}
-                  className="flex items-center space-x-2 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 hover:scale-105 whitespace-nowrap"
+                  onClick={() => {
+                    console.log('🔄 Navigating to:', section.id);
+                    setCurrentSection(section.id);
+                  }}
+                  className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all duration-200 hover:scale-102"
                   style={{
-                    backgroundColor: isActive ? 'rgba(212, 175, 55, 0.15)' : 'transparent',
+                    backgroundColor: isActive ? 'rgba(212, 175, 55, 0.2)' : 'rgba(255, 255, 255, 0.3)',
                     color: isActive ? '#92400e' : '#a16207',
-                    border: isActive ? '1px solid rgba(212, 175, 55, 0.3)' : '1px solid transparent',
-                    boxShadow: isActive ? '0 2px 8px rgba(212, 175, 55, 0.15)' : 'none'
+                    border: isActive ? '1px solid rgba(212, 175, 55, 0.4)' : '1px solid rgba(212, 175, 55, 0.1)',
+                    boxShadow: isActive ? '0 2px 12px rgba(212, 175, 55, 0.2)' : 'none'
                   }}
                 >
                   <IconComponent 
-                    className="w-4 h-4" 
+                    className="w-5 h-5" 
                     style={{ color: isActive ? '#d4af37' : '#a16207' }} 
                   />
-                  <span>{section.label[getLanguageKey(language)]}</span>
+                  {section.label[getLanguageKey(language)]}
                 </button>
               );
             })}
+          </nav>
+          
+          {/* ✅ FIXED: KI-SYSTEME SECTION - PROPER NAVIGATION */}
+          <div className="mb-8">
+            <h3 className="text-xs font-bold uppercase tracking-wider mb-4 px-2 text-amber-700">
+              KI-Systeme
+            </h3>
+            <nav className="space-y-2">
+              {kiSections.map((section) => {
+                const IconComponent = section.icon;
+                const isActive = currentSection === section.id;
+                return (
+                  <button
+                    key={section.id}
+                    onClick={() => {
+                      console.log('🤖 Navigating to KI-System:', section.id);
+                      setCurrentSection(section.id);
+                    }}
+                    className="w-full flex items-center gap-3 px-4 py-2 rounded-lg text-sm transition-all duration-200"
+                    style={{
+                      backgroundColor: isActive ? 'rgba(212, 175, 55, 0.15)' : 'rgba(255, 255, 255, 0.2)',
+                      color: isActive ? '#92400e' : '#a16207',
+                      border: isActive ? '1px solid rgba(212, 175, 55, 0.3)' : '1px solid rgba(212, 175, 55, 0.1)'
+                    }}
+                  >
+                    <IconComponent 
+                      className="w-4 h-4" 
+                      style={{ color: isActive ? '#d4af37' : '#a16207' }} 
+                    />
+                    {section.label[getLanguageKey(language)]}
+                  </button>
+                );
+              })}
+            </nav>
           </div>
           
-          {/* KI-SYSTEME */}
-          <div className="border-t border-amber-100 py-2">
-            <div className="flex items-center justify-center space-x-4">
-              <span className="text-xs font-bold uppercase tracking-wider text-amber-700">
-                KI-Systeme:
+          {/* ✅ ORACLE CLOUD STATUS */}
+          <div 
+            className="p-4 rounded-lg mb-6 border"
+            style={{
+              backgroundColor: oracleStatus === 'connected' 
+                ? 'rgba(34, 197, 94, 0.1)' 
+                : oracleStatus === 'offline' 
+                ? 'rgba(239, 68, 68, 0.1)' 
+                : 'rgba(245, 158, 11, 0.1)',
+              borderColor: oracleStatus === 'connected' 
+                ? 'rgba(34, 197, 94, 0.3)' 
+                : oracleStatus === 'offline' 
+                ? 'rgba(239, 68, 68, 0.3)' 
+                : 'rgba(245, 158, 11, 0.3)'
+            }}
+          >
+            <div className="flex items-center gap-2 mb-2">
+              <div 
+                className={`w-3 h-3 rounded-full ${
+                  oracleStatus === 'connected' ? 'bg-green-500' :
+                  oracleStatus === 'offline' ? 'bg-red-500' : 'bg-yellow-500'
+                } ${oracleStatus === 'checking' ? 'animate-pulse' : ''}`}
+              />
+              <span className="text-xs font-semibold text-amber-900">
+                Oracle Cloud
               </span>
-              <div className="flex items-center space-x-1">
-                {kiSections.map((section) => {
-                  const IconComponent = section.icon;
-                  const isActive = currentSection === section.id;
-                  return (
-                    <button
-                      key={section.id}
-                      onClick={() => setCurrentSection(section.id)}
-                      className="flex items-center space-x-1 px-2 py-1 rounded text-xs font-medium transition-all duration-200 hover:scale-105"
-                      style={{
-                        backgroundColor: isActive ? 'rgba(212, 175, 55, 0.1)' : 'transparent',
-                        color: isActive ? '#92400e' : '#a16207',
-                        border: isActive ? '1px solid rgba(212, 175, 55, 0.2)' : '1px solid transparent'
-                      }}
-                    >
-                      <IconComponent 
-                        className="w-3 h-3" 
-                        style={{ color: isActive ? '#d4af37' : '#a16207' }} 
-                      />
-                      <span>{section.label[getLanguageKey(language)]}</span>
-                    </button>
-                  );
-                })}
-              </div>
             </div>
+            <p className="text-xs text-amber-800">
+              {oracleStatus === 'connected' ? '1.401 Kulturelle Texte' :
+               oracleStatus === 'offline' ? 'Offline - Fallback Modus' : 'Verbindung prüfen...'}
+            </p>
+          </div>
+          
+          {/* ✅ FIXED: LANGUAGE SWITCHER - NOW WITH LATIN */}
+          <div className="flex gap-1 justify-center">
+            {(['de', 'en', 'la'] as const).map((lang) => (
+              <button
+                key={lang}
+                onClick={() => handleLanguageChange(lang)}
+                className="px-3 py-2 text-xs font-medium rounded transition-all duration-200"
+                style={{
+                  backgroundColor: getLanguageKey(language) === lang ? '#d4af37' : 'rgba(212, 175, 55, 0.1)',
+                  color: getLanguageKey(language) === lang ? '#ffffff' : '#a16207',
+                  border: '1px solid rgba(212, 175, 55, 0.3)',
+                  boxShadow: getLanguageKey(language) === lang ? '0 2px 8px rgba(212, 175, 55, 0.3)' : 'none'
+                }}
+              >
+                {lang.toUpperCase()}
+              </button>
+            ))}
           </div>
         </div>
-      </nav>
+      </aside>
       
-      {/* 📖 MAIN CONTENT */}
-      <main className="relative z-20">
-        <div 
-          className="max-w-7xl mx-auto p-6"
-          style={{
-            background: 'rgba(255, 255, 255, 0.4)',
-            backdropFilter: 'blur(10px)',
-            borderRadius: '12px',
-            margin: '20px auto',
-            boxShadow: '0 4px 20px rgba(212, 175, 55, 0.08)',
-            border: '1px solid rgba(212, 175, 55, 0.1)'
-          }}
-        >
+      {/* ✅ MAIN CONTENT AREA - SECTION CONTENT */}
+      <main className="flex-1 h-screen overflow-y-auto" style={{ background: 'rgba(255, 255, 255, 0.3)' }}>
+        <div className="relative z-20 p-8">
           {renderSection()}
         </div>
       </main>
-      
-      {/* 🏛️ FOOTER */}
-      <footer 
-        className="relative z-20 text-center py-4 border-t border-amber-100"
-        style={{
-          background: 'linear-gradient(to top, rgba(212, 175, 55, 0.05), transparent)'
-        }}
-      >
-        <p className="text-sm italic text-amber-800">
-          Macrobius Digital Edition - Antike Weisheit für das 21. Jahrhundert
-        </p>
-      </footer>
     </div>
   );
 };
