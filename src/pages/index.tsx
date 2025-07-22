@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useLanguage } from '@/contexts/LanguageContext';
+import { useLanguage, Language } from '@/contexts/LanguageContext';
 
 // Essential Icons
 import { 
@@ -56,13 +56,11 @@ interface ClassicalPortraitProps {
   className?: string;
 }
 
-type LanguageCode = 'de' | 'en' | 'la';
-type LanguageKey = 'DE' | 'EN' | 'LA';
 type CulturalAnalysisTab = 'analyze' | 'explore' | 'statistics';
 type LearningPathMode = 'dashboard' | 'daily_plan' | 'knowledge_gaps' | 'prerequisites' | 'ai_optimization';
 
 // Language interface for components that expect it
-interface Language {
+interface LanguageObject {
   code: string;
   name: string;
 }
@@ -322,16 +320,8 @@ const ClassicalMacrobiusApp: React.FC = () => {
     document.title = `${statusEmoji} Macrobius - AI-Powered Latin Education`;
   }, [connectionStatus, fallbackMode, lastConnectionCheck]);
   
-  const convertToLanguage = (lang: LanguageCode): LanguageKey => {
-    switch(lang) {
-      case 'de': return 'DE';
-      case 'en': return 'EN';
-      case 'la': return 'LA';
-      default: return 'DE';
-    }
-  };
-
-  const getLanguageKey = (lang: LanguageKey): LanguageCode => {
+  // Helper function to convert Language to lowercase for components that need it
+  const getLanguageCode = (lang: Language): string => {
     switch(lang) {
       case 'DE': return 'de';
       case 'EN': return 'en';
@@ -341,8 +331,8 @@ const ClassicalMacrobiusApp: React.FC = () => {
   };
 
   // Helper function to create Language object for components that need it
-  const createLanguageObject = (langKey: LanguageKey): Language => {
-    const langCode = getLanguageKey(langKey);
+  const createLanguageObject = (lang: Language): LanguageObject => {
+    const langCode = getLanguageCode(lang);
     const names = {
       'de': 'Deutsch',
       'en': 'English', 
@@ -350,12 +340,18 @@ const ClassicalMacrobiusApp: React.FC = () => {
     };
     return {
       code: langCode,
-      name: names[langCode]
+      name: names[langCode as keyof typeof names]
     };
   };
 
-  const handleLanguageChange = (lang: LanguageCode): void => {
-    setLanguage(convertToLanguage(lang));
+  // Helper function to set language from lowercase string (for switcher)
+  const handleLanguageChange = (langCode: string): void => {
+    switch(langCode) {
+      case 'de': setLanguage('DE'); break;
+      case 'en': setLanguage('EN'); break;
+      case 'la': setLanguage('LA'); break;
+      default: setLanguage('DE');
+    }
   };
 
   // ✅ Type-safe helper functions for AI component props
@@ -387,88 +383,88 @@ const ClassicalMacrobiusApp: React.FC = () => {
   const mainSections = [
     { 
       id: 'intro', 
-      label: { de: 'Einführung', en: 'Introduction', la: 'Introductio' }, 
+      label: { DE: 'Einführung', EN: 'Introduction', LA: 'Introductio' }, 
       icon: Home,
-      description: { de: 'Willkommen bei Macrobius', en: 'Welcome to Macrobius', la: 'Salve in Macrobium' }
+      description: { DE: 'Willkommen bei Macrobius', EN: 'Welcome to Macrobius', LA: 'Salve in Macrobium' }
     },
     { 
       id: 'quiz', 
-      label: { de: 'Quiz', en: 'Quiz', la: 'Quaestiones' }, 
+      label: { DE: 'Quiz', EN: 'Quiz', LA: 'Quaestiones' }, 
       icon: HelpCircle,
-      description: { de: 'Interaktive Lernkontrolle', en: 'Interactive Learning', la: 'Quaestiones Interactivae' }
+      description: { DE: 'Interaktive Lernkontrolle', EN: 'Interactive Learning', LA: 'Quaestiones Interactivae' }
     },
     { 
       id: 'worldmap', 
-      label: { de: 'Weltkarte', en: 'World Map', la: 'Mappa Mundi' }, 
+      label: { DE: 'Weltkarte', EN: 'World Map', LA: 'Mappa Mundi' }, 
       icon: Globe,
-      description: { de: 'Geografische Visualisierung', en: 'Geographic Visualization', la: 'Visualizatio Geographica' }
+      description: { DE: 'Geografische Visualisierung', EN: 'Geographic Visualization', LA: 'Visualizatio Geographica' }
     },
     { 
       id: 'cosmos', 
-      label: { de: 'Kosmos', en: 'Cosmos', la: 'Cosmos' }, 
+      label: { DE: 'Kosmos', EN: 'Cosmos', LA: 'Cosmos' }, 
       icon: Star,
-      description: { de: 'Astronomische Konzepte', en: 'Astronomical Concepts', la: 'Conceptus Astronomici' }
+      description: { DE: 'Astronomische Konzepte', EN: 'Astronomical Concepts', LA: 'Conceptus Astronomici' }
     },
     { 
       id: 'banquet', 
-      label: { de: 'Gastmahl', en: 'Banquet', la: 'Convivium' }, 
+      label: { DE: 'Gastmahl', EN: 'Banquet', LA: 'Convivium' }, 
       icon: Wine,
-      description: { de: 'Römische Gastmähler', en: 'Roman Banquets', la: 'Convivia Romana' }
+      description: { DE: 'Römische Gastmähler', EN: 'Roman Banquets', LA: 'Convivia Romana' }
     },
     { 
       id: 'textsearch', 
-      label: { de: 'Textsuche', en: 'Text Search', la: 'Quaestio Textuum' }, 
+      label: { DE: 'Textsuche', EN: 'Text Search', LA: 'Quaestio Textuum' }, 
       icon: Search,
-      description: { de: 'Erweiterte Textanalyse', en: 'Advanced Text Analysis', la: 'Analysis Textuum Provecta' }
+      description: { DE: 'Erweiterte Textanalyse', EN: 'Advanced Text Analysis', LA: 'Analysis Textuum Provecta' }
     },
     { 
       id: 'learning', 
-      label: { de: 'Lernen', en: 'Learning', la: 'Discere' }, 
+      label: { DE: 'Lernen', EN: 'Learning', LA: 'Discere' }, 
       icon: GraduationCap,
-      description: { de: 'Pädagogische Werkzeuge', en: 'Educational Tools', la: 'Instrumenta Paedagogica' }
+      description: { DE: 'Pädagogische Werkzeuge', EN: 'Educational Tools', LA: 'Instrumenta Paedagogica' }
     },
     { 
       id: 'vokabeltrainer', 
-      label: { de: 'Vokabeltrainer', en: 'Vocabulary Trainer', la: 'Exercitium Vocabulorum' }, 
+      label: { DE: 'Vokabeltrainer', EN: 'Vocabulary Trainer', LA: 'Exercitium Vocabulorum' }, 
       icon: BookOpen,
-      description: { de: 'Intelligentes SRS-System', en: 'Intelligent SRS System', la: 'Systema SRS Intelligens' }
+      description: { DE: 'Intelligentes SRS-System', EN: 'Intelligent SRS System', LA: 'Systema SRS Intelligens' }
     },
     { 
       id: 'visualizations', 
-      label: { de: 'Visualisierungen', en: 'Visualizations', la: 'Visualizationes' }, 
+      label: { DE: 'Visualisierungen', EN: 'Visualizations', LA: 'Visualizationes' }, 
       icon: BarChart3,
-      description: { de: 'Datenvisualisierung', en: 'Data Visualization', la: 'Visualizatio Datorum' }
+      description: { DE: 'Datenvisualisierung', EN: 'Data Visualization', LA: 'Visualizatio Datorum' }
     }
   ];
 
   const kiSections = [
     { 
       id: 'ki-kulturanalyse', 
-      label: { de: 'KI-Kulturanalyse', en: 'AI Cultural Analysis', la: 'AI Analysis Culturalis' }, 
+      label: { DE: 'KI-Kulturanalyse', EN: 'AI Cultural Analysis', LA: 'AI Analysis Culturalis' }, 
       icon: Brain,
       tier: 3,
-      description: { de: 'Echte KI-Kulturanalyse', en: 'Real AI Cultural Analysis', la: 'Analysis AI Culturalis Vera' }
+      description: { DE: 'Echte KI-Kulturanalyse', EN: 'Real AI Cultural Analysis', LA: 'Analysis AI Culturalis Vera' }
     },
     { 
       id: 'lernpfade', 
-      label: { de: 'Lernpfade', en: 'Learning Paths', la: 'Semitae Discendi' }, 
+      label: { DE: 'Lernpfade', EN: 'Learning Paths', LA: 'Semitae Discendi' }, 
       icon: Target,
       tier: 3,
-      description: { de: 'KI-optimierte Lernpfade', en: 'AI-Optimized Learning Paths', la: 'Semitae AI-Optimizatae' }
+      description: { DE: 'KI-optimierte Lernpfade', EN: 'AI-Optimized Learning Paths', LA: 'Semitae AI-Optimizatae' }
     },
     { 
       id: 'ki-tutor', 
-      label: { de: 'KI-Tutor', en: 'AI Tutor', la: 'AI Praeceptor' }, 
+      label: { DE: 'KI-Tutor', EN: 'AI Tutor', LA: 'AI Praeceptor' }, 
       icon: Crown,
       tier: 3,
-      description: { de: 'Intelligenter AI-Tutor', en: 'Intelligent AI Tutor', la: 'AI Praeceptor Intelligens' }
+      description: { DE: 'Intelligenter AI-Tutor', EN: 'Intelligent AI Tutor', LA: 'AI Praeceptor Intelligens' }
     },
     { 
       id: 'kulturmodule', 
-      label: { de: 'Kulturmodule', en: 'Cultural Modules', la: 'Moduli Culturales' }, 
+      label: { DE: 'Kulturmodule', EN: 'Cultural Modules', LA: 'Moduli Culturales' }, 
       icon: Scroll,
       tier: 3,
-      description: { de: 'Erweiterte Kulturmodule', en: 'Advanced Cultural Modules', la: 'Moduli Culturales Provecti' }
+      description: { DE: 'Erweiterte Kulturmodule', EN: 'Advanced Cultural Modules', LA: 'Moduli Culturales Provecti' }
     }
   ];
 
@@ -479,54 +475,54 @@ const ClassicalMacrobiusApp: React.FC = () => {
         return [
           { 
             id: 'analyze', 
-            label: { de: 'KI-Analyse', en: 'AI Analysis', la: 'Analysis AI' }, 
+            label: { DE: 'KI-Analyse', EN: 'AI Analysis', LA: 'Analysis AI' }, 
             icon: Brain,
-            description: { de: 'Echte NLP-Analyse', en: 'Real NLP Analysis', la: 'Analysis NLP Vera' }
+            description: { DE: 'Echte NLP-Analyse', EN: 'Real NLP Analysis', LA: 'Analysis NLP Vera' }
           },
           { 
             id: 'explore', 
-            label: { de: 'Themen-Explorer', en: 'Theme Explorer', la: 'Explorator Thematum' }, 
+            label: { DE: 'Themen-Explorer', EN: 'Theme Explorer', LA: 'Explorator Thematum' }, 
             icon: Search,
-            description: { de: 'Kulturelle Themenexploration', en: 'Cultural Theme Exploration', la: 'Exploratio Thematum Culturalium' }
+            description: { DE: 'Kulturelle Themenexploration', EN: 'Cultural Theme Exploration', LA: 'Exploratio Thematum Culturalium' }
           },
           { 
             id: 'statistics', 
-            label: { de: 'Statistiken', en: 'Statistics', la: 'Statistica' }, 
+            label: { DE: 'Statistiken', EN: 'Statistics', LA: 'Statistica' }, 
             icon: BarChart3,
-            description: { de: 'KI-generierte Statistiken', en: 'AI-Generated Statistics', la: 'Statistica AI-Generata' }
+            description: { DE: 'KI-generierte Statistiken', EN: 'AI-Generated Statistics', LA: 'Statistica AI-Generata' }
           }
         ];
       case 'lernpfade':
         return [
           { 
             id: 'dashboard', 
-            label: { de: 'Dashboard', en: 'Dashboard', la: 'Tabula Administrationis' }, 
+            label: { DE: 'Dashboard', EN: 'Dashboard', LA: 'Tabula Administrationis' }, 
             icon: Gauge,
-            description: { de: 'KI-Lern-Dashboard', en: 'AI Learning Dashboard', la: 'Tabula AI Discendi' }
+            description: { DE: 'KI-Lern-Dashboard', EN: 'AI Learning Dashboard', LA: 'Tabula AI Discendi' }
           },
           { 
             id: 'daily_plan', 
-            label: { de: 'KI-Tagesplan', en: 'AI Daily Plan', la: 'Consilium AI Diurnum' }, 
+            label: { DE: 'KI-Tagesplan', EN: 'AI Daily Plan', LA: 'Consilium AI Diurnum' }, 
             icon: CalendarDays,
-            description: { de: 'Intelligente Tagesplanung', en: 'Intelligent Daily Planning', la: 'Consilium Diurnum Intelligens' }
+            description: { DE: 'Intelligente Tagesplanung', EN: 'Intelligent Daily Planning', LA: 'Consilium Diurnum Intelligens' }
           },
           { 
             id: 'knowledge_gaps', 
-            label: { de: 'KI-Wissenslücken', en: 'AI Knowledge Gaps', la: 'Lacunae AI Scientiae' }, 
+            label: { DE: 'KI-Wissenslücken', EN: 'AI Knowledge Gaps', LA: 'Lacunae AI Scientiae' }, 
             icon: AlertTriangle,
-            description: { de: 'KI-Wissenslückenanalyse', en: 'AI Knowledge Gap Analysis', la: 'Analysis AI Lacunarum Scientiae' }
+            description: { DE: 'KI-Wissenslückenanalyse', EN: 'AI Knowledge Gap Analysis', LA: 'Analysis AI Lacunarum Scientiae' }
           },
           { 
             id: 'prerequisites', 
-            label: { de: 'KI-Voraussetzungen', en: 'AI Prerequisites', la: 'Requisita AI' }, 
+            label: { DE: 'KI-Voraussetzungen', EN: 'AI Prerequisites', LA: 'Requisita AI' }, 
             icon: Network,
-            description: { de: 'Intelligente Voraussetzungsmappierung', en: 'Intelligent Prerequisites Mapping', la: 'Mappatio AI Requisitorum' }
+            description: { DE: 'Intelligente Voraussetzungsmappierung', EN: 'Intelligent Prerequisites Mapping', LA: 'Mappatio AI Requisitorum' }
           },
           { 
             id: 'ai_optimization', 
-            label: { de: 'KI-Optimierung', en: 'AI Optimization', la: 'Optimizatio AI' }, 
+            label: { DE: 'KI-Optimierung', EN: 'AI Optimization', LA: 'Optimizatio AI' }, 
             icon: Sparkles,
-            description: { de: 'ML-basierte Optimierung', en: 'ML-Based Optimization', la: 'Optimizatio ML-Basata' }
+            description: { DE: 'ML-basierte Optimierung', EN: 'ML-Based Optimization', LA: 'Optimizatio ML-Basata' }
           }
         ];
       default:
@@ -554,15 +550,15 @@ const ClassicalMacrobiusApp: React.FC = () => {
       case 'visualizations': 
         return <VisualizationsSection isActive={true} language={language} />;
       case 'vokabeltrainer': 
-        return <VocabularyTrainer isActive={true} language={getLanguageKey(language)} />;
+        return <VocabularyTrainer isActive={true} language={getLanguageCode(language)} />;
       case 'learning': 
-        return <LearningSection isActive={true} language={getLanguageKey(language)} />;
+        return <LearningSection isActive={true} language={getLanguageCode(language)} />;
       
       // ✅ TIER 3 AI COMPONENTS WITH ENHANCED INTEGRATION
       case 'ki-kulturanalyse':
         return (
           <AICulturalAnalysisSection 
-            language={getLanguageKey(language)} 
+            language={getLanguageCode(language)} 
             activeTab={getValidCulturalAnalysisTab(currentSubSection)}
           />
         );
@@ -575,13 +571,13 @@ const ClassicalMacrobiusApp: React.FC = () => {
       case 'ki-tutor':
         return (
           <AITutoringSystemSection 
-            language={getLanguageKey(language)}
+            language={getLanguageCode(language)}
           />
         );
       case 'kulturmodule':
         return (
           <AICulturalAnalysisSection 
-            language={getLanguageKey(language)} 
+            language={getLanguageCode(language)} 
             activeTab={getValidCulturalAnalysisTab(currentSubSection)}
           />
         );
@@ -854,7 +850,7 @@ const ClassicalMacrobiusApp: React.FC = () => {
                       />
                       <div style={{ flex: 1 }}>
                         <div style={{ fontWeight: '600' }}>
-                          {section.label[getLanguageKey(language)]}
+                          {section.label[language]}
                         </div>
                         <div style={{ 
                           fontSize: '11px', 
@@ -862,7 +858,7 @@ const ClassicalMacrobiusApp: React.FC = () => {
                           marginTop: '2px',
                           lineHeight: '1.2'
                         }}>
-                          {section.description?.[getLanguageKey(language)]}
+                          {section.description?.[language]}
                         </div>
                       </div>
                     </button>
@@ -965,7 +961,7 @@ const ClassicalMacrobiusApp: React.FC = () => {
                       />
                       <div style={{ flex: 1 }}>
                         <div style={{ fontWeight: '600' }}>
-                          {section.label[getLanguageKey(language)]}
+                          {section.label[language]}
                         </div>
                         <div style={{ 
                           fontSize: '10px', 
@@ -973,7 +969,7 @@ const ClassicalMacrobiusApp: React.FC = () => {
                           marginTop: '2px',
                           lineHeight: '1.2'
                         }}>
-                          {section.description?.[getLanguageKey(language)]}
+                          {section.description?.[language]}
                         </div>
                       </div>
                       <div style={{
@@ -1063,7 +1059,7 @@ const ClassicalMacrobiusApp: React.FC = () => {
                               />
                               <div style={{ flex: 1 }}>
                                 <div>
-                                  {subSection.label[getLanguageKey(language)]}
+                                  {subSection.label[language]}
                                 </div>
                                 <div style={{ 
                                   fontSize: '9px', 
@@ -1071,7 +1067,7 @@ const ClassicalMacrobiusApp: React.FC = () => {
                                   marginTop: '1px',
                                   lineHeight: '1.2'
                                 }}>
-                                  {subSection.description?.[getLanguageKey(language)]}
+                                  {subSection.description?.[language]}
                                 </div>
                               </div>
                             </button>
@@ -1226,12 +1222,12 @@ const ClassicalMacrobiusApp: React.FC = () => {
           
           {/* ENHANCED LANGUAGE SWITCHER */}
           <div style={{ display: 'flex', gap: '6px', justifyContent: 'center' }}>
-            {(['de', 'en', 'la'] as const).map((lang) => {
-              const isActive = getLanguageKey(language) === lang;
+            {(['de', 'en', 'la'] as const).map((langCode) => {
+              const isActive = getLanguageCode(language) === langCode;
               return (
                 <button
-                  key={lang}
-                  onClick={() => setLanguage(convertToLanguage(lang))}
+                  key={langCode}
+                  onClick={() => handleLanguageChange(langCode)}
                   style={{
                     padding: '10px 14px',
                     fontSize: '12px',
@@ -1270,7 +1266,7 @@ const ClassicalMacrobiusApp: React.FC = () => {
                     }
                   }}
                 >
-                  {lang.toUpperCase()}
+                  {langCode.toUpperCase()}
                 </button>
               );
             })}
