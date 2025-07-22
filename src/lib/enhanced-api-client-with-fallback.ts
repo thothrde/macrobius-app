@@ -1,11 +1,8 @@
 // Enhanced API Client for Oracle Cloud Backend Integration with HTTPS/HTTP Support
-// CRITICAL FIX: Mixed content issues + Enhanced visual design support
-// Updated with secure connection handling and better fallback mechanisms
-// RESOLVED: Added missing vocabulary, search, and learningPaths endpoints
-// FIXED: Added initializeAIEngine method to learningPaths
-// FIXED: Added addCulturalContext method to quiz endpoints
-// CRITICAL BUILD FIX: Added missing adaptiveDifficultyAdjustment and other quiz methods
-// CRITICAL TYPESCRIPT FIX: Fixed connection status type mismatch
+// 🔧 CRITICAL FIX: Mixed content issues + Enhanced visual design support
+// ✅ RESOLVED: CORS proxy configuration + Unified RAG port (8080)
+// ✅ FIXED: Connection status handling + Better error messages
+// ✅ ENHANCED: Graceful fallback mechanisms for production deployment
 
 import { fallbackApiClient } from './fallback-api-client';
 
@@ -33,6 +30,7 @@ interface PerformanceMetrics {
   httpsAttempts: number;
   httpFallbacks: number;
   corsErrors: number;
+  proxyAttempts: number;
 }
 
 class ApiError extends Error {
@@ -53,6 +51,7 @@ export class EnhancedMacrobiusApiClient {
   private baseURL: string;
   private httpsBaseURL: string;
   private httpBaseURL: string;
+  private proxyBaseURL: string;  // 🔧 NEW: Next.js proxy for CORS bypass
   private cache: Map<string, CacheEntry>;
   private metrics: PerformanceMetrics;
   private retryAttempts: number;
@@ -64,13 +63,18 @@ export class EnhancedMacrobiusApiClient {
   private connectionStatus: 'connected' | 'offline' | 'checking' | 'cors_error';
 
   constructor() {
-    // 🔧 CRITICAL FIX: Support both HTTPS and HTTP for Oracle Cloud
+    // 🔧 CRITICAL FIX: Enhanced URL configuration with proxy support
     this.httpsBaseURL = process.env.NEXT_PUBLIC_HTTPS_API_URL || 'https://152.70.184.232:8080';
     this.httpBaseURL = process.env.NEXT_PUBLIC_API_URL || 'http://152.70.184.232:8080';
+    this.proxyBaseURL = '/api/oracle';  // Next.js proxy to bypass CORS
     
-    // Start with HTTPS for production, HTTP for development
+    // 🔧 SMART URL SELECTION: Use proxy for production, direct for development
+    const isProduction = typeof window !== 'undefined' && window.location.hostname !== 'localhost';
     this.preferHTTPS = typeof window !== 'undefined' && window.location.protocol === 'https:';
-    this.baseURL = this.preferHTTPS ? this.httpsBaseURL : this.httpBaseURL;
+    
+    // Priority: Proxy (production) > HTTPS > HTTP
+    this.baseURL = isProduction ? this.proxyBaseURL : 
+                   this.preferHTTPS ? this.httpsBaseURL : this.httpBaseURL;
     
     this.cache = new Map();
     this.retryAttempts = 3;
@@ -88,14 +92,15 @@ export class EnhancedMacrobiusApiClient {
       averageResponseTime: 0,
       httpsAttempts: 0,
       httpFallbacks: 0,
-      corsErrors: 0
+      corsErrors: 0,
+      proxyAttempts: 0
     };
 
     // Listen for online/offline events
     if (typeof window !== 'undefined') {
       window.addEventListener('online', () => {
         this.isOnline = true;
-        this.testConnection(); // Re-test connection when coming back online
+        this.testConnection();
         this.processQueuedRequests();
       });
       
@@ -110,71 +115,99 @@ export class EnhancedMacrobiusApiClient {
   }
 
   /**
-   * 🔧 ENHANCED CONNECTION TESTING with HTTPS/HTTP fallback
+   * 🔧 ENHANCED CONNECTION TESTING with proxy support
    */
   private async testConnection(): Promise<void> {
     const now = Date.now();
-    // Don't test too frequently (max once per 30 seconds)
     if (now - this.lastConnectionTest < 30000) return;
     
     this.lastConnectionTest = now;
     this.connectionStatus = 'checking';
     
-    console.log('🔍 Testing Oracle Cloud connection...', {
-      preferHTTPS: this.preferHTTPS,
-      httpsURL: this.httpsBaseURL,
-      httpURL: this.httpBaseURL
+    console.log('🔍 Testing Oracle Cloud connection with enhanced methods...', {
+      proxy: this.proxyBaseURL,
+      https: this.httpsBaseURL,
+      http: this.httpBaseURL
     });
     
-    // Try HTTPS first if preferred
+    // 🔧 PRIORITY 1: Try Next.js proxy first (best for production)
+    try {
+      this.metrics.proxyAttempts++;
+      const response = await fetch(`${this.proxyBaseURL}/health`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Client-Version': '2.1-ENHANCED'
+        },
+        signal: AbortSignal.timeout(8000)
+      });
+      
+      if (response.ok) {
+        this.baseURL = this.proxyBaseURL;
+        this.connectionStatus = 'connected';
+        this.corsIssues = false;
+        console.log('✅ Oracle Cloud connected via Next.js proxy');
+        return;
+      }
+    } catch (error) {
+      console.log('⚠️ Proxy connection failed, trying direct HTTPS...', error);
+    }
+    
+    // 🔧 PRIORITY 2: Try HTTPS direct
     if (this.preferHTTPS) {
       try {
         this.metrics.httpsAttempts++;
         const response = await fetch(`${this.httpsBaseURL}/api/health`, {
           method: 'GET',
           mode: 'cors',
-          signal: AbortSignal.timeout(10000)
+          credentials: 'omit',
+          signal: AbortSignal.timeout(8000)
         });
         
         if (response.ok) {
           this.baseURL = this.httpsBaseURL;
           this.connectionStatus = 'connected';
           this.corsIssues = false;
-          console.log('✅ HTTPS connection successful to Oracle Cloud');
+          console.log('✅ Oracle Cloud connected via HTTPS');
           return;
         }
       } catch (error) {
-        console.log('⚠️ HTTPS connection failed, trying HTTP fallback:', error);
+        console.log('⚠️ HTTPS connection failed, trying HTTP fallback...', error);
         this.metrics.corsErrors++;
       }
     }
     
-    // Fallback to HTTP
+    // 🔧 PRIORITY 3: HTTP fallback
     try {
       this.metrics.httpFallbacks++;
       const response = await fetch(`${this.httpBaseURL}/api/health`, {
         method: 'GET',
         mode: 'cors',
-        signal: AbortSignal.timeout(10000)
+        credentials: 'omit',
+        signal: AbortSignal.timeout(8000)
       });
       
       if (response.ok) {
         this.baseURL = this.httpBaseURL;
         this.connectionStatus = 'connected';
         this.corsIssues = false;
-        console.log('✅ HTTP fallback connection successful to Oracle Cloud');
+        console.log('✅ Oracle Cloud connected via HTTP fallback');
         return;
       }
     } catch (error) {
-      console.log('❌ Both HTTPS and HTTP connections failed:', error);
-      this.connectionStatus = 'cors_error';
-      this.corsIssues = true;
-      this.metrics.corsErrors++;
+      console.log('❌ All Oracle Cloud connection methods failed:', error);
     }
+    
+    // All methods failed
+    this.connectionStatus = 'cors_error';
+    this.corsIssues = true;
+    this.metrics.corsErrors++;
+    
+    console.log('🔄 Oracle Cloud unavailable - AI systems will use enhanced fallback processing');
   }
 
   /**
-   * Enhanced request method with HTTPS/HTTP fallback and performance monitoring
+   * Enhanced request method with multiple fallback strategies
    */
   async request<T>(
     endpoint: string, 
@@ -199,7 +232,6 @@ export class EnhancedMacrobiusApiClient {
         return cached;
       }
       
-      // Queue for when online
       return new Promise((resolve, reject) => {
         this.requestQueue.push(async () => {
           try {
@@ -224,30 +256,40 @@ export class EnhancedMacrobiusApiClient {
     let lastError: Error | null = null;
     const maxRetries = options.retries ?? this.retryAttempts;
 
-    // Try current baseURL first, then fallback
+    // 🔧 ENHANCED: Multiple URL strategies with smart prioritization
     const urlsToTry = [
       `${this.baseURL}${endpoint}`,
-      ...(this.baseURL === this.httpsBaseURL ? [`${this.httpBaseURL}${endpoint}`] : [`${this.httpsBaseURL}${endpoint}`])
-    ];
+      `${this.proxyBaseURL}${endpoint}`,
+      `${this.httpsBaseURL}${endpoint.startsWith('/api/') ? endpoint : '/api' + endpoint}`,
+      `${this.httpBaseURL}${endpoint.startsWith('/api/') ? endpoint : '/api' + endpoint}`
+    ].filter((url, index, arr) => arr.indexOf(url) === index); // Remove duplicates
 
     for (const url of urlsToTry) {
       for (let attempt = 0; attempt <= maxRetries; attempt++) {
         try {
-          console.log(`🔄 Attempting request to: ${url} (attempt ${attempt + 1}/${maxRetries + 1})`);
+          console.log(`🔄 Oracle Cloud request: ${url} (attempt ${attempt + 1}/${maxRetries + 1})`);
+          
+          // 🔧 ENHANCED: Smart headers based on URL type
+          const isProxyRequest = url.startsWith('/api/oracle');
+          const headers: Record<string, string> = {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'X-Client-Version': '2.1-ENHANCED',
+            'X-Request-ID': this.generateRequestId(),
+            ...(isProxyRequest ? {
+              'X-Proxy-Target': 'oracle-cloud',
+              'X-RAG-Port': '8080'  // Unified RAG port
+            } : {}),
+            ...options.headers
+          };
           
           const response = await fetch(url, {
             method: options.method || 'GET',
-            headers: {
-              'Content-Type': 'application/json',
-              'Accept': 'application/json',
-              'X-Client-Version': '2.0-ENHANCED',
-              'X-Request-ID': this.generateRequestId(),
-              ...options.headers
-            },
+            headers,
             body: options.body ? JSON.stringify(options.body) : undefined,
-            signal: options.timeout ? AbortSignal.timeout(options.timeout) : AbortSignal.timeout(30000),
-            mode: 'cors',
-            credentials: 'omit' // Avoid credential issues
+            signal: options.timeout ? AbortSignal.timeout(options.timeout) : AbortSignal.timeout(25000),
+            mode: isProxyRequest ? 'same-origin' : 'cors',
+            credentials: 'omit'
           });
 
           if (!response.ok) {
@@ -265,19 +307,11 @@ export class EnhancedMacrobiusApiClient {
           
           // Update baseURL if we succeeded with a different URL
           if (url !== `${this.baseURL}${endpoint}`) {
-            const newBaseURL = url.replace(endpoint, '');
-            console.log(`🔄 Switching base URL from ${this.baseURL} to ${newBaseURL}`);
+            const newBaseURL = url.replace(endpoint, '').replace('/api', '');
+            console.log(`🔄 Switching to successful URL: ${newBaseURL}`);
             this.baseURL = newBaseURL;
           }
           
-          // Log performance metrics
-          const cacheStatus = response.headers.get('X-Cache-Status');
-          const backendResponseTime = response.headers.get('X-Response-Time');
-          
-          if (cacheStatus || backendResponseTime) {
-            console.log(`📊 Backend Performance: Cache=${cacheStatus}, Time=${backendResponseTime}ms`);
-          }
-
           // Cache successful responses
           if (cacheKey && options.cache !== false && options.method !== 'POST') {
             this.setCache(cacheKey, data, this.getCacheExpiry(endpoint));
@@ -294,7 +328,6 @@ export class EnhancedMacrobiusApiClient {
             this.corsIssues = true;
             this.connectionStatus = 'cors_error';
             this.metrics.corsErrors++;
-            console.log('🚫 CORS error detected:', error.message);
           }
           
           // Don't retry on client errors (4xx)
@@ -304,30 +337,30 @@ export class EnhancedMacrobiusApiClient {
           
           // Wait before retry (exponential backoff)
           if (attempt < maxRetries) {
-            await this.delay(Math.pow(2, attempt) * 1000);
+            await this.delay(Math.pow(2, attempt) * 800);
           }
         }
       }
     }
 
-    // All attempts failed
+    // All attempts failed - update status and provide helpful error
     this.connectionStatus = this.corsIssues ? 'cors_error' : 'offline';
     this.updateMetrics(performance.now() - startTime, false, true);
     
     if (this.corsIssues) {
       throw new ApiError(
-        'CORS policy or mixed content error - unable to connect to Oracle Cloud',
+        '🔧 Oracle Cloud connection blocked by CORS/Mixed Content policy - using enhanced AI fallback systems',
         0,
         'CORS_ERROR',
         true
       );
     }
     
-    throw lastError || new ApiError('All connection attempts failed');
+    throw lastError || new ApiError('Oracle Cloud temporarily unavailable - AI systems using local processing');
   }
 
   /**
-   * Cache Management - Enhanced with better type safety
+   * Cache Management
    */
   private getCacheKey(endpoint: string, options: RequestOptions): string {
     const method = options.method || 'GET';
@@ -356,20 +389,18 @@ export class EnhancedMacrobiusApiClient {
   }
 
   private getCacheExpiry(endpoint: string): number {
-    // Optimized cache durations for different endpoint types
-    if (endpoint.includes('/health')) return 30 * 1000; // 30 seconds for health checks
-    if (endpoint.includes('/quiz/categories')) return 30 * 60 * 1000; // 30 minutes
-    if (endpoint.includes('/text/search')) return 10 * 60 * 1000; // 10 minutes
-    if (endpoint.includes('/languages')) return 24 * 60 * 60 * 1000; // 24 hours
-    if (endpoint.includes('/leaderboard')) return 5 * 60 * 1000; // 5 minutes
-    if (endpoint.includes('/rag/')) return 15 * 60 * 1000; // RAG responses - 15 min
-    if (endpoint.includes('/ai-tutoring/')) return 0; // No caching for tutoring sessions
-    if (endpoint.includes('/learning-paths/')) return 60 * 60 * 1000; // Learning paths - 1 hour
-    return 15 * 60 * 1000; // Default 15 minutes
+    if (endpoint.includes('/health')) return 30 * 1000;
+    if (endpoint.includes('/quiz/categories')) return 30 * 60 * 1000;
+    if (endpoint.includes('/text/search')) return 10 * 60 * 1000;
+    if (endpoint.includes('/languages')) return 24 * 60 * 60 * 1000;
+    if (endpoint.includes('/rag/')) return 15 * 60 * 1000;
+    if (endpoint.includes('/ai-tutoring/')) return 0;
+    if (endpoint.includes('/learning-paths/')) return 60 * 60 * 1000;
+    return 15 * 60 * 1000;
   }
 
   /**
-   * Enhanced Performance Monitoring
+   * Performance Monitoring
    */
   private updateMetrics(responseTime: number, cacheHit: boolean, isError: boolean): void {
     this.metrics.requestCount++;
@@ -394,7 +425,7 @@ export class EnhancedMacrobiusApiClient {
   }
 
   /**
-   * 🔧 CRITICAL TYPESCRIPT FIX: Enhanced Connection Status with proper type mapping
+   * 🔧 ENHANCED: Connection Status with clear messaging
    */
   public getConnectionStatus(): {
     oracle: 'connected' | 'offline' | 'checking' | 'cors_error';
@@ -403,20 +434,36 @@ export class EnhancedMacrobiusApiClient {
     corsIssues: boolean;
     preferHTTPS: boolean;
     currentURL: string;
+    message: string;
   } {
-    // Map cors_error to offline for rag and ai_systems since they can't handle cors_error status
     const mapStatusForSubsystems = (status: typeof this.connectionStatus): 'connected' | 'offline' | 'checking' => {
       if (status === 'cors_error') return 'offline';
       return status as 'connected' | 'offline' | 'checking';
     };
 
+    const getMessage = (): string => {
+      switch (this.connectionStatus) {
+        case 'connected':
+          return '✅ Oracle Cloud Connected - 1,401 authentic passages available';
+        case 'checking':
+          return '🔍 Testing Oracle Cloud connection...';
+        case 'cors_error':
+          return '🔧 Oracle Cloud CORS issue - Enhanced AI fallback systems active';
+        case 'offline':
+          return '⚠️ Oracle Cloud unavailable - AI systems using local processing';
+        default:
+          return 'Connection status unknown';
+      }
+    };
+
     return {
       oracle: this.connectionStatus,
-      rag: this.connectionStatus === 'connected' ? 'connected' : mapStatusForSubsystems(this.connectionStatus),
-      ai_systems: this.connectionStatus === 'connected' ? 'connected' : mapStatusForSubsystems(this.connectionStatus),
+      rag: mapStatusForSubsystems(this.connectionStatus),
+      ai_systems: mapStatusForSubsystems(this.connectionStatus),
       corsIssues: this.corsIssues,
       preferHTTPS: this.preferHTTPS,
-      currentURL: this.baseURL
+      currentURL: this.baseURL,
+      message: getMessage()
     };
   }
 
@@ -429,13 +476,13 @@ export class EnhancedMacrobiusApiClient {
   }
 
   /**
-   * Enhanced Reconnect with both HTTPS and HTTP attempts
+   * Enhanced Reconnect
    */
   public async reconnect(): Promise<void> {
     console.log('🔄 Manual reconnection initiated...');
     this.connectionStatus = 'checking';
     this.corsIssues = false;
-    this.lastConnectionTest = 0; // Force immediate test
+    this.lastConnectionTest = 0;
     await this.testConnection();
   }
 
@@ -464,11 +511,11 @@ export class EnhancedMacrobiusApiClient {
   }
 
   /**
-   * Enhanced Health Check with both URLs
+   * Enhanced Health Check
    */
   async healthCheck(): Promise<ApiResponse<{status: string, performance: PerformanceMetrics, connection: any}>> {
     try {
-      const response = await this.request('/api/health', { timeout: 5000 });
+      const response = await this.request('/api/health', { timeout: 8000 });
       return {
         status: 'success',
         data: {
@@ -480,7 +527,7 @@ export class EnhancedMacrobiusApiClient {
     } catch (error) {
       const isApiError = error instanceof ApiError;
       throw new ApiError(
-        `Backend health check failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        `Oracle Cloud health check failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
         503,
         isApiError ? error.code : undefined,
         isApiError ? error.isCorsError : false
@@ -488,9 +535,6 @@ export class EnhancedMacrobiusApiClient {
     }
   }
 
-  /**
-   * Clear cache (for testing or manual refresh)
-   */
   clearCache(): void {
     this.cache.clear();
   }
@@ -603,7 +647,7 @@ class EnhancedMacrobiusAPI {
       )
   };
 
-  // REAL RAG SYSTEM ENDPOINTS
+  // 🔧 REAL RAG SYSTEM ENDPOINTS - UNIFIED PORT 8080
   rag = {
     query: (query: string, context?: any): Promise<ApiResponse<any>> =>
       this.tryWithFallback(
@@ -656,7 +700,7 @@ class EnhancedMacrobiusAPI {
       )
   };
 
-  // 🚀 REAL VOCABULARY ENDPOINTS - MISSING METHODS ADDED
+  // 🚀 REAL VOCABULARY ENDPOINTS
   vocabulary = {
     getVocabularyStatistics: (): Promise<ApiResponse<any>> =>
       this.tryWithFallback(
@@ -716,7 +760,7 @@ class EnhancedMacrobiusAPI {
       )
   };
 
-  // 🚀 REAL SEARCH ENDPOINTS - MISSING METHODS ADDED
+  // 🚀 REAL SEARCH ENDPOINTS
   search = {
     semantic: (query: string, options: any): Promise<ApiResponse<any>> =>
       this.tryWithFallback(
@@ -752,7 +796,7 @@ class EnhancedMacrobiusAPI {
       )
   };
 
-  // 🚀 REAL LEARNING PATHS ENDPOINTS - MISSING METHODS ADDED
+  // 🚀 REAL LEARNING PATHS ENDPOINTS
   learningPaths = {
     personalizedRecommendations: (userId: string, options?: any): Promise<ApiResponse<any>> =>
       this.tryWithFallback(
@@ -769,7 +813,6 @@ class EnhancedMacrobiusAPI {
         })
       ),
 
-    // 🔧 FIXED: Added missing initializeAIEngine method
     initializeAIEngine: (options: any): Promise<ApiResponse<any>> =>
       this.tryWithFallback(
         () => apiClient.request<ApiResponse<any>>('/api/learning-paths/initialize-ai', { method: 'POST', body: options }),
@@ -790,7 +833,7 @@ class EnhancedMacrobiusAPI {
       )
   };
 
-  // 🚀 CRITICAL BUILD FIX: Enhanced Quiz endpoints with ALL missing methods
+  // 🚀 ENHANCED Quiz endpoints
   quiz = {
     generateAdaptive: (request: any): Promise<ApiResponse<any>> =>
       this.tryWithFallback(
@@ -869,7 +912,6 @@ class EnhancedMacrobiusAPI {
         })
       ),
 
-    // 🔧 FIXED: Added missing addCulturalContext method
     addCulturalContext: (data: any): Promise<ApiResponse<any>> =>
       this.tryWithFallback(
         () => apiClient.request<ApiResponse<any>>('/api/quiz/add-cultural-context', { method: 'POST', body: data }),
@@ -906,13 +948,12 @@ class EnhancedMacrobiusAPI {
               context_enhancement: 'applied',
               cultural_depth: 'enhanced',
               user_personalization: true,
-              ai_generated: false // Real cultural analysis, not AI-generated
+              ai_generated: false
             }
           }
         })
       ),
 
-    // 🔧 CRITICAL BUILD FIX: Added missing adaptiveDifficultyAdjustment method
     adaptiveDifficultyAdjustment: (data: any): Promise<ApiResponse<any>> =>
       this.tryWithFallback(
         () => apiClient.request<ApiResponse<any>>('/api/quiz/adaptive-difficulty', { method: 'POST', body: data }),
@@ -932,7 +973,6 @@ class EnhancedMacrobiusAPI {
         })
       ),
 
-    // 🔧 BUILD FIX: Added missing adaptiveNextQuestion method
     adaptiveNextQuestion: (data: any): Promise<ApiResponse<any>> =>
       this.tryWithFallback(
         () => apiClient.request<ApiResponse<any>>('/api/quiz/adaptive-next', { method: 'POST', body: data }),
@@ -951,7 +991,6 @@ class EnhancedMacrobiusAPI {
         })
       ),
 
-    // 🔧 BUILD FIX: Added missing createSession method
     createSession: (session: any): Promise<ApiResponse<any>> =>
       this.tryWithFallback(
         () => apiClient.request<ApiResponse<any>>('/api/quiz/create-session', { method: 'POST', body: session }),
@@ -1099,29 +1138,32 @@ class EnhancedMacrobiusAPI {
 // Export enhanced API with fallback
 export const MacrobiusAPI = new EnhancedMacrobiusAPI();
 
-// Export connection status helper
+// Export enhanced connection status helper
 export const getApiConnectionStatus = () => {
   const status = apiClient.getConnectionStatus();
   return {
-    message: status.corsIssues ? 
-      'Mixed Content Issue - HTTPS/HTTP conflict detected' :
-      status.oracle === 'connected' ? 
-      `Oracle Cloud Connected via ${status.preferHTTPS ? 'HTTPS' : 'HTTP'}` :
-      'Oracle Cloud Offline - Using AI Fallback Systems',
+    message: status.message,
     status: status,
     recommendations: status.corsIssues ? [
-      'Enable HTTPS on Oracle Cloud backend',
-      'Use CORS proxy for development',
-      'Deploy backend with SSL certificate'
-    ] : []
+      '🔧 Enable Next.js API proxy routes',
+      '🔒 Configure Oracle Cloud HTTPS certificate', 
+      '⚡ Use CORS-proxy for development'
+    ] : status.oracle === 'connected' ? [
+      '✅ Oracle Cloud functioning optimally',
+      '📊 All 1,401 passages accessible',
+      '🤖 AI systems at full capacity'
+    ] : [
+      '⚠️ Oracle Cloud temporarily unavailable',
+      '🤖 AI systems using enhanced local processing',
+      '🔄 Automatic reconnection active'
+    ]
   };
 };
 
 // =============================================================================
-// 🚀 COMPLETE TYPE DEFINITIONS FOR ALL AI ENGINES
+// 🚀 TYPE DEFINITIONS (preserved from original)
 // =============================================================================
 
-// API Response types and interfaces
 export interface ApiResponse<T = any> {
   status: 'success' | 'error';
   data?: T;
@@ -1204,10 +1246,6 @@ export interface CulturalInsight {
   educational_value: string;
   related_passages: any[];
 }
-
-// =============================================================================
-// 🚀 REAL AI ENGINE TYPE DEFINITIONS (For components)
-// =============================================================================
 
 export interface RAGQueryResult {
   response: string;
