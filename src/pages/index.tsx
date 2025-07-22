@@ -37,7 +37,8 @@ import {
 import { IntroSection } from '@/components/sections/IntroSection';
 import BanquetSection from '@/components/sections/BanquetSection';
 import CosmosSection from '@/components/sections/CosmosSection';
-import QuizSection from '@/components/sections/QuizSection';
+// 🔧 FIXED: Import the enhanced Quiz component instead of basic one
+import QuizSection from '@/components/sections/QuizSection-SMART-GENERATION-COMPLETE';
 import TextSearchSection from '@/components/sections/TextSearchSection';
 import WorldMapSection from '@/components/sections/WorldMapSection';
 import VisualizationsSection from '@/components/sections/VisualizationsSection';
@@ -525,7 +526,7 @@ const ClassicalMacrobiusApp: React.FC = () => {
       case 'cosmos': 
         return <CosmosSection isActive={true} language={language} />;
       case 'quiz': 
-        return <QuizSection isActive={true} language={language} />;
+        return <QuizSection language={language} />;
       case 'textsearch': 
         return <TextSearchSection isActive={true} language={language} />;
       case 'worldmap': 
