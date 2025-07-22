@@ -4,6 +4,7 @@
 // RESOLVED: Added missing vocabulary, search, and learningPaths endpoints
 // FIXED: Added initializeAIEngine method to learningPaths
 // FIXED: Added addCulturalContext method to quiz endpoints
+// CRITICAL BUILD FIX: Added missing adaptiveDifficultyAdjustment and other quiz methods
 
 import { fallbackApiClient } from './fallback-api-client';
 
@@ -782,7 +783,7 @@ class EnhancedMacrobiusAPI {
       )
   };
 
-  // Quiz endpoints with adaptive generation
+  // 🚀 CRITICAL BUILD FIX: Enhanced Quiz endpoints with ALL missing methods
   quiz = {
     generateAdaptive: (request: any): Promise<ApiResponse<any>> =>
       this.tryWithFallback(
@@ -801,14 +802,14 @@ class EnhancedMacrobiusAPI {
                   'Ausschließlich religiöse Rituale',
                   'Keine intellektuellen Inhalte'
                 ],
-                correct_answer: 1,
+                correct_answer: 'Philosophische Gespräche und kultureller Austausch',
                 explanation: 'Römische Gastmähler waren komplexe soziale Ereignisse, die philosophische Diskussionen, literarische Gespräche und kulturellen Austausch kombinierten.',
                 difficulty_level: 4,
                 cultural_theme: 'Roman History',
                 learning_objective: 'Understanding Roman social customs',
                 time_estimated: 45,
                 hints: ['Denken Sie an die Saturnalia von Macrobius'],
-                latin_text_source: 'In convivio philosophorum disputationes et litterarum studia floruerunt'
+                related_concepts: ['Roman dining', 'Philosophy', 'Social customs']
               },
               {
                 id: 'fallback-q2',
@@ -820,14 +821,14 @@ class EnhancedMacrobiusAPI {
                   'Religiöser Reformer',
                   'Händler und Kaufmann'
                 ],
-                correct_answer: 1,
+                correct_answer: 'Kultureller Bewahrer und Gelehrter',
                 explanation: 'Macrobius war ein bedeutender Gelehrter und Kulturbewahrer, der antikes Wissen für kommende Generationen rettete.',
                 difficulty_level: 3,
                 cultural_theme: 'Literature',
                 learning_objective: 'Understanding Macrobius\' historical significance',
                 time_estimated: 30,
                 hints: ['Er schrieb die Saturnalia und Kommentare zu Scipios Traum'],
-                latin_text_source: 'Macrobius antiquam sapientiam posteris servavit'
+                related_concepts: ['Macrobius', 'Literature', 'Classical education']
               }
             ]
           } 
@@ -900,6 +901,59 @@ class EnhancedMacrobiusAPI {
               user_personalization: true,
               ai_generated: false // Real cultural analysis, not AI-generated
             }
+          }
+        })
+      ),
+
+    // 🔧 CRITICAL BUILD FIX: Added missing adaptiveDifficultyAdjustment method
+    adaptiveDifficultyAdjustment: (data: any): Promise<ApiResponse<any>> =>
+      this.tryWithFallback(
+        () => apiClient.request<ApiResponse<any>>('/api/quiz/adaptive-difficulty', { method: 'POST', body: data }),
+        () => Promise.resolve({
+          status: 'success' as const,
+          data: data.questions?.map((question: any) => ({
+            ...question,
+            difficulty_level: Math.min(10, Math.max(1, question.difficulty_level + (data.user_performance?.recent_accuracy > 0.8 ? 1 : -1))),
+            adaptive_adjustments: {
+              original_difficulty: question.difficulty_level,
+              adjusted_difficulty: Math.min(10, Math.max(1, question.difficulty_level + (data.user_performance?.recent_accuracy > 0.8 ? 1 : -1))),
+              adjustment_reason: data.user_performance?.recent_accuracy > 0.8 ? 'High performance - increased difficulty' : 'Lower performance - reduced difficulty',
+              user_performance_factor: data.user_performance?.recent_accuracy || 0.75,
+              target_difficulty: data.target_difficulty || 5
+            }
+          })) || []
+        })
+      ),
+
+    // 🔧 BUILD FIX: Added missing adaptiveNextQuestion method
+    adaptiveNextQuestion: (data: any): Promise<ApiResponse<any>> =>
+      this.tryWithFallback(
+        () => apiClient.request<ApiResponse<any>>('/api/quiz/adaptive-next', { method: 'POST', body: data }),
+        () => Promise.resolve({
+          status: 'success' as const,
+          data: {
+            next_question_ready: true,
+            difficulty_adjustment: data.current_performance ? 'increased' : 'decreased',
+            adaptive_feedback: {
+              performance_trend: data.current_performance ? 'improving' : 'needs_support',
+              recommended_focus: data.current_performance ? ['advanced_concepts'] : ['fundamental_review'],
+              next_difficulty_level: Math.min(10, Math.max(1, data.current_difficulty + (data.current_performance ? 1 : -1)))
+            },
+            session_updated: true
+          }
+        })
+      ),
+
+    // 🔧 BUILD FIX: Added missing createSession method
+    createSession: (session: any): Promise<ApiResponse<any>> =>
+      this.tryWithFallback(
+        () => apiClient.request<ApiResponse<any>>('/api/quiz/create-session', { method: 'POST', body: session }),
+        () => Promise.resolve({
+          status: 'success' as const,
+          data: {
+            session_id: session.id || `fallback_${Date.now()}`,
+            created: true,
+            message: 'Quiz session created successfully'
           }
         })
       )
