@@ -550,9 +550,9 @@ const ClassicalMacrobiusApp: React.FC = () => {
       case 'visualizations': 
         return <VisualizationsSection isActive={true} language={language} />;
       case 'vokabeltrainer': 
-        return <VocabularyTrainer isActive={true} language={getLanguageCode(language)} />;
+        return <VocabularyTrainer isActive={true} language={language} />;
       case 'learning': 
-        return <LearningSection isActive={true} language={getLanguageCode(language)} />;
+        return <LearningSection isActive={true} language={language} />;
       
       // ✅ TIER 3 AI COMPONENTS WITH ENHANCED INTEGRATION
       case 'ki-kulturanalyse':
