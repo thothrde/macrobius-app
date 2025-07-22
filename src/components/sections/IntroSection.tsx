@@ -196,28 +196,26 @@ const FeatureCard: React.FC<{
   title: string;
   description: string;
   status: 'active' | 'enhanced' | 'ai';
+  statusLabel: string;
   onClick?: () => void;
-}> = ({ icon: Icon, title, description, status, onClick }) => {
+}> = ({ icon: Icon, title, description, status, statusLabel, onClick }) => {
   const [isHovered, setIsHovered] = useState(false);
   
   const statusConfig = {
     active: {
       color: '#10b981',
       bgColor: 'rgba(16, 185, 129, 0.1)',
-      borderColor: 'rgba(16, 185, 129, 0.3)',
-      label: 'AKTIV'
+      borderColor: 'rgba(16, 185, 129, 0.3)'
     },
     enhanced: {
       color: '#f59e0b',
       bgColor: 'rgba(245, 158, 11, 0.1)',
-      borderColor: 'rgba(245, 158, 11, 0.3)',
-      label: 'ERWEITERT'
+      borderColor: 'rgba(245, 158, 11, 0.3)'
     },
     ai: {
       color: '#8b5cf6',
       bgColor: 'rgba(139, 92, 246, 0.1)',
-      borderColor: 'rgba(139, 92, 246, 0.3)',
-      label: 'KI-POWERED'
+      borderColor: 'rgba(139, 92, 246, 0.3)'
     }
   };
   
@@ -263,7 +261,7 @@ const FeatureCard: React.FC<{
         gap: '2px'
       }}>
         {status === 'ai' && <Zap style={{ width: '8px', height: '8px' }} />}
-        {config.label}
+        {statusLabel}
       </div>
       
       <div style={{
@@ -360,6 +358,55 @@ export const IntroSection: React.FC<IntroSectionProps> = ({ language }) => {
     }
   ];
   
+  // ✅ LANGUAGE-SENSITIVE FEATURES CONFIGURATION
+  const getFeatures = () => {
+    const baseFeatures = [
+      {
+        icon: Brain,
+        titleKey: 'features.ai_cultural_analysis.title',
+        descriptionKey: 'features.ai_cultural_analysis.description',
+        status: 'ai' as const
+      },
+      {
+        icon: Target,
+        titleKey: 'features.learning_paths.title',
+        descriptionKey: 'features.learning_paths.description',
+        status: 'ai' as const
+      },
+      {
+        icon: Crown,
+        titleKey: 'features.ai_tutor.title',
+        descriptionKey: 'features.ai_tutor.description',
+        status: 'ai' as const
+      },
+      {
+        icon: BookOpen,
+        titleKey: 'features.vocabulary_trainer.title',
+        descriptionKey: 'features.vocabulary_trainer.description',
+        status: 'enhanced' as const
+      },
+      {
+        icon: Globe,
+        titleKey: 'features.visualizations.title',
+        descriptionKey: 'features.visualizations.description',
+        status: 'enhanced' as const
+      },
+      {
+        icon: Coffee,
+        titleKey: 'features.banquet.title',
+        descriptionKey: 'features.banquet.description',
+        status: 'active' as const
+      }
+    ];
+    
+    return baseFeatures.map(feature => ({
+      ...feature,
+      title: t(feature.titleKey),
+      description: t(feature.descriptionKey),
+      statusLabel: t(`features.status.${feature.status}`)
+    }));
+  };
+  
   // Image rotation effect
   useEffect(() => {
     const interval = setInterval(() => {
@@ -376,7 +423,7 @@ export const IntroSection: React.FC<IntroSectionProps> = ({ language }) => {
   
   // 🧪 Connection test functionality
   const testConnection = async () => {
-    setConnectionTest({ status: 'testing', message: 'Teste Oracle Cloud Verbindung...' });
+    setConnectionTest({ status: 'testing', message: t('connection.testing') });
     
     try {
       const response = await MacrobiusAPI.system.healthCheck();
@@ -384,7 +431,7 @@ export const IntroSection: React.FC<IntroSectionProps> = ({ language }) => {
       if (response.status === 'success') {
         setConnectionTest({
           status: 'success',
-          message: '✅ Oracle Cloud verbunden! 1.401 Texte verfügbar.',
+          message: t('connection.success'),
           timestamp: Date.now()
         });
       } else {
@@ -393,7 +440,7 @@ export const IntroSection: React.FC<IntroSectionProps> = ({ language }) => {
     } catch (error) {
       setConnectionTest({
         status: 'error',
-        message: '⚠️ Fallback-Modus aktiv. KI-Systeme verwenden lokale Verarbeitung.',
+        message: t('connection.fallback'),
         timestamp: Date.now()
       });
     }
@@ -403,6 +450,8 @@ export const IntroSection: React.FC<IntroSectionProps> = ({ language }) => {
       setConnectionTest({ status: 'idle', message: '' });
     }, 5000);
   };
+  
+  const features = getFeatures();
   
   return (
     <div style={{
@@ -501,7 +550,7 @@ export const IntroSection: React.FC<IntroSectionProps> = ({ language }) => {
               boxShadow: '0 4px 12px rgba(139, 92, 246, 0.2)'
             }}>
               <Brain style={{ width: '16px', height: '16px' }} />
-              KI-SYSTEME AKTIV - Tier 3 AI Features
+              {t('hero.ai_status')}
               <Sparkles style={{ width: '14px', height: '14px', animation: 'pulse 2s infinite' }} />
             </div>
           </div>
@@ -550,7 +599,7 @@ export const IntroSection: React.FC<IntroSectionProps> = ({ language }) => {
                 <Activity style={{ width: '16px', height: '16px' }} />
               )}
               
-              {connectionTest.status === 'idle' ? 'Oracle Cloud Testen' : connectionTest.message}
+              {connectionTest.status === 'idle' ? t('connection.test') : connectionTest.message}
             </button>
           </div>
         </div>
@@ -775,7 +824,7 @@ export const IntroSection: React.FC<IntroSectionProps> = ({ language }) => {
           </div>
         </div>
         
-        {/* Enhanced Feature Grid */}
+        {/* ✅ ENHANCED FEATURES GRID - NOW LANGUAGE SENSITIVE */}
         <div style={{
           marginBottom: '48px'
         }}>
@@ -787,7 +836,7 @@ export const IntroSection: React.FC<IntroSectionProps> = ({ language }) => {
             marginBottom: '48px',
             fontFamily: 'Times New Roman, serif'
           }}>
-            🏛️ Entdecken Sie die KI-gestützten Features
+            🏛️ {t('features.title')}
           </h2>
           
           <div style={{
@@ -795,47 +844,16 @@ export const IntroSection: React.FC<IntroSectionProps> = ({ language }) => {
             gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
             gap: '24px'
           }}>
-            <FeatureCard
-              icon={Brain}
-              title="KI-Kulturanalyse"
-              description="Echte NLP-basierte Analyse der römischen Kultur mit maschinellem Lernen und semantischer Textverarbeitung."
-              status="ai"
-            />
-            
-            <FeatureCard
-              icon={Target}
-              title="Intelligente Lernpfade"
-              description="KI-optimierte, personalisierte Lernrouten basierend auf Ihrem Fortschritt und Ihren Lernzielen."
-              status="ai"
-            />
-            
-            <FeatureCard
-              icon={Crown}
-              title="AI-Tutor System"
-              description="Conversational AI mit Kontext-Bewusstsein für individualisierte Unterstützung beim Lateinlernen."
-              status="ai"
-            />
-            
-            <FeatureCard
-              icon={BookOpen}
-              title="Intelligenter Vokabeltrainer"
-              description="Erweiterte SRS-Algorithmen mit korpusbasierter Vokabelauswahl und adaptivem Schwierigkeitsgrad."
-              status="enhanced"
-            />
-            
-            <FeatureCard
-              icon={Globe}
-              title="Interaktive Visualisierungen"
-              description="3D-Kartendarstellungen, Zeitlinien und kulturelle Netzwerke mit historischen Kontextinformationen."
-              status="enhanced"
-            />
-            
-            <FeatureCard
-              icon={Coffee}
-              title="Römische Gastmähler"
-              description="Authentische Darstellung der Saturnalia-Gespräche mit kulturellem Kontext und modernen Bezügen."
-              status="active"
-            />
+            {features.map((feature, index) => (
+              <FeatureCard
+                key={index}
+                icon={feature.icon}
+                title={feature.title}
+                description={feature.description}
+                status={feature.status}
+                statusLabel={feature.statusLabel}
+              />
+            ))}
           </div>
         </div>
         
@@ -856,7 +874,7 @@ export const IntroSection: React.FC<IntroSectionProps> = ({ language }) => {
             color: '#7c3aed',
             marginBottom: '12px'
           }}>
-            🏆 Technische Exzellenz Erreicht
+            {t('technical.title')}
           </h3>
           <p style={{
             fontSize: '16px',
@@ -865,9 +883,7 @@ export const IntroSection: React.FC<IntroSectionProps> = ({ language }) => {
             maxWidth: '600px',
             margin: '0 auto'
           }}>
-            Diese Anwendung demonstriert fortgeschrittene KI-Integration, semantische Suche, 
-            Oracle Cloud Backend-Konnektivität und moderne React-Architektur mit über 44 
-            spezialisierten Komponenten für klassische Bildung.
+            {t('technical.description')}
           </p>
         </div>
       </div>
