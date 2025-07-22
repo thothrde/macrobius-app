@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { MacrobiusAPI } from '@/lib/enhanced-api-client-with-fallback';
 import { 
@@ -551,19 +551,19 @@ export const IntroSection: React.FC<IntroSectionProps> = ({ language }) => {
     setImageLoadStates(prev => ({ ...prev, [index]: true }));
   };
   
-  // 🔧 Enhanced connection test functionality
+  // 🔧 FIXED: Enhanced connection test functionality with proper type checking
   const testConnection = async () => {
     setConnectionTest({ status: 'testing', message: t('connection.testing') });
     
     try {
       const response = await MacrobiusAPI.system.healthCheck();
       
-      if (response.status === 'success') {
+      if (response.status === 'success' && response.data) {
         setConnectionTest({
           status: 'success',
           message: t('connection.success'),
           timestamp: Date.now(),
-          statusData: response.data.connection
+          statusData: response.data.connection || null
         });
       } else {
         throw new Error('Health check failed');
