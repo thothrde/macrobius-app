@@ -5,6 +5,7 @@
 // FIXED: Added initializeAIEngine method to learningPaths
 // FIXED: Added addCulturalContext method to quiz endpoints
 // CRITICAL BUILD FIX: Added missing adaptiveDifficultyAdjustment and other quiz methods
+// CRITICAL TYPESCRIPT FIX: Fixed connection status type mismatch
 
 import { fallbackApiClient } from './fallback-api-client';
 
@@ -393,7 +394,7 @@ export class EnhancedMacrobiusApiClient {
   }
 
   /**
-   * Enhanced Connection Status
+   * 🔧 CRITICAL TYPESCRIPT FIX: Enhanced Connection Status with proper type mapping
    */
   public getConnectionStatus(): {
     oracle: 'connected' | 'offline' | 'checking' | 'cors_error';
@@ -403,10 +404,16 @@ export class EnhancedMacrobiusApiClient {
     preferHTTPS: boolean;
     currentURL: string;
   } {
+    // Map cors_error to offline for rag and ai_systems since they can't handle cors_error status
+    const mapStatusForSubsystems = (status: typeof this.connectionStatus): 'connected' | 'offline' | 'checking' => {
+      if (status === 'cors_error') return 'offline';
+      return status as 'connected' | 'offline' | 'checking';
+    };
+
     return {
       oracle: this.connectionStatus,
-      rag: this.connectionStatus === 'connected' ? 'connected' : this.connectionStatus,
-      ai_systems: this.connectionStatus === 'connected' ? 'connected' : this.connectionStatus,
+      rag: this.connectionStatus === 'connected' ? 'connected' : mapStatusForSubsystems(this.connectionStatus),
+      ai_systems: this.connectionStatus === 'connected' ? 'connected' : mapStatusForSubsystems(this.connectionStatus),
       corsIssues: this.corsIssues,
       preferHTTPS: this.preferHTTPS,
       currentURL: this.baseURL
