@@ -280,10 +280,14 @@ const QuestionCard: React.FC<{
             const isSelected = selectedAnswer === index;
             const isCorrectOption = question.correct_answer === index;
             
-            let optionStyle = {
+            // 🔧 TYPESCRIPT FIX: Define complete CSS properties from the start
+            const baseOptionStyle: React.CSSProperties = {
               padding: '16px 20px',
               borderRadius: '12px',
               border: '2px solid',
+              borderColor: 'transparent', // Add borderColor property
+              backgroundColor: 'transparent', // Add backgroundColor property
+              color: '#374151', // Add color property
               cursor: showResults ? 'default' : 'pointer',
               transition: 'all 0.3s ease',
               fontSize: '16px',
@@ -291,8 +295,12 @@ const QuestionCard: React.FC<{
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'space-between',
-              opacity: showResults && !isCorrectOption && !isSelected ? 0.5 : 1
+              opacity: showResults && !isCorrectOption && !isSelected ? 0.5 : 1,
+              transform: 'none',
+              boxShadow: 'none'
             };
+            
+            let optionStyle = { ...baseOptionStyle };
             
             if (showResults) {
               if (isCorrectOption) {
