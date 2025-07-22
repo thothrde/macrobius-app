@@ -514,35 +514,38 @@ const ClassicalMacrobiusApp: React.FC = () => {
     }
   };
 
-  // ✅ SECTION RENDERING WITH ENHANCED PROPS
+  // ✅ SECTION RENDERING WITH ENHANCED PROPS AND FIXED LANGUAGE CONVERSION
   const renderSection = () => {
     console.log('🔍 Rendering section with Enhanced AI:', currentSection, 'subsection:', currentSubSection);
     
+    // 🔧 CRITICAL FIX: Convert LanguageKey to LanguageCode for all components
+    const languageCode = getLanguageKey(language);
+    
     switch(currentSection) {
       case 'intro': 
-        return <IntroSection language={language} />;
+        return <IntroSection language={languageCode} />;
       case 'banquet': 
-        return <BanquetSection isActive={true} language={language} />;
+        return <BanquetSection isActive={true} language={languageCode} />;
       case 'cosmos': 
-        return <CosmosSection isActive={true} language={language} />;
+        return <CosmosSection isActive={true} language={languageCode} />;
       case 'quiz': 
-        return <QuizSection language={language} />;
+        return <QuizSection language={languageCode} />;
       case 'textsearch': 
-        return <TextSearchSection isActive={true} language={language} />;
+        return <TextSearchSection isActive={true} language={languageCode} />;
       case 'worldmap': 
-        return <WorldMapSection isActive={true} t={t} language={language} />;
+        return <WorldMapSection isActive={true} t={t} language={languageCode} />;
       case 'visualizations': 
-        return <VisualizationsSection isActive={true} language={language} />;
+        return <VisualizationsSection isActive={true} language={languageCode} />;
       case 'vokabeltrainer': 
-        return <VocabularyTrainer isActive={true} language={language} />;
+        return <VocabularyTrainer isActive={true} language={languageCode} />;
       case 'learning': 
-        return <LearningSection isActive={true} language={language} />;
+        return <LearningSection isActive={true} language={languageCode} />;
       
       // ✅ TIER 3 AI COMPONENTS WITH ENHANCED INTEGRATION
       case 'ki-kulturanalyse':
         return (
           <AICulturalAnalysisSection 
-            language={language} 
+            language={languageCode} 
             activeTab={getValidCulturalAnalysisTab(currentSubSection)}
           />
         );
@@ -555,19 +558,19 @@ const ClassicalMacrobiusApp: React.FC = () => {
       case 'ki-tutor':
         return (
           <AITutoringSystemSection 
-            language={language}
+            language={languageCode}
           />
         );
       case 'kulturmodule':
         return (
           <AICulturalAnalysisSection 
-            language={language} 
+            language={languageCode} 
             activeTab={getValidCulturalAnalysisTab(currentSubSection)}
           />
         );
       
       default: 
-        return <IntroSection language={language} />;
+        return <IntroSection language={languageCode} />;
     }
   };
 
