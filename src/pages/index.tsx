@@ -61,6 +61,12 @@ type LanguageKey = 'DE' | 'EN' | 'LA';
 type CulturalAnalysisTab = 'analyze' | 'explore' | 'statistics';
 type LearningPathMode = 'dashboard' | 'daily_plan' | 'knowledge_gaps' | 'prerequisites' | 'ai_optimization';
 
+// Language interface for components that expect it
+interface Language {
+  code: string;
+  name: string;
+}
+
 type ConnectionStatus = {
   oracle: 'connected' | 'offline' | 'checking' | 'cors_error';
   rag: 'connected' | 'offline' | 'checking';
@@ -334,6 +340,20 @@ const ClassicalMacrobiusApp: React.FC = () => {
     }
   };
 
+  // Helper function to create Language object for components that need it
+  const createLanguageObject = (langKey: LanguageKey): Language => {
+    const langCode = getLanguageKey(langKey);
+    const names = {
+      'de': 'Deutsch',
+      'en': 'English', 
+      'la': 'Latina'
+    };
+    return {
+      code: langCode,
+      name: names[langCode]
+    };
+  };
+
   const handleLanguageChange = (lang: LanguageCode): void => {
     setLanguage(convertToLanguage(lang));
   };
@@ -526,7 +546,7 @@ const ClassicalMacrobiusApp: React.FC = () => {
       case 'cosmos': 
         return <CosmosSection isActive={true} language={language} />;
       case 'quiz': 
-        return <QuizSection language={getLanguageKey(language)} />;
+        return <QuizSection language={createLanguageObject(language)} />;
       case 'textsearch': 
         return <TextSearchSection isActive={true} language={language} />;
       case 'worldmap': 
