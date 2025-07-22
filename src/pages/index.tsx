@@ -554,7 +554,7 @@ const ClassicalMacrobiusApp: React.FC = () => {
       case 'learning': 
         return <LearningSection isActive={true} language={language} />;
       
-      // ✅ TIER 3 AI COMPONENTS WITH ENHANCED INTEGRATION - FIXED LANGUAGE TYPE
+      // ✅ TIER 3 AI COMPONENTS WITH ENHANCED INTEGRATION - ALL LANGUAGE TYPES FIXED
       case 'ki-kulturanalyse':
         return (
           <AICulturalAnalysisSection 
@@ -571,7 +571,7 @@ const ClassicalMacrobiusApp: React.FC = () => {
       case 'ki-tutor':
         return (
           <AITutoringSystemSection 
-            language={getLanguageCode(language)}
+            language={language}
           />
         );
       case 'kulturmodule':
