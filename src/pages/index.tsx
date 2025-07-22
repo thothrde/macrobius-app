@@ -550,7 +550,7 @@ const ClassicalMacrobiusApp: React.FC = () => {
       case 'textsearch': 
         return <TextSearchSection isActive={true} language={language} />;
       case 'worldmap': 
-        return <WorldMapSection isActive={true} t={t} language={getLanguageKey(language)} />;
+        return <WorldMapSection isActive={true} t={t} language={language} />;
       case 'visualizations': 
         return <VisualizationsSection isActive={true} language={language} />;
       case 'vokabeltrainer': 
