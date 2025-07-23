@@ -19,6 +19,7 @@ interface VideoIntroWrapperProps {
  * ✅ Professional loading state
  * ✅ Responsive design
  * ✅ Smooth animations
+ * ✅ PRESERVES ALL EXISTING FUNCTIONALITY - Safe development
  */
 export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }) => {
   const { t } = useLanguage();
@@ -45,7 +46,7 @@ export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }
   }, [showVideo]);
   
   // YouTube embed URL with autoplay and controls
-  const youtubeEmbedUrl = `https://www.youtube.com/embed/w7h_xi_omfg?autoplay=1&mute=${isMuted ? 1 : 0}&controls=1&modestbranding=1&rel=0&showinfo=0&enablejsapi=1`;
+  const youtubeEmbedUrl = `https://www.youtube.com/embed/w7h_xi_omfg?autoplay=1&mute=${isMuted ? 1 : 0}&controls=1&modestbranding=1&rel=0&showinfo=0`;
   
   const skipToApp = () => {
     setShowVideo(false);
@@ -53,15 +54,10 @@ export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }
   
   const toggleMute = () => {
     setIsMuted(!isMuted);
-    // Update iframe with new mute setting
-    const iframe = document.querySelector('iframe');
-    if (iframe) {
-      const newUrl = `https://www.youtube.com/embed/w7h_xi_omfg?autoplay=1&mute=${!isMuted ? 1 : 0}&controls=1&modestbranding=1&rel=0&showinfo=0&enablejsapi=1`;
-      iframe.src = newUrl;
-    }
   };
   
-  // If video intro is done, show main app
+  // 🚨 CRITICAL SAFE DEVELOPMENT: When video completes, show original IntroSection
+  // This preserves ALL existing functionality, AI systems, and Oracle Cloud integration
   if (!showVideo) {
     return <IntroSection language={language} />;
   }
@@ -138,7 +134,7 @@ export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }
                 animation: 'spin 1s linear infinite'
               }} />
               <p style={{ fontSize: '18px', fontWeight: '600' }}>
-                Loading trailer...
+                {t('video.loading') || 'Loading trailer...'}
               </p>
             </div>
           )}
@@ -233,7 +229,7 @@ export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }
           textAlign: 'center',
           maxWidth: '600px'
         }}>
-          AI-Powered Classical Latin Education Platform
+          {t('video.subtitle') || 'AI-Powered Classical Latin Education Platform'}
         </p>
         
         {/* Action Buttons */}
@@ -272,7 +268,7 @@ export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }
             }}
           >
             <SkipForward style={{ width: '20px', height: '20px' }} />
-            Enter App
+            {t('video.skip') || 'Enter App'}
           </button>
           
           {/* Countdown Display */}
@@ -286,7 +282,7 @@ export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }
             fontWeight: '600',
             backdropFilter: 'blur(10px)'
           }}>
-            Auto-start in: {countdown}s
+            {t('video.auto_start') || 'Auto-start in'}: {countdown}s
           </div>
         </div>
         
@@ -299,10 +295,10 @@ export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }
           justifyContent: 'center'
         }}>
           {[
-            { icon: '🤖', text: 'AI-Powered' },
-            { icon: '📚', text: '1,401 Passages' },
-            { icon: '🌍', text: 'DE/EN/LA' },
-            { icon: '🏛️', text: 'Classical Education' }
+            { icon: '🤖', text: t('video.feature.ai') || 'AI-Powered' },
+            { icon: '📚', text: t('video.feature.authentic') || '1,401 Passages' },
+            { icon: '🌍', text: t('video.feature.multilingual') || 'DE/EN/LA' },
+            { icon: '🏛️', text: t('video.feature.classical') || 'Classical Education' }
           ].map((feature, index) => (
             <div
               key={index}
