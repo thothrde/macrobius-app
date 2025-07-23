@@ -469,10 +469,10 @@ export const IntroSection: React.FC<IntroSectionProps> = ({ language }) => {
     statusData?: any;
   }>({ status: 'idle', message: '' });
   
-  // 🎨 Enhanced image rotation with parallax effect
+  // 🖼️ FIXED: Enhanced image rotation with correct Rome image
   const images = [
     {
-      src: '/RomanDecline.jpg',
+      src: '/Rome-under.jpg',
       titleKey: 'image.rome.title',
       subtitleKey: 'image.rome.subtitle'
     },
