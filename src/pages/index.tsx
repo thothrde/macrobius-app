@@ -1,20 +1,20 @@
 import { useState, useEffect } from 'react';
 import Head from 'next/head';
 import { LanguageProvider } from '@/contexts/LanguageContext';
-import { VideoIntroWrapper } from '@/components/sections/VideoIntroWrapper';
-import { BanquetSection } from '@/components/sections/BanquetSection';
-import { CosmosSection } from '@/components/sections/CosmosSection';
-import { WorldMapSection } from '@/components/sections/WorldMapSection';
-import { TextSearchSection } from '@/components/sections/TextSearchSection';
-import { LearningSection } from '@/components/sections/LearningSection-enhanced-complete';
-import { QuizSection } from '@/components/sections/QuizSection-SMART-GENERATION-COMPLETE';
-import { VisualizationsSection } from '@/components/sections/VisualizationsSection';
+import VideoIntroWrapper from '@/components/sections/VideoIntroWrapper';
+import BanquetSection from '@/components/sections/BanquetSection';
+import CosmosSection from '@/components/sections/CosmosSection';
+import WorldMapSection from '@/components/sections/WorldMapSection';
+import TextSearchSection from '@/components/sections/TextSearchSection';
+import LearningSection from '@/components/sections/LearningSection-enhanced-complete';
+import QuizSection from '@/components/sections/QuizSection-SMART-GENERATION-COMPLETE';
+import VisualizationsSection from '@/components/sections/VisualizationsSection';
 import { Navigation } from '@/components/Navigation';
 import { LanguageSelector } from '@/components/LanguageSelector';
-import { AICulturalAnalysisSection } from '@/components/sections/AICulturalAnalysisSection';
-import { AITutoringSystemSection } from '@/components/sections/AITutoringSystemSection-COMPLETE';
-import { PersonalizedLearningPaths } from '@/components/sections/PersonalizedLearningPaths-COMPLETE';
-import { KIRAGAssistentSection } from '@/components/sections/KIRAGAssistentSection';
+import AICulturalAnalysisSection from '@/components/sections/AICulturalAnalysisSection';
+import AITutoringSystemSection from '@/components/sections/AITutoringSystemSection-COMPLETE';
+import PersonalizedLearningPaths from '@/components/sections/PersonalizedLearningPaths-COMPLETE';
+import KIRAGAssistentSection from '@/components/sections/KIRAGAssistentSection';
 
 type Section = 
   | 'intro' 
