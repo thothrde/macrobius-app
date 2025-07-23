@@ -12,7 +12,7 @@ import VisualizationsSection from '@/components/sections/VisualizationsSection';
 import AICulturalAnalysisSection from '@/components/sections/AICulturalAnalysisSection';
 import AITutoringSystemSection from '@/components/sections/AITutoringSystemSection-COMPLETE';
 import PersonalizedLearningPaths from '@/components/sections/PersonalizedLearningPaths-COMPLETE';
-import KIRAGAssistentSection from '@/components/sections/KIRAGAssistentSection';
+import { KIRAGAssistentSection } from '@/components/sections/KIRAGAssistentSection';
 
 type Section = 
   | 'intro' 
