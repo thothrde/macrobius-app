@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import Head from 'next/head';
 import { LanguageProvider } from '@/contexts/LanguageContext';
-import VideoIntroWrapper from '@/components/sections/VideoIntroWrapper';
+import { VideoIntroWrapper } from '@/components/sections/VideoIntroWrapper';
 import BanquetSection from '@/components/sections/BanquetSection';
 import CosmosSection from '@/components/sections/CosmosSection';
 import WorldMapSection from '@/components/sections/WorldMapSection';
