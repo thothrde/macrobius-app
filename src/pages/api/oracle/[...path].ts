@@ -1,8 +1,9 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { IncomingMessage } from 'http';
 
-// 🎯 CRITICAL BUILD FIX: Proper header type handling for Vercel deployment
+// 🎯 CRITICAL BUILD FIX: Proper header type handling + fetch timeout fix for Vercel deployment
 // ✅ FIXED: TypeScript error with string | string[] header types
+// ✅ FIXED: fetch timeout using AbortController (standard approach)
 // ✅ ENHANCED: Safe header extraction with proper type checking
 // ✅ MAINTAINED: All Oracle Cloud proxy functionality and CORS handling
 
@@ -11,6 +12,7 @@ import { IncomingMessage } from 'http';
  * 
  * Features:
  * - ✅ Type-safe header extraction (fixes Vercel build error)
+ * - ✅ Proper fetch timeout implementation with AbortController
  * - ✅ Complete CORS support for browser requests
  * - ✅ Smart request forwarding with proper headers
  * - ✅ Error handling with detailed logging
@@ -30,6 +32,24 @@ const extractHeaderValue = (value: string | string[] | undefined): string => {
   if (!value) return 'unknown';
   if (Array.isArray(value)) return value[0] || 'unknown';
   return value;
+};
+
+// 🔧 Enhanced timeout implementation using AbortController
+const fetchWithTimeout = async (url: string, options: RequestInit, timeoutMs: number = 30000): Promise<Response> => {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+  
+  try {
+    const response = await fetch(url, {
+      ...options,
+      signal: controller.signal
+    });
+    clearTimeout(timeoutId);
+    return response;
+  } catch (error) {
+    clearTimeout(timeoutId);
+    throw error;
+  }
 };
 
 // 🔧 Enhanced CORS configuration
@@ -87,10 +107,9 @@ const forwardToOracle = async (req: NextApiRequest, res: NextApiResponse) => {
   }
   
   // Prepare request options
-  const requestOptions: any = {
+  const requestOptions: RequestInit = {
     method: req.method,
     headers: forwardHeaders,
-    timeout: 30000, // 30 second timeout
   };
   
   // Add body for POST, PUT, PATCH requests
@@ -101,7 +120,8 @@ const forwardToOracle = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
     console.log(`[Oracle Proxy] ${req.method} ${targetUrl}`);
     
-    const response = await fetch(targetUrl, requestOptions);
+    // ✅ FIXED: Use fetchWithTimeout instead of fetch with timeout property
+    const response = await fetchWithTimeout(targetUrl, requestOptions, 30000);
     
     // Forward response status
     res.status(response.status);
@@ -160,11 +180,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   if (req.query.path === 'health') {
     console.log('[Oracle Proxy] Health check requested');
     try {
-      const response = await fetch(`${ORACLE_BASE_URL}/health`, {
+      // ✅ FIXED: Use fetchWithTimeout for health check
+      const response = await fetchWithTimeout(`${ORACLE_BASE_URL}/health`, {
         method: 'GET',
-        headers: { 'Accept': 'application/json' },
-        timeout: 10000
-      });
+        headers: { 'Accept': 'application/json' }
+      }, 10000);
       
       if (response.ok) {
         const data = await response.json();
