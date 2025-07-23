@@ -63,13 +63,13 @@ export default function Home({ initialSection = 'intro', initialLanguage = 'DE' 
       case 'intro':
         return <VideoIntroWrapper language={currentLanguage} />;
       case 'banquet':
-        return <BanquetSection language={currentLanguage} />;
+        return <BanquetSection isActive={true} language={currentLanguage} />;
       case 'cosmos':
-        return <CosmosSection language={currentLanguage} />;
+        return <CosmosSection isActive={true} language={currentLanguage} />;
       case 'worldmap':
-        return <WorldMapSection language={currentLanguage} />;
+        return <WorldMapSection isActive={true} language={currentLanguage} />;
       case 'textsearch':
-        return <TextSearchSection language={currentLanguage} />;
+        return <TextSearchSection isActive={true} language={currentLanguage} />;
       case 'learning':
         return <LearningSection language={currentLanguage} />;
       case 'quiz':
