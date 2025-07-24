@@ -1,26 +1,28 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { IntroSection } from './IntroSection';
-import { SkipForward, Play, Volume2, VolumeX, RefreshCw } from 'lucide-react';
+import { SkipForward, Play, Volume2, VolumeX } from 'lucide-react';
 
 interface VideoIntroWrapperProps {
   language: 'DE' | 'EN' | 'LA';
 }
 
 /**
- * 🎬 PROFESSIONAL HTML5 VIDEO PLAYER - Handles Large Video Files Properly
- * Solution: External video hosting + HTML5 video with proper autoplay handling
+ * 🎬 SMART YOUTUBE PLAYER - Handles Autoplay Restrictions While Preserving Audio
+ * Uses the existing YouTube video: https://youtu.be/w7h_xi_omfg
  */
 export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }) => {
   const { t } = useLanguage();
   const [showVideo, setShowVideo] = useState(true);
   const [countdown, setCountdown] = useState(45);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [isMuted, setIsMuted] = useState(true);
-  const [isLoading, setIsLoading] = useState(false);
-  const [showControls, setShowControls] = useState(true);
-  const [videoError, setVideoError] = useState(false);
-  const videoRef = useRef<HTMLVideoElement>(null);
+  const [videoStarted, setVideoStarted] = useState(false);
+  const [isMuted, setIsMuted] = useState(true); // Start muted for autoplay compliance
+  const [showPlayButton, setShowPlayButton] = useState(true);
+  const [autoplayAttempted, setAutoplayAttempted] = useState(false);
+  const iframeRef = useRef<HTMLIFrameElement>(null);
+  
+  // YouTube video ID from your link
+  const YOUTUBE_VIDEO_ID = 'w7h_xi_omfg';
   
   // Auto-skip timer
   useEffect(() => {
@@ -39,93 +41,95 @@ export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }
     return () => clearInterval(timer);
   }, [showVideo]);
   
-  // Attempt autoplay when component mounts
+  // Smart autoplay attempt
   useEffect(() => {
-    const video = videoRef.current;
-    if (!video) return;
+    if (autoplayAttempted) return;
     
-    const attemptAutoplay = async () => {
-      try {
-        // Set video to muted for autoplay compliance
-        video.muted = true;
-        video.volume = 0;
+    // Try muted autoplay first (more likely to succeed)
+    const attemptAutoplay = () => {
+      setAutoplayAttempted(true);
+      
+      // Create iframe with muted autoplay
+      const mutedEmbedUrl = `https://www.youtube.com/embed/${YOUTUBE_VIDEO_ID}?autoplay=1&mute=1&controls=1&rel=0&modestbranding=1&playsinline=1&enablejsapi=1&origin=${encodeURIComponent(window.location.origin)}`;
+      
+      if (iframeRef.current) {
+        iframeRef.current.src = mutedEmbedUrl;
         
-        // Attempt to play
-        await video.play();
-        setIsPlaying(true);
-        setShowControls(false);
-        console.log('🎬 Autoplay successful!');
-        
-        // After 2 seconds, try to unmute (user will need to interact first)
+        // Hide play button if autoplay likely works
         setTimeout(() => {
-          setShowControls(true);
-        }, 2000);
-        
-      } catch (error) {
-        console.log('🎬 Autoplay blocked - showing play button');
-        setShowControls(true);
-        setIsPlaying(false);
+          setShowPlayButton(false);
+          setVideoStarted(true);
+          
+          // Show unmute option after video starts
+          setTimeout(() => {
+            // Show controls overlay for unmuting
+          }, 2000);
+        }, 1500);
       }
     };
     
-    // Wait for video to be ready
-    if (video.readyState >= 2) {
-      attemptAutoplay();
-    } else {
-      video.addEventListener('canplay', attemptAutoplay, { once: true });
-    }
-    
-    return () => {
-      video.removeEventListener('canplay', attemptAutoplay);
-    };
-  }, []);
+    // Delay autoplay attempt slightly
+    setTimeout(attemptAutoplay, 1000);
+  }, [autoplayAttempted]);
   
-  const handlePlayClick = async () => {
-    const video = videoRef.current;
-    if (!video) return;
+  // Handle play button click - Start with sound
+  const handlePlayClick = () => {
+    if (!iframeRef.current) return;
     
-    setIsLoading(true);
+    // Create new iframe with sound enabled
+    const audioEmbedUrl = `https://www.youtube.com/embed/${YOUTUBE_VIDEO_ID}?autoplay=1&mute=0&controls=1&rel=0&modestbranding=1&playsinline=1&enablejsapi=1&origin=${encodeURIComponent(window.location.origin)}&start=0`;
     
-    try {
-      if (isPlaying) {
-        video.pause();
-        setIsPlaying(false);
-      } else {
-        await video.play();
-        setIsPlaying(true);
-        setShowControls(false);
-        // Show controls again after 3 seconds
-        setTimeout(() => setShowControls(true), 3000);
-      }
-    } catch (error) {
-      console.error('Play failed:', error);
-      setVideoError(true);
-    } finally {
-      setIsLoading(false);
+    // Replace iframe for fresh start with audio
+    const newIframe = document.createElement('iframe');
+    newIframe.src = audioEmbedUrl;
+    newIframe.style.width = '100%';
+    newIframe.style.height = '100%';
+    newIframe.style.border = 'none';
+    newIframe.style.borderRadius = '20px';
+    newIframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen';
+    newIframe.allowFullscreen = true;
+    newIframe.title = 'Macrobius App Trailer';
+    
+    if (iframeRef.current.parentNode) {
+      iframeRef.current.parentNode.replaceChild(newIframe, iframeRef.current);
+      // @ts-ignore
+      iframeRef.current = newIframe;
     }
+    
+    setVideoStarted(true);
+    setShowPlayButton(false);
+    setIsMuted(false);
   };
   
+  // Toggle mute/unmute while video is playing
   const handleMuteToggle = () => {
-    const video = videoRef.current;
-    if (!video) return;
+    if (!iframeRef.current || !videoStarted) return;
     
-    video.muted = !video.muted;
-    setIsMuted(video.muted);
+    const newMuteState = !isMuted;
+    setIsMuted(newMuteState);
+    
+    // Create new iframe with updated mute state
+    const toggleEmbedUrl = `https://www.youtube.com/embed/${YOUTUBE_VIDEO_ID}?autoplay=1&mute=${newMuteState ? 1 : 0}&controls=1&rel=0&modestbranding=1&playsinline=1&enablejsapi=1&origin=${encodeURIComponent(window.location.origin)}`;
+    
+    const newIframe = document.createElement('iframe');
+    newIframe.src = toggleEmbedUrl;
+    newIframe.style.width = '100%';
+    newIframe.style.height = '100%';
+    newIframe.style.border = 'none';
+    newIframe.style.borderRadius = '20px';
+    newIframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen';
+    newIframe.allowFullscreen = true;
+    newIframe.title = 'Macrobius App Trailer';
+    
+    if (iframeRef.current.parentNode) {
+      iframeRef.current.parentNode.replaceChild(newIframe, iframeRef.current);
+      // @ts-ignore
+      iframeRef.current = newIframe;
+    }
   };
   
   const skipToApp = () => {
     setShowVideo(false);
-  };
-  
-  const handleVideoError = () => {
-    setVideoError(true);
-    console.error('Video failed to load');
-  };
-  
-  const handleVideoEnded = () => {
-    setIsPlaying(false);
-    // Auto-skip to app when video ends
-    setTimeout(() => setShowVideo(false), 1000);
   };
   
   // When video completes, show original IntroSection
@@ -219,7 +223,7 @@ export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }
         })}
       </div>
       
-      {/* 🎬 PROFESSIONAL HTML5 VIDEO PLAYER */}
+      {/* 🎬 SMART YOUTUBE VIDEO PLAYER */}
       <div style={{
         height: '60vh',
         position: 'relative',
@@ -240,182 +244,142 @@ export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }
           position: 'relative',
           background: '#000'
         }}>
-          {videoError ? (
-            /* ERROR FALLBACK - Show beautiful classical imagery */
-            <div style={{
+          
+          {/* YOUTUBE IFRAME */}
+          <iframe
+            ref={iframeRef}
+            src={`https://www.youtube.com/embed/${YOUTUBE_VIDEO_ID}?controls=1&rel=0&modestbranding=1&playsinline=1`}
+            style={{
               width: '100%',
               height: '100%',
-              background: 'linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url(/MacrobiusBottle.jpg) center/cover',
+              border: 'none',
+              borderRadius: '20px',
+              opacity: showPlayButton && !videoStarted ? 0.3 : 1,
+              transition: 'opacity 0.5s ease'
+            }}
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"
+            allowFullScreen
+            title="Macrobius App Trailer"
+            loading="eager"
+          />
+          
+          {/* SMART PLAY OVERLAY */}
+          {showPlayButton && (
+            <div style={{
+              position: 'absolute',
+              inset: 0,
               display: 'flex',
               flexDirection: 'column',
               alignItems: 'center',
               justifyContent: 'center',
-              color: '#d4af37',
-              textAlign: 'center',
-              padding: '40px'
+              background: 'rgba(0, 0, 0, 0.75)',
+              borderRadius: '20px',
+              zIndex: 20
             }}>
-              <h2 style={{ fontSize: '2.5rem', marginBottom: '20px', fontFamily: 'Times New Roman, serif' }}>
-                MACROBIUS
-              </h2>
-              <p style={{ fontSize: '1.2rem', marginBottom: '30px', opacity: 0.9 }}>
-                AI-Powered Classical Latin Education
-              </p>
-              <button
-                onClick={skipToApp}
-                style={{
-                  padding: '15px 30px',
-                  backgroundColor: 'rgba(212, 175, 55, 0.9)',
-                  border: '2px solid #d4af37',
+              <div style={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                gap: '30px'
+              }}>
+                {/* MAIN PLAY BUTTON WITH SOUND */}
+                <button
+                  onClick={handlePlayClick}
+                  style={{
+                    width: '140px',
+                    height: '140px',
+                    borderRadius: '50%',
+                    background: 'linear-gradient(135deg, rgba(212, 175, 55, 0.95), rgba(212, 175, 55, 0.8))',
+                    border: '4px solid #d4af37',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    cursor: 'pointer',
+                    transition: 'all 0.3s ease',
+                    boxShadow: '0 15px 40px rgba(212, 175, 55, 0.5)',
+                    animation: 'playButtonPulse 2s ease-in-out infinite'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.transform = 'scale(1.1)';
+                    e.currentTarget.style.boxShadow = '0 20px 50px rgba(212, 175, 55, 0.7)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = 'scale(1)';
+                    e.currentTarget.style.boxShadow = '0 15px 40px rgba(212, 175, 55, 0.5)';
+                  }}
+                >
+                  <Play style={{ width: '50px', height: '50px', color: '#1a1a1a', marginLeft: '6px' }} />
+                </button>
+                
+                {/* SOUND INDICATOR */}
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '12px',
+                  padding: '12px 24px',
+                  backgroundColor: 'rgba(34, 197, 94, 0.2)',
+                  border: '2px solid rgba(34, 197, 94, 0.5)',
                   borderRadius: '25px',
-                  color: '#1a1a1a',
-                  fontSize: '16px',
+                  color: '#22c55e'
+                }}>
+                  <Volume2 style={{ width: '20px', height: '20px' }} />
+                  <span style={{ fontSize: '16px', fontWeight: 'bold' }}>With Sound!</span>
+                </div>
+                
+                {/* INSTRUCTIONS */}
+                <div style={{
+                  color: '#d4af37',
+                  fontSize: '20px',
                   fontWeight: 'bold',
-                  cursor: 'pointer'
+                  textAlign: 'center',
+                  textShadow: '0 2px 4px rgba(0, 0, 0, 0.5)'
+                }}>
+                  Click to Start Trailer
+                </div>
+              </div>
+            </div>
+          )}
+          
+          {/* MUTE/UNMUTE CONTROLS (shown when video is playing) */}
+          {videoStarted && !showPlayButton && (
+            <div style={{
+              position: 'absolute',
+              top: '20px',
+              right: '20px',
+              zIndex: 25
+            }}>
+              <button
+                onClick={handleMuteToggle}
+                style={{
+                  padding: '12px 20px',
+                  backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                  border: '2px solid rgba(212, 175, 55, 0.7)',
+                  borderRadius: '25px',
+                  color: '#d4af37',
+                  fontSize: '14px',
+                  fontWeight: 'bold',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  transition: 'all 0.3s ease',
+                  backdropFilter: 'blur(10px)'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = 'rgba(212, 175, 55, 0.2)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = 'rgba(0, 0, 0, 0.8)';
                 }}
               >
-                Enter the Classical World
+                {isMuted ? (
+                  <VolumeX style={{ width: '16px', height: '16px' }} />
+                ) : (
+                  <Volume2 style={{ width: '16px', height: '16px' }} />
+                )}
+                {isMuted ? 'Unmute' : 'Mute'}
               </button>
             </div>
-          ) : (
-            /* HTML5 VIDEO ELEMENT */
-            <>
-              <video
-                ref={videoRef}
-                style={{
-                  width: '100%',
-                  height: '100%',
-                  objectFit: 'cover',
-                  borderRadius: '20px'
-                }}
-                muted={isMuted}
-                loop
-                playsInline
-                preload="metadata"
-                onError={handleVideoError}
-                onEnded={handleVideoEnded}
-                onLoadStart={() => setIsLoading(true)}
-                onCanPlay={() => setIsLoading(false)}
-              >
-                {/* MULTIPLE VIDEO SOURCES FOR COMPATIBILITY */}
-                {/* 
-                   SOLUTION FOR YOUR 36MB VIDEO:
-                   1. Convert AppIntro.mov to web-optimized formats (MP4, WebM)
-                   2. Host on external service (Vimeo, CloudFlare, AWS S3)
-                   3. Or compress to under 25MB for GitHub hosting
-                */}
-                
-                {/* PLACEHOLDER SOURCES - Replace with your optimized video URLs */}
-                <source src="https://your-cdn.com/AppIntro.mp4" type="video/mp4" />
-                <source src="https://your-cdn.com/AppIntro.webm" type="video/webm" />
-                
-                {/* FALLBACK MESSAGE */}
-                <div style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  height: '100%',
-                  color: '#d4af37',
-                  fontSize: '18px'
-                }}>
-                  Your browser does not support HTML5 video.
-                </div>
-              </video>
-              
-              {/* VIDEO CONTROLS OVERLAY */}
-              {showControls && (
-                <div style={{
-                  position: 'absolute',
-                  inset: 0,
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  background: isPlaying ? 'rgba(0, 0, 0, 0.3)' : 'rgba(0, 0, 0, 0.7)',
-                  borderRadius: '20px',
-                  transition: 'background 0.3s ease'
-                }}>
-                  {isLoading ? (
-                    <RefreshCw style={{ 
-                      width: '60px', 
-                      height: '60px', 
-                      color: '#d4af37',
-                      animation: 'spin 1s linear infinite'
-                    }} />
-                  ) : (
-                    <div style={{
-                      display: 'flex',
-                      flexDirection: 'column',
-                      alignItems: 'center',
-                      gap: '20px'
-                    }}>
-                      {/* MAIN PLAY/PAUSE BUTTON */}
-                      <button
-                        onClick={handlePlayClick}
-                        style={{
-                          width: '120px',
-                          height: '120px',
-                          borderRadius: '50%',
-                          background: 'linear-gradient(135deg, rgba(212, 175, 55, 0.95), rgba(212, 175, 55, 0.8))',
-                          border: '4px solid #d4af37',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          cursor: 'pointer',
-                          transition: 'all 0.3s ease',
-                          boxShadow: '0 15px 40px rgba(212, 175, 55, 0.5)'
-                        }}
-                        onMouseEnter={(e) => {
-                          e.currentTarget.style.transform = 'scale(1.1)';
-                          e.currentTarget.style.boxShadow = '0 20px 50px rgba(212, 175, 55, 0.7)';
-                        }}
-                        onMouseLeave={(e) => {
-                          e.currentTarget.style.transform = 'scale(1)';
-                          e.currentTarget.style.boxShadow = '0 15px 40px rgba(212, 175, 55, 0.5)';
-                        }}
-                      >
-                        <Play style={{ 
-                          width: '40px', 
-                          height: '40px', 
-                          color: '#1a1a1a', 
-                          marginLeft: isPlaying ? '0' : '4px'
-                        }} />
-                      </button>
-                      
-                      {/* MUTE/UNMUTE BUTTON */}
-                      <button
-                        onClick={handleMuteToggle}
-                        style={{
-                          padding: '12px 24px',
-                          backgroundColor: 'rgba(212, 175, 55, 0.2)',
-                          border: '2px solid rgba(212, 175, 55, 0.5)',
-                          borderRadius: '25px',
-                          color: '#d4af37',
-                          fontSize: '14px',
-                          fontWeight: '600',
-                          cursor: 'pointer',
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: '8px',
-                          transition: 'all 0.3s ease'
-                        }}
-                        onMouseEnter={(e) => {
-                          e.currentTarget.style.backgroundColor = 'rgba(212, 175, 55, 0.3)';
-                        }}
-                        onMouseLeave={(e) => {
-                          e.currentTarget.style.backgroundColor = 'rgba(212, 175, 55, 0.2)';
-                        }}
-                      >
-                        {isMuted ? (
-                          <VolumeX style={{ width: '16px', height: '16px' }} />
-                        ) : (
-                          <Volume2 style={{ width: '16px', height: '16px' }} />
-                        )}
-                        {isMuted ? 'Unmute' : 'Mute'}
-                      </button>
-                    </div>
-                  )}
-                </div>
-              )}
-            </>
           )}
           
           {/* STATUS OVERLAY */}
@@ -431,7 +395,8 @@ export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }
             backgroundColor: 'rgba(0, 0, 0, 0.85)',
             borderRadius: '16px',
             backdropFilter: 'blur(20px)',
-            border: '2px solid rgba(212, 175, 55, 0.4)'
+            border: '2px solid rgba(212, 175, 55, 0.4)',
+            pointerEvents: videoStarted ? 'none' : 'auto'
           }}>
             <div style={{
               color: '#d4af37',
@@ -446,16 +411,30 @@ export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }
                 width: '8px',
                 height: '8px',
                 borderRadius: '50%',
-                backgroundColor: isPlaying ? '#22c55e' : videoError ? '#ef4444' : '#d4af37',
+                backgroundColor: videoStarted ? '#22c55e' : '#d4af37',
                 animation: 'statusPulse 2s ease-in-out infinite'
               }} />
             </div>
             <div style={{
               color: 'rgba(212, 175, 55, 0.9)',
               fontSize: '13px',
-              fontWeight: '500'
+              fontWeight: '500',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px'
             }}>
-              {videoError ? 'Error' : isLoading ? 'Loading...' : isPlaying ? 'Playing' : 'Ready'}
+              {videoStarted ? (
+                <>
+                  {isMuted ? (
+                    <VolumeX style={{ width: '12px', height: '12px' }} />
+                  ) : (
+                    <Volume2 style={{ width: '12px', height: '12px' }} />
+                  )}
+                  {isMuted ? 'Muted' : 'With Sound'}
+                </>
+              ) : (
+                'Ready to Play'
+              )}
             </div>
           </div>
         </div>
@@ -576,9 +555,9 @@ export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }
           0%, 100% { opacity: 1; transform: scale(1); }
           50% { opacity: 0.6; transform: scale(1.1); }
         }
-        @keyframes spin {
-          0% { transform: rotate(0deg); }
-          100% { transform: rotate(360deg); }
+        @keyframes playButtonPulse {
+          0%, 100% { transform: scale(1); }
+          50% { transform: scale(1.05); }
         }
       `}</style>
     </div>
