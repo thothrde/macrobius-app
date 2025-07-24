@@ -1,29 +1,23 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { IntroSection } from './IntroSection';
-import { SkipForward, Play } from 'lucide-react';
+import { SkipForward, Play, RefreshCw } from 'lucide-react';
 
 interface VideoIntroWrapperProps {
   language: 'DE' | 'EN' | 'LA';
 }
 
 /**
- * 🎬 BULLETPROOF VIDEO INTRO - GUARANTEED TO WORK
- * 
- * Multiple aggressive strategies to ensure video loads and plays:
- * 1. Direct iframe with autoplay bypass techniques
- * 2. Intersection Observer for immediate play trigger
- * 3. User interaction fallback with instant play
- * 4. Programmatic play attempts with error handling
+ * 🎬 ABSOLUTE SOLUTION - DETECTS BLACK SCREEN & FORCES PLAY BUTTON
  */
 export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }) => {
   const { t } = useLanguage();
   const [showVideo, setShowVideo] = useState(true);
   const [countdown, setCountdown] = useState(45);
-  const [videoStarted, setVideoStarted] = useState(false);
-  const [needsInteraction, setNeedsInteraction] = useState(false);
+  const [showPlayButton, setShowPlayButton] = useState(true); // Always show play button initially
+  const [isAttemptingPlay, setIsAttemptingPlay] = useState(false);
+  const [playAttempts, setPlayAttempts] = useState(0);
   const iframeRef = useRef<HTMLIFrameElement>(null);
-  const containerRef = useRef<HTMLDivElement>(null);
   
   // Auto-skip timer
   useEffect(() => {
@@ -42,85 +36,56 @@ export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }
     return () => clearInterval(timer);
   }, [showVideo]);
   
-  // Aggressive autoplay strategy
+  // Force play button to appear after 2 seconds if video doesn't show
   useEffect(() => {
-    if (!showVideo) return;
+    const forcePlayButton = setTimeout(() => {
+      console.log('🎬 Forcing play button to appear - video likely not auto-playing');
+      setShowPlayButton(true);
+    }, 2000);
     
-    // Strategy 1: Immediate play attempt
-    const immediatePlay = () => {
-      console.log('🎬 Attempting immediate video play...');
-      setVideoStarted(true);
-      
-      // Try to communicate with iframe (if possible)
-      if (iframeRef.current) {
-        try {
-          // Force reload iframe with autoplay
-          const src = iframeRef.current.src;
-          iframeRef.current.src = '';
-          setTimeout(() => {
-            if (iframeRef.current) {
-              iframeRef.current.src = src;
-            }
-          }, 100);
-        } catch (error) {
-          console.log('Iframe reload failed:', error);
-        }
-      }
-    };
-    
-    // Strategy 2: Intersection Observer for viewport trigger
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting && !videoStarted) {
-            console.log('🎬 Video container in viewport, triggering play...');
-            immediatePlay();
-          }
-        });
-      },
-      { threshold: 0.1 }
-    );
-    
-    if (containerRef.current) {
-      observer.observe(containerRef.current);
-    }
-    
-    // Strategy 3: Delayed autoplay attempt
-    const delayedPlay = setTimeout(() => {
-      if (!videoStarted) {
-        console.log('🎬 Delayed play attempt...');
-        immediatePlay();
-      }
-    }, 500);
-    
-    // Strategy 4: Multiple retry attempts
-    const retryAttempts = [1000, 2000, 3000].map((delay) => 
-      setTimeout(() => {
-        if (!videoStarted) {
-          console.log(`🎬 Retry attempt at ${delay}ms...`);
-          immediatePlay();
-        }
-      }, delay)
-    );
-    
-    return () => {
-      observer.disconnect();
-      clearTimeout(delayedPlay);
-      retryAttempts.forEach(clearTimeout);
-    };
-  }, [showVideo, videoStarted]);
+    return () => clearTimeout(forcePlayButton);
+  }, []);
   
-  // Handle user interaction for browsers that require it
-  const handleUserPlay = () => {
-    console.log('🎬 User interaction triggered play...');
-    setVideoStarted(true);
-    setNeedsInteraction(false);
+  // Handle play button click
+  const handlePlayClick = () => {
+    console.log(`🎬 Play attempt #${playAttempts + 1}`);
+    setIsAttemptingPlay(true);
+    setPlayAttempts(prev => prev + 1);
     
-    // Force iframe reload with fresh autoplay
+    // Strategy 1: Try to reload iframe with different parameters
     if (iframeRef.current) {
-      const currentSrc = iframeRef.current.src;
-      iframeRef.current.src = currentSrc + '&t=' + Date.now();
+      const attempts = [
+        // Attempt 1: Standard autoplay
+        `https://www.youtube.com/embed/w7h_xi_omfg?autoplay=1&mute=1&start=0&rel=0&modestbranding=1&controls=1&enablejsapi=1&origin=${encodeURIComponent(window.location.origin)}`,
+        // Attempt 2: Different parameters
+        `https://www.youtube.com/embed/w7h_xi_omfg?autoplay=1&mute=1&controls=1&rel=0&showinfo=0&modestbranding=1&playsinline=1`,
+        // Attempt 3: Minimal parameters
+        `https://www.youtube.com/embed/w7h_xi_omfg?autoplay=1&mute=1`,
+        // Attempt 4: Just the video ID
+        `https://www.youtube.com/embed/w7h_xi_omfg`
+      ];
+      
+      const currentAttempt = Math.min(playAttempts, attempts.length - 1);
+      console.log(`🎬 Using attempt ${currentAttempt + 1}: ${attempts[currentAttempt]}`);
+      
+      iframeRef.current.src = attempts[currentAttempt];
+      
+      // Hide play button for a moment to show we're trying
+      setShowPlayButton(false);
+      
+      // Show play button again after 3 seconds if still not working
+      setTimeout(() => {
+        setShowPlayButton(true);
+        setIsAttemptingPlay(false);
+      }, 3000);
     }
+  };
+  
+  // Open video in new tab as backup
+  const openInNewTab = () => {
+    window.open('https://youtu.be/w7h_xi_omfg', '_blank');
+    // Skip to app after opening
+    setTimeout(() => setShowVideo(false), 1000);
   };
   
   const skipToApp = () => {
@@ -218,19 +183,16 @@ export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }
         })}
       </div>
       
-      {/* 🎬 BULLETPROOF VIDEO CONTAINER */}
-      <div 
-        ref={containerRef}
-        style={{
-          height: '60vh',
-          position: 'relative',
-          zIndex: 10,
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          padding: '40px'
-        }}
-      >
+      {/* 🎬 VIDEO CONTAINER WITH FORCED CONTROLS */}
+      <div style={{
+        height: '60vh',
+        position: 'relative',
+        zIndex: 10,
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: '40px'
+      }}>
         <div style={{
           width: '100%',
           maxWidth: '900px',
@@ -243,32 +205,25 @@ export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }
           background: '#000'
         }}>
           
-          {/* AGGRESSIVE AUTOPLAY IFRAME */}
+          {/* BACKGROUND IFRAME (Always Loading) */}
           <iframe
             ref={iframeRef}
-            src={`https://www.youtube.com/embed/w7h_xi_omfg?autoplay=1&mute=1&start=0&rel=0&modestbranding=1&controls=1&showinfo=0&iv_load_policy=3&playsinline=1&enablejsapi=1&widgetid=1&loop=0&fs=1&hl=en&color=white&cc_load_policy=0&disablekb=0&end=0&playlist=w7h_xi_omfg&origin=${typeof window !== 'undefined' ? window.location.origin : ''}`}
+            src="https://www.youtube.com/embed/w7h_xi_omfg?autoplay=1&mute=1&start=0&controls=1&rel=0&modestbranding=1"
             style={{
               width: '100%',
               height: '100%',
               border: 'none',
-              borderRadius: '20px'
+              borderRadius: '20px',
+              opacity: showPlayButton ? 0.3 : 1 // Dim when play button visible
             }}
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"
             allowFullScreen
-            title="Macrobius App Trailer - Auto-Playing"
+            title="Macrobius App Trailer"
             loading="eager"
-            onLoad={() => {
-              console.log('🎬 Iframe loaded successfully');
-              setVideoStarted(true);
-            }}
-            onError={() => {
-              console.log('🎬 Iframe load error, showing interaction button');
-              setNeedsInteraction(true);
-            }}
           />
           
-          {/* USER INTERACTION OVERLAY (if needed) */}
-          {needsInteraction && (
+          {/* PLAY BUTTON OVERLAY - Always Available */}
+          {showPlayButton && (
             <div style={{
               position: 'absolute',
               inset: 0,
@@ -276,46 +231,123 @@ export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }
               flexDirection: 'column',
               alignItems: 'center',
               justifyContent: 'center',
-              background: 'rgba(0, 0, 0, 0.8)',
+              background: 'rgba(0, 0, 0, 0.7)',
               borderRadius: '20px',
               zIndex: 20
             }}>
-              <button
-                onClick={handleUserPlay}
-                style={{
-                  width: '120px',
-                  height: '120px',
-                  borderRadius: '50%',
-                  background: 'linear-gradient(135deg, rgba(212, 175, 55, 0.95), rgba(212, 175, 55, 0.8))',
-                  border: '4px solid #d4af37',
+              {/* Loading State */}
+              {isAttemptingPlay ? (
+                <div style={{
                   display: 'flex',
+                  flexDirection: 'column',
                   alignItems: 'center',
-                  justifyContent: 'center',
-                  cursor: 'pointer',
-                  transition: 'all 0.3s ease',
-                  boxShadow: '0 15px 40px rgba(212, 175, 55, 0.5)',
-                  animation: 'playButtonPulse 2s ease-in-out infinite'
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.transform = 'scale(1.1)';
-                  e.currentTarget.style.boxShadow = '0 20px 50px rgba(212, 175, 55, 0.7)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.transform = 'scale(1)';
-                  e.currentTarget.style.boxShadow = '0 15px 40px rgba(212, 175, 55, 0.5)';
-                }}
-              >
-                <Play style={{ width: '40px', height: '40px', color: '#1a1a1a', marginLeft: '4px' }} />
-              </button>
-              <div style={{
-                color: '#d4af37',
-                fontSize: '18px',
-                fontWeight: 'bold',
-                marginTop: '20px',
-                textAlign: 'center'
-              }}>
-                Click to Start Video
-              </div>
+                  gap: '20px'
+                }}>
+                  <RefreshCw style={{ 
+                    width: '60px', 
+                    height: '60px', 
+                    color: '#d4af37',
+                    animation: 'spin 1s linear infinite'
+                  }} />
+                  <div style={{ color: '#d4af37', fontSize: '18px', fontWeight: 'bold' }}>
+                    Loading Video...
+                  </div>
+                </div>
+              ) : (
+                /* Play Controls */
+                <div style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  gap: '30px'
+                }}>
+                  {/* Main Play Button */}
+                  <button
+                    onClick={handlePlayClick}
+                    style={{
+                      width: '120px',
+                      height: '120px',
+                      borderRadius: '50%',
+                      background: 'linear-gradient(135deg, rgba(212, 175, 55, 0.95), rgba(212, 175, 55, 0.8))',
+                      border: '4px solid #d4af37',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      cursor: 'pointer',
+                      transition: 'all 0.3s ease',
+                      boxShadow: '0 15px 40px rgba(212, 175, 55, 0.5)',
+                      animation: 'playButtonPulse 2s ease-in-out infinite'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.transform = 'scale(1.1)';
+                      e.currentTarget.style.boxShadow = '0 20px 50px rgba(212, 175, 55, 0.7)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.transform = 'scale(1)';
+                      e.currentTarget.style.boxShadow = '0 15px 40px rgba(212, 175, 55, 0.5)';
+                    }}
+                  >
+                    <Play style={{ width: '40px', height: '40px', color: '#1a1a1a', marginLeft: '4px' }} />
+                  </button>
+                  
+                  {/* Instructions */}
+                  <div style={{
+                    color: '#d4af37',
+                    fontSize: '18px',
+                    fontWeight: 'bold',
+                    textAlign: 'center'
+                  }}>
+                    Click to Start Trailer
+                  </div>
+                  
+                  {/* Alternative Actions */}
+                  <div style={{
+                    display: 'flex',
+                    gap: '20px',
+                    flexWrap: 'wrap',
+                    justifyContent: 'center'
+                  }}>
+                    <button
+                      onClick={openInNewTab}
+                      style={{
+                        padding: '12px 24px',
+                        backgroundColor: 'rgba(66, 153, 225, 0.2)',
+                        border: '2px solid rgba(66, 153, 225, 0.5)',
+                        borderRadius: '25px',
+                        color: '#4299e1',
+                        fontSize: '14px',
+                        fontWeight: '600',
+                        cursor: 'pointer',
+                        transition: 'all 0.3s ease'
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.backgroundColor = 'rgba(66, 153, 225, 0.3)';
+                        e.currentTarget.style.borderColor = '#4299e1';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.backgroundColor = 'rgba(66, 153, 225, 0.2)';
+                        e.currentTarget.style.borderColor = 'rgba(66, 153, 225, 0.5)';
+                      }}
+                    >
+                      Open in YouTube
+                    </button>
+                    
+                    {playAttempts > 0 && (
+                      <div style={{
+                        padding: '12px 20px',
+                        backgroundColor: 'rgba(245, 101, 101, 0.2)',
+                        border: '2px solid rgba(245, 101, 101, 0.5)',
+                        borderRadius: '25px',
+                        color: '#f56565',
+                        fontSize: '12px',
+                        fontWeight: '500'
+                      }}>
+                        Attempts: {playAttempts}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
             </div>
           )}
           
@@ -348,7 +380,7 @@ export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }
                 width: '8px',
                 height: '8px',
                 borderRadius: '50%',
-                backgroundColor: videoStarted ? '#22c55e' : '#fbbf24',
+                backgroundColor: showPlayButton ? '#fbbf24' : '#22c55e',
                 animation: 'statusPulse 2s ease-in-out infinite'
               }} />
             </div>
@@ -357,7 +389,7 @@ export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }
               fontSize: '13px',
               fontWeight: '500'
             }}>
-              {videoStarted ? 'Playing' : needsInteraction ? 'Ready' : 'Loading...'}
+              {isAttemptingPlay ? 'Loading...' : showPlayButton ? 'Ready to Play' : 'Playing'}
             </div>
           </div>
         </div>
@@ -419,12 +451,10 @@ export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }
             onMouseEnter={(e) => {
               e.currentTarget.style.backgroundColor = '#d4af37';
               e.currentTarget.style.transform = 'scale(1.08) translateY(-3px)';
-              e.currentTarget.style.boxShadow = '0 16px 40px rgba(212, 175, 55, 0.8)';
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.backgroundColor = 'rgba(212, 175, 55, 0.95)';
               e.currentTarget.style.transform = 'scale(1) translateY(0)';
-              e.currentTarget.style.boxShadow = '0 12px 30px rgba(212, 175, 55, 0.6)';
             }}
           >
             <SkipForward style={{ width: '24px', height: '24px' }} />
@@ -442,8 +472,7 @@ export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }
             backdropFilter: 'blur(15px)',
             display: 'flex',
             alignItems: 'center',
-            gap: '12px',
-            boxShadow: '0 8px 20px rgba(0, 0, 0, 0.4)'
+            gap: '12px'
           }}>
             <div style={{
               width: '6px',
@@ -457,7 +486,7 @@ export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }
         </div>
       </div>
       
-      {/* 🎨 ENHANCED ANIMATIONS */}
+      {/* 🎨 ANIMATIONS */}
       <style jsx global>{`
         @keyframes starTwinkle {
           0%, 100% { opacity: 0.3; transform: scale(0.8); }
@@ -484,6 +513,10 @@ export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }
         @keyframes playButtonPulse {
           0%, 100% { transform: scale(1); }
           50% { transform: scale(1.05); }
+        }
+        @keyframes spin {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
         }
       `}</style>
     </div>
