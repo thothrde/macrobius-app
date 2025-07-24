@@ -1,14 +1,14 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { IntroSection } from './IntroSection';
-import { SkipForward, Play, Volume2, VolumeX } from 'lucide-react';
+import { SkipForward, Play, Volume2, ExternalLink } from 'lucide-react';
 
 interface VideoIntroWrapperProps {
   language: 'DE' | 'EN' | 'LA';
 }
 
 /**
- * 🎬 SMART YOUTUBE PLAYER - Handles Autoplay Restrictions While Preserving Audio
+ * 🎬 CSP-COMPLIANT YOUTUBE PLAYER - Fixes Content Security Policy Issues
  * Uses the existing YouTube video: https://youtu.be/w7h_xi_omfg
  */
 export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }) => {
@@ -16,13 +16,12 @@ export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }
   const [showVideo, setShowVideo] = useState(true);
   const [countdown, setCountdown] = useState(45);
   const [videoStarted, setVideoStarted] = useState(false);
-  const [isMuted, setIsMuted] = useState(true); // Start muted for autoplay compliance
   const [showPlayButton, setShowPlayButton] = useState(true);
-  const [autoplayAttempted, setAutoplayAttempted] = useState(false);
   const iframeRef = useRef<HTMLIFrameElement>(null);
   
   // YouTube video ID from your link
   const YOUTUBE_VIDEO_ID = 'w7h_xi_omfg';
+  const YOUTUBE_URL = `https://youtu.be/${YOUTUBE_VIDEO_ID}`;
   
   // Auto-skip timer
   useEffect(() => {
@@ -41,91 +40,27 @@ export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }
     return () => clearInterval(timer);
   }, [showVideo]);
   
-  // Smart autoplay attempt
-  useEffect(() => {
-    if (autoplayAttempted) return;
-    
-    // Try muted autoplay first (more likely to succeed)
-    const attemptAutoplay = () => {
-      setAutoplayAttempted(true);
-      
-      // Create iframe with muted autoplay
-      const mutedEmbedUrl = `https://www.youtube.com/embed/${YOUTUBE_VIDEO_ID}?autoplay=1&mute=1&controls=1&rel=0&modestbranding=1&playsinline=1&enablejsapi=1&origin=${encodeURIComponent(window.location.origin)}`;
-      
-      if (iframeRef.current) {
-        iframeRef.current.src = mutedEmbedUrl;
-        
-        // Hide play button if autoplay likely works
-        setTimeout(() => {
-          setShowPlayButton(false);
-          setVideoStarted(true);
-          
-          // Show unmute option after video starts
-          setTimeout(() => {
-            // Show controls overlay for unmuting
-          }, 2000);
-        }, 1500);
-      }
-    };
-    
-    // Delay autoplay attempt slightly
-    setTimeout(attemptAutoplay, 1000);
-  }, [autoplayAttempted]);
-  
-  // Handle play button click - Start with sound
+  // Handle play button click - Direct YouTube embed with sound
   const handlePlayClick = () => {
     if (!iframeRef.current) return;
     
-    // Create new iframe with sound enabled
-    const audioEmbedUrl = `https://www.youtube.com/embed/${YOUTUBE_VIDEO_ID}?autoplay=1&mute=0&controls=1&rel=0&modestbranding=1&playsinline=1&enablejsapi=1&origin=${encodeURIComponent(window.location.origin)}&start=0`;
+    // CSP-compliant YouTube embed URL with sound enabled
+    const embedUrl = `https://www.youtube.com/embed/${YOUTUBE_VIDEO_ID}?autoplay=1&controls=1&rel=0&modestbranding=1&playsinline=1&fs=1&hl=en`;
     
-    // Replace iframe for fresh start with audio
-    const newIframe = document.createElement('iframe');
-    newIframe.src = audioEmbedUrl;
-    newIframe.style.width = '100%';
-    newIframe.style.height = '100%';
-    newIframe.style.border = 'none';
-    newIframe.style.borderRadius = '20px';
-    newIframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen';
-    newIframe.allowFullscreen = true;
-    newIframe.title = 'Macrobius App Trailer';
-    
-    if (iframeRef.current.parentNode) {
-      iframeRef.current.parentNode.replaceChild(newIframe, iframeRef.current);
-      // @ts-ignore
-      iframeRef.current = newIframe;
-    }
+    // Update iframe source
+    iframeRef.current.src = embedUrl;
     
     setVideoStarted(true);
     setShowPlayButton(false);
-    setIsMuted(false);
+    
+    console.log('🎬 Starting YouTube video with sound:', embedUrl);
   };
   
-  // Toggle mute/unmute while video is playing
-  const handleMuteToggle = () => {
-    if (!iframeRef.current || !videoStarted) return;
-    
-    const newMuteState = !isMuted;
-    setIsMuted(newMuteState);
-    
-    // Create new iframe with updated mute state
-    const toggleEmbedUrl = `https://www.youtube.com/embed/${YOUTUBE_VIDEO_ID}?autoplay=1&mute=${newMuteState ? 1 : 0}&controls=1&rel=0&modestbranding=1&playsinline=1&enablejsapi=1&origin=${encodeURIComponent(window.location.origin)}`;
-    
-    const newIframe = document.createElement('iframe');
-    newIframe.src = toggleEmbedUrl;
-    newIframe.style.width = '100%';
-    newIframe.style.height = '100%';
-    newIframe.style.border = 'none';
-    newIframe.style.borderRadius = '20px';
-    newIframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen';
-    newIframe.allowFullscreen = true;
-    newIframe.title = 'Macrobius App Trailer';
-    
-    if (iframeRef.current.parentNode) {
-      iframeRef.current.parentNode.replaceChild(newIframe, iframeRef.current);
-      // @ts-ignore
-      iframeRef.current = newIframe;
-    }
+  // Open video in new tab as alternative
+  const openVideoInNewTab = () => {
+    window.open(YOUTUBE_URL, '_blank', 'noopener,noreferrer');
+    // Skip to app after opening
+    setTimeout(() => setShowVideo(false), 1000);
   };
   
   const skipToApp = () => {
@@ -223,7 +158,7 @@ export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }
         })}
       </div>
       
-      {/* 🎬 SMART YOUTUBE VIDEO PLAYER */}
+      {/* 🎬 CSP-COMPLIANT YOUTUBE PLAYER */}
       <div style={{
         height: '60vh',
         position: 'relative',
@@ -242,28 +177,28 @@ export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }
           boxShadow: '0 30px 60px rgba(0, 0, 0, 0.8), 0 0 0 4px rgba(212, 175, 55, 0.5)',
           border: '4px solid rgba(212, 175, 55, 0.7)',
           position: 'relative',
-          background: '#000'
+          background: 'linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 50%, #1a1a1a 100%)'
         }}>
           
-          {/* YOUTUBE IFRAME */}
+          {/* YOUTUBE IFRAME - CSP Compliant */}
           <iframe
             ref={iframeRef}
-            src={`https://www.youtube.com/embed/${YOUTUBE_VIDEO_ID}?controls=1&rel=0&modestbranding=1&playsinline=1`}
+            src="about:blank" // Start with blank to avoid CSP issues
             style={{
               width: '100%',
               height: '100%',
               border: 'none',
               borderRadius: '20px',
-              opacity: showPlayButton && !videoStarted ? 0.3 : 1,
+              opacity: videoStarted ? 1 : 0.2,
               transition: 'opacity 0.5s ease'
             }}
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"
             allowFullScreen
             title="Macrobius App Trailer"
-            loading="eager"
+            loading="lazy"
           />
           
-          {/* SMART PLAY OVERLAY */}
+          {/* PLAY OVERLAY WITH SOUND */}
           {showPlayButton && (
             <div style={{
               position: 'absolute',
@@ -272,17 +207,30 @@ export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }
               flexDirection: 'column',
               alignItems: 'center',
               justifyContent: 'center',
-              background: 'rgba(0, 0, 0, 0.75)',
+              background: 'linear-gradient(135deg, rgba(0, 0, 0, 0.8) 0%, rgba(26, 26, 26, 0.9) 50%, rgba(0, 0, 0, 0.8) 100%)',
               borderRadius: '20px',
               zIndex: 20
             }}>
+              {/* PREVIEW IMAGE */}
+              <div style={{
+                position: 'absolute',
+                inset: 0,
+                backgroundImage: 'url(/MacrobiusBottle.jpg)',
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+                opacity: 0.3,
+                filter: 'blur(2px)'
+              }} />
+              
               <div style={{
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',
-                gap: '30px'
+                gap: '30px',
+                zIndex: 25,
+                position: 'relative'
               }}>
-                {/* MAIN PLAY BUTTON WITH SOUND */}
+                {/* MAIN PLAY BUTTON */}
                 <button
                   onClick={handlePlayClick}
                   style={{
@@ -311,19 +259,20 @@ export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }
                   <Play style={{ width: '50px', height: '50px', color: '#1a1a1a', marginLeft: '6px' }} />
                 </button>
                 
-                {/* SOUND INDICATOR */}
+                {/* SOUND GUARANTEE */}
                 <div style={{
                   display: 'flex',
                   alignItems: 'center',
                   gap: '12px',
                   padding: '12px 24px',
                   backgroundColor: 'rgba(34, 197, 94, 0.2)',
-                  border: '2px solid rgba(34, 197, 94, 0.5)',
+                  border: '2px solid rgba(34, 197, 94, 0.6)',
                   borderRadius: '25px',
-                  color: '#22c55e'
+                  color: '#22c55e',
+                  backdropFilter: 'blur(10px)'
                 }}>
                   <Volume2 style={{ width: '20px', height: '20px' }} />
-                  <span style={{ fontSize: '16px', fontWeight: 'bold' }}>With Sound!</span>
+                  <span style={{ fontSize: '16px', fontWeight: 'bold' }}>Mit Ton!</span>
                 </div>
                 
                 {/* INSTRUCTIONS */}
@@ -332,53 +281,49 @@ export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }
                   fontSize: '20px',
                   fontWeight: 'bold',
                   textAlign: 'center',
-                  textShadow: '0 2px 4px rgba(0, 0, 0, 0.5)'
+                  textShadow: '0 2px 4px rgba(0, 0, 0, 0.8)'
                 }}>
-                  Click to Start Trailer
+                  Klick für Trailer-Start
+                </div>
+                
+                {/* ALTERNATIVE OPTIONS */}
+                <div style={{
+                  display: 'flex',
+                  gap: '16px',
+                  flexWrap: 'wrap',
+                  justifyContent: 'center'
+                }}>
+                  <button
+                    onClick={openVideoInNewTab}
+                    style={{
+                      padding: '12px 20px',
+                      backgroundColor: 'rgba(66, 153, 225, 0.2)',
+                      border: '2px solid rgba(66, 153, 225, 0.6)',
+                      borderRadius: '25px',
+                      color: '#4299e1',
+                      fontSize: '14px',
+                      fontWeight: '600',
+                      cursor: 'pointer',
+                      transition: 'all 0.3s ease',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '8px',
+                      backdropFilter: 'blur(10px)'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.backgroundColor = 'rgba(66, 153, 225, 0.3)';
+                      e.currentTarget.style.borderColor = '#4299e1';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.backgroundColor = 'rgba(66, 153, 225, 0.2)';
+                      e.currentTarget.style.borderColor = 'rgba(66, 153, 225, 0.6)';
+                    }}
+                  >
+                    <ExternalLink style={{ width: '14px', height: '14px' }} />
+                    YouTube öffnen
+                  </button>
                 </div>
               </div>
-            </div>
-          )}
-          
-          {/* MUTE/UNMUTE CONTROLS (shown when video is playing) */}
-          {videoStarted && !showPlayButton && (
-            <div style={{
-              position: 'absolute',
-              top: '20px',
-              right: '20px',
-              zIndex: 25
-            }}>
-              <button
-                onClick={handleMuteToggle}
-                style={{
-                  padding: '12px 20px',
-                  backgroundColor: 'rgba(0, 0, 0, 0.8)',
-                  border: '2px solid rgba(212, 175, 55, 0.7)',
-                  borderRadius: '25px',
-                  color: '#d4af37',
-                  fontSize: '14px',
-                  fontWeight: 'bold',
-                  cursor: 'pointer',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '8px',
-                  transition: 'all 0.3s ease',
-                  backdropFilter: 'blur(10px)'
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.backgroundColor = 'rgba(212, 175, 55, 0.2)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.backgroundColor = 'rgba(0, 0, 0, 0.8)';
-                }}
-              >
-                {isMuted ? (
-                  <VolumeX style={{ width: '16px', height: '16px' }} />
-                ) : (
-                  <Volume2 style={{ width: '16px', height: '16px' }} />
-                )}
-                {isMuted ? 'Unmute' : 'Mute'}
-              </button>
             </div>
           )}
           
@@ -396,7 +341,7 @@ export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }
             borderRadius: '16px',
             backdropFilter: 'blur(20px)',
             border: '2px solid rgba(212, 175, 55, 0.4)',
-            pointerEvents: videoStarted ? 'none' : 'auto'
+            pointerEvents: 'none'
           }}>
             <div style={{
               color: '#d4af37',
@@ -425,15 +370,11 @@ export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }
             }}>
               {videoStarted ? (
                 <>
-                  {isMuted ? (
-                    <VolumeX style={{ width: '12px', height: '12px' }} />
-                  ) : (
-                    <Volume2 style={{ width: '12px', height: '12px' }} />
-                  )}
-                  {isMuted ? 'Muted' : 'With Sound'}
+                  <Volume2 style={{ width: '12px', height: '12px' }} />
+                  Wiedergabe mit Ton
                 </>
               ) : (
-                'Ready to Play'
+                'Bereit zum Abspielen'
               )}
             </div>
           </div>
@@ -472,7 +413,8 @@ export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }
           gap: '24px',
           alignItems: 'center',
           justifyContent: 'center',
-          marginTop: '20px'
+          marginTop: '20px',
+          flexWrap: 'wrap'
         }}>
           <button
             onClick={skipToApp}
@@ -503,7 +445,7 @@ export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }
             }}
           >
             <SkipForward style={{ width: '24px', height: '24px' }} />
-            Enter App
+            App Betreten
           </button>
           
           <div style={{
@@ -526,7 +468,7 @@ export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }
               backgroundColor: '#d4af37',
               animation: 'statusPulse 1.5s ease-in-out infinite'
             }} />
-            Auto-start: {countdown}s
+            Auto-Start: {countdown}s
           </div>
         </div>
       </div>
