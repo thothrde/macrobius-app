@@ -111,7 +111,6 @@ export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }
   const skipToApp = () => {
     setShowVideo(false);
   };
-  .
   
   // Handle video events
   const handleVideoLoad = () => {
