@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import Head from 'next/head';
-import { LanguageProvider } from '@/contexts/LanguageContext';
+import { LanguageProvider, useLanguage } from '@/contexts/LanguageContext';
 import { VideoIntroWrapper } from '@/components/sections/VideoIntroWrapper';
 import BanquetSection from '@/components/sections/BanquetSection';
 import CosmosSection from '@/components/sections/CosmosSection';
@@ -35,10 +35,14 @@ interface HomeProps {
   initialLanguage?: Language;
 }
 
-export default function Home({ initialSection = 'intro', initialLanguage = 'DE' }: HomeProps) {
+// Main Home Component that uses LanguageContext
+function HomeContent({ initialSection = 'intro', initialLanguage = 'DE' }: HomeProps) {
   const [currentSection, setCurrentSection] = useState<Section>(initialSection);
   const [currentLanguage, setCurrentLanguage] = useState<Language>(initialLanguage);
   const [isNavigationVisible, setIsNavigationVisible] = useState(false);
+  
+  // 🔧 CRITICAL FIX: Get translation function from LanguageContext
+  const { t } = useLanguage();
 
   // Handle section navigation
   const handleSectionChange = (section: Section) => {
@@ -63,13 +67,14 @@ export default function Home({ initialSection = 'intro', initialLanguage = 'DE' 
       case 'intro':
         return <VideoIntroWrapper language={currentLanguage} />;
       case 'banquet':
-        return <BanquetSection isActive={true} language={currentLanguage} />;
+        return <BanquetSection isActive={true} language={currentLanguage} t={t} />;
       case 'cosmos':
-        return <CosmosSection isActive={true} language={currentLanguage} />;
+        return <CosmosSection isActive={true} language={currentLanguage} t={t} />;
       case 'worldmap':
-        return <WorldMapSection isActive={true} language={currentLanguage} />;
+        // 🔧 CRITICAL FIX: Added missing 't' prop to fix TypeScript build error
+        return <WorldMapSection isActive={true} language={currentLanguage} t={t} />;
       case 'textsearch':
-        return <TextSearchSection isActive={true} language={currentLanguage} />;
+        return <TextSearchSection isActive={true} language={currentLanguage} t={t} />;
       case 'learning':
         return <LearningSection language={currentLanguage} />;
       case 'quiz':
@@ -97,73 +102,73 @@ export default function Home({ initialSection = 'intro', initialLanguage = 'DE' 
           onClick={() => handleSectionChange('intro')}
           className={`px-3 py-2 rounded ${currentSection === 'intro' ? 'bg-amber-600 text-white' : 'bg-white text-amber-800 hover:bg-amber-200'}`}
         >
-          Intro
+          {t('nav.intro')}
         </button>
         <button 
           onClick={() => handleSectionChange('banquet')}
           className={`px-3 py-2 rounded ${currentSection === 'banquet' ? 'bg-amber-600 text-white' : 'bg-white text-amber-800 hover:bg-amber-200'}`}
         >
-          Banquet
+          {t('nav.banquet')}
         </button>
         <button 
           onClick={() => handleSectionChange('cosmos')}
           className={`px-3 py-2 rounded ${currentSection === 'cosmos' ? 'bg-amber-600 text-white' : 'bg-white text-amber-800 hover:bg-amber-200'}`}
         >
-          Cosmos
+          {t('nav.cosmos')}
         </button>
         <button 
           onClick={() => handleSectionChange('worldmap')}
           className={`px-3 py-2 rounded ${currentSection === 'worldmap' ? 'bg-amber-600 text-white' : 'bg-white text-amber-800 hover:bg-amber-200'}`}
         >
-          World Map
+          {t('nav.worldmap')}
         </button>
         <button 
           onClick={() => handleSectionChange('textsearch')}
           className={`px-3 py-2 rounded ${currentSection === 'textsearch' ? 'bg-amber-600 text-white' : 'bg-white text-amber-800 hover:bg-amber-200'}`}
         >
-          Text Search
+          {t('nav.textsearch')}
         </button>
         <button 
           onClick={() => handleSectionChange('learning')}
           className={`px-3 py-2 rounded ${currentSection === 'learning' ? 'bg-amber-600 text-white' : 'bg-white text-amber-800 hover:bg-amber-200'}`}
         >
-          Learning
+          {t('nav.learning')}
         </button>
         <button 
           onClick={() => handleSectionChange('quiz')}
           className={`px-3 py-2 rounded ${currentSection === 'quiz' ? 'bg-amber-600 text-white' : 'bg-white text-amber-800 hover:bg-amber-200'}`}
         >
-          Quiz
+          {t('nav.quiz')}
         </button>
         <button 
           onClick={() => handleSectionChange('visualizations')}
           className={`px-3 py-2 rounded ${currentSection === 'visualizations' ? 'bg-amber-600 text-white' : 'bg-white text-amber-800 hover:bg-amber-200'}`}
         >
-          Visualizations
+          {t('nav.visualizations')}
         </button>
         <button 
           onClick={() => handleSectionChange('ai-cultural-analysis')}
           className={`px-3 py-2 rounded ${currentSection === 'ai-cultural-analysis' ? 'bg-amber-600 text-white' : 'bg-white text-amber-800 hover:bg-amber-200'}`}
         >
-          AI Analysis
+          {t('nav.ai_cultural')}
         </button>
         <button 
           onClick={() => handleSectionChange('ai-tutoring')}
           className={`px-3 py-2 rounded ${currentSection === 'ai-tutoring' ? 'bg-amber-600 text-white' : 'bg-white text-amber-800 hover:bg-amber-200'}`}
         >
-          AI Tutoring
+          {t('nav.ai_tutoring')}
         </button>
         <button 
           onClick={() => handleSectionChange('personalized-learning')}
           className={`px-3 py-2 rounded ${currentSection === 'personalized-learning' ? 'bg-amber-600 text-white' : 'bg-white text-amber-800 hover:bg-amber-200'}`}
         >
-          Learning Paths
+          {t('nav.ai_learning')}
         </button>
         <button 
           onClick={() => handleSectionChange('ki-rag-assistant')}
           className={`px-3 py-2 rounded ${currentSection === 'ki-rag-assistant' ? 'bg-amber-600 text-white' : 'bg-white text-amber-800 hover:bg-amber-200'}`}
         >
-          RAG Assistant
+          {t('nav.ai_rag')}
         </button>
       </div>
     </nav>
@@ -185,26 +190,33 @@ export default function Home({ initialSection = 'intro', initialLanguage = 'DE' 
   );
 
   return (
+    <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-amber-100">
+      <Head>
+        <title>Macrobius - AI-Powered Classical Latin Education</title>
+        <meta name="description" content="Experience ancient Roman wisdom through AI-powered interactive learning. Explore Macrobius' Saturnalia with cutting-edge educational technology." />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="icon" href="/favicon.ico" />
+      </Head>
+
+      {/* Language Selector - Always visible */}
+      <SimpleLanguageSelector />
+
+      {/* Navigation - Conditional visibility */}
+      {isNavigationVisible && <SimpleNavigation />}
+
+      {/* Main Content */}
+      <main>
+        {renderCurrentSection()}
+      </main>
+    </div>
+  );
+}
+
+// Wrapper component with LanguageProvider
+export default function Home(props: HomeProps) {
+  return (
     <LanguageProvider>
-      <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-amber-100">
-        <Head>
-          <title>Macrobius - AI-Powered Classical Latin Education</title>
-          <meta name="description" content="Experience ancient Roman wisdom through AI-powered interactive learning. Explore Macrobius' Saturnalia with cutting-edge educational technology." />
-          <meta name="viewport" content="width=device-width, initial-scale=1" />
-          <link rel="icon" href="/favicon.ico" />
-        </Head>
-
-        {/* Language Selector - Always visible */}
-        <SimpleLanguageSelector />
-
-        {/* Navigation - Conditional visibility */}
-        {isNavigationVisible && <SimpleNavigation />}
-
-        {/* Main Content */}
-        <main>
-          {renderCurrentSection()}
-        </main>
-      </div>
+      <HomeContent {...props} />
     </LanguageProvider>
   );
 }
