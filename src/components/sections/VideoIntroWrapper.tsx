@@ -4,6 +4,9 @@ import { IntroSection } from './IntroSection';
 import { Play, SkipForward, Volume2, VolumeX } from 'lucide-react';
 import Head from 'next/head';
 
+// Import the type declarations
+import '../../types/lite-youtube';
+
 interface VideoIntroWrapperProps {
   language: 'DE' | 'EN' | 'LA';
 }
@@ -177,17 +180,17 @@ export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }
             background: '#000'
           }}>
             {/* 🚀 LITE YOUTUBE EMBED - INSTANT LOADING! */}
-            <lite-youtube 
-              videoid="w7h_xi_omfg"
-              style={{
+            {React.createElement('lite-youtube', {
+              videoid: 'w7h_xi_omfg',
+              style: {
                 width: '100%',
                 height: '100%',
                 borderRadius: '17px'
-              }}
-              playlabel={language === 'DE' ? 'Macrobius Trailer abspielen' :
+              },
+              playlabel: language === 'DE' ? 'Macrobius Trailer abspielen' :
                          language === 'LA' ? 'Macrobius Trailer ludere' :
-                         'Play Macrobius Trailer'}
-            />
+                         'Play Macrobius Trailer'
+            })}
             
             {/* Overlay with app branding */}
             <div style={{
