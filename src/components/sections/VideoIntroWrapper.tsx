@@ -4,8 +4,8 @@ import { IntroSection } from './IntroSection';
 import { Play, SkipForward, Volume2, VolumeX } from 'lucide-react';
 import Head from 'next/head';
 
-// Import the type declarations
-import '../../types/lite-youtube';
+// Import the type declarations using path alias
+import '@/types/lite-youtube';
 
 interface VideoIntroWrapperProps {
   language: 'DE' | 'EN' | 'LA';
