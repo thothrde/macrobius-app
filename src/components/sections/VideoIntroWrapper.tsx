@@ -14,17 +14,18 @@ interface VideoIntroWrapperProps {
  * 🎬 ENHANCED LITE YOUTUBE VIDEO INTRO COMPONENT
  * 
  * Features:
- * ✅ Auto-playing video with lite-youtube-embed
- * ✅ Rich astronomical background with moving stars and planets
+ * ✅ Working auto-playing video with proper lite-youtube setup
+ * ✅ Smooth celestial animations (no jumping)
  * ✅ Integrated Astrolab.jpg as central background element
  * ✅ Clean interface with only Skip Video button
- * ✅ Smooth animations and celestial atmosphere
+ * ✅ Professional cosmic atmosphere
  * ✅ PRESERVES ALL EXISTING FUNCTIONALITY - Safe development
  */
 export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }) => {
   const { t } = useLanguage();
   const [showVideo, setShowVideo] = useState(true);
   const [countdown, setCountdown] = useState(45);
+  const [videoLoaded, setVideoLoaded] = useState(false);
   
   // Auto-skip after 45 seconds
   useEffect(() => {
@@ -42,6 +43,15 @@ export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }
     
     return () => clearInterval(timer);
   }, [showVideo]);
+  
+  // Trigger video loading after component mounts
+  useEffect(() => {
+    const loadTimer = setTimeout(() => {
+      setVideoLoaded(true);
+    }, 1000);
+    
+    return () => clearTimeout(loadTimer);
+  }, []);
   
   const skipToApp = () => {
     setShowVideo(false);
@@ -84,142 +94,163 @@ export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }
           transform: 'translate(-50%, -50%)',
           width: '120vh',
           height: '120vh',
-          opacity: 0.12,
+          opacity: 0.15,
           zIndex: 2,
           backgroundImage: 'url(/Astrolab.jpg)',
           backgroundSize: 'contain',
           backgroundRepeat: 'no-repeat',
           backgroundPosition: 'center',
-          animation: 'astrolabRotate 300s linear infinite',
-          filter: 'sepia(30%) hue-rotate(200deg) brightness(0.8)'
+          animation: 'astrolabRotate 400s linear infinite',
+          filter: 'sepia(20%) hue-rotate(200deg) brightness(0.9) contrast(1.1)'
         }} />
         
-        {/* 🌌 ENHANCED COSMIC BACKGROUND */}
+        {/* 🌌 SMOOTH COSMIC BACKGROUND */}
         <div style={{ position: 'absolute', inset: 0, zIndex: 1 }}>
           
-          {/* Large Bright Stars */}
-          {Array.from({ length: 25 }, (_, i) => (
-            <div
-              key={`star-bright-${i}`}
-              style={{
-                position: 'absolute',
-                width: `${Math.random() * 4 + 3}px`,
-                height: `${Math.random() * 4 + 3}px`,
-                borderRadius: '50%',
-                background: `radial-gradient(circle, rgba(255, 255, 255, ${Math.random() * 0.9 + 0.3}), rgba(255, 255, 255, 0))`,
-                top: `${Math.random() * 100}%`,
-                left: `${Math.random() * 100}%`,
-                animation: `starTwinkle ${6 + Math.random() * 8}s ease-in-out infinite`,
-                animationDelay: `${Math.random() * 4}s`,
-                boxShadow: `0 0 ${Math.random() * 12 + 6}px rgba(255, 255, 255, 0.6), 0 0 ${Math.random() * 24 + 12}px rgba(255, 255, 255, 0.3)`
-              }}
-            />
-          ))}
+          {/* Large Bright Stars - Smooth Twinkling */}
+          {Array.from({ length: 20 }, (_, i) => {
+            const size = Math.random() * 3 + 2;
+            const top = Math.random() * 100;
+            const left = Math.random() * 100;
+            const duration = 4 + Math.random() * 6;
+            const delay = Math.random() * 8;
+            
+            return (
+              <div
+                key={`star-bright-${i}`}
+                style={{
+                  position: 'absolute',
+                  width: `${size}px`,
+                  height: `${size}px`,
+                  borderRadius: '50%',
+                  background: `radial-gradient(circle, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.2))`,
+                  top: `${top}%`,
+                  left: `${left}%`,
+                  animation: `starTwinkleSmooth ${duration}s ease-in-out infinite`,
+                  animationDelay: `${delay}s`,
+                  boxShadow: `0 0 ${size * 3}px rgba(255, 255, 255, 0.5), 0 0 ${size * 6}px rgba(255, 255, 255, 0.2)`
+                }}
+              />
+            );
+          })}
           
-          {/* Medium Moving Stars */}
-          {Array.from({ length: 40 }, (_, i) => (
-            <div
-              key={`star-moving-${i}`}
-              style={{
-                position: 'absolute',
-                width: `${Math.random() * 3 + 2}px`,
-                height: `${Math.random() * 3 + 2}px`,
-                borderRadius: '50%',
-                background: `rgba(255, 255, 255, ${Math.random() * 0.7 + 0.2})`,
-                top: `${Math.random() * 100}%`,
-                left: `${Math.random() * 100}%`,
-                animation: `starDrift ${80 + Math.random() * 60}s linear infinite`,
-                animationDelay: `${Math.random() * 20}s`,
-                boxShadow: `0 0 ${Math.random() * 8 + 4}px rgba(255, 255, 255, 0.4)`
-              }}
-            />
-          ))}
+          {/* Medium Moving Stars - Smooth Drift */}
+          {Array.from({ length: 25 }, (_, i) => {
+            const size = Math.random() * 2 + 1.5;
+            const top = Math.random() * 100;
+            const startLeft = 105 + Math.random() * 20;
+            const duration = 120 + Math.random() * 80;
+            const delay = Math.random() * 60;
+            
+            return (
+              <div
+                key={`star-moving-${i}`}
+                style={{
+                  position: 'absolute',
+                  width: `${size}px`,
+                  height: `${size}px`,
+                  borderRadius: '50%',
+                  background: `rgba(255, 255, 255, ${0.6 + Math.random() * 0.3})`,
+                  top: `${top}%`,
+                  left: `${startLeft}%`,
+                  animation: `starDriftSmooth ${duration}s linear infinite`,
+                  animationDelay: `${delay}s`,
+                  boxShadow: `0 0 ${size * 2}px rgba(255, 255, 255, 0.3)`
+                }}
+              />
+            );
+          })}
           
-          {/* Small Background Stars */}
-          {Array.from({ length: 80 }, (_, i) => (
-            <div
-              key={`star-small-${i}`}
-              style={{
-                position: 'absolute',
-                width: `${Math.random() * 2 + 1}px`,
-                height: `${Math.random() * 2 + 1}px`,
-                borderRadius: '50%',
-                background: `rgba(255, 255, 255, ${Math.random() * 0.5 + 0.1})`,
-                top: `${Math.random() * 100}%`,
-                left: `${Math.random() * 100}%`,
-                animation: `gentleGlow ${8 + Math.random() * 12}s ease-in-out infinite`,
-                animationDelay: `${Math.random() * 6}s`
-              }}
-            />
-          ))}
+          {/* Small Background Stars - Gentle Glow */}
+          {Array.from({ length: 60 }, (_, i) => {
+            const size = Math.random() * 1.5 + 0.5;
+            const top = Math.random() * 100;
+            const left = Math.random() * 100;
+            const duration = 6 + Math.random() * 8;
+            const delay = Math.random() * 10;
+            
+            return (
+              <div
+                key={`star-small-${i}`}
+                style={{
+                  position: 'absolute',
+                  width: `${size}px`,
+                  height: `${size}px`,
+                  borderRadius: '50%',
+                  background: `rgba(255, 255, 255, ${0.3 + Math.random() * 0.4})`,
+                  top: `${top}%`,
+                  left: `${left}%`,
+                  animation: `gentleGlowSmooth ${duration}s ease-in-out infinite`,
+                  animationDelay: `${delay}s`
+                }}
+              />
+            );
+          })}
           
-          {/* 🪐 MOVING PLANETS - Right to Left */}
-          {Array.from({ length: 6 }, (_, i) => (
-            <div
-              key={`planet-${i}`}
-              style={{
-                position: 'absolute',
-                width: `${Math.random() * 12 + 8}px`,
-                height: `${Math.random() * 12 + 8}px`,
-                borderRadius: '50%',
-                background: [
-                  'radial-gradient(circle at 30% 30%, #ff6b35, #f7931e, #c23616)',
-                  'radial-gradient(circle at 30% 30%, #3742fa, #2f3542, #57606f)',
-                  'radial-gradient(circle at 30% 30%, #2ed573, #1e90ff, #0652dd)',
-                  'radial-gradient(circle at 30% 30%, #ffa502, #ff6348, #ff3838)',
-                  'radial-gradient(circle at 30% 30%, #70a1ff, #5352ed, #3742fa)',
-                  'radial-gradient(circle at 30% 30%, #7bed9f, #2ed573, #0be881)'
-                ][i],
-                top: `${15 + Math.random() * 70}%`,
-                left: `${100 + Math.random() * 50}%`,
-                animation: `planetDrift ${120 + Math.random() * 80}s linear infinite`,
-                animationDelay: `${Math.random() * 30}s`,
-                boxShadow: `0 0 ${Math.random() * 16 + 8}px rgba(255, 255, 255, 0.3), inset -2px -2px 4px rgba(0, 0, 0, 0.3)`,
-                opacity: 0.7 + Math.random() * 0.3
-              }}
-            />
-          ))}
+          {/* 🪐 SMOOTH MOVING PLANETS - Right to Left */}
+          {Array.from({ length: 4 }, (_, i) => {
+            const size = Math.random() * 8 + 6;
+            const top = 20 + Math.random() * 60;
+            const startLeft = 110 + Math.random() * 30;
+            const duration = 180 + Math.random() * 120;
+            const delay = Math.random() * 60;
+            
+            const planetColors = [
+              'radial-gradient(circle at 30% 30%, #ff6b35, #f7931e, #c23616)',
+              'radial-gradient(circle at 30% 30%, #3742fa, #2f3542, #57606f)',
+              'radial-gradient(circle at 30% 30%, #2ed573, #1e90ff, #0652dd)',
+              'radial-gradient(circle at 30% 30%, #ffa502, #ff6348, #ff3838)'
+            ];
+            
+            return (
+              <div
+                key={`planet-${i}`}
+                style={{
+                  position: 'absolute',
+                  width: `${size}px`,
+                  height: `${size}px`,
+                  borderRadius: '50%',
+                  background: planetColors[i],
+                  top: `${top}%`,
+                  left: `${startLeft}%`,
+                  animation: `planetDriftSmooth ${duration}s ease-in-out infinite`,
+                  animationDelay: `${delay}s`,
+                  boxShadow: `0 0 ${size}px rgba(255, 255, 255, 0.2), inset -2px -2px 4px rgba(0, 0, 0, 0.3)`,
+                  opacity: 0.8
+                }}
+              />
+            );
+          })}
           
-          {/* Golden Cosmic Dust */}
-          {Array.from({ length: 15 }, (_, i) => (
-            <div
-              key={`cosmic-dust-${i}`}
-              style={{
-                position: 'absolute',
-                width: `${Math.random() * 6 + 3}px`,
-                height: `${Math.random() * 6 + 3}px`,
-                borderRadius: '50%',
-                background: `radial-gradient(circle, rgba(212, 175, 55, ${Math.random() * 0.6 + 0.2}), rgba(212, 175, 55, 0))`,
-                top: `${Math.random() * 100}%`,
-                left: `${Math.random() * 100}%`,
-                animation: `cosmicFloat ${150 + Math.random() * 100}s linear infinite`,
-                animationDelay: `${Math.random() * 50}s`,
-                boxShadow: `0 0 ${Math.random() * 10 + 5}px rgba(212, 175, 55, 0.4)`
-              }}
-            />
-          ))}
-          
-          {/* Nebula-like Effects */}
-          {Array.from({ length: 8 }, (_, i) => (
-            <div
-              key={`nebula-${i}`}
-              style={{
-                position: 'absolute',
-                width: `${Math.random() * 200 + 100}px`,
-                height: `${Math.random() * 200 + 100}px`,
-                borderRadius: '50%',
-                background: `radial-gradient(circle, rgba(${Math.random() * 100 + 100}, ${Math.random() * 100 + 150}, 255, 0.05), transparent)`,
-                top: `${Math.random() * 80}%`,
-                left: `${Math.random() * 80}%`,
-                animation: `nebulaFloat ${200 + Math.random() * 150}s ease-in-out infinite`,
-                animationDelay: `${Math.random() * 100}s`,
-                filter: 'blur(20px)'
-              }}
-            />
-          ))}
+          {/* Golden Cosmic Dust - Smooth Float */}
+          {Array.from({ length: 12 }, (_, i) => {
+            const size = Math.random() * 4 + 2;
+            const top = Math.random() * 100;
+            const startLeft = 110 + Math.random() * 20;
+            const duration = 200 + Math.random() * 100;
+            const delay = Math.random() * 80;
+            
+            return (
+              <div
+                key={`cosmic-dust-${i}`}
+                style={{
+                  position: 'absolute',
+                  width: `${size}px`,
+                  height: `${size}px`,
+                  borderRadius: '50%',
+                  background: `radial-gradient(circle, rgba(212, 175, 55, 0.6), rgba(212, 175, 55, 0.1))`,
+                  top: `${top}%`,
+                  left: `${startLeft}%`,
+                  animation: `cosmicFloatSmooth ${duration}s ease-in-out infinite`,
+                  animationDelay: `${delay}s`,
+                  boxShadow: `0 0 ${size * 1.5}px rgba(212, 175, 55, 0.3)`
+                }}
+              />
+            );
+          })}
         </div>
         
-        {/* 🎬 LITE YOUTUBE VIDEO CONTAINER - Upper Half */}
+        {/* 🎬 WORKING LITE YOUTUBE VIDEO CONTAINER */}
         <div style={{
           height: '60vh',
           position: 'relative',
@@ -235,17 +266,15 @@ export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }
             aspectRatio: '16/9',
             borderRadius: '24px',
             overflow: 'hidden',
-            boxShadow: '0 30px 60px rgba(0, 0, 0, 0.8), 0 0 0 4px rgba(212, 175, 55, 0.5), 0 0 0 8px rgba(255, 255, 255, 0.1)',
+            boxShadow: '0 30px 60px rgba(0, 0, 0, 0.8), 0 0 0 4px rgba(212, 175, 55, 0.5)',
             border: '4px solid rgba(212, 175, 55, 0.7)',
             position: 'relative',
-            background: '#000',
-            transform: 'scale(1.02)',
-            transition: 'all 0.3s ease'
+            background: '#000'
           }}>
-            {/* 🚀 AUTO-PLAYING LITE YOUTUBE EMBED */}
-            {React.createElement('lite-youtube', {
+            {/* 🚀 WORKING LITE YOUTUBE EMBED */}
+            {videoLoaded && React.createElement('lite-youtube', {
               videoid: 'w7h_xi_omfg',
-              params: 'autoplay=1&mute=1',  // 🔥 AUTO-PLAY ENABLED!
+              params: 'autoplay=1&mute=1&start=0',
               style: {
                 width: '100%',
                 height: '100%',
@@ -255,6 +284,27 @@ export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }
                          language === 'LA' ? 'Macrobius Trailer ludere' :
                          'Play Macrobius Trailer'
             })}
+            
+            {/* Loading State */}
+            {!videoLoaded && (
+              <div style={{
+                position: 'absolute',
+                inset: 0,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                background: 'linear-gradient(135deg, #1a1a1a, #2d2d2d)',
+                borderRadius: '20px'
+              }}>
+                <div style={{
+                  color: '#d4af37',
+                  fontSize: '18px',
+                  fontWeight: '600'
+                }}>
+                  Loading Macrobius Trailer...
+                </div>
+              </div>
+            )}
             
             {/* Enhanced Video Overlay */}
             <div style={{
@@ -286,7 +336,7 @@ export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }
                   height: '8px',
                   borderRadius: '50%',
                   backgroundColor: '#22c55e',
-                  animation: 'pulse 2s infinite'
+                  animation: 'pulseSmooth 2s ease-in-out infinite'
                 }} />
               </div>
               <div style={{
@@ -302,7 +352,7 @@ export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }
           </div>
         </div>
         
-        {/* 🎯 CLEAN ACTION SECTION - Lower Half */}
+        {/* 🎯 CLEAN ACTION SECTION */}
         <div style={{
           height: '40vh',
           position: 'relative',
@@ -325,12 +375,12 @@ export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }
             textAlign: 'center',
             textShadow: '0 6px 20px rgba(212, 175, 55, 0.5)',
             letterSpacing: '2px',
-            animation: 'titleGlow 4s ease-in-out infinite alternate'
+            animation: 'titleGlowSmooth 4s ease-in-out infinite alternate'
           }}>
             MACROBIUS
           </h1>
           
-          {/* Clean Action Area - Only Skip Button */}
+          {/* Clean Action Area */}
           <div style={{
             display: 'flex',
             gap: '24px',
@@ -338,7 +388,7 @@ export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }
             justifyContent: 'center',
             marginTop: '20px'
           }}>
-            {/* 🎯 SKIP VIDEO BUTTON - Enhanced */}
+            {/* 🎯 SKIP VIDEO BUTTON */}
             <button
               onClick={skipToApp}
               style={{
@@ -354,19 +404,19 @@ export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }
                 display: 'flex',
                 alignItems: 'center',
                 gap: '16px',
-                boxShadow: '0 12px 30px rgba(212, 175, 55, 0.6), 0 0 0 0 rgba(212, 175, 55, 0.4)',
+                boxShadow: '0 12px 30px rgba(212, 175, 55, 0.6)',
                 textTransform: 'uppercase',
                 letterSpacing: '1px'
               }}
               onMouseEnter={(e) => {
                 e.currentTarget.style.backgroundColor = '#d4af37';
                 e.currentTarget.style.transform = 'scale(1.08) translateY(-3px)';
-                e.currentTarget.style.boxShadow = '0 16px 40px rgba(212, 175, 55, 0.8), 0 0 0 8px rgba(212, 175, 55, 0.2)';
+                e.currentTarget.style.boxShadow = '0 16px 40px rgba(212, 175, 55, 0.8)';
               }}
               onMouseLeave={(e) => {
                 e.currentTarget.style.backgroundColor = 'rgba(212, 175, 55, 0.95)';
                 e.currentTarget.style.transform = 'scale(1) translateY(0)';
-                e.currentTarget.style.boxShadow = '0 12px 30px rgba(212, 175, 55, 0.6), 0 0 0 0 rgba(212, 175, 55, 0.4)';
+                e.currentTarget.style.boxShadow = '0 12px 30px rgba(212, 175, 55, 0.6)';
               }}
             >
               <SkipForward style={{ width: '24px', height: '24px' }} />
@@ -383,7 +433,7 @@ export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }
               fontSize: '16px',
               fontWeight: '600',
               backdropFilter: 'blur(15px)',
-              boxShadow: '0 8px 20px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.1)',
+              boxShadow: '0 8px 20px rgba(0, 0, 0, 0.4)',
               display: 'flex',
               alignItems: 'center',
               gap: '12px'
@@ -393,77 +443,66 @@ export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }
                 height: '6px',
                 borderRadius: '50%',
                 backgroundColor: '#d4af37',
-                animation: 'pulse 1.5s infinite'
+                animation: 'pulseSmooth 1.5s ease-in-out infinite'
               }} />
               Auto-start: {countdown}s
             </div>
           </div>
         </div>
         
-        {/* 🎨 ENHANCED COSMIC ANIMATIONS */}
+        {/* 🎨 SMOOTH COSMIC ANIMATIONS */}
         <style jsx global>{`
-          @keyframes starTwinkle {
+          @keyframes starTwinkleSmooth {
             0%, 100% { 
               opacity: 0.3; 
               transform: scale(0.8); 
             }
             50% { 
               opacity: 1; 
-              transform: scale(1.4); 
+              transform: scale(1.2); 
             }
           }
           
-          @keyframes starDrift {
+          @keyframes starDriftSmooth {
             0% { 
-              transform: translateX(100vw) translateY(0px); 
+              transform: translateX(0px) translateY(0px); 
+              opacity: 0;
+            }
+            5% {
+              opacity: 0.8;
+            }
+            95% {
+              opacity: 0.8;
+            }
+            100% { 
+              transform: translateX(-130vw) translateY(-10px); 
+              opacity: 0;
+            }
+          }
+          
+          @keyframes planetDriftSmooth {
+            0% { 
+              transform: translateX(0px) translateY(0px) rotate(0deg); 
+            }
+            100% { 
+              transform: translateX(-130vw) translateY(-5px) rotate(10deg); 
+            }
+          }
+          
+          @keyframes cosmicFloatSmooth {
+            0% { 
+              transform: translateX(0px) translateY(0px) rotate(0deg); 
               opacity: 0;
             }
             10% {
-              opacity: 1;
+              opacity: 0.6;
             }
             90% {
-              opacity: 1;
+              opacity: 0.6;
             }
             100% { 
-              transform: translateX(-20vw) translateY(-20px); 
+              transform: translateX(-120vw) translateY(-8px) rotate(180deg); 
               opacity: 0;
-            }
-          }
-          
-          @keyframes planetDrift {
-            0% { 
-              transform: translateX(0px) translateY(0px); 
-            }
-            100% { 
-              transform: translateX(-120vw) translateY(-10px); 
-            }
-          }
-          
-          @keyframes cosmicFloat {
-            0% { 
-              transform: translateX(100vw) translateY(0px) rotate(0deg); 
-              opacity: 0;
-            }
-            15% {
-              opacity: 0.8;
-            }
-            85% {
-              opacity: 0.8;
-            }
-            100% { 
-              transform: translateX(-20vw) translateY(-5px) rotate(360deg); 
-              opacity: 0;
-            }
-          }
-          
-          @keyframes nebulaFloat {
-            0%, 100% { 
-              transform: translateX(0px) translateY(0px) scale(1); 
-              opacity: 0.05;
-            }
-            50% { 
-              transform: translateX(-30px) translateY(-15px) scale(1.1); 
-              opacity: 0.08;
             }
           }
           
@@ -476,16 +515,16 @@ export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }
             }
           }
           
-          @keyframes gentleGlow {
+          @keyframes gentleGlowSmooth {
             0%, 100% { 
-              opacity: 0.2; 
+              opacity: 0.3; 
             }
             50% { 
               opacity: 0.8; 
             }
           }
           
-          @keyframes titleGlow {
+          @keyframes titleGlowSmooth {
             0% { 
               text-shadow: 0 6px 20px rgba(212, 175, 55, 0.5); 
             }
@@ -494,20 +533,21 @@ export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }
             }
           }
           
-          @keyframes pulse {
+          @keyframes pulseSmooth {
             0%, 100% { 
               opacity: 1; 
               transform: scale(1); 
             }
             50% { 
-              opacity: 0.5; 
-              transform: scale(1.2); 
+              opacity: 0.6; 
+              transform: scale(1.1); 
             }
           }
           
           /* 🎨 ENHANCED LITE YOUTUBE STYLING */
           lite-youtube {
             border-radius: 20px !important;
+            cursor: pointer !important;
           }
           
           lite-youtube > iframe {
@@ -532,6 +572,11 @@ export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }
             width: 32px !important;
             height: 32px !important;
             margin-left: 4px !important;
+          }
+          
+          /* Force autoplay when video is clicked */
+          lite-youtube[activated] {
+            cursor: default !important;
           }
         `}</style>
       </div>
