@@ -67,14 +67,17 @@ function HomeContent({ initialSection = 'intro', initialLanguage = 'DE' }: HomeP
       case 'intro':
         return <VideoIntroWrapper language={currentLanguage} />;
       case 'banquet':
-        return <BanquetSection isActive={true} language={currentLanguage} t={t} />;
+        // ✅ FIXED: BanquetSection has its own DIRECT_TRANSLATIONS, only needs isActive and language
+        return <BanquetSection isActive={true} language={currentLanguage} />;
       case 'cosmos':
-        return <CosmosSection isActive={true} language={currentLanguage} t={t} />;
+        // ✅ FIXED: CosmosSection has its own DIRECT_TRANSLATIONS, only needs isActive and language
+        return <CosmosSection isActive={true} language={currentLanguage} />;
       case 'worldmap':
-        // 🔧 CRITICAL FIX: Added missing 't' prop to fix TypeScript build error
+        // ✅ CORRECT: WorldMapSection needs the 't' prop from LanguageContext
         return <WorldMapSection isActive={true} language={currentLanguage} t={t} />;
       case 'textsearch':
-        return <TextSearchSection isActive={true} language={currentLanguage} t={t} />;
+        // ✅ FIXED: TextSearchSection has its own DIRECT_TRANSLATIONS, only needs isActive and language
+        return <TextSearchSection isActive={true} language={currentLanguage} />;
       case 'learning':
         return <LearningSection language={currentLanguage} />;
       case 'quiz':
