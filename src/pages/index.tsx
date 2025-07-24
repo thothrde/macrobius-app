@@ -95,20 +95,20 @@ function HomeContent({ initialSection = 'intro', initialLanguage = 'DE' }: HomeP
         // ✅ FIXED: QuizSection expects Language object with code/name properties
         return <QuizSection language={getLanguageObject(currentLanguage)} />;
       case 'visualizations':
-        // 🔧 CRITICAL FIX: Added missing isActive prop to resolve build error
+        // ✅ FIXED: Added missing isActive prop to resolve build error
         return <VisualizationsSection isActive={true} language={currentLanguage} />;
       case 'ai-cultural-analysis':
-        // 🔧 CRITICAL FIX: Added missing isActive prop for consistency
-        return <AICulturalAnalysisSection isActive={true} language={currentLanguage} />;
+        // 🔧 CRITICAL FIX: AICulturalAnalysisSection expects className?, language?, activeTab?
+        return <AICulturalAnalysisSection language={currentLanguage} activeTab="analyze" />;
       case 'ai-tutoring':
-        // 🔧 CRITICAL FIX: Added missing isActive prop for consistency
-        return <AITutoringSystemSection isActive={true} language={currentLanguage} />;
+        // 🔧 CRITICAL FIX: AITutoringSystemSection expects className?, language?
+        return <AITutoringSystemSection language={currentLanguage} />;
       case 'personalized-learning':
-        // 🔧 CRITICAL FIX: Added missing isActive prop for consistency
-        return <PersonalizedLearningPaths isActive={true} language={currentLanguage} />;
+        // 🔧 CRITICAL FIX: PersonalizedLearningPaths expects userProfile?, vocabularyData?, quizData?, className?, currentMode?
+        return <PersonalizedLearningPaths currentMode="dashboard" />;
       case 'ki-rag-assistant':
-        // 🔧 CRITICAL FIX: Added missing isActive prop for consistency
-        return <KIRAGAssistentSection isActive={true} language={currentLanguage} />;
+        // 🔧 CRITICAL FIX: KIRAGAssistentSection expects language (required)
+        return <KIRAGAssistentSection language={currentLanguage} />;
       default:
         return <VideoIntroWrapper language={currentLanguage} />;
     }
