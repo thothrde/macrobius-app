@@ -8,15 +8,16 @@ interface VideoIntroWrapperProps {
 }
 
 /**
- * 🎬 ABSOLUTE SOLUTION - DETECTS BLACK SCREEN & FORCES PLAY BUTTON
+ * 🎬 ENHANCED VIDEO PLAYER - IMPROVED INLINE PLAYBACK WITHOUT YOUTUBE BUTTON
  */
 export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }) => {
   const { t } = useLanguage();
   const [showVideo, setShowVideo] = useState(true);
   const [countdown, setCountdown] = useState(45);
-  const [showPlayButton, setShowPlayButton] = useState(true); // Always show play button initially
+  const [showPlayButton, setShowPlayButton] = useState(true);
   const [isAttemptingPlay, setIsAttemptingPlay] = useState(false);
   const [playAttempts, setPlayAttempts] = useState(0);
+  const [videoStatus, setVideoStatus] = useState<'ready' | 'loading' | 'playing' | 'error'>('ready');
   const iframeRef = useRef<HTMLIFrameElement>(null);
   
   // Auto-skip timer
@@ -36,56 +37,65 @@ export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }
     return () => clearInterval(timer);
   }, [showVideo]);
   
-  // Force play button to appear after 2 seconds if video doesn't show
-  useEffect(() => {
-    const forcePlayButton = setTimeout(() => {
-      console.log('🎬 Forcing play button to appear - video likely not auto-playing');
-      setShowPlayButton(true);
-    }, 2000);
-    
-    return () => clearTimeout(forcePlayButton);
-  }, []);
-  
-  // Handle play button click
+  // Handle play button click - Enhanced inline playback
   const handlePlayClick = () => {
     console.log(`🎬 Play attempt #${playAttempts + 1}`);
     setIsAttemptingPlay(true);
+    setVideoStatus('loading');
     setPlayAttempts(prev => prev + 1);
     
-    // Strategy 1: Try to reload iframe with different parameters
     if (iframeRef.current) {
-      const attempts = [
-        // Attempt 1: Standard autoplay
-        `https://www.youtube.com/embed/w7h_xi_omfg?autoplay=1&mute=1&start=0&rel=0&modestbranding=1&controls=1&enablejsapi=1&origin=${encodeURIComponent(window.location.origin)}`,
-        // Attempt 2: Different parameters
-        `https://www.youtube.com/embed/w7h_xi_omfg?autoplay=1&mute=1&controls=1&rel=0&showinfo=0&modestbranding=1&playsinline=1`,
-        // Attempt 3: Minimal parameters
-        `https://www.youtube.com/embed/w7h_xi_omfg?autoplay=1&mute=1`,
-        // Attempt 4: Just the video ID
-        `https://www.youtube.com/embed/w7h_xi_omfg`
+      // Enhanced YouTube embed strategies for better inline playback
+      const embedStrategies = [
+        // Strategy 1: Standard autoplay with all permissions
+        `https://www.youtube.com/embed/w7h_xi_omfg?autoplay=1&mute=1&controls=1&rel=0&modestbranding=1&playsinline=1&enablejsapi=1&origin=${encodeURIComponent(window.location.origin)}&widgetid=1`,
+        // Strategy 2: Autoplay with reduced restrictions
+        `https://www.youtube.com/embed/w7h_xi_omfg?autoplay=1&mute=1&controls=1&rel=0&playsinline=1&fs=1&hl=en&cc_load_policy=1`,
+        // Strategy 3: Force autoplay with additional parameters
+        `https://www.youtube.com/embed/w7h_xi_omfg?autoplay=1&mute=1&controls=1&showinfo=0&rel=0&modestbranding=1&playsinline=1&iv_load_policy=3`,
+        // Strategy 4: Minimal autoplay approach
+        `https://www.youtube.com/embed/w7h_xi_omfg?autoplay=1&mute=1&controls=1&rel=0`,
+        // Strategy 5: Basic embed (last resort)
+        `https://www.youtube.com/embed/w7h_xi_omfg?controls=1&rel=0&modestbranding=1`
       ];
       
-      const currentAttempt = Math.min(playAttempts, attempts.length - 1);
-      console.log(`🎬 Using attempt ${currentAttempt + 1}: ${attempts[currentAttempt]}`);
+      const currentStrategy = Math.min(playAttempts, embedStrategies.length - 1);
+      const embedUrl = embedStrategies[currentStrategy];
       
-      iframeRef.current.src = attempts[currentAttempt];
+      console.log(`🎬 Using strategy ${currentStrategy + 1}: Enhanced inline playback`);
       
-      // Hide play button for a moment to show we're trying
+      // Create new iframe with enhanced attributes
+      const newIframe = document.createElement('iframe');
+      newIframe.src = embedUrl;
+      newIframe.style.width = '100%';
+      newIframe.style.height = '100%';
+      newIframe.style.border = 'none';
+      newIframe.style.borderRadius = '20px';
+      newIframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen';
+      newIframe.allowFullscreen = true;
+      newIframe.title = 'Macrobius App Trailer';
+      newIframe.loading = 'eager';
+      
+      // Replace the existing iframe
+      if (iframeRef.current.parentNode) {
+        iframeRef.current.parentNode.replaceChild(newIframe, iframeRef.current);
+        // @ts-ignore - Update the ref
+        iframeRef.current = newIframe;
+      }
+      
+      // Hide play button immediately to show video
       setShowPlayButton(false);
+      setVideoStatus('playing');
       
-      // Show play button again after 3 seconds if still not working
+      // If video doesn't start after 5 seconds, show retry option
       setTimeout(() => {
-        setShowPlayButton(true);
+        if (videoStatus === 'loading') {
+          setVideoStatus('error');
+          setShowPlayButton(true);
+        }
         setIsAttemptingPlay(false);
-      }, 3000);
+      }, 5000);
     }
-  };
-  
-  // Open video in new tab as backup
-  const openInNewTab = () => {
-    window.open('https://youtu.be/w7h_xi_omfg', '_blank');
-    // Skip to app after opening
-    setTimeout(() => setShowVideo(false), 1000);
   };
   
   const skipToApp = () => {
@@ -183,7 +193,7 @@ export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }
         })}
       </div>
       
-      {/* 🎬 VIDEO CONTAINER WITH FORCED CONTROLS */}
+      {/* 🎬 ENHANCED VIDEO CONTAINER */}
       <div style={{
         height: '60vh',
         position: 'relative',
@@ -205,16 +215,17 @@ export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }
           background: '#000'
         }}>
           
-          {/* BACKGROUND IFRAME (Always Loading) */}
+          {/* ENHANCED IFRAME - Always Loading with Better Parameters */}
           <iframe
             ref={iframeRef}
-            src="https://www.youtube.com/embed/w7h_xi_omfg?autoplay=1&mute=1&start=0&controls=1&rel=0&modestbranding=1"
+            src="https://www.youtube.com/embed/w7h_xi_omfg?rel=0&modestbranding=1&controls=1&fs=1&hl=en&playsinline=1"
             style={{
               width: '100%',
               height: '100%',
               border: 'none',
               borderRadius: '20px',
-              opacity: showPlayButton ? 0.3 : 1 // Dim when play button visible
+              opacity: showPlayButton ? 0.2 : 1,
+              transition: 'opacity 0.5s ease'
             }}
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"
             allowFullScreen
@@ -222,7 +233,7 @@ export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }
             loading="eager"
           />
           
-          {/* PLAY BUTTON OVERLAY - Always Available */}
+          {/* ENHANCED PLAY BUTTON OVERLAY */}
           {showPlayButton && (
             <div style={{
               position: 'absolute',
@@ -231,7 +242,7 @@ export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }
               flexDirection: 'column',
               alignItems: 'center',
               justifyContent: 'center',
-              background: 'rgba(0, 0, 0, 0.7)',
+              background: 'rgba(0, 0, 0, 0.85)',
               borderRadius: '20px',
               zIndex: 20
             }}>
@@ -254,7 +265,7 @@ export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }
                   </div>
                 </div>
               ) : (
-                /* Play Controls */
+                /* Enhanced Play Controls */
                 <div style={{
                   display: 'flex',
                   flexDirection: 'column',
@@ -265,8 +276,8 @@ export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }
                   <button
                     onClick={handlePlayClick}
                     style={{
-                      width: '120px',
-                      height: '120px',
+                      width: '140px',
+                      height: '140px',
                       borderRadius: '50%',
                       background: 'linear-gradient(135deg, rgba(212, 175, 55, 0.95), rgba(212, 175, 55, 0.8))',
                       border: '4px solid #d4af37',
@@ -287,71 +298,50 @@ export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }
                       e.currentTarget.style.boxShadow = '0 15px 40px rgba(212, 175, 55, 0.5)';
                     }}
                   >
-                    <Play style={{ width: '40px', height: '40px', color: '#1a1a1a', marginLeft: '4px' }} />
+                    <Play style={{ width: '50px', height: '50px', color: '#1a1a1a', marginLeft: '6px' }} />
                   </button>
                   
                   {/* Instructions */}
                   <div style={{
                     color: '#d4af37',
-                    fontSize: '18px',
+                    fontSize: '20px',
                     fontWeight: 'bold',
-                    textAlign: 'center'
+                    textAlign: 'center',
+                    textShadow: '0 2px 4px rgba(0, 0, 0, 0.5)'
                   }}>
                     Click to Start Trailer
                   </div>
                   
-                  {/* Alternative Actions */}
-                  <div style={{
-                    display: 'flex',
-                    gap: '20px',
-                    flexWrap: 'wrap',
-                    justifyContent: 'center'
-                  }}>
-                    <button
-                      onClick={openInNewTab}
-                      style={{
-                        padding: '12px 24px',
-                        backgroundColor: 'rgba(66, 153, 225, 0.2)',
-                        border: '2px solid rgba(66, 153, 225, 0.5)',
-                        borderRadius: '25px',
-                        color: '#4299e1',
-                        fontSize: '14px',
-                        fontWeight: '600',
-                        cursor: 'pointer',
-                        transition: 'all 0.3s ease'
-                      }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.backgroundColor = 'rgba(66, 153, 225, 0.3)';
-                        e.currentTarget.style.borderColor = '#4299e1';
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.backgroundColor = 'rgba(66, 153, 225, 0.2)';
-                        e.currentTarget.style.borderColor = 'rgba(66, 153, 225, 0.5)';
-                      }}
-                    >
-                      Open in YouTube
-                    </button>
-                    
-                    {playAttempts > 0 && (
+                  {/* Status Indicator */}
+                  {playAttempts > 0 && (
+                    <div style={{
+                      padding: '12px 24px',
+                      backgroundColor: 'rgba(245, 158, 11, 0.2)',
+                      border: '2px solid rgba(245, 158, 11, 0.5)',
+                      borderRadius: '25px',
+                      color: '#f59e0b',
+                      fontSize: '14px',
+                      fontWeight: 'bold',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '8px'
+                    }}>
                       <div style={{
-                        padding: '12px 20px',
-                        backgroundColor: 'rgba(245, 101, 101, 0.2)',
-                        border: '2px solid rgba(245, 101, 101, 0.5)',
-                        borderRadius: '25px',
-                        color: '#f56565',
-                        fontSize: '12px',
-                        fontWeight: '500'
-                      }}>
-                        Attempts: {playAttempts}
-                      </div>
-                    )}
-                  </div>
+                        width: '8px',
+                        height: '8px',
+                        borderRadius: '50%',
+                        backgroundColor: '#f59e0b',
+                        animation: 'statusPulse 1.5s ease-in-out infinite'
+                      }} />
+                      Attempt: {playAttempts}
+                    </div>
+                  )}
                 </div>
               )}
             </div>
           )}
           
-          {/* STATUS OVERLAY */}
+          {/* ENHANCED STATUS OVERLAY */}
           <div style={{
             position: 'absolute',
             bottom: '24px',
@@ -380,7 +370,9 @@ export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }
                 width: '8px',
                 height: '8px',
                 borderRadius: '50%',
-                backgroundColor: showPlayButton ? '#fbbf24' : '#22c55e',
+                backgroundColor: videoStatus === 'playing' ? '#22c55e' : 
+                                 videoStatus === 'loading' ? '#fbbf24' : 
+                                 videoStatus === 'error' ? '#ef4444' : '#d4af37',
                 animation: 'statusPulse 2s ease-in-out infinite'
               }} />
             </div>
@@ -389,7 +381,9 @@ export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }
               fontSize: '13px',
               fontWeight: '500'
             }}>
-              {isAttemptingPlay ? 'Loading...' : showPlayButton ? 'Ready to Play' : 'Playing'}
+              {videoStatus === 'playing' ? 'Playing' : 
+               videoStatus === 'loading' ? 'Loading...' : 
+               videoStatus === 'error' ? 'Retry Available' : 'Ready to Play'}
             </div>
           </div>
         </div>
