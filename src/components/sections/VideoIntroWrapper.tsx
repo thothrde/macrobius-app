@@ -4,8 +4,7 @@ import { IntroSection } from './IntroSection';
 import { Play, SkipForward, Volume2, VolumeX } from 'lucide-react';
 import Head from 'next/head';
 
-// Import the type declarations using path alias
-import '@/types/lite-youtube';
+// Types for lite-youtube are now globally available from src/types/lite-youtube.d.ts
 
 interface VideoIntroWrapperProps {
   language: 'DE' | 'EN' | 'LA';
