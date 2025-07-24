@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { IntroSection } from './IntroSection';
-import { Play, SkipForward, Volume2, VolumeX } from 'lucide-react';
+import { SkipForward } from 'lucide-react';
 import Head from 'next/head';
 
 // Types for lite-youtube are now globally available from src/types/lite-youtube.d.ts
@@ -11,24 +11,22 @@ interface VideoIntroWrapperProps {
 }
 
 /**
- * 🎬 LITE YOUTUBE VIDEO INTRO COMPONENT
+ * 🎬 ENHANCED LITE YOUTUBE VIDEO INTRO COMPONENT
  * 
  * Features:
- * ✅ Uses lite-youtube-embed for instant loading
- * ✅ Loads only thumbnail initially (fast performance)
- * ✅ Full player loads only when user clicks
- * ✅ Professional YouTube appearance
- * ✅ Auto-transitions to main app after 45 seconds (reduced due to fast loading)
- * ✅ Skip button for immediate access
- * ✅ Late evening sky blue background with animated stars
+ * ✅ Auto-playing video with lite-youtube-embed
+ * ✅ Rich astronomical background with moving stars and planets
+ * ✅ Integrated Astrolab.jpg as central background element
+ * ✅ Clean interface with only Skip Video button
+ * ✅ Smooth animations and celestial atmosphere
  * ✅ PRESERVES ALL EXISTING FUNCTIONALITY - Safe development
  */
 export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }) => {
   const { t } = useLanguage();
   const [showVideo, setShowVideo] = useState(true);
-  const [countdown, setCountdown] = useState(45); // 🔥 REDUCED: 45 seconds due to instant loading
+  const [countdown, setCountdown] = useState(45);
   
-  // Auto-skip after 45 seconds (reduced due to fast lite-youtube loading)
+  // Auto-skip after 45 seconds
   useEffect(() => {
     if (!showVideo) return;
     
@@ -50,7 +48,6 @@ export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }
   };
   
   // 🚨 CRITICAL SAFE DEVELOPMENT: When video completes, show original IntroSection
-  // This preserves ALL existing functionality, AI systems, and Oracle Cloud integration
   if (!showVideo) {
     return <IntroSection language={language} />;
   }
@@ -74,84 +71,149 @@ export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }
         display: 'flex',
         flexDirection: 'column',
         position: 'relative',
-        // 🌌 Late evening sky blue background
-        background: 'linear-gradient(135deg, #1e40af 0%, #312e81 30%, #1e1b4b 60%, #0f172a 100%)',
+        // 🌌 Enhanced cosmic background
+        background: 'linear-gradient(135deg, #0f0c29 0%, #24243e 25%, #302b63 50%, #1e3c72 75%, #2a5298 100%)',
         overflow: 'hidden'
       }}>
-        {/* 🌟 Animated stars (late evening sky) */}
+        
+        {/* 🏟️ ASTROLAB BACKGROUND - Central Integration */}
+        <div style={{
+          position: 'absolute',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          width: '120vh',
+          height: '120vh',
+          opacity: 0.12,
+          zIndex: 2,
+          backgroundImage: 'url(/Astrolab.jpg)',
+          backgroundSize: 'contain',
+          backgroundRepeat: 'no-repeat',
+          backgroundPosition: 'center',
+          animation: 'astrolabRotate 300s linear infinite',
+          filter: 'sepia(30%) hue-rotate(200deg) brightness(0.8)'
+        }} />
+        
+        {/* 🌌 ENHANCED COSMIC BACKGROUND */}
         <div style={{ position: 'absolute', inset: 0, zIndex: 1 }}>
-          {/* Large slow-moving stars */}
-          {Array.from({ length: 15 }, (_, i) => (
+          
+          {/* Large Bright Stars */}
+          {Array.from({ length: 25 }, (_, i) => (
             <div
-              key={`star-large-${i}`}
+              key={`star-bright-${i}`}
+              style={{
+                position: 'absolute',
+                width: `${Math.random() * 4 + 3}px`,
+                height: `${Math.random() * 4 + 3}px`,
+                borderRadius: '50%',
+                background: `radial-gradient(circle, rgba(255, 255, 255, ${Math.random() * 0.9 + 0.3}), rgba(255, 255, 255, 0))`,
+                top: `${Math.random() * 100}%`,
+                left: `${Math.random() * 100}%`,
+                animation: `starTwinkle ${6 + Math.random() * 8}s ease-in-out infinite`,
+                animationDelay: `${Math.random() * 4}s`,
+                boxShadow: `0 0 ${Math.random() * 12 + 6}px rgba(255, 255, 255, 0.6), 0 0 ${Math.random() * 24 + 12}px rgba(255, 255, 255, 0.3)`
+              }}
+            />
+          ))}
+          
+          {/* Medium Moving Stars */}
+          {Array.from({ length: 40 }, (_, i) => (
+            <div
+              key={`star-moving-${i}`}
               style={{
                 position: 'absolute',
                 width: `${Math.random() * 3 + 2}px`,
                 height: `${Math.random() * 3 + 2}px`,
                 borderRadius: '50%',
-                background: `rgba(255, 255, 255, ${Math.random() * 0.8 + 0.2})`,
+                background: `rgba(255, 255, 255, ${Math.random() * 0.7 + 0.2})`,
                 top: `${Math.random() * 100}%`,
                 left: `${Math.random() * 100}%`,
-                animation: `twinkle ${8 + Math.random() * 12}s ease-in-out infinite`,
-                animationDelay: `${Math.random() * 5}s`,
-                boxShadow: `0 0 ${Math.random() * 6 + 3}px rgba(255, 255, 255, 0.5)`
+                animation: `starDrift ${80 + Math.random() * 60}s linear infinite`,
+                animationDelay: `${Math.random() * 20}s`,
+                boxShadow: `0 0 ${Math.random() * 8 + 4}px rgba(255, 255, 255, 0.4)`
               }}
             />
           ))}
           
-          {/* Medium moving stars */}
-          {Array.from({ length: 25 }, (_, i) => (
+          {/* Small Background Stars */}
+          {Array.from({ length: 80 }, (_, i) => (
             <div
-              key={`star-medium-${i}`}
+              key={`star-small-${i}`}
               style={{
                 position: 'absolute',
                 width: `${Math.random() * 2 + 1}px`,
                 height: `${Math.random() * 2 + 1}px`,
                 borderRadius: '50%',
-                background: `rgba(255, 255, 255, ${Math.random() * 0.6 + 0.3})`,
+                background: `rgba(255, 255, 255, ${Math.random() * 0.5 + 0.1})`,
                 top: `${Math.random() * 100}%`,
                 left: `${Math.random() * 100}%`,
-                animation: `slowFloat ${15 + Math.random() * 25}s ease-in-out infinite`,
-                animationDelay: `${Math.random() * 8}s`,
-                boxShadow: `0 0 ${Math.random() * 4 + 2}px rgba(255, 255, 255, 0.3)`
+                animation: `gentleGlow ${8 + Math.random() * 12}s ease-in-out infinite`,
+                animationDelay: `${Math.random() * 6}s`
               }}
             />
           ))}
           
-          {/* Small static stars */}
-          {Array.from({ length: 40 }, (_, i) => (
+          {/* 🪐 MOVING PLANETS - Right to Left */}
+          {Array.from({ length: 6 }, (_, i) => (
             <div
-              key={`star-small-${i}`}
+              key={`planet-${i}`}
               style={{
                 position: 'absolute',
-                width: '1px',
-                height: '1px',
+                width: `${Math.random() * 12 + 8}px`,
+                height: `${Math.random() * 12 + 8}px`,
                 borderRadius: '50%',
-                background: `rgba(255, 255, 255, ${Math.random() * 0.4 + 0.2})`,
-                top: `${Math.random() * 100}%`,
-                left: `${Math.random() * 100}%`,
-                animation: `gentleTwinkle ${4 + Math.random() * 8}s ease-in-out infinite`,
-                animationDelay: `${Math.random() * 3}s`,
-                boxShadow: '0 0 1px rgba(255, 255, 255, 0.5)'
+                background: [
+                  'radial-gradient(circle at 30% 30%, #ff6b35, #f7931e, #c23616)',
+                  'radial-gradient(circle at 30% 30%, #3742fa, #2f3542, #57606f)',
+                  'radial-gradient(circle at 30% 30%, #2ed573, #1e90ff, #0652dd)',
+                  'radial-gradient(circle at 30% 30%, #ffa502, #ff6348, #ff3838)',
+                  'radial-gradient(circle at 30% 30%, #70a1ff, #5352ed, #3742fa)',
+                  'radial-gradient(circle at 30% 30%, #7bed9f, #2ed573, #0be881)'
+                ][i],
+                top: `${15 + Math.random() * 70}%`,
+                left: `${100 + Math.random() * 50}%`,
+                animation: `planetDrift ${120 + Math.random() * 80}s linear infinite`,
+                animationDelay: `${Math.random() * 30}s`,
+                boxShadow: `0 0 ${Math.random() * 16 + 8}px rgba(255, 255, 255, 0.3), inset -2px -2px 4px rgba(0, 0, 0, 0.3)`,
+                opacity: 0.7 + Math.random() * 0.3
               }}
             />
           ))}
           
-          {/* Golden accent particles */}
+          {/* Golden Cosmic Dust */}
+          {Array.from({ length: 15 }, (_, i) => (
+            <div
+              key={`cosmic-dust-${i}`}
+              style={{
+                position: 'absolute',
+                width: `${Math.random() * 6 + 3}px`,
+                height: `${Math.random() * 6 + 3}px`,
+                borderRadius: '50%',
+                background: `radial-gradient(circle, rgba(212, 175, 55, ${Math.random() * 0.6 + 0.2}), rgba(212, 175, 55, 0))`,
+                top: `${Math.random() * 100}%`,
+                left: `${Math.random() * 100}%`,
+                animation: `cosmicFloat ${150 + Math.random() * 100}s linear infinite`,
+                animationDelay: `${Math.random() * 50}s`,
+                boxShadow: `0 0 ${Math.random() * 10 + 5}px rgba(212, 175, 55, 0.4)`
+              }}
+            />
+          ))}
+          
+          {/* Nebula-like Effects */}
           {Array.from({ length: 8 }, (_, i) => (
             <div
-              key={`golden-particle-${i}`}
+              key={`nebula-${i}`}
               style={{
                 position: 'absolute',
-                width: `${Math.random() * 4 + 2}px`,
-                height: `${Math.random() * 4 + 2}px`,
+                width: `${Math.random() * 200 + 100}px`,
+                height: `${Math.random() * 200 + 100}px`,
                 borderRadius: '50%',
-                background: `rgba(212, 175, 55, ${Math.random() * 0.4 + 0.1})`,
-                top: `${Math.random() * 100}%`,
-                left: `${Math.random() * 100}%`,
-                animation: `goldenFloat ${20 + Math.random() * 20}s ease-in-out infinite`,
-                animationDelay: `${Math.random() * 10}s`,
-                boxShadow: `0 0 ${Math.random() * 8 + 4}px rgba(212, 175, 55, 0.3)`
+                background: `radial-gradient(circle, rgba(${Math.random() * 100 + 100}, ${Math.random() * 100 + 150}, 255, 0.05), transparent)`,
+                top: `${Math.random() * 80}%`,
+                left: `${Math.random() * 80}%`,
+                animation: `nebulaFloat ${200 + Math.random() * 150}s ease-in-out infinite`,
+                animationDelay: `${Math.random() * 100}s`,
+                filter: 'blur(20px)'
               }}
             />
           ))}
@@ -159,7 +221,7 @@ export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }
         
         {/* 🎬 LITE YOUTUBE VIDEO CONTAINER - Upper Half */}
         <div style={{
-          height: '50vh',
+          height: '60vh',
           position: 'relative',
           zIndex: 10,
           display: 'flex',
@@ -169,255 +231,252 @@ export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }
         }}>
           <div style={{
             width: '100%',
-            maxWidth: '800px',
+            maxWidth: '900px',
             aspectRatio: '16/9',
-            borderRadius: '20px',
+            borderRadius: '24px',
             overflow: 'hidden',
-            boxShadow: '0 25px 50px rgba(0, 0, 0, 0.6), 0 0 0 3px rgba(212, 175, 55, 0.4)',
-            border: '3px solid rgba(212, 175, 55, 0.6)',
+            boxShadow: '0 30px 60px rgba(0, 0, 0, 0.8), 0 0 0 4px rgba(212, 175, 55, 0.5), 0 0 0 8px rgba(255, 255, 255, 0.1)',
+            border: '4px solid rgba(212, 175, 55, 0.7)',
             position: 'relative',
-            background: '#000'
+            background: '#000',
+            transform: 'scale(1.02)',
+            transition: 'all 0.3s ease'
           }}>
-            {/* 🚀 LITE YOUTUBE EMBED - INSTANT LOADING! */}
+            {/* 🚀 AUTO-PLAYING LITE YOUTUBE EMBED */}
             {React.createElement('lite-youtube', {
               videoid: 'w7h_xi_omfg',
+              params: 'autoplay=1&mute=1',  // 🔥 AUTO-PLAY ENABLED!
               style: {
                 width: '100%',
                 height: '100%',
-                borderRadius: '17px'
+                borderRadius: '20px'
               },
               playlabel: language === 'DE' ? 'Macrobius Trailer abspielen' :
                          language === 'LA' ? 'Macrobius Trailer ludere' :
                          'Play Macrobius Trailer'
             })}
             
-            {/* Overlay with app branding */}
+            {/* Enhanced Video Overlay */}
             <div style={{
               position: 'absolute',
-              bottom: '20px',
-              left: '20px',
-              right: '20px',
+              bottom: '24px',
+              left: '24px',
+              right: '24px',
               display: 'flex',
               justifyContent: 'space-between',
               alignItems: 'center',
-              padding: '12px 20px',
-              backgroundColor: 'rgba(0, 0, 0, 0.8)',
-              borderRadius: '12px',
-              backdropFilter: 'blur(10px)',
-              border: '1px solid rgba(212, 175, 55, 0.3)'
+              padding: '16px 24px',
+              backgroundColor: 'rgba(0, 0, 0, 0.85)',
+              borderRadius: '16px',
+              backdropFilter: 'blur(20px)',
+              border: '2px solid rgba(212, 175, 55, 0.4)',
+              boxShadow: '0 8px 32px rgba(0, 0, 0, 0.6)'
             }}>
               <div style={{
                 color: '#d4af37',
-                fontSize: '14px',
-                fontWeight: '600'
+                fontSize: '16px',
+                fontWeight: '700',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '12px'
               }}>
                 🏛️ Macrobius App Trailer
+                <div style={{
+                  width: '8px',
+                  height: '8px',
+                  borderRadius: '50%',
+                  backgroundColor: '#22c55e',
+                  animation: 'pulse 2s infinite'
+                }} />
               </div>
               <div style={{
-                color: 'rgba(212, 175, 55, 0.8)',
-                fontSize: '12px'
+                color: 'rgba(212, 175, 55, 0.9)',
+                fontSize: '13px',
+                fontWeight: '500'
               }}>
-                {language === 'DE' ? 'Klicken zum Abspielen' :
-                 language === 'LA' ? 'Preme ad ludendum' :
-                 'Click to play'}
+                {language === 'DE' ? 'Automatische Wiedergabe aktiv' :
+                 language === 'LA' ? 'Automatica repetitio activa' :
+                 'Auto-play active'}
               </div>
             </div>
           </div>
         </div>
         
-        {/* 🎨 App Preview Section - Lower Half */}
+        {/* 🎯 CLEAN ACTION SECTION - Lower Half */}
         <div style={{
-          height: '50vh',
+          height: '40vh',
           position: 'relative',
           zIndex: 10,
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'center',
           alignItems: 'center',
-          padding: '40px',
-          background: 'linear-gradient(to bottom, transparent, rgba(30, 64, 175, 0.1))'
+          padding: '40px'
         }}>
-          {/* App Title */}
+          {/* Cosmic App Title */}
           <h1 style={{
-            fontSize: '4rem',
+            fontSize: '5rem',
             fontWeight: 'bold',
-            background: 'linear-gradient(135deg, #d4af37, #f59e0b, #fbbf24)',
+            background: 'linear-gradient(135deg, #d4af37 0%, #ffd700 25%, #ffed4e 50%, #d4af37 75%, #b8860b 100%)',
             WebkitBackgroundClip: 'text',
             WebkitTextFillColor: 'transparent',
-            margin: '0 0 20px 0',
+            margin: '0 0 30px 0',
             fontFamily: 'Times New Roman, serif',
             textAlign: 'center',
-            textShadow: '0 4px 12px rgba(212, 175, 55, 0.4)'
+            textShadow: '0 6px 20px rgba(212, 175, 55, 0.5)',
+            letterSpacing: '2px',
+            animation: 'titleGlow 4s ease-in-out infinite alternate'
           }}>
             MACROBIUS
           </h1>
           
-          <p style={{
-            fontSize: '1.5rem',
-            color: '#e5e7eb',
-            fontStyle: 'italic',
-            margin: '0 0 40px 0',
-            textAlign: 'center',
-            maxWidth: '600px',
-            textShadow: '0 2px 4px rgba(0, 0, 0, 0.3)'
-          }}>
-            {t('video.subtitle') || 
-             (language === 'DE' ? 'KI-gestützte klassische lateinische Bildungsplattform' :
-              language === 'LA' ? 'Platea Educationis Latinae Classicae AI-actuata' :
-              'AI-Powered Classical Latin Education Platform')}
-          </p>
-          
-          {/* Action Buttons */}
+          {/* Clean Action Area - Only Skip Button */}
           <div style={{
             display: 'flex',
-            gap: '20px',
+            gap: '24px',
             alignItems: 'center',
-            flexWrap: 'wrap',
-            justifyContent: 'center'
+            justifyContent: 'center',
+            marginTop: '20px'
           }}>
-            {/* Skip Button */}
+            {/* 🎯 SKIP VIDEO BUTTON - Enhanced */}
             <button
               onClick={skipToApp}
               style={{
-                padding: '16px 32px',
-                backgroundColor: 'rgba(212, 175, 55, 0.9)',
-                border: '2px solid #d4af37',
-                borderRadius: '50px',
+                padding: '20px 40px',
+                backgroundColor: 'rgba(212, 175, 55, 0.95)',
+                border: '3px solid #d4af37',
+                borderRadius: '60px',
                 color: '#1a1a1a',
-                fontSize: '16px',
+                fontSize: '18px',
                 fontWeight: 'bold',
                 cursor: 'pointer',
                 transition: 'all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
                 display: 'flex',
                 alignItems: 'center',
-                gap: '12px',
-                boxShadow: '0 8px 25px rgba(212, 175, 55, 0.5)'
+                gap: '16px',
+                boxShadow: '0 12px 30px rgba(212, 175, 55, 0.6), 0 0 0 0 rgba(212, 175, 55, 0.4)',
+                textTransform: 'uppercase',
+                letterSpacing: '1px'
               }}
               onMouseEnter={(e) => {
                 e.currentTarget.style.backgroundColor = '#d4af37';
-                e.currentTarget.style.transform = 'scale(1.05) translateY(-2px)';
-                e.currentTarget.style.boxShadow = '0 12px 35px rgba(212, 175, 55, 0.7)';
+                e.currentTarget.style.transform = 'scale(1.08) translateY(-3px)';
+                e.currentTarget.style.boxShadow = '0 16px 40px rgba(212, 175, 55, 0.8), 0 0 0 8px rgba(212, 175, 55, 0.2)';
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = 'rgba(212, 175, 55, 0.9)';
+                e.currentTarget.style.backgroundColor = 'rgba(212, 175, 55, 0.95)';
                 e.currentTarget.style.transform = 'scale(1) translateY(0)';
-                e.currentTarget.style.boxShadow = '0 8px 25px rgba(212, 175, 55, 0.5)';
+                e.currentTarget.style.boxShadow = '0 12px 30px rgba(212, 175, 55, 0.6), 0 0 0 0 rgba(212, 175, 55, 0.4)';
               }}
             >
-              <SkipForward style={{ width: '20px', height: '20px' }} />
-              {t('video.skip') || 
-               (language === 'DE' ? 'App öffnen' :
-                language === 'LA' ? 'App aperire' :
-                'Enter App')}
+              <SkipForward style={{ width: '24px', height: '24px' }} />
+              Skip Video
             </button>
             
-            {/* Countdown Display */}
+            {/* Elegant Countdown Display */}
             <div style={{
-              padding: '12px 24px',
-              backgroundColor: 'rgba(0, 0, 0, 0.7)',
-              border: '2px solid rgba(212, 175, 55, 0.4)',
-              borderRadius: '25px',
+              padding: '16px 28px',
+              backgroundColor: 'rgba(0, 0, 0, 0.8)',
+              border: '2px solid rgba(212, 175, 55, 0.5)',
+              borderRadius: '40px',
               color: '#d4af37',
-              fontSize: '14px',
+              fontSize: '16px',
               fontWeight: '600',
-              backdropFilter: 'blur(10px)',
-              boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)'
+              backdropFilter: 'blur(15px)',
+              boxShadow: '0 8px 20px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.1)',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '12px'
             }}>
-              {t('video.auto_start') || 
-               (language === 'DE' ? 'Auto-Start in' :
-                language === 'LA' ? 'Auto-initium in' :
-                'Auto-start in')}: {countdown}s
+              <div style={{
+                width: '6px',
+                height: '6px',
+                borderRadius: '50%',
+                backgroundColor: '#d4af37',
+                animation: 'pulse 1.5s infinite'
+              }} />
+              Auto-start: {countdown}s
             </div>
-          </div>
-          
-          {/* Features Preview */}
-          <div style={{
-            display: 'flex',
-            gap: '30px',
-            marginTop: '40px',
-            flexWrap: 'wrap',
-            justifyContent: 'center'
-          }}>
-            {[
-              { icon: '🤖', text: t('video.feature.ai') || (language === 'DE' ? 'KI-gestützt' : language === 'LA' ? 'AI-actuatus' : 'AI-Powered') },
-              { icon: '📚', text: t('video.feature.authentic') || '1.401 Passagen' },
-              { icon: '🌍', text: t('video.feature.multilingual') || 'DE/EN/LA' },
-              { icon: '🏛️', text: t('video.feature.classical') || (language === 'DE' ? 'Klassische Bildung' : language === 'LA' ? 'Educatio Classica' : 'Classical Education') }
-            ].map((feature, index) => (
-              <div
-                key={index}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '8px',
-                  padding: '10px 18px',
-                  backgroundColor: 'rgba(212, 175, 55, 0.15)',
-                  border: '1px solid rgba(212, 175, 55, 0.4)',
-                  borderRadius: '25px',
-                  color: '#d4af37',
-                  fontSize: '14px',
-                  fontWeight: '500',
-                  backdropFilter: 'blur(8px)',
-                  boxShadow: '0 4px 12px rgba(0, 0, 0, 0.2)'
-                }}
-              >
-                <span style={{ fontSize: '18px' }}>{feature.icon}</span>
-                {feature.text}
-              </div>
-            ))}
-          </div>
-          
-          {/* Performance Info */}
-          <div style={{
-            marginTop: '30px',
-            padding: '8px 16px',
-            backgroundColor: 'rgba(16, 185, 129, 0.1)',
-            border: '1px solid rgba(16, 185, 129, 0.3)',
-            borderRadius: '20px',
-            color: '#10b981',
-            fontSize: '12px',
-            fontWeight: '500',
-            textAlign: 'center'
-          }}>
-            ⚡ {language === 'DE' ? 'Optimierte Videoladung mit lite-youtube-embed' :
-                language === 'LA' ? 'Optimizata video oneris cum lite-youtube-embed' :
-                'Optimized video loading with lite-youtube-embed'}
           </div>
         </div>
         
-        {/* Enhanced Global Animations */}
+        {/* 🎨 ENHANCED COSMIC ANIMATIONS */}
         <style jsx global>{`
-          @keyframes twinkle {
+          @keyframes starTwinkle {
             0%, 100% { 
               opacity: 0.3; 
               transform: scale(0.8); 
             }
             50% { 
               opacity: 1; 
-              transform: scale(1.2); 
+              transform: scale(1.4); 
             }
           }
           
-          @keyframes slowFloat {
-            0%, 100% { 
-              transform: translateY(0px) translateX(0px) rotate(0deg); 
-              opacity: 0.4;
+          @keyframes starDrift {
+            0% { 
+              transform: translateX(100vw) translateY(0px); 
+              opacity: 0;
             }
-            25% { 
-              transform: translateY(-8px) translateX(5px) rotate(90deg); 
-              opacity: 0.8;
-            }
-            50% { 
-              transform: translateY(-15px) translateX(-3px) rotate(180deg); 
+            10% {
               opacity: 1;
             }
-            75% { 
-              transform: translateY(-5px) translateX(-8px) rotate(270deg); 
-              opacity: 0.6;
+            90% {
+              opacity: 1;
+            }
+            100% { 
+              transform: translateX(-20vw) translateY(-20px); 
+              opacity: 0;
             }
           }
           
-          @keyframes gentleTwinkle {
+          @keyframes planetDrift {
+            0% { 
+              transform: translateX(0px) translateY(0px); 
+            }
+            100% { 
+              transform: translateX(-120vw) translateY(-10px); 
+            }
+          }
+          
+          @keyframes cosmicFloat {
+            0% { 
+              transform: translateX(100vw) translateY(0px) rotate(0deg); 
+              opacity: 0;
+            }
+            15% {
+              opacity: 0.8;
+            }
+            85% {
+              opacity: 0.8;
+            }
+            100% { 
+              transform: translateX(-20vw) translateY(-5px) rotate(360deg); 
+              opacity: 0;
+            }
+          }
+          
+          @keyframes nebulaFloat {
+            0%, 100% { 
+              transform: translateX(0px) translateY(0px) scale(1); 
+              opacity: 0.05;
+            }
+            50% { 
+              transform: translateX(-30px) translateY(-15px) scale(1.1); 
+              opacity: 0.08;
+            }
+          }
+          
+          @keyframes astrolabRotate {
+            0% { 
+              transform: translate(-50%, -50%) rotate(0deg); 
+            }
+            100% { 
+              transform: translate(-50%, -50%) rotate(360deg); 
+            }
+          }
+          
+          @keyframes gentleGlow {
             0%, 100% { 
               opacity: 0.2; 
             }
@@ -426,45 +485,53 @@ export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }
             }
           }
           
-          @keyframes goldenFloat {
+          @keyframes titleGlow {
+            0% { 
+              text-shadow: 0 6px 20px rgba(212, 175, 55, 0.5); 
+            }
+            100% { 
+              text-shadow: 0 6px 30px rgba(212, 175, 55, 0.8), 0 0 40px rgba(212, 175, 55, 0.3); 
+            }
+          }
+          
+          @keyframes pulse {
             0%, 100% { 
-              transform: translateY(0px) translateX(0px) rotate(0deg); 
-              opacity: 0.1;
+              opacity: 1; 
+              transform: scale(1); 
             }
-            33% { 
-              transform: translateY(-12px) translateX(8px) rotate(120deg); 
-              opacity: 0.4;
-            }
-            66% { 
-              transform: translateY(-8px) translateX(-6px) rotate(240deg); 
-              opacity: 0.3;
+            50% { 
+              opacity: 0.5; 
+              transform: scale(1.2); 
             }
           }
           
-          @keyframes spin {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-          }
-          
-          /* 🎨 LITE YOUTUBE CUSTOM STYLING */
+          /* 🎨 ENHANCED LITE YOUTUBE STYLING */
           lite-youtube {
-            border-radius: 17px !important;
+            border-radius: 20px !important;
           }
           
           lite-youtube > iframe {
-            border-radius: 17px !important;
+            border-radius: 20px !important;
           }
           
           lite-youtube .lty-playbtn {
-            background: rgba(212, 175, 55, 0.9) !important;
-            border: 3px solid #d4af37 !important;
-            transition: all 0.3s ease !important;
+            background: rgba(212, 175, 55, 0.95) !important;
+            border: 4px solid #d4af37 !important;
+            transition: all 0.4s ease !important;
+            width: 80px !important;
+            height: 80px !important;
           }
           
           lite-youtube .lty-playbtn:hover {
             background: #d4af37 !important;
-            transform: scale(1.1) !important;
-            box-shadow: 0 0 20px rgba(212, 175, 55, 0.6) !important;
+            transform: scale(1.15) !important;
+            box-shadow: 0 0 30px rgba(212, 175, 55, 0.8) !important;
+          }
+          
+          lite-youtube .lty-playbtn svg {
+            width: 32px !important;
+            height: 32px !important;
+            margin-left: 4px !important;
           }
         `}</style>
       </div>
