@@ -62,6 +62,16 @@ function HomeContent({ initialSection = 'intro', initialLanguage = 'DE' }: HomeP
     setIsNavigationVisible(currentSection !== 'intro');
   }, [currentSection]);
 
+  // 🔧 Helper function to create Language object for QuizSection
+  const getLanguageObject = (lang: Language) => {
+    const languageMap = {
+      'DE': { code: 'de', name: 'Deutsch' },
+      'EN': { code: 'en', name: 'English' }, 
+      'LA': { code: 'la', name: 'Latina' }
+    };
+    return languageMap[lang];
+  };
+
   const renderCurrentSection = () => {
     switch (currentSection) {
       case 'intro':
@@ -79,9 +89,11 @@ function HomeContent({ initialSection = 'intro', initialLanguage = 'DE' }: HomeP
         // ✅ FIXED: TextSearchSection has its own DIRECT_TRANSLATIONS, only needs isActive and language
         return <TextSearchSection isActive={true} language={currentLanguage} />;
       case 'learning':
-        return <LearningSection language={currentLanguage} />;
+        // ✅ FIXED: LearningSection needs both isActive and language props
+        return <LearningSection isActive={true} language={currentLanguage} />;
       case 'quiz':
-        return <QuizSection language={currentLanguage} />;
+        // ✅ FIXED: QuizSection expects Language object with code/name properties
+        return <QuizSection language={getLanguageObject(currentLanguage)} />;
       case 'visualizations':
         return <VisualizationsSection language={currentLanguage} />;
       case 'ai-cultural-analysis':
