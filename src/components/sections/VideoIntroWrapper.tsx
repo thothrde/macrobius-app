@@ -1,24 +1,26 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { IntroSection } from './IntroSection';
-import { SkipForward, Play, RefreshCw } from 'lucide-react';
+import { SkipForward, Play, Volume2, VolumeX, RefreshCw } from 'lucide-react';
 
 interface VideoIntroWrapperProps {
   language: 'DE' | 'EN' | 'LA';
 }
 
 /**
- * 🎬 ENHANCED VIDEO PLAYER - IMPROVED INLINE PLAYBACK WITHOUT YOUTUBE BUTTON
+ * 🎬 PROFESSIONAL HTML5 VIDEO PLAYER - Handles Large Video Files Properly
+ * Solution: External video hosting + HTML5 video with proper autoplay handling
  */
 export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }) => {
   const { t } = useLanguage();
   const [showVideo, setShowVideo] = useState(true);
   const [countdown, setCountdown] = useState(45);
-  const [showPlayButton, setShowPlayButton] = useState(true);
-  const [isAttemptingPlay, setIsAttemptingPlay] = useState(false);
-  const [playAttempts, setPlayAttempts] = useState(0);
-  const [videoStatus, setVideoStatus] = useState<'ready' | 'loading' | 'playing' | 'error'>('ready');
-  const iframeRef = useRef<HTMLIFrameElement>(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [isMuted, setIsMuted] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
+  const [showControls, setShowControls] = useState(true);
+  const [videoError, setVideoError] = useState(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
   
   // Auto-skip timer
   useEffect(() => {
@@ -37,69 +39,93 @@ export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }
     return () => clearInterval(timer);
   }, [showVideo]);
   
-  // Handle play button click - Enhanced inline playback
-  const handlePlayClick = () => {
-    console.log(`🎬 Play attempt #${playAttempts + 1}`);
-    setIsAttemptingPlay(true);
-    setVideoStatus('loading');
-    setPlayAttempts(prev => prev + 1);
+  // Attempt autoplay when component mounts
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
     
-    if (iframeRef.current) {
-      // Enhanced YouTube embed strategies for better inline playback
-      const embedStrategies = [
-        // Strategy 1: Standard autoplay with all permissions
-        `https://www.youtube.com/embed/w7h_xi_omfg?autoplay=1&mute=1&controls=1&rel=0&modestbranding=1&playsinline=1&enablejsapi=1&origin=${encodeURIComponent(window.location.origin)}&widgetid=1`,
-        // Strategy 2: Autoplay with reduced restrictions
-        `https://www.youtube.com/embed/w7h_xi_omfg?autoplay=1&mute=1&controls=1&rel=0&playsinline=1&fs=1&hl=en&cc_load_policy=1`,
-        // Strategy 3: Force autoplay with additional parameters
-        `https://www.youtube.com/embed/w7h_xi_omfg?autoplay=1&mute=1&controls=1&showinfo=0&rel=0&modestbranding=1&playsinline=1&iv_load_policy=3`,
-        // Strategy 4: Minimal autoplay approach
-        `https://www.youtube.com/embed/w7h_xi_omfg?autoplay=1&mute=1&controls=1&rel=0`,
-        // Strategy 5: Basic embed (last resort)
-        `https://www.youtube.com/embed/w7h_xi_omfg?controls=1&rel=0&modestbranding=1`
-      ];
-      
-      const currentStrategy = Math.min(playAttempts, embedStrategies.length - 1);
-      const embedUrl = embedStrategies[currentStrategy];
-      
-      console.log(`🎬 Using strategy ${currentStrategy + 1}: Enhanced inline playback`);
-      
-      // Create new iframe with enhanced attributes
-      const newIframe = document.createElement('iframe');
-      newIframe.src = embedUrl;
-      newIframe.style.width = '100%';
-      newIframe.style.height = '100%';
-      newIframe.style.border = 'none';
-      newIframe.style.borderRadius = '20px';
-      newIframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen';
-      newIframe.allowFullscreen = true;
-      newIframe.title = 'Macrobius App Trailer';
-      newIframe.loading = 'eager';
-      
-      // Replace the existing iframe
-      if (iframeRef.current.parentNode) {
-        iframeRef.current.parentNode.replaceChild(newIframe, iframeRef.current);
-        // @ts-ignore - Update the ref
-        iframeRef.current = newIframe;
+    const attemptAutoplay = async () => {
+      try {
+        // Set video to muted for autoplay compliance
+        video.muted = true;
+        video.volume = 0;
+        
+        // Attempt to play
+        await video.play();
+        setIsPlaying(true);
+        setShowControls(false);
+        console.log('🎬 Autoplay successful!');
+        
+        // After 2 seconds, try to unmute (user will need to interact first)
+        setTimeout(() => {
+          setShowControls(true);
+        }, 2000);
+        
+      } catch (error) {
+        console.log('🎬 Autoplay blocked - showing play button');
+        setShowControls(true);
+        setIsPlaying(false);
       }
-      
-      // Hide play button immediately to show video
-      setShowPlayButton(false);
-      setVideoStatus('playing');
-      
-      // If video doesn't start after 5 seconds, show retry option
-      setTimeout(() => {
-        if (videoStatus === 'loading') {
-          setVideoStatus('error');
-          setShowPlayButton(true);
-        }
-        setIsAttemptingPlay(false);
-      }, 5000);
+    };
+    
+    // Wait for video to be ready
+    if (video.readyState >= 2) {
+      attemptAutoplay();
+    } else {
+      video.addEventListener('canplay', attemptAutoplay, { once: true });
     }
+    
+    return () => {
+      video.removeEventListener('canplay', attemptAutoplay);
+    };
+  }, []);
+  
+  const handlePlayClick = async () => {
+    const video = videoRef.current;
+    if (!video) return;
+    
+    setIsLoading(true);
+    
+    try {
+      if (isPlaying) {
+        video.pause();
+        setIsPlaying(false);
+      } else {
+        await video.play();
+        setIsPlaying(true);
+        setShowControls(false);
+        // Show controls again after 3 seconds
+        setTimeout(() => setShowControls(true), 3000);
+      }
+    } catch (error) {
+      console.error('Play failed:', error);
+      setVideoError(true);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+  
+  const handleMuteToggle = () => {
+    const video = videoRef.current;
+    if (!video) return;
+    
+    video.muted = !video.muted;
+    setIsMuted(video.muted);
   };
   
   const skipToApp = () => {
     setShowVideo(false);
+  };
+  
+  const handleVideoError = () => {
+    setVideoError(true);
+    console.error('Video failed to load');
+  };
+  
+  const handleVideoEnded = () => {
+    setIsPlaying(false);
+    // Auto-skip to app when video ends
+    setTimeout(() => setShowVideo(false), 1000);
   };
   
   // When video completes, show original IntroSection
@@ -193,7 +219,7 @@ export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }
         })}
       </div>
       
-      {/* 🎬 ENHANCED VIDEO CONTAINER */}
+      {/* 🎬 PROFESSIONAL HTML5 VIDEO PLAYER */}
       <div style={{
         height: '60vh',
         position: 'relative',
@@ -214,134 +240,185 @@ export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }
           position: 'relative',
           background: '#000'
         }}>
-          
-          {/* ENHANCED IFRAME - Always Loading with Better Parameters */}
-          <iframe
-            ref={iframeRef}
-            src="https://www.youtube.com/embed/w7h_xi_omfg?rel=0&modestbranding=1&controls=1&fs=1&hl=en&playsinline=1"
-            style={{
+          {videoError ? (
+            /* ERROR FALLBACK - Show beautiful classical imagery */
+            <div style={{
               width: '100%',
               height: '100%',
-              border: 'none',
-              borderRadius: '20px',
-              opacity: showPlayButton ? 0.2 : 1,
-              transition: 'opacity 0.5s ease'
-            }}
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"
-            allowFullScreen
-            title="Macrobius App Trailer"
-            loading="eager"
-          />
-          
-          {/* ENHANCED PLAY BUTTON OVERLAY */}
-          {showPlayButton && (
-            <div style={{
-              position: 'absolute',
-              inset: 0,
+              background: 'linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url(/MacrobiusBottle.jpg) center/cover',
               display: 'flex',
               flexDirection: 'column',
               alignItems: 'center',
               justifyContent: 'center',
-              background: 'rgba(0, 0, 0, 0.85)',
-              borderRadius: '20px',
-              zIndex: 20
+              color: '#d4af37',
+              textAlign: 'center',
+              padding: '40px'
             }}>
-              {/* Loading State */}
-              {isAttemptingPlay ? (
+              <h2 style={{ fontSize: '2.5rem', marginBottom: '20px', fontFamily: 'Times New Roman, serif' }}>
+                MACROBIUS
+              </h2>
+              <p style={{ fontSize: '1.2rem', marginBottom: '30px', opacity: 0.9 }}>
+                AI-Powered Classical Latin Education
+              </p>
+              <button
+                onClick={skipToApp}
+                style={{
+                  padding: '15px 30px',
+                  backgroundColor: 'rgba(212, 175, 55, 0.9)',
+                  border: '2px solid #d4af37',
+                  borderRadius: '25px',
+                  color: '#1a1a1a',
+                  fontSize: '16px',
+                  fontWeight: 'bold',
+                  cursor: 'pointer'
+                }}
+              >
+                Enter the Classical World
+              </button>
+            </div>
+          ) : (
+            /* HTML5 VIDEO ELEMENT */
+            <>
+              <video
+                ref={videoRef}
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  objectFit: 'cover',
+                  borderRadius: '20px'
+                }}
+                muted={isMuted}
+                loop
+                playsInline
+                preload="metadata"
+                onError={handleVideoError}
+                onEnded={handleVideoEnded}
+                onLoadStart={() => setIsLoading(true)}
+                onCanPlay={() => setIsLoading(false)}
+              >
+                {/* MULTIPLE VIDEO SOURCES FOR COMPATIBILITY */}
+                {/* 
+                   SOLUTION FOR YOUR 36MB VIDEO:
+                   1. Convert AppIntro.mov to web-optimized formats (MP4, WebM)
+                   2. Host on external service (Vimeo, CloudFlare, AWS S3)
+                   3. Or compress to under 25MB for GitHub hosting
+                */}
+                
+                {/* PLACEHOLDER SOURCES - Replace with your optimized video URLs */}
+                <source src="https://your-cdn.com/AppIntro.mp4" type="video/mp4" />
+                <source src="https://your-cdn.com/AppIntro.webm" type="video/webm" />
+                
+                {/* FALLBACK MESSAGE */}
                 <div style={{
                   display: 'flex',
-                  flexDirection: 'column',
                   alignItems: 'center',
-                  gap: '20px'
+                  justifyContent: 'center',
+                  height: '100%',
+                  color: '#d4af37',
+                  fontSize: '18px'
                 }}>
-                  <RefreshCw style={{ 
-                    width: '60px', 
-                    height: '60px', 
-                    color: '#d4af37',
-                    animation: 'spin 1s linear infinite'
-                  }} />
-                  <div style={{ color: '#d4af37', fontSize: '18px', fontWeight: 'bold' }}>
-                    Loading Video...
-                  </div>
+                  Your browser does not support HTML5 video.
                 </div>
-              ) : (
-                /* Enhanced Play Controls */
+              </video>
+              
+              {/* VIDEO CONTROLS OVERLAY */}
+              {showControls && (
                 <div style={{
+                  position: 'absolute',
+                  inset: 0,
                   display: 'flex',
-                  flexDirection: 'column',
                   alignItems: 'center',
-                  gap: '30px'
+                  justifyContent: 'center',
+                  background: isPlaying ? 'rgba(0, 0, 0, 0.3)' : 'rgba(0, 0, 0, 0.7)',
+                  borderRadius: '20px',
+                  transition: 'background 0.3s ease'
                 }}>
-                  {/* Main Play Button */}
-                  <button
-                    onClick={handlePlayClick}
-                    style={{
-                      width: '140px',
-                      height: '140px',
-                      borderRadius: '50%',
-                      background: 'linear-gradient(135deg, rgba(212, 175, 55, 0.95), rgba(212, 175, 55, 0.8))',
-                      border: '4px solid #d4af37',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      cursor: 'pointer',
-                      transition: 'all 0.3s ease',
-                      boxShadow: '0 15px 40px rgba(212, 175, 55, 0.5)',
-                      animation: 'playButtonPulse 2s ease-in-out infinite'
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.transform = 'scale(1.1)';
-                      e.currentTarget.style.boxShadow = '0 20px 50px rgba(212, 175, 55, 0.7)';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.transform = 'scale(1)';
-                      e.currentTarget.style.boxShadow = '0 15px 40px rgba(212, 175, 55, 0.5)';
-                    }}
-                  >
-                    <Play style={{ width: '50px', height: '50px', color: '#1a1a1a', marginLeft: '6px' }} />
-                  </button>
-                  
-                  {/* Instructions */}
-                  <div style={{
-                    color: '#d4af37',
-                    fontSize: '20px',
-                    fontWeight: 'bold',
-                    textAlign: 'center',
-                    textShadow: '0 2px 4px rgba(0, 0, 0, 0.5)'
-                  }}>
-                    Click to Start Trailer
-                  </div>
-                  
-                  {/* Status Indicator */}
-                  {playAttempts > 0 && (
+                  {isLoading ? (
+                    <RefreshCw style={{ 
+                      width: '60px', 
+                      height: '60px', 
+                      color: '#d4af37',
+                      animation: 'spin 1s linear infinite'
+                    }} />
+                  ) : (
                     <div style={{
-                      padding: '12px 24px',
-                      backgroundColor: 'rgba(245, 158, 11, 0.2)',
-                      border: '2px solid rgba(245, 158, 11, 0.5)',
-                      borderRadius: '25px',
-                      color: '#f59e0b',
-                      fontSize: '14px',
-                      fontWeight: 'bold',
                       display: 'flex',
+                      flexDirection: 'column',
                       alignItems: 'center',
-                      gap: '8px'
+                      gap: '20px'
                     }}>
-                      <div style={{
-                        width: '8px',
-                        height: '8px',
-                        borderRadius: '50%',
-                        backgroundColor: '#f59e0b',
-                        animation: 'statusPulse 1.5s ease-in-out infinite'
-                      }} />
-                      Attempt: {playAttempts}
+                      {/* MAIN PLAY/PAUSE BUTTON */}
+                      <button
+                        onClick={handlePlayClick}
+                        style={{
+                          width: '120px',
+                          height: '120px',
+                          borderRadius: '50%',
+                          background: 'linear-gradient(135deg, rgba(212, 175, 55, 0.95), rgba(212, 175, 55, 0.8))',
+                          border: '4px solid #d4af37',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          cursor: 'pointer',
+                          transition: 'all 0.3s ease',
+                          boxShadow: '0 15px 40px rgba(212, 175, 55, 0.5)'
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.transform = 'scale(1.1)';
+                          e.currentTarget.style.boxShadow = '0 20px 50px rgba(212, 175, 55, 0.7)';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.transform = 'scale(1)';
+                          e.currentTarget.style.boxShadow = '0 15px 40px rgba(212, 175, 55, 0.5)';
+                        }}
+                      >
+                        <Play style={{ 
+                          width: '40px', 
+                          height: '40px', 
+                          color: '#1a1a1a', 
+                          marginLeft: isPlaying ? '0' : '4px'
+                        }} />
+                      </button>
+                      
+                      {/* MUTE/UNMUTE BUTTON */}
+                      <button
+                        onClick={handleMuteToggle}
+                        style={{
+                          padding: '12px 24px',
+                          backgroundColor: 'rgba(212, 175, 55, 0.2)',
+                          border: '2px solid rgba(212, 175, 55, 0.5)',
+                          borderRadius: '25px',
+                          color: '#d4af37',
+                          fontSize: '14px',
+                          fontWeight: '600',
+                          cursor: 'pointer',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '8px',
+                          transition: 'all 0.3s ease'
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.backgroundColor = 'rgba(212, 175, 55, 0.3)';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.backgroundColor = 'rgba(212, 175, 55, 0.2)';
+                        }}
+                      >
+                        {isMuted ? (
+                          <VolumeX style={{ width: '16px', height: '16px' }} />
+                        ) : (
+                          <Volume2 style={{ width: '16px', height: '16px' }} />
+                        )}
+                        {isMuted ? 'Unmute' : 'Mute'}
+                      </button>
                     </div>
                   )}
                 </div>
               )}
-            </div>
+            </>
           )}
           
-          {/* ENHANCED STATUS OVERLAY */}
+          {/* STATUS OVERLAY */}
           <div style={{
             position: 'absolute',
             bottom: '24px',
@@ -354,8 +431,7 @@ export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }
             backgroundColor: 'rgba(0, 0, 0, 0.85)',
             borderRadius: '16px',
             backdropFilter: 'blur(20px)',
-            border: '2px solid rgba(212, 175, 55, 0.4)',
-            pointerEvents: 'none'
+            border: '2px solid rgba(212, 175, 55, 0.4)'
           }}>
             <div style={{
               color: '#d4af37',
@@ -370,9 +446,7 @@ export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }
                 width: '8px',
                 height: '8px',
                 borderRadius: '50%',
-                backgroundColor: videoStatus === 'playing' ? '#22c55e' : 
-                                 videoStatus === 'loading' ? '#fbbf24' : 
-                                 videoStatus === 'error' ? '#ef4444' : '#d4af37',
+                backgroundColor: isPlaying ? '#22c55e' : videoError ? '#ef4444' : '#d4af37',
                 animation: 'statusPulse 2s ease-in-out infinite'
               }} />
             </div>
@@ -381,9 +455,7 @@ export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }
               fontSize: '13px',
               fontWeight: '500'
             }}>
-              {videoStatus === 'playing' ? 'Playing' : 
-               videoStatus === 'loading' ? 'Loading...' : 
-               videoStatus === 'error' ? 'Retry Available' : 'Ready to Play'}
+              {videoError ? 'Error' : isLoading ? 'Loading...' : isPlaying ? 'Playing' : 'Ready'}
             </div>
           </div>
         </div>
@@ -452,7 +524,7 @@ export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }
             }}
           >
             <SkipForward style={{ width: '24px', height: '24px' }} />
-            Skip Video
+            Enter App
           </button>
           
           <div style={{
@@ -503,10 +575,6 @@ export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }
         @keyframes statusPulse {
           0%, 100% { opacity: 1; transform: scale(1); }
           50% { opacity: 0.6; transform: scale(1.1); }
-        }
-        @keyframes playButtonPulse {
-          0%, 100% { transform: scale(1); }
-          50% { transform: scale(1.05); }
         }
         @keyframes spin {
           0% { transform: rotate(0deg); }
