@@ -1,27 +1,27 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { IntroSection } from './IntroSection';
-import { SkipForward, Play, Volume2, ExternalLink } from 'lucide-react';
+import { SkipForward, Play, Pause, Volume2, VolumeX, RotateCcw } from 'lucide-react';
 
 interface VideoIntroWrapperProps {
   language: 'DE' | 'EN' | 'LA';
 }
 
 /**
- * 🎬 CSP-COMPLIANT YOUTUBE PLAYER - Fixes Content Security Policy Issues
- * Uses the existing YouTube video: https://youtu.be/w7h_xi_omfg
+ * 🎬 REAL HTML5 VIDEO PLAYER - Uses Your AppIntro.mov File With Sound!
+ * Plays your actual video file with guaranteed audio support
  */
 export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }) => {
   const { t } = useLanguage();
   const [showVideo, setShowVideo] = useState(true);
   const [countdown, setCountdown] = useState(45);
-  const [videoStarted, setVideoStarted] = useState(false);
-  const [showPlayButton, setShowPlayButton] = useState(true);
-  const iframeRef = useRef<HTMLIFrameElement>(null);
-  
-  // YouTube video ID from your link
-  const YOUTUBE_VIDEO_ID = 'w7h_xi_omfg';
-  const YOUTUBE_URL = `https://youtu.be/${YOUTUBE_VIDEO_ID}`;
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [isMuted, setIsMuted] = useState(false); // Start unmuted for sound!
+  const [isLoading, setIsLoading] = useState(false);
+  const [videoError, setVideoError] = useState(false);
+  const [showControls, setShowControls] = useState(true);
+  const [progress, setProgress] = useState(0);
+  const videoRef = useRef<HTMLVideoElement>(null);
   
   // Auto-skip timer
   useEffect(() => {
@@ -40,31 +40,105 @@ export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }
     return () => clearInterval(timer);
   }, [showVideo]);
   
-  // Handle play button click - Direct YouTube embed with sound
-  const handlePlayClick = () => {
-    if (!iframeRef.current) return;
+  // Video progress tracking
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
     
-    // CSP-compliant YouTube embed URL with sound enabled
-    const embedUrl = `https://www.youtube.com/embed/${YOUTUBE_VIDEO_ID}?autoplay=1&controls=1&rel=0&modestbranding=1&playsinline=1&fs=1&hl=en`;
+    const updateProgress = () => {
+      if (video.duration) {
+        setProgress((video.currentTime / video.duration) * 100);
+      }
+    };
     
-    // Update iframe source
-    iframeRef.current.src = embedUrl;
+    video.addEventListener('timeupdate', updateProgress);
+    return () => video.removeEventListener('timeupdate', updateProgress);
+  }, []);
+  
+  // Handle play/pause
+  const handlePlayPause = async () => {
+    const video = videoRef.current;
+    if (!video) return;
     
-    setVideoStarted(true);
-    setShowPlayButton(false);
+    setIsLoading(true);
     
-    console.log('🎬 Starting YouTube video with sound:', embedUrl);
+    try {
+      if (isPlaying) {
+        video.pause();
+        setIsPlaying(false);
+      } else {
+        // Ensure video is unmuted for sound
+        video.muted = isMuted;
+        await video.play();
+        setIsPlaying(true);
+        
+        // Hide controls after 3 seconds of playback
+        setTimeout(() => {
+          if (isPlaying) setShowControls(false);
+        }, 3000);
+      }
+    } catch (error) {
+      console.error('Video playback failed:', error);
+      setVideoError(true);
+    } finally {
+      setIsLoading(false);
+    }
   };
   
-  // Open video in new tab as alternative
-  const openVideoInNewTab = () => {
-    window.open(YOUTUBE_URL, '_blank', 'noopener,noreferrer');
-    // Skip to app after opening
-    setTimeout(() => setShowVideo(false), 1000);
+  // Handle mute toggle
+  const handleMuteToggle = () => {
+    const video = videoRef.current;
+    if (!video) return;
+    
+    const newMuted = !isMuted;
+    video.muted = newMuted;
+    setIsMuted(newMuted);
   };
   
+  // Restart video
+  const handleRestart = () => {
+    const video = videoRef.current;
+    if (!video) return;
+    
+    video.currentTime = 0;
+    setProgress(0);
+    if (!isPlaying) {
+      handlePlayPause();
+    }
+  };
+  
+  // Skip to app
   const skipToApp = () => {
     setShowVideo(false);
+  };
+  .
+  
+  // Handle video events
+  const handleVideoLoad = () => {
+    setIsLoading(false);
+    setVideoError(false);
+  };
+  
+  const handleVideoError = () => {
+    setVideoError(true);
+    setIsLoading(false);
+    console.error('Video failed to load - check if AppIntro.mov is uploaded to /public/');
+  };
+  
+  const handleVideoEnded = () => {
+    setIsPlaying(false);
+    setShowControls(true);
+    // Auto-skip to app when video ends
+    setTimeout(() => setShowVideo(false), 2000);
+  };
+  
+  // Show controls on mouse move
+  const handleMouseMove = () => {
+    setShowControls(true);
+    // Hide controls again after 3 seconds
+    setTimeout(() => {
+      if (isPlaying) setShowControls(false);
+    }, 3000);
   };
   
   // When video completes, show original IntroSection
@@ -158,7 +232,7 @@ export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }
         })}
       </div>
       
-      {/* 🎬 CSP-COMPLIANT YOUTUBE PLAYER */}
+      {/* 🎬 REAL HTML5 VIDEO PLAYER */}
       <div style={{
         height: '60vh',
         position: 'relative',
@@ -168,163 +242,250 @@ export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }
         alignItems: 'center',
         padding: '40px'
       }}>
-        <div style={{
-          width: '100%',
-          maxWidth: '900px',
-          aspectRatio: '16/9',
-          borderRadius: '24px',
-          overflow: 'hidden',
-          boxShadow: '0 30px 60px rgba(0, 0, 0, 0.8), 0 0 0 4px rgba(212, 175, 55, 0.5)',
-          border: '4px solid rgba(212, 175, 55, 0.7)',
-          position: 'relative',
-          background: 'linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 50%, #1a1a1a 100%)'
-        }}>
-          
-          {/* YOUTUBE IFRAME - CSP Compliant */}
-          <iframe
-            ref={iframeRef}
-            src="about:blank" // Start with blank to avoid CSP issues
-            style={{
+        <div 
+          style={{
+            width: '100%',
+            maxWidth: '900px',
+            aspectRatio: '16/9',
+            borderRadius: '24px',
+            overflow: 'hidden',
+            boxShadow: '0 30px 60px rgba(0, 0, 0, 0.8), 0 0 0 4px rgba(212, 175, 55, 0.5)',
+            border: '4px solid rgba(212, 175, 55, 0.7)',
+            position: 'relative',
+            background: '#000',
+            cursor: showControls ? 'default' : 'none'
+          }}
+          onMouseMove={handleMouseMove}
+        >
+          {videoError ? (
+            /* ERROR FALLBACK */
+            <div style={{
               width: '100%',
               height: '100%',
-              border: 'none',
-              borderRadius: '20px',
-              opacity: videoStarted ? 1 : 0.2,
-              transition: 'opacity 0.5s ease'
-            }}
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"
-            allowFullScreen
-            title="Macrobius App Trailer"
-            loading="lazy"
-          />
-          
-          {/* PLAY OVERLAY WITH SOUND */}
-          {showPlayButton && (
-            <div style={{
-              position: 'absolute',
-              inset: 0,
+              background: 'linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.8)), url(/MacrobiusBottle.jpg) center/cover',
               display: 'flex',
               flexDirection: 'column',
               alignItems: 'center',
               justifyContent: 'center',
-              background: 'linear-gradient(135deg, rgba(0, 0, 0, 0.8) 0%, rgba(26, 26, 26, 0.9) 50%, rgba(0, 0, 0, 0.8) 100%)',
-              borderRadius: '20px',
-              zIndex: 20
+              color: '#d4af37',
+              textAlign: 'center',
+              padding: '40px'
             }}>
-              {/* PREVIEW IMAGE */}
-              <div style={{
-                position: 'absolute',
-                inset: 0,
-                backgroundImage: 'url(/MacrobiusBottle.jpg)',
-                backgroundSize: 'cover',
-                backgroundPosition: 'center',
-                opacity: 0.3,
-                filter: 'blur(2px)'
-              }} />
-              
-              <div style={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                gap: '30px',
-                zIndex: 25,
-                position: 'relative'
-              }}>
-                {/* MAIN PLAY BUTTON */}
-                <button
-                  onClick={handlePlayClick}
-                  style={{
-                    width: '140px',
-                    height: '140px',
-                    borderRadius: '50%',
-                    background: 'linear-gradient(135deg, rgba(212, 175, 55, 0.95), rgba(212, 175, 55, 0.8))',
-                    border: '4px solid #d4af37',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    cursor: 'pointer',
-                    transition: 'all 0.3s ease',
-                    boxShadow: '0 15px 40px rgba(212, 175, 55, 0.5)',
-                    animation: 'playButtonPulse 2s ease-in-out infinite'
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.transform = 'scale(1.1)';
-                    e.currentTarget.style.boxShadow = '0 20px 50px rgba(212, 175, 55, 0.7)';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.transform = 'scale(1)';
-                    e.currentTarget.style.boxShadow = '0 15px 40px rgba(212, 175, 55, 0.5)';
-                  }}
-                >
-                  <Play style={{ width: '50px', height: '50px', color: '#1a1a1a', marginLeft: '6px' }} />
-                </button>
+              <h2 style={{ fontSize: '2rem', marginBottom: '20px', fontFamily: 'Times New Roman, serif' }}>
+                Video wird geladen...
+              </h2>
+              <p style={{ fontSize: '1rem', marginBottom: '30px', opacity: 0.8 }}>
+                Bitte stellen Sie sicher, dass AppIntro.mov hochgeladen wurde.
+              </p>
+              <button
+                onClick={skipToApp}
+                style={{
+                  padding: '15px 30px',
+                  backgroundColor: 'rgba(212, 175, 55, 0.9)',
+                  border: '2px solid #d4af37',
+                  borderRadius: '25px',
+                  color: '#1a1a1a',
+                  fontSize: '16px',
+                  fontWeight: 'bold',
+                  cursor: 'pointer'
+                }}
+              >
+                Zur App
+              </button>
+            </div>
+          ) : (
+            /* REAL HTML5 VIDEO */
+            <>
+              <video
+                ref={videoRef}
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  objectFit: 'cover',
+                  borderRadius: '20px'
+                }}
+                preload="metadata"
+                onLoadedData={handleVideoLoad}
+                onError={handleVideoError}
+                onEnded={handleVideoEnded}
+                muted={isMuted}
+                playsInline
+              >
+                {/* YOUR ACTUAL VIDEO FILE */}
+                <source src="/AppIntro.mov" type="video/quicktime" />
+                <source src="/AppIntro.mp4" type="video/mp4" />
                 
-                {/* SOUND GUARANTEE */}
+                {/* Fallback message */}
                 <div style={{
                   display: 'flex',
                   alignItems: 'center',
-                  gap: '12px',
-                  padding: '12px 24px',
-                  backgroundColor: 'rgba(34, 197, 94, 0.2)',
-                  border: '2px solid rgba(34, 197, 94, 0.6)',
-                  borderRadius: '25px',
-                  color: '#22c55e',
-                  backdropFilter: 'blur(10px)'
-                }}>
-                  <Volume2 style={{ width: '20px', height: '20px' }} />
-                  <span style={{ fontSize: '16px', fontWeight: 'bold' }}>Mit Ton!</span>
-                </div>
-                
-                {/* INSTRUCTIONS */}
-                <div style={{
+                  justifyContent: 'center',
+                  height: '100%',
                   color: '#d4af37',
-                  fontSize: '20px',
-                  fontWeight: 'bold',
-                  textAlign: 'center',
-                  textShadow: '0 2px 4px rgba(0, 0, 0, 0.8)'
+                  fontSize: '18px'
                 }}>
-                  Klick für Trailer-Start
+                  Ihr Browser unterstützt HTML5-Video nicht.
                 </div>
-                
-                {/* ALTERNATIVE OPTIONS */}
+              </video>
+              
+              {/* VIDEO CONTROLS OVERLAY */}
+              {showControls && (
                 <div style={{
+                  position: 'absolute',
+                  inset: 0,
                   display: 'flex',
-                  gap: '16px',
-                  flexWrap: 'wrap',
-                  justifyContent: 'center'
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  background: isPlaying ? 'rgba(0, 0, 0, 0.3)' : 'rgba(0, 0, 0, 0.7)',
+                  borderRadius: '20px',
+                  transition: 'background 0.3s ease',
+                  zIndex: 20
                 }}>
-                  <button
-                    onClick={openVideoInNewTab}
-                    style={{
-                      padding: '12px 20px',
-                      backgroundColor: 'rgba(66, 153, 225, 0.2)',
-                      border: '2px solid rgba(66, 153, 225, 0.6)',
-                      borderRadius: '25px',
-                      color: '#4299e1',
-                      fontSize: '14px',
-                      fontWeight: '600',
-                      cursor: 'pointer',
-                      transition: 'all 0.3s ease',
+                  <div style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    gap: '20px'
+                  }}>
+                    {/* MAIN PLAY/PAUSE BUTTON */}
+                    <button
+                      onClick={handlePlayPause}
+                      disabled={isLoading}
+                      style={{
+                        width: '120px',
+                        height: '120px',
+                        borderRadius: '50%',
+                        background: 'linear-gradient(135deg, rgba(212, 175, 55, 0.95), rgba(212, 175, 55, 0.8))',
+                        border: '4px solid #d4af37',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        cursor: isLoading ? 'not-allowed' : 'pointer',
+                        transition: 'all 0.3s ease',
+                        boxShadow: '0 15px 40px rgba(212, 175, 55, 0.5)',
+                        opacity: isLoading ? 0.7 : 1
+                      }}
+                      onMouseEnter={(e) => {
+                        if (!isLoading) {
+                          e.currentTarget.style.transform = 'scale(1.1)';
+                          e.currentTarget.style.boxShadow = '0 20px 50px rgba(212, 175, 55, 0.7)';
+                        }
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.transform = 'scale(1)';
+                        e.currentTarget.style.boxShadow = '0 15px 40px rgba(212, 175, 55, 0.5)';
+                      }}
+                    >
+                      {isLoading ? (
+                        <div style={{
+                          width: '40px',
+                          height: '40px',
+                          border: '4px solid #1a1a1a',
+                          borderTop: '4px solid transparent',
+                          borderRadius: '50%',
+                          animation: 'spin 1s linear infinite'
+                        }} />
+                      ) : isPlaying ? (
+                        <Pause style={{ width: '40px', height: '40px', color: '#1a1a1a' }} />
+                      ) : (
+                        <Play style={{ width: '40px', height: '40px', color: '#1a1a1a', marginLeft: '4px' }} />
+                      )}
+                    </button>
+                    
+                    {/* SOUND GUARANTEE INDICATOR */}
+                    <div style={{
                       display: 'flex',
                       alignItems: 'center',
-                      gap: '8px',
+                      gap: '12px',
+                      padding: '12px 24px',
+                      backgroundColor: isMuted ? 'rgba(239, 68, 68, 0.2)' : 'rgba(34, 197, 94, 0.2)',
+                      border: `2px solid ${isMuted ? 'rgba(239, 68, 68, 0.6)' : 'rgba(34, 197, 94, 0.6)'}`,
+                      borderRadius: '25px',
+                      color: isMuted ? '#ef4444' : '#22c55e',
                       backdropFilter: 'blur(10px)'
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.backgroundColor = 'rgba(66, 153, 225, 0.3)';
-                      e.currentTarget.style.borderColor = '#4299e1';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.backgroundColor = 'rgba(66, 153, 225, 0.2)';
-                      e.currentTarget.style.borderColor = 'rgba(66, 153, 225, 0.6)';
-                    }}
-                  >
-                    <ExternalLink style={{ width: '14px', height: '14px' }} />
-                    YouTube öffnen
-                  </button>
+                    }}>
+                      {isMuted ? (
+                        <VolumeX style={{ width: '20px', height: '20px' }} />
+                      ) : (
+                        <Volume2 style={{ width: '20px', height: '20px' }} />
+                      )}
+                      <span style={{ fontSize: '16px', fontWeight: 'bold' }}>
+                        {isMuted ? 'Stumm' : 'Mit Ton!'}
+                      </span>
+                    </div>
+                    
+                    {/* CONTROL BUTTONS */}
+                    <div style={{
+                      display: 'flex',
+                      gap: '12px',
+                      alignItems: 'center'
+                    }}>
+                      <button
+                        onClick={handleMuteToggle}
+                        style={{
+                          padding: '10px 16px',
+                          backgroundColor: 'rgba(212, 175, 55, 0.2)',
+                          border: '2px solid rgba(212, 175, 55, 0.5)',
+                          borderRadius: '20px',
+                          color: '#d4af37',
+                          fontSize: '14px',
+                          fontWeight: '600',
+                          cursor: 'pointer',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '6px',
+                          transition: 'all 0.3s ease'
+                        }}
+                      >
+                        {isMuted ? <VolumeX size={16} /> : <Volume2 size={16} />}
+                        {isMuted ? 'Ton an' : 'Stumm'}
+                      </button>
+                      
+                      <button
+                        onClick={handleRestart}
+                        style={{
+                          padding: '10px 16px',
+                          backgroundColor: 'rgba(212, 175, 55, 0.2)',
+                          border: '2px solid rgba(212, 175, 55, 0.5)',
+                          borderRadius: '20px',
+                          color: '#d4af37',
+                          fontSize: '14px',
+                          fontWeight: '600',
+                          cursor: 'pointer',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '6px',
+                          transition: 'all 0.3s ease'
+                        }}
+                      >
+                        <RotateCcw size={16} />
+                        Neustart
+                      </button>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
+              )}
+              
+              {/* PROGRESS BAR */}
+              {isPlaying && (
+                <div style={{
+                  position: 'absolute',
+                  bottom: '0',
+                  left: '0',
+                  width: '100%',
+                  height: '4px',
+                  backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                  zIndex: 21
+                }}>
+                  <div style={{
+                    width: `${progress}%`,
+                    height: '100%',
+                    backgroundColor: '#d4af37',
+                    transition: 'width 0.2s ease'
+                  }} />
+                </div>
+              )}
+            </>
           )}
           
           {/* STATUS OVERLAY */}
@@ -341,7 +502,9 @@ export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }
             borderRadius: '16px',
             backdropFilter: 'blur(20px)',
             border: '2px solid rgba(212, 175, 55, 0.4)',
-            pointerEvents: 'none'
+            opacity: showControls ? 1 : 0,
+            transition: 'opacity 0.3s ease',
+            pointerEvents: showControls ? 'auto' : 'none'
           }}>
             <div style={{
               color: '#d4af37',
@@ -356,7 +519,7 @@ export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }
                 width: '8px',
                 height: '8px',
                 borderRadius: '50%',
-                backgroundColor: videoStarted ? '#22c55e' : '#d4af37',
+                backgroundColor: isPlaying ? '#22c55e' : videoError ? '#ef4444' : '#d4af37',
                 animation: 'statusPulse 2s ease-in-out infinite'
               }} />
             </div>
@@ -368,14 +531,9 @@ export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }
               alignItems: 'center',
               gap: '8px'
             }}>
-              {videoStarted ? (
-                <>
-                  <Volume2 style={{ width: '12px', height: '12px' }} />
-                  Wiedergabe mit Ton
-                </>
-              ) : (
-                'Bereit zum Abspielen'
-              )}
+              {videoError ? 'Fehler beim Laden' : 
+               isLoading ? 'Wird geladen...' : 
+               isPlaying ? 'Wiedergabe mit Ton' : 'Bereit zum Abspielen'}
             </div>
           </div>
         </div>
@@ -497,9 +655,9 @@ export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }
           0%, 100% { opacity: 1; transform: scale(1); }
           50% { opacity: 0.6; transform: scale(1.1); }
         }
-        @keyframes playButtonPulse {
-          0%, 100% { transform: scale(1); }
-          50% { transform: scale(1.05); }
+        @keyframes spin {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
         }
       `}</style>
     </div>
