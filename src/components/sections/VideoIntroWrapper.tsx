@@ -231,9 +231,9 @@ export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }
         })}
       </div>
       
-      {/* 🎬 REAL HTML5 VIDEO PLAYER - LARGER SIZE */}
+      {/* 🎬 REAL HTML5 VIDEO PLAYER - ONLY VIDEO MADE LARGER */}
       <div style={{
-        height: '55vh',
+        height: '50vh', // ✅ RESTORED to original size
         position: 'relative',
         zIndex: 10,
         display: 'flex',
@@ -244,7 +244,7 @@ export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }
         <div 
           style={{
             width: '100%',
-            maxWidth: '1100px', // 🔍 INCREASED from 900px to 1100px
+            maxWidth: '1100px', // 🔍 KEPT LARGER - only video is bigger
             aspectRatio: '16/9',
             borderRadius: '24px',
             overflow: 'hidden',
@@ -516,7 +516,33 @@ export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }
         </div>
       </div>
       
-      {/* 🏛️ MACROBIUS HISTORICAL TEXT SECTION - BELOW VIDEO */}
+      {/* 🏛️ BIG MACROBIUS TITLE - MOVED HERE BELOW VIDEO */}
+      <div style={{
+        position: 'relative',
+        zIndex: 10,
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: '20px 40px'
+      }}>
+        <h1 style={{
+          fontSize: '5rem',
+          fontWeight: 'bold',
+          background: 'linear-gradient(135deg, #d4af37 0%, #ffd700 25%, #ffed4e 50%, #d4af37 75%, #b8860b 100%)',
+          WebkitBackgroundClip: 'text',
+          WebkitTextFillColor: 'transparent',
+          margin: '0',
+          fontFamily: 'Times New Roman, serif',
+          textAlign: 'center',
+          textShadow: '0 6px 20px rgba(212, 175, 55, 0.5)',
+          letterSpacing: '2px',
+          animation: 'titleGlow 4s ease-in-out infinite alternate'
+        }}>
+          MACROBIUS
+        </h1>
+      </div>
+      
+      {/* 🏛️ MACROBIUS HISTORICAL TEXT SECTION - BELOW TITLE */}
       <div style={{
         position: 'relative',
         zIndex: 10,
@@ -731,9 +757,9 @@ export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }
         </div>
       </div>
       
-      {/* 🎯 ACTION SECTION */}
+      {/* 🎯 ACTION SECTION - RESTORED TO ORIGINAL SIZE */}
       <div style={{
-        height: '25vh',
+        height: '30vh', // ✅ RESTORED to original size
         position: 'relative',
         zIndex: 10,
         display: 'flex',
@@ -742,28 +768,11 @@ export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }
         alignItems: 'center',
         padding: '40px'
       }}>
-        <h1 style={{
-          fontSize: '4rem',
-          fontWeight: 'bold',
-          background: 'linear-gradient(135deg, #d4af37 0%, #ffd700 25%, #ffed4e 50%, #d4af37 75%, #b8860b 100%)',
-          WebkitBackgroundClip: 'text',
-          WebkitTextFillColor: 'transparent',
-          margin: '0 0 30px 0',
-          fontFamily: 'Times New Roman, serif',
-          textAlign: 'center',
-          textShadow: '0 6px 20px rgba(212, 175, 55, 0.5)',
-          letterSpacing: '2px',
-          animation: 'titleGlow 4s ease-in-out infinite alternate'
-        }}>
-          MACROBIUS
-        </h1>
-        
         <div style={{
           display: 'flex',
           gap: '24px',
           alignItems: 'center',
           justifyContent: 'center',
-          marginTop: '20px',
           flexWrap: 'wrap'
         }}>
           <button
