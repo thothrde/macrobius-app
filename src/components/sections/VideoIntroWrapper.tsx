@@ -391,28 +391,6 @@ export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }
                       )}
                     </button>
                     
-                    {/* SOUND GUARANTEE INDICATOR */}
-                    <div style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '12px',
-                      padding: '12px 24px',
-                      backgroundColor: isMuted ? 'rgba(239, 68, 68, 0.2)' : 'rgba(34, 197, 94, 0.2)',
-                      border: `2px solid ${isMuted ? 'rgba(239, 68, 68, 0.6)' : 'rgba(34, 197, 94, 0.6)'}`,
-                      borderRadius: '25px',
-                      color: isMuted ? '#ef4444' : '#22c55e',
-                      backdropFilter: 'blur(10px)'
-                    }}>
-                      {isMuted ? (
-                        <VolumeX style={{ width: '20px', height: '20px' }} />
-                      ) : (
-                        <Volume2 style={{ width: '20px', height: '20px' }} />
-                      )}
-                      <span style={{ fontSize: '16px', fontWeight: 'bold' }}>
-                        {isMuted ? 'Stumm' : 'Mit Ton!'}
-                      </span>
-                    </div>
-                    
                     {/* CONTROL BUTTONS */}
                     <div style={{
                       display: 'flex',
