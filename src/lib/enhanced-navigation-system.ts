@@ -2,6 +2,7 @@
 // ✅ FIXED: Reliable cross-component navigation
 // ✅ ENHANCED: Better event handling and error recovery
 // 🚀 IMPROVED: Support for all navigation scenarios
+// 🔧 BUILD FIX: ES5 compatibility for Map operations
 
 export type NavigationSection = 
   | 'intro' 
@@ -151,15 +152,16 @@ class EnhancedNavigationSystem {
   
   /**
    * 📢 Notify all registered listeners
+   * 🔧 BUILD FIX: Using Map.forEach() for ES5 compatibility
    */
   private notifyListeners(event: NavigationEvent): void {
-    for (const [id, callback] of this.listeners) {
+    this.listeners.forEach((callback, id) => {
       try {
         callback(event);
       } catch (error) {
         console.error(`❌ Listener ${id} failed:`, error);
       }
-    }
+    });
   }
   
   /**
