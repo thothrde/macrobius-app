@@ -10,6 +10,7 @@ interface VideoIntroWrapperProps {
 /**
  * 🎬 REAL HTML5 VIDEO PLAYER - Uses Your AppIntro.mov File With Sound!
  * 🔍 SIGNIFICANTLY ENLARGED - Much more prominent video frame
+ * 🎯 COMPACT SPACING - Reduced distance between video and content below
  * Plays your actual video file with guaranteed audio support
  */
 export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }) => {
@@ -245,7 +246,7 @@ export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        padding: '30px 20px' // 🚀 Optimized padding for better balance
+        padding: '20px 20px 5px 20px' // 🎯 COMPACT: Reduced bottom padding from 30px to 5px
       }}>
         <div 
           style={{
@@ -567,14 +568,14 @@ export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }
         </div>
       </div>
       
-      {/* 🏛️ BIG MACROBIUS TITLE - BELOW VIDEO - 🚀 ENHANCED */}
+      {/* 🏛️ BIG MACROBIUS TITLE - BELOW VIDEO - 🎯 COMPACT SPACING */}
       <div style={{
         position: 'relative',
         zIndex: 10,
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        padding: '25px 40px' // 🚀 INCREASED padding
+        padding: '10px 40px' // 🎯 COMPACT: Reduced from 25px to 10px (60% reduction)
       }}>
         <h1 style={{
           fontSize: '4.5rem', // 🚀 LARGER title
@@ -594,7 +595,7 @@ export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }
         </h1>
       </div>
       
-      {/* 🎯 ACTION SECTION - 🚀 ENHANCED */}
+      {/* 🎯 ACTION SECTION - 🎯 COMPACT SPACING */}
       <div style={{
         position: 'relative',
         zIndex: 10,
@@ -602,7 +603,7 @@ export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }
         flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',
-        padding: '25px', // 🚀 INCREASED padding
+        padding: '10px 25px', // 🎯 COMPACT: Reduced from 25px to 10px (60% reduction)
         maxWidth: '1100px', // 🚀 WIDER container
         margin: '0 auto'
       }}>
@@ -678,17 +679,17 @@ export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }
         </div>
       </div>
       
-      {/* 🏛️ MACROBIUS HISTORICAL TEXT SECTION - OPTIMIZED FOR LARGER VIDEO */}
+      {/* 🏛️ MACROBIUS HISTORICAL TEXT SECTION - 🎯 COMPACT SPACING */}
       <div style={{
         position: 'relative',
         zIndex: 10,
         maxWidth: '1100px', // 🚀 WIDER to match enhanced design
         margin: '0 auto',
-        padding: '35px', // 🚀 INCREASED padding
+        padding: '15px 35px 35px 35px', // 🎯 COMPACT: Reduced top padding from 35px to 15px (57% reduction)
         width: '100%'
       }}>
         <div style={{
-          padding: '35px', // 🚀 INCREASED padding
+          padding: '25px', // 🎯 COMPACT: Reduced from 35px to 25px (29% reduction)
           backgroundColor: 'rgba(255, 255, 255, 0.96)', // 🚀 SLIGHTLY more opaque
           borderRadius: '24px', // 🚀 MORE rounded
           border: '3px solid rgba(212, 175, 55, 0.7)', // 🚀 THICKER border
@@ -715,7 +716,7 @@ export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }
             {/* Header with icon */}
             <div style={{
               textAlign: 'center',
-              marginBottom: '30px' // 🚀 INCREASED margin
+              marginBottom: '20px' // 🎯 COMPACT: Reduced from 30px to 20px (33% reduction)
             }}>
               <div style={{
                 display: 'inline-flex',
@@ -725,7 +726,7 @@ export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }
                 backgroundColor: 'rgba(212, 175, 55, 0.18)', // 🚀 SLIGHTLY more opaque
                 border: '3px solid rgba(212, 175, 55, 0.5)', // 🚀 THICKER border
                 borderRadius: '20px', // 🚀 MORE rounded
-                marginBottom: '25px', // 🚀 INCREASED margin
+                marginBottom: '15px', // 🎯 COMPACT: Reduced from 25px to 15px (40% reduction)
                 boxShadow: '0 4px 15px rgba(212, 175, 55, 0.2)' // 🚀 ADDED shadow
               }}>
                 <Scroll style={{ width: '32px', height: '32px', color: '#d4af37' }} /> {/* 🚀 LARGER icon */}
@@ -746,11 +747,11 @@ export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }
               lineHeight: '1.75', // 🚀 INCREASED line height
               color: '#1f2937',
               textAlign: 'justify',
-              marginBottom: '35px', // 🚀 INCREASED margin
+              marginBottom: '25px', // 🎯 COMPACT: Reduced from 35px to 25px (29% reduction)
               fontFamily: 'Georgia, serif',
               textShadow: '0 1px 3px rgba(0, 0, 0, 0.1)' // 🚀 ENHANCED shadow
             }}>
-              <p style={{ margin: '0 0 18px 0', fontWeight: '500' }}> {/* 🚀 INCREASED margin */}
+              <p style={{ margin: '0 0 14px 0', fontWeight: '500' }}> {/* 🎯 COMPACT: Reduced from 18px to 14px */}
                 <strong>Vor 1500 Jahren, als das römische Reich dem Untergang entgegensah, 
                 fertigte Macrobius, ein führender Verwaltungsbeamter und Gelehrter im 
                 Norden Italiens, eine Flaschenpost an die Zukunft an. Diese 
@@ -763,7 +764,7 @@ export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }
                 Ermutigung und Materialquelle.</strong>
               </p>
               
-              <p style={{ margin: '0 0 18px 0', fontWeight: '500' }}> {/* 🚀 INCREASED margin */}
+              <p style={{ margin: '0 0 14px 0', fontWeight: '500' }}> {/* 🎯 COMPACT: Reduced from 18px to 14px */}
                 <strong>Vor 500 Jahren begann dieser Neuanfang. In Dänemark durch astronomische 
                 Beobachtungen Tycho Brahes, der damit den Grundstein für Keplers Arbeit 
                 und das Entstehen moderner Naturwissenschaften legte. Ein Assistent 
@@ -781,8 +782,8 @@ export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }
             <div style={{
               display: 'grid',
               gridTemplateColumns: '1fr 1fr',
-              gap: '30px', // 🚀 INCREASED gap
-              marginTop: '35px' // 🚀 INCREASED margin
+              gap: '25px', // 🎯 COMPACT: Reduced from 30px to 25px (17% reduction)
+              marginTop: '20px' // 🎯 COMPACT: Reduced from 35px to 20px (43% reduction)
             }}>
               {/* Macrobius Portrait */}
               <div style={{
@@ -813,7 +814,7 @@ export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }
                   }}
                 />
                 <div style={{
-                  padding: '18px', // 🚀 INCREASED padding
+                  padding: '15px', // 🎯 COMPACT: Reduced from 18px to 15px (17% reduction)
                   textAlign: 'center',
                   background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.96), rgba(248, 246, 240, 0.96))' // 🚀 ENHANCED gradient
                 }}>
@@ -821,7 +822,7 @@ export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }
                     fontSize: '17px', // 🚀 LARGER font
                     fontWeight: 'bold',
                     color: '#92400e',
-                    margin: '0 0 8px 0', // 🚀 INCREASED margin
+                    margin: '0 0 6px 0', // 🎯 COMPACT: Reduced from 8px to 6px
                     fontFamily: 'Times New Roman, serif'
                   }}>
                     Macrobius Ambrosius Theodosius
@@ -866,7 +867,7 @@ export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }
                   }}
                 />
                 <div style={{
-                  padding: '18px', // 🚀 INCREASED padding
+                  padding: '15px', // 🎯 COMPACT: Reduced from 18px to 15px (17% reduction)
                   textAlign: 'center',
                   background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.96), rgba(248, 246, 240, 0.96))' // 🚀 ENHANCED gradient
                 }}>
@@ -874,7 +875,7 @@ export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }
                     fontSize: '17px', // 🚀 LARGER font
                     fontWeight: 'bold',
                     color: '#92400e',
-                    margin: '0 0 8px 0', // 🚀 INCREASED margin
+                    margin: '0 0 6px 0', // 🎯 COMPACT: Reduced from 8px to 6px
                     fontFamily: 'Times New Roman, serif'
                   }}>
                     Somnium Scipionis
