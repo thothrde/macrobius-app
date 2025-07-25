@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { IntroSection } from './IntroSection';
-import { SkipForward, Play, Pause, Volume2, VolumeX, RotateCcw } from 'lucide-react';
+import { SkipForward, Play, Pause, Volume2, VolumeX, RotateCcw, Scroll } from 'lucide-react';
 
 interface VideoIntroWrapperProps {
   language: 'DE' | 'EN' | 'LA';
@@ -233,7 +233,7 @@ export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }
       
       {/* 🎬 REAL HTML5 VIDEO PLAYER */}
       <div style={{
-        height: '60vh',
+        height: '50vh',
         position: 'relative',
         zIndex: 10,
         display: 'flex',
@@ -516,9 +516,224 @@ export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }
         </div>
       </div>
       
+      {/* 🏛️ NEW: MACROBIUS HISTORICAL TEXT SECTION - BELOW VIDEO */}
+      <div style={{
+        position: 'relative',
+        zIndex: 10,
+        maxWidth: '1200px',
+        margin: '0 auto',
+        padding: '40px',
+        width: '100%'
+      }}>
+        <div style={{
+          padding: '40px',
+          backgroundColor: 'rgba(255, 255, 255, 0.95)',
+          borderRadius: '24px',
+          border: '3px solid rgba(212, 175, 55, 0.6)',
+          boxShadow: '0 30px 60px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.3)',
+          backdropFilter: 'blur(20px)',
+          position: 'relative',
+          overflow: 'hidden'
+        }}>
+          {/* 🎨 Elegant background pattern */}
+          <div style={{
+            position: 'absolute',
+            inset: 0,
+            background: `
+              radial-gradient(circle at 10% 20%, rgba(212, 175, 55, 0.05), transparent 50%),
+              radial-gradient(circle at 90% 80%, rgba(139, 92, 246, 0.03), transparent 50%),
+              linear-gradient(45deg, transparent 49%, rgba(212, 175, 55, 0.02) 50%, transparent 51%)
+            `,
+            backgroundSize: '100px 100px, 150px 150px, 20px 20px',
+            animation: 'backgroundShift 20s ease-in-out infinite'
+          }} />
+          
+          {/* Content */}
+          <div style={{ position: 'relative', zIndex: 2 }}>
+            {/* Header with icon */}
+            <div style={{
+              textAlign: 'center',
+              marginBottom: '30px'
+            }}>
+              <div style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '16px',
+                padding: '16px 32px',
+                backgroundColor: 'rgba(212, 175, 55, 0.15)',
+                border: '2px solid rgba(212, 175, 55, 0.4)',
+                borderRadius: '20px',
+                marginBottom: '24px'
+              }}>
+                <Scroll style={{ width: '32px', height: '32px', color: '#d4af37' }} />
+                <span style={{
+                  fontSize: '20px',
+                  fontWeight: 'bold',
+                  color: '#92400e',
+                  fontFamily: 'Times New Roman, serif'
+                }}>
+                  Die Geschichte der Flaschenpost
+                </span>
+              </div>
+            </div>
+            
+            {/* Main German text */}
+            <div style={{
+              fontSize: '17px',
+              lineHeight: '1.8',
+              color: '#1f2937',
+              textAlign: 'justify',
+              marginBottom: '40px',
+              fontFamily: 'Georgia, serif',
+              textShadow: '0 1px 2px rgba(0, 0, 0, 0.1)'
+            }}>
+              <p style={{ margin: '0 0 20px 0', fontWeight: '500' }}>
+                <strong>Vor 1500 Jahren, als das römische Reich dem Untergang entgegensah, 
+                fertigte Macrobius, ein führender Verwaltungsbeamter und Gelehrter im 
+                Norden Italiens, eine Flaschenpost an die Zukunft an. Diese 
+                Flaschenpost bestand aus zwei Texten: Einer ungezwungenen Gesprächsrunde 
+                gebildeter Römer und einem Traumkommentar. In beidem versuchte Macrobius 
+                das, was ihm an der untergehenden Zivilisation der Antike wichtig war, 
+                in einer Weise zu verpacken, die die heranziehenden dunklen Jahrhunderte 
+                überstand und zukünftige Leser anregte, den Zivilisationsprozess wieder 
+                in Gang zu setzen mit der Erinnerung an die antike Zivilisation als 
+                Ermutigung und Materialquelle.</strong>
+              </p>
+              
+              <p style={{ margin: '0 0 20px 0', fontWeight: '500' }}>
+                <strong>Vor 500 Jahren begann dieser Neuanfang. In Dänemark durch astronomische 
+                Beobachtungen Tycho Brahes, der damit den Grundstein für Keplers Arbeit 
+                und das Entstehen moderner Naturwissenschaften legte. Ein Assistent 
+                Tychos erinnerte sich an Macrobius Flaschenpost und stellte erstmals 
+                eine zuverlässige und kommentierte Gesamtausgabe zusammen.</strong>
+              </p>
+              
+              <p style={{ margin: '0', fontWeight: '500' }}>
+                <strong>Dieses Buch kam in meine Hände und ich auf die Idee, eine kleine App 
+                für euch zu dieser Geschichte zu basteln.... Viel Spaß!</strong>
+              </p>
+            </div>
+            
+            {/* 🖼️ NEW: Two Macrobius Images Side by Side */}
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: '1fr 1fr',
+              gap: '30px',
+              marginTop: '40px'
+            }}>
+              {/* Macrobius Portrait */}
+              <div style={{
+                borderRadius: '16px',
+                overflow: 'hidden',
+                boxShadow: '0 20px 40px rgba(0, 0, 0, 0.25), 0 0 0 3px rgba(212, 175, 55, 0.4)',
+                border: '2px solid rgba(212, 175, 55, 0.5)',
+                transition: 'all 0.4s ease',
+                backgroundColor: '#ffffff'
+              }}>
+                <img
+                  src="/Macrobius-Portrait.jpg"
+                  alt="Macrobius Portrait - Der Gelehrte des späten römischen Reiches"
+                  style={{
+                    width: '100%',
+                    height: '300px',
+                    objectFit: 'cover',
+                    display: 'block',
+                    transition: 'transform 0.4s ease'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.transform = 'scale(1.05)';
+                    e.currentTarget.parentElement!.style.boxShadow = '0 30px 60px rgba(0, 0, 0, 0.35), 0 0 0 3px rgba(212, 175, 55, 0.6)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = 'scale(1)';
+                    e.currentTarget.parentElement!.style.boxShadow = '0 20px 40px rgba(0, 0, 0, 0.25), 0 0 0 3px rgba(212, 175, 55, 0.4)';
+                  }}
+                />
+                <div style={{
+                  padding: '20px',
+                  textAlign: 'center',
+                  background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(248, 246, 240, 0.95))'
+                }}>
+                  <h3 style={{
+                    fontSize: '18px',
+                    fontWeight: 'bold',
+                    color: '#92400e',
+                    margin: '0 0 8px 0',
+                    fontFamily: 'Times New Roman, serif'
+                  }}>
+                    Macrobius Ambrosius Theodosius
+                  </h3>
+                  <p style={{
+                    fontSize: '14px',
+                    color: '#6b7280',
+                    margin: 0,
+                    fontStyle: 'italic'
+                  }}>
+                    Römischer Gelehrter und Verfasser der Saturnalia
+                  </p>
+                </div>
+              </div>
+              
+              {/* Macrobius Universe */}
+              <div style={{
+                borderRadius: '16px',
+                overflow: 'hidden',
+                boxShadow: '0 20px 40px rgba(0, 0, 0, 0.25), 0 0 0 3px rgba(212, 175, 55, 0.4)',
+                border: '2px solid rgba(212, 175, 55, 0.5)',
+                transition: 'all 0.4s ease',
+                backgroundColor: '#ffffff'
+              }}>
+                <img
+                  src="/Macrobius-universe.jpg"
+                  alt="Macrobius Universum - Kosmologische Darstellung der antiken Welt"
+                  style={{
+                    width: '100%',
+                    height: '300px',
+                    objectFit: 'cover',
+                    display: 'block',
+                    transition: 'transform 0.4s ease'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.transform = 'scale(1.05)';
+                    e.currentTarget.parentElement!.style.boxShadow = '0 30px 60px rgba(0, 0, 0, 0.35), 0 0 0 3px rgba(212, 175, 55, 0.6)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = 'scale(1)';
+                    e.currentTarget.parentElement!.style.boxShadow = '0 20px 40px rgba(0, 0, 0, 0.25), 0 0 0 3px rgba(212, 175, 55, 0.4)';
+                  }}
+                />
+                <div style={{
+                  padding: '20px',
+                  textAlign: 'center',
+                  background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(248, 246, 240, 0.95))'
+                }}>
+                  <h3 style={{
+                    fontSize: '18px',
+                    fontWeight: 'bold',
+                    color: '#92400e',
+                    margin: '0 0 8px 0',
+                    fontFamily: 'Times New Roman, serif'
+                  }}>
+                    Somnium Scipionis
+                  </h3>
+                  <p style={{
+                    fontSize: '14px',
+                    color: '#6b7280',
+                    margin: 0,
+                    fontStyle: 'italic'
+                  }}>
+                    Kommentar zu Ciceros Traum des Scipio
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
       {/* 🎯 ACTION SECTION */}
       <div style={{
-        height: '40vh',
+        height: '30vh',
         position: 'relative',
         zIndex: 10,
         display: 'flex',
@@ -528,7 +743,7 @@ export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }
         padding: '40px'
       }}>
         <h1 style={{
-          fontSize: '5rem',
+          fontSize: '4rem',
           fontWeight: 'bold',
           background: 'linear-gradient(135deg, #d4af37 0%, #ffd700 25%, #ffed4e 50%, #d4af37 75%, #b8860b 100%)',
           WebkitBackgroundClip: 'text',
@@ -623,6 +838,10 @@ export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }
         @keyframes astrolabRotate {
           0% { transform: translate(-50%, -50%) rotate(0deg); }
           100% { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+        @keyframes backgroundShift {
+          0%, 100% { transform: translateX(0) translateY(0); }
+          50% { transform: translateX(10px) translateY(-5px); }
         }
         @keyframes titleGlow {
           0% { text-shadow: 0 6px 20px rgba(212, 175, 55, 0.5); }
