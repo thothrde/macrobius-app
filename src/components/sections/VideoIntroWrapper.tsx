@@ -9,6 +9,7 @@ interface VideoIntroWrapperProps {
 
 /**
  * 🎬 REAL HTML5 VIDEO PLAYER - Uses Your AppIntro.mov File With Sound!
+ * 🔍 SIGNIFICANTLY ENLARGED - Much more prominent video frame
  * Plays your actual video file with guaranteed audio support
  */
 export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }) => {
@@ -236,30 +237,40 @@ export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }
         })}
       </div>
       
-      {/* 🎬 REAL HTML5 VIDEO PLAYER - 🔍 MADE SIGNIFICANTLY LARGER */}
+      {/* 🎬 REAL HTML5 VIDEO PLAYER - 🚀 DRAMATICALLY ENLARGED FOR MAXIMUM PROMINENCE */}
       <div style={{
-        height: '60vh', // 🔍 INCREASED from 50vh to 60vh
+        height: '75vh', // 🚀 SIGNIFICANTLY INCREASED from 60vh to 75vh (25% bigger!)
         position: 'relative',
         zIndex: 10,
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        padding: '50px' // 🔍 INCREASED padding for more prominence
+        padding: '30px 20px' // 🚀 Optimized padding for better balance
       }}>
         <div 
           style={{
             width: '100%',
-            maxWidth: '1400px', // 🔍 SIGNIFICANTLY INCREASED from 1100px to 1400px
+            maxWidth: '1600px', // 🚀 MASSIVELY INCREASED from 1400px to 1600px (200px bigger!)
             aspectRatio: '16/9',
-            borderRadius: '24px',
+            borderRadius: '28px', // 🚀 INCREASED border radius for premium look
             overflow: 'hidden',
-            boxShadow: '0 40px 80px rgba(0, 0, 0, 0.9), 0 0 0 6px rgba(212, 175, 55, 0.6)', // 🔍 ENHANCED shadow
-            border: '6px solid rgba(212, 175, 55, 0.8)', // 🔍 THICKER border
+            boxShadow: '0 50px 100px rgba(0, 0, 0, 0.9), 0 0 0 8px rgba(212, 175, 55, 0.7)', // 🚀 ENHANCED shadow
+            border: '8px solid rgba(212, 175, 55, 0.9)', // 🚀 THICKER, more prominent border
             position: 'relative',
             background: '#000',
-            cursor: showControls ? 'default' : 'none'
+            cursor: showControls ? 'default' : 'none',
+            transform: 'scale(1.02)', // 🚀 SUBTLE scale increase for extra prominence
+            transition: 'all 0.3s ease'
           }}
           onMouseMove={handleMouseMove}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.transform = 'scale(1.03)'; // 🚀 ENHANCED hover effect
+            e.currentTarget.style.boxShadow = '0 60px 120px rgba(0, 0, 0, 0.95), 0 0 0 8px rgba(212, 175, 55, 0.8)';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.transform = 'scale(1.02)';
+            e.currentTarget.style.boxShadow = '0 50px 100px rgba(0, 0, 0, 0.9), 0 0 0 8px rgba(212, 175, 55, 0.7)';
+          }}
         >
           {videoError ? (
             /* ERROR FALLBACK */
@@ -273,25 +284,34 @@ export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }
               justifyContent: 'center',
               color: '#d4af37',
               textAlign: 'center',
-              padding: '40px'
+              padding: '50px' // 🚀 INCREASED padding
             }}>
-              <h2 style={{ fontSize: '2rem', marginBottom: '20px', fontFamily: 'Times New Roman, serif' }}>
+              <h2 style={{ fontSize: '2.5rem', marginBottom: '25px', fontFamily: 'Times New Roman, serif' }}> {/* 🚀 LARGER text */}
                 Video wird geladen...
               </h2>
-              <p style={{ fontSize: '1rem', marginBottom: '30px', opacity: 0.8 }}>
+              <p style={{ fontSize: '1.2rem', marginBottom: '35px', opacity: 0.8 }}> {/* 🚀 LARGER text */}
                 Bitte stellen Sie sicher, dass AppIntro.mov hochgeladen wurde.
               </p>
               <button
                 onClick={skipToApp}
                 style={{
-                  padding: '15px 30px',
+                  padding: '18px 36px', // 🚀 LARGER button
                   backgroundColor: 'rgba(212, 175, 55, 0.9)',
-                  border: '2px solid #d4af37',
-                  borderRadius: '25px',
+                  border: '3px solid #d4af37', // 🚀 THICKER border
+                  borderRadius: '30px', // 🚀 MORE rounded
                   color: '#1a1a1a',
-                  fontSize: '16px',
+                  fontSize: '18px', // 🚀 LARGER font
                   fontWeight: 'bold',
-                  cursor: 'pointer'
+                  cursor: 'pointer',
+                  transition: 'all 0.3s ease'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = 'scale(1.1)';
+                  e.currentTarget.style.backgroundColor = '#d4af37';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = 'scale(1)';
+                  e.currentTarget.style.backgroundColor = 'rgba(212, 175, 55, 0.9)';
                 }}
               >
                 Zur App
@@ -306,7 +326,7 @@ export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }
                   width: '100%',
                   height: '100%',
                   objectFit: 'cover',
-                  borderRadius: '20px'
+                  borderRadius: '24px' // 🚀 INCREASED border radius
                 }}
                 preload="metadata"
                 onLoadedData={handleVideoLoad}
@@ -326,13 +346,13 @@ export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }
                   justifyContent: 'center',
                   height: '100%',
                   color: '#d4af37',
-                  fontSize: '18px'
+                  fontSize: '20px' // 🚀 LARGER font
                 }}>
                   Ihr Browser unterstützt HTML5-Video nicht.
                 </div>
               </video>
               
-              {/* 🔧 FIXED: VIDEO CONTROLS OVERLAY - Only visible when showControls is true */}
+              {/* 🔧 FIXED: VIDEO CONTROLS OVERLAY - 🚀 ENLARGED CONTROLS */}
               {showControls && (
                 <div style={{
                   position: 'absolute',
@@ -341,7 +361,7 @@ export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }
                   alignItems: 'center',
                   justifyContent: 'center',
                   background: isPlaying ? 'rgba(0, 0, 0, 0.3)' : 'rgba(0, 0, 0, 0.7)',
-                  borderRadius: '20px',
+                  borderRadius: '24px', // 🚀 INCREASED border radius
                   transition: 'all 0.3s ease',
                   zIndex: 20
                 }}>
@@ -349,98 +369,120 @@ export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }
                     display: 'flex',
                     flexDirection: 'column',
                     alignItems: 'center',
-                    gap: '20px'
+                    gap: '25px' // 🚀 INCREASED gap
                   }}>
-                    {/* MAIN PLAY/PAUSE BUTTON - 🔍 MADE LARGER */}
+                    {/* MAIN PLAY/PAUSE BUTTON - 🚀 MASSIVELY ENLARGED */}
                     <button
                       onClick={handlePlayPause}
                       disabled={isLoading}
                       style={{
-                        width: '140px', // 🔍 INCREASED from 120px
-                        height: '140px', // 🔍 INCREASED from 120px
+                        width: '180px', // 🚀 SIGNIFICANTLY INCREASED from 140px to 180px
+                        height: '180px', // 🚀 SIGNIFICANTLY INCREASED from 140px to 180px
                         borderRadius: '50%',
                         background: 'linear-gradient(135deg, rgba(212, 175, 55, 0.95), rgba(212, 175, 55, 0.8))',
-                        border: '4px solid #d4af37',
+                        border: '6px solid #d4af37', // 🚀 THICKER border
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
                         cursor: isLoading ? 'not-allowed' : 'pointer',
-                        transition: 'all 0.3s ease',
-                        boxShadow: '0 15px 40px rgba(212, 175, 55, 0.5)',
-                        opacity: isLoading ? 0.7 : 1
+                        transition: 'all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)', // 🚀 ENHANCED easing
+                        boxShadow: '0 20px 50px rgba(212, 175, 55, 0.6)', // 🚀 ENHANCED shadow
+                        opacity: isLoading ? 0.7 : 1,
+                        transform: 'scale(1)', // Base transform
+                        filter: 'drop-shadow(0 4px 12px rgba(212, 175, 55, 0.4))' // 🚀 ADDED drop shadow
                       }}
                       onMouseEnter={(e) => {
                         if (!isLoading) {
-                          e.currentTarget.style.transform = 'scale(1.1)';
-                          e.currentTarget.style.boxShadow = '0 20px 50px rgba(212, 175, 55, 0.7)';
+                          e.currentTarget.style.transform = 'scale(1.15)'; // 🚀 ENHANCED scale
+                          e.currentTarget.style.boxShadow = '0 25px 60px rgba(212, 175, 55, 0.8)'; // 🚀 ENHANCED shadow
+                          e.currentTarget.style.filter = 'drop-shadow(0 6px 16px rgba(212, 175, 55, 0.6))';
                         }
                       }}
                       onMouseLeave={(e) => {
                         e.currentTarget.style.transform = 'scale(1)';
-                        e.currentTarget.style.boxShadow = '0 15px 40px rgba(212, 175, 55, 0.5)';
+                        e.currentTarget.style.boxShadow = '0 20px 50px rgba(212, 175, 55, 0.6)';
+                        e.currentTarget.style.filter = 'drop-shadow(0 4px 12px rgba(212, 175, 55, 0.4))';
                       }}
                     >
                       {isLoading ? (
                         <div style={{
-                          width: '45px', // 🔍 INCREASED size
-                          height: '45px',
-                          border: '4px solid #1a1a1a',
-                          borderTop: '4px solid transparent',
+                          width: '55px', // 🚀 SIGNIFICANTLY INCREASED size
+                          height: '55px',
+                          border: '5px solid #1a1a1a', // 🚀 THICKER border
+                          borderTop: '5px solid transparent',
                           borderRadius: '50%',
                           animation: 'spin 1s linear infinite'
                         }} />
                       ) : isPlaying ? (
-                        <Pause style={{ width: '45px', height: '45px', color: '#1a1a1a' }} /> // 🔍 INCREASED icon size
+                        <Pause style={{ width: '55px', height: '55px', color: '#1a1a1a' }} /> // 🚀 SIGNIFICANTLY INCREASED icon size
                       ) : (
-                        <Play style={{ width: '45px', height: '45px', color: '#1a1a1a', marginLeft: '4px' }} /> // 🔍 INCREASED icon size
+                        <Play style={{ width: '55px', height: '55px', color: '#1a1a1a', marginLeft: '6px' }} /> // 🚀 SIGNIFICANTLY INCREASED icon size
                       )}
                     </button>
                     
-                    {/* CONTROL BUTTONS */}
+                    {/* CONTROL BUTTONS - 🚀 ENLARGED */}
                     <div style={{
                       display: 'flex',
-                      gap: '12px',
+                      gap: '16px', // 🚀 INCREASED gap
                       alignItems: 'center'
                     }}>
                       <button
                         onClick={handleMuteToggle}
                         style={{
-                          padding: '10px 16px',
+                          padding: '12px 20px', // 🚀 LARGER padding
                           backgroundColor: 'rgba(212, 175, 55, 0.2)',
-                          border: '2px solid rgba(212, 175, 55, 0.5)',
-                          borderRadius: '20px',
+                          border: '3px solid rgba(212, 175, 55, 0.5)', // 🚀 THICKER border
+                          borderRadius: '25px', // 🚀 MORE rounded
                           color: '#d4af37',
-                          fontSize: '14px',
+                          fontSize: '16px', // 🚀 LARGER font
                           fontWeight: '600',
                           cursor: 'pointer',
                           display: 'flex',
                           alignItems: 'center',
-                          gap: '6px',
-                          transition: 'all 0.3s ease'
+                          gap: '8px', // 🚀 INCREASED gap
+                          transition: 'all 0.3s ease',
+                          boxShadow: '0 4px 12px rgba(212, 175, 55, 0.3)' // 🚀 ADDED shadow
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.transform = 'scale(1.05)';
+                          e.currentTarget.style.backgroundColor = 'rgba(212, 175, 55, 0.3)';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.transform = 'scale(1)';
+                          e.currentTarget.style.backgroundColor = 'rgba(212, 175, 55, 0.2)';
                         }}
                       >
-                        {isMuted ? <VolumeX size={16} /> : <Volume2 size={16} />}
+                        {isMuted ? <VolumeX size={18} /> : <Volume2 size={18} />} {/* 🚀 LARGER icons */}
                         {isMuted ? 'Ton an' : 'Stumm'}
                       </button>
                       
                       <button
                         onClick={handleRestart}
                         style={{
-                          padding: '10px 16px',
+                          padding: '12px 20px', // 🚀 LARGER padding
                           backgroundColor: 'rgba(212, 175, 55, 0.2)',
-                          border: '2px solid rgba(212, 175, 55, 0.5)',
-                          borderRadius: '20px',
+                          border: '3px solid rgba(212, 175, 55, 0.5)', // 🚀 THICKER border
+                          borderRadius: '25px', // 🚀 MORE rounded
                           color: '#d4af37',
-                          fontSize: '14px',
+                          fontSize: '16px', // 🚀 LARGER font
                           fontWeight: '600',
                           cursor: 'pointer',
                           display: 'flex',
                           alignItems: 'center',
-                          gap: '6px',
-                          transition: 'all 0.3s ease'
+                          gap: '8px', // 🚀 INCREASED gap
+                          transition: 'all 0.3s ease',
+                          boxShadow: '0 4px 12px rgba(212, 175, 55, 0.3)' // 🚀 ADDED shadow
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.transform = 'scale(1.05)';
+                          e.currentTarget.style.backgroundColor = 'rgba(212, 175, 55, 0.3)';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.transform = 'scale(1)';
+                          e.currentTarget.style.backgroundColor = 'rgba(212, 175, 55, 0.2)';
                         }}
                       >
-                        <RotateCcw size={16} />
+                        <RotateCcw size={18} /> {/* 🚀 LARGER icon */}
                         Neustart
                       </button>
                     </div>
@@ -448,70 +490,74 @@ export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }
                 </div>
               )}
               
-              {/* PROGRESS BAR */}
+              {/* PROGRESS BAR - 🚀 ENHANCED */}
               {isPlaying && (
                 <div style={{
                   position: 'absolute',
                   bottom: '0',
                   left: '0',
                   width: '100%',
-                  height: '4px',
-                  backgroundColor: 'rgba(0, 0, 0, 0.5)',
-                  zIndex: 21
+                  height: '6px', // 🚀 THICKER progress bar
+                  backgroundColor: 'rgba(0, 0, 0, 0.6)',
+                  zIndex: 21,
+                  borderRadius: '0 0 24px 24px' // 🚀 ROUNDED bottom corners
                 }}>
                   <div style={{
                     width: `${progress}%`,
                     height: '100%',
-                    backgroundColor: '#d4af37',
-                    transition: 'width 0.2s ease'
+                    background: 'linear-gradient(90deg, #d4af37, #f59e0b)', // 🚀 GRADIENT progress
+                    transition: 'width 0.2s ease',
+                    borderRadius: '0 0 24px 0' // 🚀 ROUNDED corner
                   }} />
                 </div>
               )}
             </>
           )}
           
-          {/* STATUS OVERLAY */}
+          {/* STATUS OVERLAY - 🚀 ENHANCED */}
           <div style={{
             position: 'absolute',
-            bottom: '24px',
-            left: '24px',
-            right: '24px',
+            bottom: '30px', // 🚀 INCREASED spacing
+            left: '30px',
+            right: '30px',
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
-            padding: '16px 24px',
-            backgroundColor: 'rgba(0, 0, 0, 0.85)',
-            borderRadius: '16px',
-            backdropFilter: 'blur(20px)',
-            border: '2px solid rgba(212, 175, 55, 0.4)',
+            padding: '20px 30px', // 🚀 INCREASED padding
+            backgroundColor: 'rgba(0, 0, 0, 0.9)', // 🚀 DARKER background
+            borderRadius: '20px', // 🚀 MORE rounded
+            backdropFilter: 'blur(25px)', // 🚀 ENHANCED blur
+            border: '3px solid rgba(212, 175, 55, 0.5)', // 🚀 THICKER border
             opacity: showControls ? 1 : 0,
             transition: 'opacity 0.3s ease',
-            pointerEvents: showControls ? 'auto' : 'none'
+            pointerEvents: showControls ? 'auto' : 'none',
+            boxShadow: '0 8px 25px rgba(0, 0, 0, 0.4)' // 🚀 ADDED shadow
           }}>
             <div style={{
               color: '#d4af37',
-              fontSize: '16px',
+              fontSize: '18px', // 🚀 LARGER font
               fontWeight: '700',
               display: 'flex',
               alignItems: 'center',
-              gap: '12px'
+              gap: '15px' // 🚀 INCREASED gap
             }}>
               🏛️ Macrobius App Trailer
               <div style={{
-                width: '8px',
-                height: '8px',
+                width: '10px', // 🚀 LARGER indicator
+                height: '10px',
                 borderRadius: '50%',
                 backgroundColor: isPlaying ? '#22c55e' : videoError ? '#ef4444' : '#d4af37',
-                animation: 'statusPulse 2s ease-in-out infinite'
+                animation: 'statusPulse 2s ease-in-out infinite',
+                boxShadow: `0 0 10px ${isPlaying ? '#22c55e' : videoError ? '#ef4444' : '#d4af37'}` // 🚀 ADDED glow
               }} />
             </div>
             <div style={{
               color: 'rgba(212, 175, 55, 0.9)',
-              fontSize: '13px',
+              fontSize: '15px', // 🚀 LARGER font
               fontWeight: '500',
               display: 'flex',
               alignItems: 'center',
-              gap: '8px'
+              gap: '10px' // 🚀 INCREASED gap
             }}>
               {videoError ? 'Fehler beim Laden' : 
                isLoading ? 'Wird geladen...' : 
@@ -521,17 +567,17 @@ export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }
         </div>
       </div>
       
-      {/* 🏛️ BIG MACROBIUS TITLE - BELOW VIDEO */}
+      {/* 🏛️ BIG MACROBIUS TITLE - BELOW VIDEO - 🚀 ENHANCED */}
       <div style={{
         position: 'relative',
         zIndex: 10,
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        padding: '20px 40px'
+        padding: '25px 40px' // 🚀 INCREASED padding
       }}>
         <h1 style={{
-          fontSize: '4rem',
+          fontSize: '4.5rem', // 🚀 LARGER title
           fontWeight: 'bold',
           background: 'linear-gradient(135deg, #d4af37 0%, #ffd700 25%, #ffed4e 50%, #d4af37 75%, #b8860b 100%)',
           WebkitBackgroundClip: 'text',
@@ -539,15 +585,16 @@ export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }
           margin: '0',
           fontFamily: 'Times New Roman, serif',
           textAlign: 'center',
-          textShadow: '0 6px 20px rgba(212, 175, 55, 0.5)',
-          letterSpacing: '2px',
-          animation: 'titleGlow 4s ease-in-out infinite alternate'
+          textShadow: '0 8px 25px rgba(212, 175, 55, 0.6)', // 🚀 ENHANCED shadow
+          letterSpacing: '3px', // 🚀 INCREASED letter spacing
+          animation: 'titleGlow 4s ease-in-out infinite alternate',
+          filter: 'drop-shadow(0 4px 8px rgba(212, 175, 55, 0.3))' // 🚀 ADDED drop shadow
         }}>
           MACROBIUS
         </h1>
       </div>
       
-      {/* 🎯 ACTION SECTION - MOVED ABOVE TEXT, MADE SMALLER */}
+      {/* 🎯 ACTION SECTION - 🚀 ENHANCED */}
       <div style={{
         position: 'relative',
         zIndex: 10,
@@ -555,13 +602,13 @@ export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }
         flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',
-        padding: '20px',
-        maxWidth: '1000px',
+        padding: '25px', // 🚀 INCREASED padding
+        maxWidth: '1100px', // 🚀 WIDER container
         margin: '0 auto'
       }}>
         <div style={{
           display: 'flex',
-          gap: '20px',
+          gap: '25px', // 🚀 INCREASED gap
           alignItems: 'center',
           justifyContent: 'center',
           flexWrap: 'wrap'
@@ -569,89 +616,97 @@ export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }
           <button
             onClick={skipToApp}
             style={{
-              padding: '16px 32px',
+              padding: '18px 36px', // 🚀 LARGER padding
               backgroundColor: 'rgba(212, 175, 55, 0.95)',
-              border: '3px solid #d4af37',
-              borderRadius: '60px',
+              border: '4px solid #d4af37', // 🚀 THICKER border
+              borderRadius: '70px', // 🚀 MORE rounded
               color: '#1a1a1a',
-              fontSize: '16px',
+              fontSize: '18px', // 🚀 LARGER font
               fontWeight: 'bold',
               cursor: 'pointer',
-              transition: 'all 0.4s ease',
+              transition: 'all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)', // 🚀 ENHANCED easing
               display: 'flex',
               alignItems: 'center',
-              gap: '12px',
-              boxShadow: '0 8px 20px rgba(212, 175, 55, 0.6)',
+              gap: '15px', // 🚀 INCREASED gap
+              boxShadow: '0 10px 25px rgba(212, 175, 55, 0.7)', // 🚀 ENHANCED shadow
               textTransform: 'uppercase',
-              letterSpacing: '1px'
+              letterSpacing: '1.5px', // 🚀 INCREASED letter spacing
+              transform: 'scale(1)', // Base transform
+              filter: 'drop-shadow(0 4px 8px rgba(212, 175, 55, 0.4))' // 🚀 ADDED drop shadow
             }}
             onMouseEnter={(e) => {
               e.currentTarget.style.backgroundColor = '#d4af37';
-              e.currentTarget.style.transform = 'scale(1.05) translateY(-2px)';
+              e.currentTarget.style.transform = 'scale(1.08) translateY(-3px)'; // 🚀 ENHANCED hover
+              e.currentTarget.style.boxShadow = '0 15px 35px rgba(212, 175, 55, 0.8)';
+              e.currentTarget.style.filter = 'drop-shadow(0 6px 12px rgba(212, 175, 55, 0.6))';
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.backgroundColor = 'rgba(212, 175, 55, 0.95)';
               e.currentTarget.style.transform = 'scale(1) translateY(0)';
+              e.currentTarget.style.boxShadow = '0 10px 25px rgba(212, 175, 55, 0.7)';
+              e.currentTarget.style.filter = 'drop-shadow(0 4px 8px rgba(212, 175, 55, 0.4))';
             }}
           >
-            <SkipForward style={{ width: '20px', height: '20px' }} />
+            <SkipForward style={{ width: '22px', height: '22px' }} /> {/* 🚀 LARGER icon */}
             App Betreten
           </button>
           
           <div style={{
-            padding: '12px 20px',
-            backgroundColor: 'rgba(0, 0, 0, 0.8)',
-            border: '2px solid rgba(212, 175, 55, 0.5)',
-            borderRadius: '40px',
+            padding: '14px 24px', // 🚀 LARGER padding
+            backgroundColor: 'rgba(0, 0, 0, 0.85)', // 🚀 DARKER background
+            border: '3px solid rgba(212, 175, 55, 0.6)', // 🚀 THICKER border
+            borderRadius: '50px', // 🚀 MORE rounded
             color: '#d4af37',
-            fontSize: '14px',
+            fontSize: '16px', // 🚀 LARGER font
             fontWeight: '600',
-            backdropFilter: 'blur(15px)',
+            backdropFilter: 'blur(20px)', // 🚀 ENHANCED blur
             display: 'flex',
             alignItems: 'center',
-            gap: '10px'
+            gap: '12px', // 🚀 INCREASED gap
+            boxShadow: '0 6px 20px rgba(0, 0, 0, 0.4)' // 🚀 ADDED shadow
           }}>
             <div style={{
-              width: '5px',
-              height: '5px',
+              width: '6px', // 🚀 LARGER indicator
+              height: '6px',
               borderRadius: '50%',
               backgroundColor: '#d4af37',
-              animation: 'statusPulse 1.5s ease-in-out infinite'
+              animation: 'statusPulse 1.5s ease-in-out infinite',
+              boxShadow: '0 0 8px #d4af37' // 🚀 ADDED glow
             }} />
             Auto-Start: {countdown}s
           </div>
         </div>
       </div>
       
-      {/* 🏛️ MACROBIUS HISTORICAL TEXT SECTION - MADE SMALLER */}
+      {/* 🏛️ MACROBIUS HISTORICAL TEXT SECTION - OPTIMIZED FOR LARGER VIDEO */}
       <div style={{
         position: 'relative',
         zIndex: 10,
-        maxWidth: '1000px',
+        maxWidth: '1100px', // 🚀 WIDER to match enhanced design
         margin: '0 auto',
-        padding: '30px',
+        padding: '35px', // 🚀 INCREASED padding
         width: '100%'
       }}>
         <div style={{
-          padding: '30px',
-          backgroundColor: 'rgba(255, 255, 255, 0.95)',
-          borderRadius: '20px',
-          border: '2px solid rgba(212, 175, 55, 0.6)',
-          boxShadow: '0 20px 40px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.3)',
-          backdropFilter: 'blur(20px)',
+          padding: '35px', // 🚀 INCREASED padding
+          backgroundColor: 'rgba(255, 255, 255, 0.96)', // 🚀 SLIGHTLY more opaque
+          borderRadius: '24px', // 🚀 MORE rounded
+          border: '3px solid rgba(212, 175, 55, 0.7)', // 🚀 THICKER border
+          boxShadow: '0 25px 50px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.4)', // 🚀 ENHANCED shadow
+          backdropFilter: 'blur(25px)', // 🚀 ENHANCED blur
           position: 'relative',
           overflow: 'hidden'
         }}>
-          {/* 🎨 Elegant background pattern */}
+          {/* 🎨 Enhanced background pattern */}
           <div style={{
             position: 'absolute',
             inset: 0,
             background: `
-              radial-gradient(circle at 10% 20%, rgba(212, 175, 55, 0.05), transparent 50%),
-              radial-gradient(circle at 90% 80%, rgba(139, 92, 246, 0.03), transparent 50%),
-              linear-gradient(45deg, transparent 49%, rgba(212, 175, 55, 0.02) 50%, transparent 51%)
+              radial-gradient(circle at 10% 20%, rgba(212, 175, 55, 0.06), transparent 50%),
+              radial-gradient(circle at 90% 80%, rgba(139, 92, 246, 0.04), transparent 50%),
+              linear-gradient(45deg, transparent 49%, rgba(212, 175, 55, 0.03) 50%, transparent 51%)
             `,
-            backgroundSize: '100px 100px, 150px 150px, 20px 20px',
+            backgroundSize: '120px 120px, 180px 180px, 25px 25px', // 🚀 LARGER patterns
             animation: 'backgroundShift 20s ease-in-out infinite'
           }} />
           
@@ -660,21 +715,22 @@ export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }
             {/* Header with icon */}
             <div style={{
               textAlign: 'center',
-              marginBottom: '25px'
+              marginBottom: '30px' // 🚀 INCREASED margin
             }}>
               <div style={{
                 display: 'inline-flex',
                 alignItems: 'center',
-                gap: '12px',
-                padding: '12px 24px',
-                backgroundColor: 'rgba(212, 175, 55, 0.15)',
-                border: '2px solid rgba(212, 175, 55, 0.4)',
-                borderRadius: '16px',
-                marginBottom: '20px'
+                gap: '15px', // 🚀 INCREASED gap
+                padding: '15px 30px', // 🚀 LARGER padding
+                backgroundColor: 'rgba(212, 175, 55, 0.18)', // 🚀 SLIGHTLY more opaque
+                border: '3px solid rgba(212, 175, 55, 0.5)', // 🚀 THICKER border
+                borderRadius: '20px', // 🚀 MORE rounded
+                marginBottom: '25px', // 🚀 INCREASED margin
+                boxShadow: '0 4px 15px rgba(212, 175, 55, 0.2)' // 🚀 ADDED shadow
               }}>
-                <Scroll style={{ width: '28px', height: '28px', color: '#d4af37' }} />
+                <Scroll style={{ width: '32px', height: '32px', color: '#d4af37' }} /> {/* 🚀 LARGER icon */}
                 <span style={{
-                  fontSize: '18px',
+                  fontSize: '20px', // 🚀 LARGER font
                   fontWeight: 'bold',
                   color: '#92400e',
                   fontFamily: 'Times New Roman, serif'
@@ -684,17 +740,17 @@ export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }
               </div>
             </div>
             
-            {/* Main German text */}
+            {/* Main German text - 🚀 ENHANCED */}
             <div style={{
-              fontSize: '15px',
-              lineHeight: '1.7',
+              fontSize: '16px', // 🚀 LARGER font
+              lineHeight: '1.75', // 🚀 INCREASED line height
               color: '#1f2937',
               textAlign: 'justify',
-              marginBottom: '30px',
+              marginBottom: '35px', // 🚀 INCREASED margin
               fontFamily: 'Georgia, serif',
-              textShadow: '0 1px 2px rgba(0, 0, 0, 0.1)'
+              textShadow: '0 1px 3px rgba(0, 0, 0, 0.1)' // 🚀 ENHANCED shadow
             }}>
-              <p style={{ margin: '0 0 15px 0', fontWeight: '500' }}>
+              <p style={{ margin: '0 0 18px 0', fontWeight: '500' }}> {/* 🚀 INCREASED margin */}
                 <strong>Vor 1500 Jahren, als das römische Reich dem Untergang entgegensah, 
                 fertigte Macrobius, ein führender Verwaltungsbeamter und Gelehrter im 
                 Norden Italiens, eine Flaschenpost an die Zukunft an. Diese 
@@ -707,7 +763,7 @@ export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }
                 Ermutigung und Materialquelle.</strong>
               </p>
               
-              <p style={{ margin: '0 0 15px 0', fontWeight: '500' }}>
+              <p style={{ margin: '0 0 18px 0', fontWeight: '500' }}> {/* 🚀 INCREASED margin */}
                 <strong>Vor 500 Jahren begann dieser Neuanfang. In Dänemark durch astronomische 
                 Beobachtungen Tycho Brahes, der damit den Grundstein für Keplers Arbeit 
                 und das Entstehen moderner Naturwissenschaften legte. Ein Assistent 
@@ -721,19 +777,19 @@ export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }
               </p>
             </div>
             
-            {/* 🖼️ Two Macrobius Images Side by Side - SMALLER */}
+            {/* 🖼️ Two Macrobius Images Side by Side - ENHANCED */}
             <div style={{
               display: 'grid',
               gridTemplateColumns: '1fr 1fr',
-              gap: '25px',
-              marginTop: '30px'
+              gap: '30px', // 🚀 INCREASED gap
+              marginTop: '35px' // 🚀 INCREASED margin
             }}>
               {/* Macrobius Portrait */}
               <div style={{
-                borderRadius: '12px',
+                borderRadius: '16px', // 🚀 MORE rounded
                 overflow: 'hidden',
-                boxShadow: '0 15px 30px rgba(0, 0, 0, 0.2), 0 0 0 2px rgba(212, 175, 55, 0.4)',
-                border: '2px solid rgba(212, 175, 55, 0.5)',
+                boxShadow: '0 18px 35px rgba(0, 0, 0, 0.25), 0 0 0 3px rgba(212, 175, 55, 0.5)', // 🚀 ENHANCED shadow
+                border: '3px solid rgba(212, 175, 55, 0.6)', // 🚀 THICKER border
                 transition: 'all 0.4s ease',
                 backgroundColor: '#ffffff'
               }}>
@@ -742,36 +798,36 @@ export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }
                   alt="Macrobius Portrait - Der Gelehrte des späten römischen Reiches"
                   style={{
                     width: '100%',
-                    height: '250px',
+                    height: '270px', // 🚀 TALLER image
                     objectFit: 'cover',
                     display: 'block',
                     transition: 'transform 0.4s ease'
                   }}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.transform = 'scale(1.03)';
-                    e.currentTarget.parentElement!.style.boxShadow = '0 20px 40px rgba(0, 0, 0, 0.3), 0 0 0 2px rgba(212, 175, 55, 0.6)';
+                    e.currentTarget.style.transform = 'scale(1.04)'; // 🚀 ENHANCED scale
+                    e.currentTarget.parentElement!.style.boxShadow = '0 25px 45px rgba(0, 0, 0, 0.35), 0 0 0 3px rgba(212, 175, 55, 0.7)';
                   }}
                   onMouseLeave={(e) => {
                     e.currentTarget.style.transform = 'scale(1)';
-                    e.currentTarget.parentElement!.style.boxShadow = '0 15px 30px rgba(0, 0, 0, 0.2), 0 0 0 2px rgba(212, 175, 55, 0.4)';
+                    e.currentTarget.parentElement!.style.boxShadow = '0 18px 35px rgba(0, 0, 0, 0.25), 0 0 0 3px rgba(212, 175, 55, 0.5)';
                   }}
                 />
                 <div style={{
-                  padding: '15px',
+                  padding: '18px', // 🚀 INCREASED padding
                   textAlign: 'center',
-                  background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(248, 246, 240, 0.95))'
+                  background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.96), rgba(248, 246, 240, 0.96))' // 🚀 ENHANCED gradient
                 }}>
                   <h3 style={{
-                    fontSize: '16px',
+                    fontSize: '17px', // 🚀 LARGER font
                     fontWeight: 'bold',
                     color: '#92400e',
-                    margin: '0 0 6px 0',
+                    margin: '0 0 8px 0', // 🚀 INCREASED margin
                     fontFamily: 'Times New Roman, serif'
                   }}>
                     Macrobius Ambrosius Theodosius
                   </h3>
                   <p style={{
-                    fontSize: '12px',
+                    fontSize: '13px', // 🚀 LARGER font
                     color: '#6b7280',
                     margin: 0,
                     fontStyle: 'italic'
@@ -783,10 +839,10 @@ export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }
               
               {/* Macrobius Universe */}
               <div style={{
-                borderRadius: '12px',
+                borderRadius: '16px', // 🚀 MORE rounded
                 overflow: 'hidden',
-                boxShadow: '0 15px 30px rgba(0, 0, 0, 0.2), 0 0 0 2px rgba(212, 175, 55, 0.4)',
-                border: '2px solid rgba(212, 175, 55, 0.5)',
+                boxShadow: '0 18px 35px rgba(0, 0, 0, 0.25), 0 0 0 3px rgba(212, 175, 55, 0.5)', // 🚀 ENHANCED shadow
+                border: '3px solid rgba(212, 175, 55, 0.6)', // 🚀 THICKER border
                 transition: 'all 0.4s ease',
                 backgroundColor: '#ffffff'
               }}>
@@ -795,36 +851,36 @@ export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }
                   alt="Macrobius Universum - Kosmologische Darstellung der antiken Welt"
                   style={{
                     width: '100%',
-                    height: '250px',
+                    height: '270px', // 🚀 TALLER image
                     objectFit: 'cover',
                     display: 'block',
                     transition: 'transform 0.4s ease'
                   }}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.transform = 'scale(1.03)';
-                    e.currentTarget.parentElement!.style.boxShadow = '0 20px 40px rgba(0, 0, 0, 0.3), 0 0 0 2px rgba(212, 175, 55, 0.6)';
+                    e.currentTarget.style.transform = 'scale(1.04)'; // 🚀 ENHANCED scale
+                    e.currentTarget.parentElement!.style.boxShadow = '0 25px 45px rgba(0, 0, 0, 0.35), 0 0 0 3px rgba(212, 175, 55, 0.7)';
                   }}
                   onMouseLeave={(e) => {
                     e.currentTarget.style.transform = 'scale(1)';
-                    e.currentTarget.parentElement!.style.boxShadow = '0 15px 30px rgba(0, 0, 0, 0.2), 0 0 0 2px rgba(212, 175, 55, 0.4)';
+                    e.currentTarget.parentElement!.style.boxShadow = '0 18px 35px rgba(0, 0, 0, 0.25), 0 0 0 3px rgba(212, 175, 55, 0.5)';
                   }}
                 />
                 <div style={{
-                  padding: '15px',
+                  padding: '18px', // 🚀 INCREASED padding
                   textAlign: 'center',
-                  background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(248, 246, 240, 0.95))'
+                  background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.96), rgba(248, 246, 240, 0.96))' // 🚀 ENHANCED gradient
                 }}>
                   <h3 style={{
-                    fontSize: '16px',
+                    fontSize: '17px', // 🚀 LARGER font
                     fontWeight: 'bold',
                     color: '#92400e',
-                    margin: '0 0 6px 0',
+                    margin: '0 0 8px 0', // 🚀 INCREASED margin
                     fontFamily: 'Times New Roman, serif'
                   }}>
                     Somnium Scipionis
                   </h3>
                   <p style={{
-                    fontSize: '12px',
+                    fontSize: '13px', // 🚀 LARGER font
                     color: '#6b7280',
                     margin: 0,
                     fontStyle: 'italic'
@@ -856,15 +912,15 @@ export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }
         }
         @keyframes backgroundShift {
           0%, 100% { transform: translateX(0) translateY(0); }
-          50% { transform: translateX(10px) translateY(-5px); }
+          50% { transform: translateX(12px) translateY(-8px); }
         }
         @keyframes titleGlow {
-          0% { text-shadow: 0 6px 20px rgba(212, 175, 55, 0.5); }
-          100% { text-shadow: 0 6px 30px rgba(212, 175, 55, 0.8), 0 0 40px rgba(212, 175, 55, 0.3); }
+          0% { text-shadow: 0 8px 25px rgba(212, 175, 55, 0.6); }
+          100% { text-shadow: 0 12px 35px rgba(212, 175, 55, 0.9), 0 0 50px rgba(212, 175, 55, 0.4); }
         }
         @keyframes statusPulse {
           0%, 100% { opacity: 1; transform: scale(1); }
-          50% { opacity: 0.6; transform: scale(1.1); }
+          50% { opacity: 0.6; transform: scale(1.15); }
         }
         @keyframes spin {
           0% { transform: rotate(0deg); }
