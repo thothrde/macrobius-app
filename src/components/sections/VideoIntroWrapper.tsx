@@ -66,16 +66,15 @@ export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }
       if (isPlaying) {
         video.pause();
         setIsPlaying(false);
+        setShowControls(true); // 🔧 FIXED: Show controls when paused
       } else {
         // Ensure video is unmuted for sound
         video.muted = isMuted;
         await video.play();
         setIsPlaying(true);
         
-        // Hide controls after 3 seconds of playback
-        setTimeout(() => {
-          if (isPlaying) setShowControls(false);
-        }, 3000);
+        // 🔧 FIXED: Hide controls IMMEDIATELY when video starts playing
+        setShowControls(false);
       }
     } catch (error) {
       console.error('Video playback failed:', error);
@@ -131,13 +130,19 @@ export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }
     setTimeout(() => setShowVideo(false), 2000);
   };
   
-  // Show controls on mouse move
+  // 🔧 FIXED: Show controls on mouse move only when paused
   const handleMouseMove = () => {
-    setShowControls(true);
-    // Hide controls again after 3 seconds
-    setTimeout(() => {
-      if (isPlaying) setShowControls(false);
-    }, 3000);
+    if (!isPlaying) {
+      setShowControls(true);
+    }
+    // Only temporarily show controls if video is playing
+    if (isPlaying) {
+      setShowControls(true);
+      // Hide controls again after 2 seconds
+      setTimeout(() => {
+        if (isPlaying) setShowControls(false);
+      }, 2000);
+    }
   };
   
   // When video completes, show original IntroSection
@@ -327,7 +332,7 @@ export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }
                 </div>
               </video>
               
-              {/* VIDEO CONTROLS OVERLAY */}
+              {/* 🔧 FIXED: VIDEO CONTROLS OVERLAY - Only visible when showControls is true */}
               {showControls && (
                 <div style={{
                   position: 'absolute',
@@ -337,7 +342,7 @@ export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }
                   justifyContent: 'center',
                   background: isPlaying ? 'rgba(0, 0, 0, 0.3)' : 'rgba(0, 0, 0, 0.7)',
                   borderRadius: '20px',
-                  transition: 'background 0.3s ease',
+                  transition: 'all 0.3s ease',
                   zIndex: 20
                 }}>
                   <div style={{
