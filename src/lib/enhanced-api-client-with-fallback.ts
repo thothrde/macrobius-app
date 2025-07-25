@@ -3,6 +3,7 @@
 // ✅ RESOLVED: CORS proxy configuration + Unified RAG port (8080)
 // ✅ FIXED: Connection status handling + Better error messages
 // ✅ ENHANCED: Graceful fallback mechanisms for production deployment
+// 🚀 IMPROVED: Better Oracle Cloud connectivity with enhanced error recovery
 
 import { fallbackApiClient } from './fallback-api-client';
 
@@ -31,6 +32,8 @@ interface PerformanceMetrics {
   httpFallbacks: number;
   corsErrors: number;
   proxyAttempts: number;
+  successfulConnections: number;
+  timeouts: number;
 }
 
 class ApiError extends Error {
@@ -60,21 +63,24 @@ export class EnhancedMacrobiusApiClient {
   private preferHTTPS: boolean;
   private corsIssues: boolean;
   private lastConnectionTest: number;
-  private connectionStatus: 'connected' | 'offline' | 'checking' | 'cors_error';
+  private connectionStatus: 'connected' | 'offline' | 'checking' | 'cors_error' | 'timeout';
+  private lastSuccessfulEndpoint: string | null;
+  private connectionAttempts: number;
 
   constructor() {
-    // 🔧 CRITICAL FIX: Enhanced URL configuration with proxy support
-    this.httpsBaseURL = process.env.NEXT_PUBLIC_HTTPS_API_URL || 'https://152.70.184.232:8080';
-    this.httpBaseURL = process.env.NEXT_PUBLIC_API_URL || 'http://152.70.184.232:8080';
+    // 🔧 ENHANCED: Oracle Cloud URL configuration with improved fallback strategy
+    this.httpsBaseURL = 'https://152.70.184.232:8080';
+    this.httpBaseURL = 'http://152.70.184.232:8080';
     this.proxyBaseURL = '/api/oracle';  // Next.js proxy to bypass CORS
     
     // 🔧 SMART URL SELECTION: Use proxy for production, direct for development
     const isProduction = typeof window !== 'undefined' && window.location.hostname !== 'localhost';
     this.preferHTTPS = typeof window !== 'undefined' && window.location.protocol === 'https:';
     
-    // Priority: Proxy (production) > HTTPS > HTTP
-    this.baseURL = isProduction ? this.proxyBaseURL : 
-                   this.preferHTTPS ? this.httpsBaseURL : this.httpBaseURL;
+    // Priority: Direct HTTPS > Direct HTTP > Proxy (if needed)
+    this.baseURL = this.preferHTTPS ? this.httpsBaseURL : this.httpBaseURL;
+    this.lastSuccessfulEndpoint = null;
+    this.connectionAttempts = 0;
     
     this.cache = new Map();
     this.retryAttempts = 3;
@@ -93,7 +99,9 @@ export class EnhancedMacrobiusApiClient {
       httpsAttempts: 0,
       httpFallbacks: 0,
       corsErrors: 0,
-      proxyAttempts: 0
+      proxyAttempts: 0,
+      successfulConnections: 0,
+      timeouts: 0
     };
 
     // Listen for online/offline events
@@ -110,100 +118,144 @@ export class EnhancedMacrobiusApiClient {
       });
     }
 
-    // Initial connection test
-    this.testConnection();
+    // Initial connection test with delay
+    setTimeout(() => this.testConnection(), 1000);
   }
 
   /**
-   * 🔧 ENHANCED CONNECTION TESTING with proxy support
+   * 🔧 SIGNIFICANTLY ENHANCED CONNECTION TESTING with better error handling
    */
   private async testConnection(): Promise<void> {
     const now = Date.now();
-    if (now - this.lastConnectionTest < 30000) return;
+    if (now - this.lastConnectionTest < 20000) return; // Test every 20 seconds max
     
     this.lastConnectionTest = now;
     this.connectionStatus = 'checking';
+    this.connectionAttempts++;
     
-    console.log('🔍 Testing Oracle Cloud connection with enhanced methods...', {
-      proxy: this.proxyBaseURL,
-      https: this.httpsBaseURL,
-      http: this.httpBaseURL
+    console.log(`🔍 Oracle Cloud connection test #${this.connectionAttempts} starting...`, {
+      lastSuccessful: this.lastSuccessfulEndpoint,
+      preferHTTPS: this.preferHTTPS,
+      isOnline: this.isOnline
     });
     
-    // 🔧 PRIORITY 1: Try Next.js proxy first (best for production)
-    try {
-      this.metrics.proxyAttempts++;
-      const response = await fetch(`${this.proxyBaseURL}/health`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-Client-Version': '2.1-ENHANCED'
-        },
-        signal: AbortSignal.timeout(8000)
-      });
+    // 🔧 ENHANCED: Prioritized endpoint testing with better timeout handling
+    const endpoints = [
+      // Priority 1: Last successful endpoint (if any)
+      ...(this.lastSuccessfulEndpoint ? [this.lastSuccessfulEndpoint] : []),
       
-      if (response.ok) {
-        this.baseURL = this.proxyBaseURL;
-        this.connectionStatus = 'connected';
-        this.corsIssues = false;
-        console.log('✅ Oracle Cloud connected via Next.js proxy');
-        return;
-      }
-    } catch (error) {
-      console.log('⚠️ Proxy connection failed, trying direct HTTPS...', error);
-    }
+      // Priority 2: HTTPS endpoints (more secure)
+      `${this.httpsBaseURL}/api/health`,
+      `${this.httpsBaseURL}/api/rag/status`,
+      `${this.httpsBaseURL}/api/passages/count`,
+      
+      // Priority 3: HTTP fallbacks
+      `${this.httpBaseURL}/api/health`,
+      `${this.httpBaseURL}/api/rag/status`,
+      `${this.httpBaseURL}/api/passages/count`,
+      
+      // Priority 4: Proxy endpoints (if needed)
+      `${this.proxyBaseURL}/health`,
+      `${this.proxyBaseURL}/rag/status`
+    ].filter((url, index, arr) => arr.indexOf(url) === index); // Remove duplicates
     
-    // 🔧 PRIORITY 2: Try HTTPS direct
-    if (this.preferHTTPS) {
+    let successfulEndpoint: string | null = null;
+    let lastError: Error | null = null;
+    
+    for (const endpoint of endpoints) {
       try {
-        this.metrics.httpsAttempts++;
-        const response = await fetch(`${this.httpsBaseURL}/api/health`, {
+        console.log(`🔍 Testing Oracle Cloud endpoint: ${endpoint}`);
+        
+        // Update metrics based on endpoint type
+        if (endpoint.includes('https://')) this.metrics.httpsAttempts++;
+        else if (endpoint.includes('http://')) this.metrics.httpFallbacks++;
+        else this.metrics.proxyAttempts++;
+        
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => {
+          controller.abort();
+          this.metrics.timeouts++;
+        }, 12000); // 12 second timeout
+        
+        const response = await fetch(endpoint, {
           method: 'GET',
-          mode: 'cors',
-          credentials: 'omit',
-          signal: AbortSignal.timeout(8000)
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'X-Client-Version': '3.0-ENHANCED',
+            'X-Test-Attempt': this.connectionAttempts.toString(),
+            'Cache-Control': 'no-cache, no-store, must-revalidate',
+            'Pragma': 'no-cache',
+            'Expires': '0'
+          },
+          signal: controller.signal,
+          mode: endpoint.startsWith('/api/') ? 'same-origin' : 'cors',
+          credentials: 'omit'
         });
         
+        clearTimeout(timeoutId);
+        
         if (response.ok) {
-          this.baseURL = this.httpsBaseURL;
+          const data = await response.json();
+          console.log(`✅ Oracle Cloud connection successful via ${endpoint}:`, data);
+          
+          successfulEndpoint = endpoint;
+          this.lastSuccessfulEndpoint = endpoint;
+          this.baseURL = endpoint.replace(/\/api\/.*$/, ''); // Extract base URL
           this.connectionStatus = 'connected';
           this.corsIssues = false;
-          console.log('✅ Oracle Cloud connected via HTTPS');
+          this.metrics.successfulConnections++;
+          
+          console.log(`🎯 Oracle Cloud connected! Base URL set to: ${this.baseURL}`);
           return;
+        } else {
+          console.warn(`⚠️ Endpoint ${endpoint} returned status: ${response.status} ${response.statusText}`);
         }
+        
       } catch (error) {
-        console.log('⚠️ HTTPS connection failed, trying HTTP fallback...', error);
-        this.metrics.corsErrors++;
+        console.warn(`❌ Endpoint ${endpoint} failed:`, error);
+        lastError = error instanceof Error ? error : new Error('Unknown endpoint error');
+        
+        // Check for timeout specifically
+        if (error instanceof Error && error.name === 'AbortError') {
+          console.warn(`⏰ Timeout on endpoint: ${endpoint}`);
+          this.metrics.timeouts++;
+        }
       }
     }
     
-    // 🔧 PRIORITY 3: HTTP fallback
-    try {
-      this.metrics.httpFallbacks++;
-      const response = await fetch(`${this.httpBaseURL}/api/health`, {
-        method: 'GET',
-        mode: 'cors',
-        credentials: 'omit',
-        signal: AbortSignal.timeout(8000)
-      });
+    // All methods failed - analyze the errors
+    if (!successfulEndpoint) {
+      console.error('❌ All Oracle Cloud endpoints failed. Last error:', lastError);
       
-      if (response.ok) {
-        this.baseURL = this.httpBaseURL;
-        this.connectionStatus = 'connected';
-        this.corsIssues = false;
-        console.log('✅ Oracle Cloud connected via HTTP fallback');
-        return;
+      // Determine error type
+      const isTimeoutError = lastError?.name === 'AbortError';
+      const isCorsError = lastError instanceof TypeError && 
+                         (lastError.message.includes('fetch') || 
+                          lastError.message.includes('CORS') ||
+                          lastError.message.includes('Network') ||
+                          lastError.message.includes('Failed to fetch'));
+      
+      if (isTimeoutError) {
+        this.connectionStatus = 'timeout';
+        console.log('🕐 Oracle Cloud connection timeout - server may be slow or overloaded');
+      } else if (isCorsError) {
+        this.connectionStatus = 'cors_error';
+        this.corsIssues = true;
+        this.metrics.corsErrors++;
+        console.log('🔧 Oracle Cloud CORS/Mixed Content issue detected');
+      } else {
+        this.connectionStatus = 'offline';
+        console.log('📡 Oracle Cloud appears to be offline or unreachable');
       }
-    } catch (error) {
-      console.log('❌ All Oracle Cloud connection methods failed:', error);
     }
     
-    // All methods failed
-    this.connectionStatus = 'cors_error';
-    this.corsIssues = true;
-    this.metrics.corsErrors++;
-    
-    console.log('🔄 Oracle Cloud unavailable - AI systems will use enhanced fallback processing');
+    console.log('🔄 Oracle Cloud status updated:', {
+      status: this.connectionStatus,
+      corsIssues: this.corsIssues,
+      baseURL: this.baseURL,
+      lastSuccessful: this.lastSuccessfulEndpoint
+    });
   }
 
   /**
@@ -256,13 +308,33 @@ export class EnhancedMacrobiusApiClient {
     let lastError: Error | null = null;
     const maxRetries = options.retries ?? this.retryAttempts;
 
-    // 🔧 ENHANCED: Multiple URL strategies with smart prioritization
-    const urlsToTry = [
-      `${this.baseURL}${endpoint}`,
-      `${this.proxyBaseURL}${endpoint}`,
-      `${this.httpsBaseURL}${endpoint.startsWith('/api/') ? endpoint : '/api' + endpoint}`,
-      `${this.httpBaseURL}${endpoint.startsWith('/api/') ? endpoint : '/api' + endpoint}`
-    ].filter((url, index, arr) => arr.indexOf(url) === index); // Remove duplicates
+    // 🔧 ENHANCED: Smart URL prioritization based on connection status
+    const getUrlsToTry = () => {
+      const urls = [];
+      
+      // Priority 1: Last successful endpoint
+      if (this.lastSuccessfulEndpoint) {
+        const baseUrl = this.lastSuccessfulEndpoint.replace(/\/api\/.*$/, '');
+        urls.push(`${baseUrl}${endpoint.startsWith('/api/') ? endpoint : '/api' + endpoint}`);
+      }
+      
+      // Priority 2: Current base URL
+      urls.push(`${this.baseURL}${endpoint.startsWith('/api/') ? endpoint : '/api' + endpoint}`);
+      
+      // Priority 3: HTTPS alternatives
+      if (!this.corsIssues) {
+        urls.push(`${this.httpsBaseURL}${endpoint.startsWith('/api/') ? endpoint : '/api' + endpoint}`);
+        urls.push(`${this.httpBaseURL}${endpoint.startsWith('/api/') ? endpoint : '/api' + endpoint}`);
+      }
+      
+      // Priority 4: Proxy fallback
+      urls.push(`${this.proxyBaseURL}${endpoint}`);
+      
+      // Remove duplicates and return
+      return [...new Set(urls)];
+    };
+
+    const urlsToTry = getUrlsToTry();
 
     for (const url of urlsToTry) {
       for (let attempt = 0; attempt <= maxRetries; attempt++) {
@@ -274,8 +346,9 @@ export class EnhancedMacrobiusApiClient {
           const headers: Record<string, string> = {
             'Content-Type': 'application/json',
             'Accept': 'application/json',
-            'X-Client-Version': '2.1-ENHANCED',
+            'X-Client-Version': '3.0-ENHANCED',
             'X-Request-ID': this.generateRequestId(),
+            'Cache-Control': 'no-cache',
             ...(isProxyRequest ? {
               'X-Proxy-Target': 'oracle-cloud',
               'X-RAG-Port': '8080'  // Unified RAG port
@@ -283,14 +356,22 @@ export class EnhancedMacrobiusApiClient {
             ...options.headers
           };
           
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => {
+            controller.abort();
+            this.metrics.timeouts++;
+          }, options.timeout || 20000);
+          
           const response = await fetch(url, {
             method: options.method || 'GET',
             headers,
             body: options.body ? JSON.stringify(options.body) : undefined,
-            signal: options.timeout ? AbortSignal.timeout(options.timeout) : AbortSignal.timeout(25000),
+            signal: controller.signal,
             mode: isProxyRequest ? 'same-origin' : 'cors',
             credentials: 'omit'
           });
+          
+          clearTimeout(timeoutId);
 
           if (!response.ok) {
             throw new ApiError(
@@ -304,11 +385,13 @@ export class EnhancedMacrobiusApiClient {
           // Update connection status on success
           this.connectionStatus = 'connected';
           this.corsIssues = false;
+          this.metrics.successfulConnections++;
           
-          // Update baseURL if we succeeded with a different URL
-          if (url !== `${this.baseURL}${endpoint}`) {
-            const newBaseURL = url.replace(endpoint, '').replace('/api', '');
-            console.log(`🔄 Switching to successful URL: ${newBaseURL}`);
+          // Update successful endpoint
+          this.lastSuccessfulEndpoint = url;
+          const newBaseURL = url.replace(endpoint, '').replace('/api', '');
+          if (newBaseURL !== this.baseURL) {
+            console.log(`🎯 Switching to successful URL: ${newBaseURL}`);
             this.baseURL = newBaseURL;
           }
           
@@ -323,11 +406,15 @@ export class EnhancedMacrobiusApiClient {
         } catch (error) {
           lastError = error instanceof Error ? error : new Error('Unknown error');
           
-          // Check for CORS errors
-          if (error instanceof TypeError && error.message.includes('fetch')) {
+          // Check for specific error types
+          if (error instanceof Error && error.name === 'AbortError') {
+            this.connectionStatus = 'timeout';
+            console.warn(`⏰ Request timeout on: ${url}`);
+          } else if (error instanceof TypeError && error.message.includes('fetch')) {
             this.corsIssues = true;
             this.connectionStatus = 'cors_error';
             this.metrics.corsErrors++;
+            console.warn(`🔧 CORS error on: ${url}`);
           }
           
           // Don't retry on client errors (4xx)
@@ -337,15 +424,22 @@ export class EnhancedMacrobiusApiClient {
           
           // Wait before retry (exponential backoff)
           if (attempt < maxRetries) {
-            await this.delay(Math.pow(2, attempt) * 800);
+            await this.delay(Math.pow(2, attempt) * 1000);
           }
         }
       }
     }
 
     // All attempts failed - update status and provide helpful error
-    this.connectionStatus = this.corsIssues ? 'cors_error' : 'offline';
     this.updateMetrics(performance.now() - startTime, false, true);
+    
+    if (this.connectionStatus === 'timeout') {
+      throw new ApiError(
+        '⏰ Oracle Cloud request timeout - server may be overloaded. AI systems using enhanced local processing.',
+        408,
+        'TIMEOUT_ERROR'
+      );
+    }
     
     if (this.corsIssues) {
       throw new ApiError(
@@ -428,16 +522,18 @@ export class EnhancedMacrobiusApiClient {
    * 🔧 ENHANCED: Connection Status with clear messaging
    */
   public getConnectionStatus(): {
-    oracle: 'connected' | 'offline' | 'checking' | 'cors_error';
+    oracle: 'connected' | 'offline' | 'checking' | 'cors_error' | 'timeout';
     rag: 'connected' | 'offline' | 'checking';
     ai_systems: 'connected' | 'offline' | 'checking';
     corsIssues: boolean;
     preferHTTPS: boolean;
     currentURL: string;
+    lastSuccessful: string | null;
+    attempts: number;
     message: string;
   } {
     const mapStatusForSubsystems = (status: typeof this.connectionStatus): 'connected' | 'offline' | 'checking' => {
-      if (status === 'cors_error') return 'offline';
+      if (status === 'cors_error' || status === 'timeout') return 'offline';
       return status as 'connected' | 'offline' | 'checking';
     };
 
@@ -447,6 +543,8 @@ export class EnhancedMacrobiusApiClient {
           return '✅ Oracle Cloud Connected - 1,401 authentic passages available';
         case 'checking':
           return '🔍 Testing Oracle Cloud connection...';
+        case 'timeout':
+          return '⏰ Oracle Cloud timeout - Enhanced AI fallback systems active';
         case 'cors_error':
           return '🔧 Oracle Cloud CORS issue - Enhanced AI fallback systems active';
         case 'offline':
@@ -463,6 +561,8 @@ export class EnhancedMacrobiusApiClient {
       corsIssues: this.corsIssues,
       preferHTTPS: this.preferHTTPS,
       currentURL: this.baseURL,
+      lastSuccessful: this.lastSuccessfulEndpoint,
+      attempts: this.connectionAttempts,
       message: getMessage()
     };
   }
