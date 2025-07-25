@@ -35,16 +35,16 @@ interface HomeProps {
   initialLanguage?: Language;
 }
 
-// Main Home Component that uses LanguageContext
+// 🔧 CRITICAL FIX: Enhanced Home Component with GUARANTEED AI ACCESS
 function HomeContent({ initialSection = 'intro', initialLanguage = 'DE' }: HomeProps) {
   const [currentSection, setCurrentSection] = useState<Section>(initialSection);
   const [currentLanguage, setCurrentLanguage] = useState<Language>(initialLanguage);
   const [isNavigationVisible, setIsNavigationVisible] = useState(false);
+  const [forceShowNavigation, setForceShowNavigation] = useState(false);
   
-  // 🔧 CRITICAL FIX: Get translation function from LanguageContext
   const { t } = useLanguage();
 
-  // 🔧 ENHANCED: Handle section navigation with proper state management
+  // 🚀 ENHANCED: Handle section navigation with better AI access
   const handleSectionChange = (section: Section) => {
     console.log(`🚀 Navigation: Changing from ${currentSection} to ${section}`);
     setCurrentSection(section);
@@ -62,15 +62,19 @@ function HomeContent({ initialSection = 'intro', initialLanguage = 'DE' }: HomeP
 
   // Show navigation when not on intro
   useEffect(() => {
-    setIsNavigationVisible(currentSection !== 'intro');
-  }, [currentSection]);
+    setIsNavigationVisible(currentSection !== 'intro' || forceShowNavigation);
+  }, [currentSection, forceShowNavigation]);
 
-  // 🔧 FIXED: Listen for navigation events from IntroSection
+  // 🔧 ENHANCED: Listen for navigation events with better error handling
   useEffect(() => {
     const handleNavigationEvent = (event: CustomEvent) => {
-      const { section } = event.detail;
-      console.log(`🎯 Received navigation event for section: ${section}`);
-      handleSectionChange(section as Section);
+      try {
+        const { section } = event.detail;
+        console.log(`🎯 Received navigation event for section: ${section}`);
+        handleSectionChange(section as Section);
+      } catch (error) {
+        console.error('Navigation event error:', error);
+      }
     };
 
     if (typeof window !== 'undefined') {
@@ -101,44 +105,33 @@ function HomeContent({ initialSection = 'intro', initialLanguage = 'DE' }: HomeP
           />
         );
       case 'banquet':
-        // ✅ FIXED: BanquetSection has its own DIRECT_TRANSLATIONS, only needs isActive and language
         return <BanquetSection isActive={true} language={currentLanguage} />;
       case 'cosmos':
-        // ✅ FIXED: CosmosSection has its own DIRECT_TRANSLATIONS, only needs isActive and language
         return <CosmosSection isActive={true} language={currentLanguage} />;
       case 'worldmap':
-        // ✅ CORRECT: WorldMapSection needs the 't' prop from LanguageContext
         return <WorldMapSection isActive={true} language={currentLanguage} t={t} />;
       case 'textsearch':
-        // ✅ FIXED: TextSearchSection has its own DIRECT_TRANSLATIONS, only needs isActive and language
         return <TextSearchSection isActive={true} language={currentLanguage} />;
       case 'learning':
-        // ✅ FIXED: LearningSection needs both isActive and language props
         return <LearningSection isActive={true} language={currentLanguage} />;
       case 'quiz':
-        // ✅ FIXED: QuizSection expects Language object with code/name properties
         return <QuizSection language={getLanguageObject(currentLanguage)} />;
       case 'visualizations':
-        // ✅ FIXED: Added missing isActive prop to resolve build error
         return <VisualizationsSection isActive={true} language={currentLanguage} />;
       case 'ai-cultural-analysis':
-        // 🔧 CRITICAL FIX: AICulturalAnalysisSection expects className?, language?, activeTab?
         return <AICulturalAnalysisSection language={currentLanguage} activeTab="analyze" />;
       case 'ai-tutoring':
-        // 🔧 CRITICAL FIX: AITutoringSystemSection expects className?, language?
         return <AITutoringSystemSection language={currentLanguage} />;
       case 'personalized-learning':
-        // 🔧 CRITICAL FIX: PersonalizedLearningPaths expects userProfile?, vocabularyData?, quizData?, className?, currentMode?
         return <PersonalizedLearningPaths currentMode="dashboard" />;
       case 'ki-rag-assistant':
-        // 🔧 CRITICAL FIX: KIRAGAssistentSection expects language (required)
         return <KIRAGAssistentSection language={currentLanguage} />;
       default:
         return <VideoIntroWrapper language={currentLanguage} />;
     }
   };
 
-  // 🔧 ENHANCED Navigation Component with better styling and all sections
+  // 🔧 ENHANCED Navigation Component with GUARANTEED visibility toggle
   const EnhancedNavigation = () => (
     <nav style={{
       background: 'linear-gradient(135deg, rgba(212, 175, 55, 0.95), rgba(245, 158, 11, 0.9))',
@@ -160,418 +153,271 @@ function HomeContent({ initialSection = 'intro', initialLanguage = 'DE' }: HomeP
         justifyContent: 'center',
         alignItems: 'center'
       }}>
-        <button 
-          onClick={() => handleSectionChange('intro')}
-          style={{
-            padding: '8px 16px',
-            borderRadius: '20px',
-            border: `2px solid ${currentSection === 'intro' ? '#92400e' : 'rgba(146, 64, 14, 0.3)'}`,
-            backgroundColor: currentSection === 'intro' ? '#92400e' : 'rgba(255, 255, 255, 0.9)',
-            color: currentSection === 'intro' ? 'white' : '#92400e',
-            fontSize: '13px',
-            fontWeight: '600',
-            cursor: 'pointer',
-            transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-            boxShadow: currentSection === 'intro' 
-              ? '0 4px 12px rgba(146, 64, 14, 0.4)' 
-              : '0 2px 8px rgba(146, 64, 14, 0.2)',
-            textTransform: 'uppercase',
-            letterSpacing: '0.5px'
-          }}
-          onMouseEnter={(e) => {
-            if (currentSection !== 'intro') {
-              e.currentTarget.style.backgroundColor = 'rgba(146, 64, 14, 0.1)';
-              e.currentTarget.style.transform = 'translateY(-1px)';
-            }
-          }}
-          onMouseLeave={(e) => {
-            if (currentSection !== 'intro') {
-              e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.9)';
-              e.currentTarget.style.transform = 'translateY(0)';
-            }
-          }}
-        >
-          🏛️ {t('nav.intro')}
-        </button>
+        {/* 🔧 CRITICAL: Always show toggle navigation button */}
+        {!isNavigationVisible && (
+          <button
+            onClick={() => setForceShowNavigation(true)}
+            style={{
+              padding: '12px 20px',
+              borderRadius: '25px',
+              border: '3px solid #d4af37',
+              backgroundColor: 'rgba(212, 175, 55, 0.9)',
+              color: '#1a1a1a',
+              fontSize: '14px',
+              fontWeight: '700',
+              cursor: 'pointer',
+              transition: 'all 0.3s ease',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+              boxShadow: '0 4px 12px rgba(212, 175, 55, 0.4)'
+            }}
+          >
+            🧭 Navigation anzeigen
+          </button>
+        )}
         
-        <button 
-          onClick={() => handleSectionChange('banquet')}
-          style={{
-            padding: '8px 16px',
-            borderRadius: '20px',
-            border: `2px solid ${currentSection === 'banquet' ? '#92400e' : 'rgba(146, 64, 14, 0.3)'}`,
-            backgroundColor: currentSection === 'banquet' ? '#92400e' : 'rgba(255, 255, 255, 0.9)',
-            color: currentSection === 'banquet' ? 'white' : '#92400e',
-            fontSize: '13px',
-            fontWeight: '600',
-            cursor: 'pointer',
-            transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-            boxShadow: currentSection === 'banquet' 
-              ? '0 4px 12px rgba(146, 64, 14, 0.4)' 
-              : '0 2px 8px rgba(146, 64, 14, 0.2)',
-            textTransform: 'uppercase',
-            letterSpacing: '0.5px'
-          }}
-          onMouseEnter={(e) => {
-            if (currentSection !== 'banquet') {
-              e.currentTarget.style.backgroundColor = 'rgba(146, 64, 14, 0.1)';
-              e.currentTarget.style.transform = 'translateY(-1px)';
-            }
-          }}
-          onMouseLeave={(e) => {
-            if (currentSection !== 'banquet') {
-              e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.9)';
-              e.currentTarget.style.transform = 'translateY(0)';
-            }
-          }}
-        >
-          🍷 {t('nav.banquet')}
-        </button>
-        
-        <button 
-          onClick={() => handleSectionChange('cosmos')}
-          style={{
-            padding: '8px 16px',
-            borderRadius: '20px',
-            border: `2px solid ${currentSection === 'cosmos' ? '#92400e' : 'rgba(146, 64, 14, 0.3)'}`,
-            backgroundColor: currentSection === 'cosmos' ? '#92400e' : 'rgba(255, 255, 255, 0.9)',
-            color: currentSection === 'cosmos' ? 'white' : '#92400e',
-            fontSize: '13px',
-            fontWeight: '600',
-            cursor: 'pointer',
-            transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-            boxShadow: currentSection === 'cosmos' 
-              ? '0 4px 12px rgba(146, 64, 14, 0.4)' 
-              : '0 2px 8px rgba(146, 64, 14, 0.2)',
-            textTransform: 'uppercase',
-            letterSpacing: '0.5px'
-          }}
-          onMouseEnter={(e) => {
-            if (currentSection !== 'cosmos') {
-              e.currentTarget.style.backgroundColor = 'rgba(146, 64, 14, 0.1)';
-              e.currentTarget.style.transform = 'translateY(-1px)';
-            }
-          }}
-          onMouseLeave={(e) => {
-            if (currentSection !== 'cosmos') {
-              e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.9)';
-              e.currentTarget.style.transform = 'translateY(0)';
-            }
-          }}
-        >
-          🌌 {t('nav.cosmos')}
-        </button>
-        
-        <button 
-          onClick={() => handleSectionChange('worldmap')}
-          style={{
-            padding: '8px 16px',
-            borderRadius: '20px',
-            border: `2px solid ${currentSection === 'worldmap' ? '#92400e' : 'rgba(146, 64, 14, 0.3)'}`,
-            backgroundColor: currentSection === 'worldmap' ? '#92400e' : 'rgba(255, 255, 255, 0.9)',
-            color: currentSection === 'worldmap' ? 'white' : '#92400e',
-            fontSize: '13px',
-            fontWeight: '600',
-            cursor: 'pointer',
-            transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-            boxShadow: currentSection === 'worldmap' 
-              ? '0 4px 12px rgba(146, 64, 14, 0.4)' 
-              : '0 2px 8px rgba(146, 64, 14, 0.2)',
-            textTransform: 'uppercase',
-            letterSpacing: '0.5px'
-          }}
-          onMouseEnter={(e) => {
-            if (currentSection !== 'worldmap') {
-              e.currentTarget.style.backgroundColor = 'rgba(146, 64, 14, 0.1)';
-              e.currentTarget.style.transform = 'translateY(-1px)';
-            }
-          }}
-          onMouseLeave={(e) => {
-            if (currentSection !== 'worldmap') {
-              e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.9)';
-              e.currentTarget.style.transform = 'translateY(0)';
-            }
-          }}
-        >
-          🗺️ {t('nav.worldmap')}
-        </button>
-        
-        <button 
-          onClick={() => handleSectionChange('textsearch')}
-          style={{
-            padding: '8px 16px',
-            borderRadius: '20px',
-            border: `2px solid ${currentSection === 'textsearch' ? '#92400e' : 'rgba(146, 64, 14, 0.3)'}`,
-            backgroundColor: currentSection === 'textsearch' ? '#92400e' : 'rgba(255, 255, 255, 0.9)',
-            color: currentSection === 'textsearch' ? 'white' : '#92400e',
-            fontSize: '13px',
-            fontWeight: '600',
-            cursor: 'pointer',
-            transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-            boxShadow: currentSection === 'textsearch' 
-              ? '0 4px 12px rgba(146, 64, 14, 0.4)' 
-              : '0 2px 8px rgba(146, 64, 14, 0.2)',
-            textTransform: 'uppercase',
-            letterSpacing: '0.5px'
-          }}
-          onMouseEnter={(e) => {
-            if (currentSection !== 'textsearch') {
-              e.currentTarget.style.backgroundColor = 'rgba(146, 64, 14, 0.1)';
-              e.currentTarget.style.transform = 'translateY(-1px)';
-            }
-          }}
-          onMouseLeave={(e) => {
-            if (currentSection !== 'textsearch') {
-              e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.9)';
-              e.currentTarget.style.transform = 'translateY(0)';
-            }
-          }}
-        >
-          🔍 {t('nav.textsearch')}
-        </button>
-        
-        <button 
-          onClick={() => handleSectionChange('learning')}
-          style={{
-            padding: '8px 16px',
-            borderRadius: '20px',
-            border: `2px solid ${currentSection === 'learning' ? '#92400e' : 'rgba(146, 64, 14, 0.3)'}`,
-            backgroundColor: currentSection === 'learning' ? '#92400e' : 'rgba(255, 255, 255, 0.9)',
-            color: currentSection === 'learning' ? 'white' : '#92400e',
-            fontSize: '13px',
-            fontWeight: '600',
-            cursor: 'pointer',
-            transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-            boxShadow: currentSection === 'learning' 
-              ? '0 4px 12px rgba(146, 64, 14, 0.4)' 
-              : '0 2px 8px rgba(146, 64, 14, 0.2)',
-            textTransform: 'uppercase',
-            letterSpacing: '0.5px'
-          }}
-          onMouseEnter={(e) => {
-            if (currentSection !== 'learning') {
-              e.currentTarget.style.backgroundColor = 'rgba(146, 64, 14, 0.1)';
-              e.currentTarget.style.transform = 'translateY(-1px)';
-            }
-          }}
-          onMouseLeave={(e) => {
-            if (currentSection !== 'learning') {
-              e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.9)';
-              e.currentTarget.style.transform = 'translateY(0)';
-            }
-          }}
-        >
-          📚 {t('nav.learning')}
-        </button>
-        
-        <button 
-          onClick={() => handleSectionChange('quiz')}
-          style={{
-            padding: '8px 16px',
-            borderRadius: '20px',
-            border: `2px solid ${currentSection === 'quiz' ? '#92400e' : 'rgba(146, 64, 14, 0.3)'}`,
-            backgroundColor: currentSection === 'quiz' ? '#92400e' : 'rgba(255, 255, 255, 0.9)',
-            color: currentSection === 'quiz' ? 'white' : '#92400e',
-            fontSize: '13px',
-            fontWeight: '600',
-            cursor: 'pointer',
-            transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-            boxShadow: currentSection === 'quiz' 
-              ? '0 4px 12px rgba(146, 64, 14, 0.4)' 
-              : '0 2px 8px rgba(146, 64, 14, 0.2)',
-            textTransform: 'uppercase',
-            letterSpacing: '0.5px'
-          }}
-          onMouseEnter={(e) => {
-            if (currentSection !== 'quiz') {
-              e.currentTarget.style.backgroundColor = 'rgba(146, 64, 14, 0.1)';
-              e.currentTarget.style.transform = 'translateY(-1px)';
-            }
-          }}
-          onMouseLeave={(e) => {
-            if (currentSection !== 'quiz') {
-              e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.9)';
-              e.currentTarget.style.transform = 'translateY(0)';
-            }
-          }}
-        >
-          🎯 {t('nav.quiz')}
-        </button>
-        
-        <button 
-          onClick={() => handleSectionChange('visualizations')}
-          style={{
-            padding: '8px 16px',
-            borderRadius: '20px',
-            border: `2px solid ${currentSection === 'visualizations' ? '#92400e' : 'rgba(146, 64, 14, 0.3)'}`,
-            backgroundColor: currentSection === 'visualizations' ? '#92400e' : 'rgba(255, 255, 255, 0.9)',
-            color: currentSection === 'visualizations' ? 'white' : '#92400e',
-            fontSize: '13px',
-            fontWeight: '600',
-            cursor: 'pointer',
-            transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-            boxShadow: currentSection === 'visualizations' 
-              ? '0 4px 12px rgba(146, 64, 14, 0.4)' 
-              : '0 2px 8px rgba(146, 64, 14, 0.2)',
-            textTransform: 'uppercase',
-            letterSpacing: '0.5px'
-          }}
-          onMouseEnter={(e) => {
-            if (currentSection !== 'visualizations') {
-              e.currentTarget.style.backgroundColor = 'rgba(146, 64, 14, 0.1)';
-              e.currentTarget.style.transform = 'translateY(-1px)';
-            }
-          }}
-          onMouseLeave={(e) => {
-            if (currentSection !== 'visualizations') {
-              e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.9)';
-              e.currentTarget.style.transform = 'translateY(0)';
-            }
-          }}
-        >
-          📊 {t('nav.visualizations')}
-        </button>
-        
-        <button 
-          onClick={() => handleSectionChange('ai-cultural-analysis')}
-          style={{
-            padding: '8px 16px',
-            borderRadius: '20px',
-            border: `2px solid ${currentSection === 'ai-cultural-analysis' ? '#8b5cf6' : 'rgba(139, 92, 246, 0.4)'}`,
-            backgroundColor: currentSection === 'ai-cultural-analysis' ? '#8b5cf6' : 'rgba(255, 255, 255, 0.9)',
-            color: currentSection === 'ai-cultural-analysis' ? 'white' : '#8b5cf6',
-            fontSize: '13px',
-            fontWeight: '600',
-            cursor: 'pointer',
-            transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-            boxShadow: currentSection === 'ai-cultural-analysis' 
-              ? '0 4px 12px rgba(139, 92, 246, 0.4)' 
-              : '0 2px 8px rgba(139, 92, 246, 0.2)',
-            textTransform: 'uppercase',
-            letterSpacing: '0.5px'
-          }}
-          onMouseEnter={(e) => {
-            if (currentSection !== 'ai-cultural-analysis') {
-              e.currentTarget.style.backgroundColor = 'rgba(139, 92, 246, 0.1)';
-              e.currentTarget.style.transform = 'translateY(-1px)';
-            }
-          }}
-          onMouseLeave={(e) => {
-            if (currentSection !== 'ai-cultural-analysis') {
-              e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.9)';
-              e.currentTarget.style.transform = 'translateY(0)';
-            }
-          }}
-        >
-          🧠 {t('nav.ai_cultural')}
-        </button>
-        
-        <button 
-          onClick={() => handleSectionChange('ai-tutoring')}
-          style={{
-            padding: '8px 16px',
-            borderRadius: '20px',
-            border: `2px solid ${currentSection === 'ai-tutoring' ? '#8b5cf6' : 'rgba(139, 92, 246, 0.4)'}`,
-            backgroundColor: currentSection === 'ai-tutoring' ? '#8b5cf6' : 'rgba(255, 255, 255, 0.9)',
-            color: currentSection === 'ai-tutoring' ? 'white' : '#8b5cf6',
-            fontSize: '13px',
-            fontWeight: '600',
-            cursor: 'pointer',
-            transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-            boxShadow: currentSection === 'ai-tutoring' 
-              ? '0 4px 12px rgba(139, 92, 246, 0.4)' 
-              : '0 2px 8px rgba(139, 92, 246, 0.2)',
-            textTransform: 'uppercase',
-            letterSpacing: '0.5px'
-          }}
-          onMouseEnter={(e) => {
-            if (currentSection !== 'ai-tutoring') {
-              e.currentTarget.style.backgroundColor = 'rgba(139, 92, 246, 0.1)';
-              e.currentTarget.style.transform = 'translateY(-1px)';
-            }
-          }}
-          onMouseLeave={(e) => {
-            if (currentSection !== 'ai-tutoring') {
-              e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.9)';
-              e.currentTarget.style.transform = 'translateY(0)';
-            }
-          }}
-        >
-          👑 {t('nav.ai_tutoring')}
-        </button>
-        
-        <button 
-          onClick={() => handleSectionChange('personalized-learning')}
-          style={{
-            padding: '8px 16px',
-            borderRadius: '20px',
-            border: `2px solid ${currentSection === 'personalized-learning' ? '#8b5cf6' : 'rgba(139, 92, 246, 0.4)'}`,
-            backgroundColor: currentSection === 'personalized-learning' ? '#8b5cf6' : 'rgba(255, 255, 255, 0.9)',
-            color: currentSection === 'personalized-learning' ? 'white' : '#8b5cf6',
-            fontSize: '13px',
-            fontWeight: '600',
-            cursor: 'pointer',
-            transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-            boxShadow: currentSection === 'personalized-learning' 
-              ? '0 4px 12px rgba(139, 92, 246, 0.4)' 
-              : '0 2px 8px rgba(139, 92, 246, 0.2)',
-            textTransform: 'uppercase',
-            letterSpacing: '0.5px'
-          }}
-          onMouseEnter={(e) => {
-            if (currentSection !== 'personalized-learning') {
-              e.currentTarget.style.backgroundColor = 'rgba(139, 92, 246, 0.1)';
-              e.currentTarget.style.transform = 'translateY(-1px)';
-            }
-          }}
-          onMouseLeave={(e) => {
-            if (currentSection !== 'personalized-learning') {
-              e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.9)';
-              e.currentTarget.style.transform = 'translateY(0)';
-            }
-          }}
-        >
-          🎯 {t('nav.ai_learning')}
-        </button>
-        
-        <button 
-          onClick={() => handleSectionChange('ki-rag-assistant')}
-          style={{
-            padding: '8px 16px',
-            borderRadius: '20px',
-            border: `2px solid ${currentSection === 'ki-rag-assistant' ? '#8b5cf6' : 'rgba(139, 92, 246, 0.4)'}`,
-            backgroundColor: currentSection === 'ki-rag-assistant' ? '#8b5cf6' : 'rgba(255, 255, 255, 0.9)',
-            color: currentSection === 'ki-rag-assistant' ? 'white' : '#8b5cf6',
-            fontSize: '13px',
-            fontWeight: '600',
-            cursor: 'pointer',
-            transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-            boxShadow: currentSection === 'ki-rag-assistant' 
-              ? '0 4px 12px rgba(139, 92, 246, 0.4)' 
-              : '0 2px 8px rgba(139, 92, 246, 0.2)',
-            textTransform: 'uppercase',
-            letterSpacing: '0.5px'
-          }}
-          onMouseEnter={(e) => {
-            if (currentSection !== 'ki-rag-assistant') {
-              e.currentTarget.style.backgroundColor = 'rgba(139, 92, 246, 0.1)';
-              e.currentTarget.style.transform = 'translateY(-1px)';
-            }
-          }}
-          onMouseLeave={(e) => {
-            if (currentSection !== 'ki-rag-assistant') {
-              e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.9)';
-              e.currentTarget.style.transform = 'translateY(0)';
-            }
-          }}
-        >
-          🤖 {t('nav.ai_rag')}
-        </button>
+        {/* Navigation Buttons */}
+        {(isNavigationVisible || forceShowNavigation) && (
+          <>
+            <button 
+              onClick={() => handleSectionChange('intro')}
+              style={{
+                padding: '8px 16px',
+                borderRadius: '20px',
+                border: `2px solid ${currentSection === 'intro' ? '#92400e' : 'rgba(146, 64, 14, 0.3)'}`,
+                backgroundColor: currentSection === 'intro' ? '#92400e' : 'rgba(255, 255, 255, 0.9)',
+                color: currentSection === 'intro' ? 'white' : '#92400e',
+                fontSize: '13px',
+                fontWeight: '600',
+                cursor: 'pointer',
+                transition: 'all 0.3s ease'
+              }}
+            >
+              🏛️ {t('nav.intro')}
+            </button>
+            
+            <button 
+              onClick={() => handleSectionChange('banquet')}
+              style={{
+                padding: '8px 16px',
+                borderRadius: '20px',
+                border: `2px solid ${currentSection === 'banquet' ? '#92400e' : 'rgba(146, 64, 14, 0.3)'}`,
+                backgroundColor: currentSection === 'banquet' ? '#92400e' : 'rgba(255, 255, 255, 0.9)',
+                color: currentSection === 'banquet' ? 'white' : '#92400e',
+                fontSize: '13px',
+                fontWeight: '600',
+                cursor: 'pointer',
+                transition: 'all 0.3s ease'
+              }}
+            >
+              🍷 {t('nav.banquet')}
+            </button>
+            
+            <button 
+              onClick={() => handleSectionChange('cosmos')}
+              style={{
+                padding: '8px 16px',
+                borderRadius: '20px',
+                border: `2px solid ${currentSection === 'cosmos' ? '#92400e' : 'rgba(146, 64, 14, 0.3)'}`,
+                backgroundColor: currentSection === 'cosmos' ? '#92400e' : 'rgba(255, 255, 255, 0.9)',
+                color: currentSection === 'cosmos' ? 'white' : '#92400e',
+                fontSize: '13px',
+                fontWeight: '600',
+                cursor: 'pointer',
+                transition: 'all 0.3s ease'
+              }}
+            >
+              🌌 {t('nav.cosmos')}
+            </button>
+            
+            <button 
+              onClick={() => handleSectionChange('worldmap')}
+              style={{
+                padding: '8px 16px',
+                borderRadius: '20px',
+                border: `2px solid ${currentSection === 'worldmap' ? '#92400e' : 'rgba(146, 64, 14, 0.3)'}`,
+                backgroundColor: currentSection === 'worldmap' ? '#92400e' : 'rgba(255, 255, 255, 0.9)',
+                color: currentSection === 'worldmap' ? 'white' : '#92400e',
+                fontSize: '13px',
+                fontWeight: '600',
+                cursor: 'pointer',
+                transition: 'all 0.3s ease'
+              }}
+            >
+              🗺️ {t('nav.worldmap')}
+            </button>
+            
+            <button 
+              onClick={() => handleSectionChange('textsearch')}
+              style={{
+                padding: '8px 16px',
+                borderRadius: '20px',
+                border: `2px solid ${currentSection === 'textsearch' ? '#92400e' : 'rgba(146, 64, 14, 0.3)'}`,
+                backgroundColor: currentSection === 'textsearch' ? '#92400e' : 'rgba(255, 255, 255, 0.9)',
+                color: currentSection === 'textsearch' ? 'white' : '#92400e',
+                fontSize: '13px',
+                fontWeight: '600',
+                cursor: 'pointer',
+                transition: 'all 0.3s ease'
+              }}
+            >
+              🔍 {t('nav.textsearch')}
+            </button>
+            
+            <button 
+              onClick={() => handleSectionChange('learning')}
+              style={{
+                padding: '8px 16px',
+                borderRadius: '20px',
+                border: `2px solid ${currentSection === 'learning' ? '#92400e' : 'rgba(146, 64, 14, 0.3)'}`,
+                backgroundColor: currentSection === 'learning' ? '#92400e' : 'rgba(255, 255, 255, 0.9)',
+                color: currentSection === 'learning' ? 'white' : '#92400e',
+                fontSize: '13px',
+                fontWeight: '600',
+                cursor: 'pointer',
+                transition: 'all 0.3s ease'
+              }}
+            >
+              📚 {t('nav.learning')}
+            </button>
+            
+            <button 
+              onClick={() => handleSectionChange('quiz')}
+              style={{
+                padding: '8px 16px',
+                borderRadius: '20px',
+                border: `2px solid ${currentSection === 'quiz' ? '#92400e' : 'rgba(146, 64, 14, 0.3)'}`,
+                backgroundColor: currentSection === 'quiz' ? '#92400e' : 'rgba(255, 255, 255, 0.9)',
+                color: currentSection === 'quiz' ? 'white' : '#92400e',
+                fontSize: '13px',
+                fontWeight: '600',
+                cursor: 'pointer',
+                transition: 'all 0.3s ease'
+              }}
+            >
+              🎯 {t('nav.quiz')}
+            </button>
+            
+            <button 
+              onClick={() => handleSectionChange('visualizations')}
+              style={{
+                padding: '8px 16px',
+                borderRadius: '20px',
+                border: `2px solid ${currentSection === 'visualizations' ? '#92400e' : 'rgba(146, 64, 14, 0.3)'}`,
+                backgroundColor: currentSection === 'visualizations' ? '#92400e' : 'rgba(255, 255, 255, 0.9)',
+                color: currentSection === 'visualizations' ? 'white' : '#92400e',
+                fontSize: '13px',
+                fontWeight: '600',
+                cursor: 'pointer',
+                transition: 'all 0.3s ease'
+              }}
+            >
+              📊 {t('nav.visualizations')}
+            </button>
+            
+            {/* 🤖 AI Features Section - ALWAYS VISIBLE */}
+            <div style={{
+              width: '2px',
+              height: '24px',
+              backgroundColor: 'rgba(139, 92, 246, 0.4)',
+              margin: '0 8px'
+            }} />
+            
+            <button 
+              onClick={() => handleSectionChange('ai-cultural-analysis')}
+              style={{
+                padding: '8px 16px',
+                borderRadius: '20px',
+                border: `2px solid ${currentSection === 'ai-cultural-analysis' ? '#8b5cf6' : 'rgba(139, 92, 246, 0.4)'}`,
+                backgroundColor: currentSection === 'ai-cultural-analysis' ? '#8b5cf6' : 'rgba(255, 255, 255, 0.9)',
+                color: currentSection === 'ai-cultural-analysis' ? 'white' : '#8b5cf6',
+                fontSize: '13px',
+                fontWeight: '600',
+                cursor: 'pointer',
+                transition: 'all 0.3s ease'
+              }}
+            >
+              🧠 {t('nav.ai_cultural')}
+            </button>
+            
+            <button 
+              onClick={() => handleSectionChange('ai-tutoring')}
+              style={{
+                padding: '8px 16px',
+                borderRadius: '20px',
+                border: `2px solid ${currentSection === 'ai-tutoring' ? '#8b5cf6' : 'rgba(139, 92, 246, 0.4)'}`,
+                backgroundColor: currentSection === 'ai-tutoring' ? '#8b5cf6' : 'rgba(255, 255, 255, 0.9)',
+                color: currentSection === 'ai-tutoring' ? 'white' : '#8b5cf6',
+                fontSize: '13px',
+                fontWeight: '600',
+                cursor: 'pointer',
+                transition: 'all 0.3s ease'
+              }}
+            >
+              👑 {t('nav.ai_tutoring')}
+            </button>
+            
+            <button 
+              onClick={() => handleSectionChange('personalized-learning')}
+              style={{
+                padding: '8px 16px',
+                borderRadius: '20px',
+                border: `2px solid ${currentSection === 'personalized-learning' ? '#8b5cf6' : 'rgba(139, 92, 246, 0.4)'}`,
+                backgroundColor: currentSection === 'personalized-learning' ? '#8b5cf6' : 'rgba(255, 255, 255, 0.9)',
+                color: currentSection === 'personalized-learning' ? 'white' : '#8b5cf6',
+                fontSize: '13px',
+                fontWeight: '600',
+                cursor: 'pointer',
+                transition: 'all 0.3s ease'
+              }}
+            >
+              🎯 {t('nav.ai_learning')}
+            </button>
+            
+            <button 
+              onClick={() => handleSectionChange('ki-rag-assistant')}
+              style={{
+                padding: '8px 16px',
+                borderRadius: '20px',
+                border: `2px solid ${currentSection === 'ki-rag-assistant' ? '#8b5cf6' : 'rgba(139, 92, 246, 0.4)'}`,
+                backgroundColor: currentSection === 'ki-rag-assistant' ? '#8b5cf6' : 'rgba(255, 255, 255, 0.9)',
+                color: currentSection === 'ki-rag-assistant' ? 'white' : '#8b5cf6',
+                fontSize: '13px',
+                fontWeight: '600',
+                cursor: 'pointer',
+                transition: 'all 0.3s ease'
+              }}
+            >
+              🤖 {t('nav.ai_rag')}
+            </button>
+            
+            {/* 🔧 CRITICAL: Hide navigation button when visible */}
+            {forceShowNavigation && currentSection === 'intro' && (
+              <button
+                onClick={() => setForceShowNavigation(false)}
+                style={{
+                  padding: '6px 12px',
+                  borderRadius: '15px',
+                  border: '1px solid rgba(107, 114, 128, 0.3)',
+                  backgroundColor: 'rgba(107, 114, 128, 0.1)',
+                  color: '#6b7280',
+                  fontSize: '11px',
+                  fontWeight: '500',
+                  cursor: 'pointer',
+                  transition: 'all 0.3s ease'
+                }}
+              >
+                ✕ Verstecken
+              </button>
+            )}
+          </>
+        )}
       </div>
     </nav>
   );
 
-  // 🔧 ENHANCED Language Selector with better styling
+  // 🔧 ENHANCED Language Selector
   const EnhancedLanguageSelector = () => (
     <div style={{
       position: 'fixed',
@@ -590,21 +436,11 @@ function HomeContent({ initialSection = 'intro', initialLanguage = 'DE' }: HomeP
           color: '#92400e',
           fontSize: '14px',
           fontWeight: '600',
-          boxShadow: '0 8px 25px rgba(212, 175, 55, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.8)',
+          boxShadow: '0 8px 25px rgba(212, 175, 55, 0.3)',
           cursor: 'pointer',
           outline: 'none',
-          transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+          transition: 'all 0.3s ease',
           backdropFilter: 'blur(12px)'
-        }}
-        onMouseEnter={(e) => {
-          e.currentTarget.style.backgroundColor = 'rgba(212, 175, 55, 0.1)';
-          e.currentTarget.style.transform = 'scale(1.05)';
-          e.currentTarget.style.boxShadow = '0 12px 35px rgba(212, 175, 55, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.8)';
-        }}
-        onMouseLeave={(e) => {
-          e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.95)';
-          e.currentTarget.style.transform = 'scale(1)';
-          e.currentTarget.style.boxShadow = '0 8px 25px rgba(212, 175, 55, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.8)';
         }}
       >
         <option value="DE">🇩🇪 Deutsch</option>
@@ -629,8 +465,8 @@ function HomeContent({ initialSection = 'intro', initialLanguage = 'DE' }: HomeP
       {/* Language Selector - Always visible */}
       <EnhancedLanguageSelector />
 
-      {/* Navigation - Conditional visibility with enhanced design */}
-      {isNavigationVisible && <EnhancedNavigation />}
+      {/* 🔧 CRITICAL: Navigation - ALWAYS render for AI access */}
+      <EnhancedNavigation />
 
       {/* Main Content */}
       <main>
