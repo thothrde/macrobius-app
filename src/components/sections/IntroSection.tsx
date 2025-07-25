@@ -568,7 +568,7 @@ export const IntroSection: React.FC<IntroSectionProps> = ({ language }) => {
     setImageLoadStates(prev => ({ ...prev, [index]: true }));
   };
   
-  // 🔧 FIXED: Enhanced Oracle Cloud connection test with comprehensive diagnostics
+  // 🔧 FIXED: Enhanced Oracle Cloud connection test with proper TypeScript typing
   const testConnection = async () => {
     const attempts = (connectionTest.attempts || 0) + 1;
     setConnectionTest({ status: 'testing', message: 'Teste Verbindung...', attempts });
@@ -583,8 +583,8 @@ export const IntroSection: React.FC<IntroSectionProps> = ({ language }) => {
         'http://152.70.184.232:8080/api/passages/count'
       ];
       
-      let successfulEndpoint = null;
-      let lastError = null;
+      let successfulEndpoint: string | null = null;
+      let lastError: Error | null = null;
       
       for (const endpoint of endpoints) {
         try {
@@ -624,7 +624,7 @@ export const IntroSection: React.FC<IntroSectionProps> = ({ language }) => {
           }
         } catch (endpointError) {
           console.warn(`❌ Endpoint ${endpoint} failed:`, endpointError);
-          lastError = endpointError;
+          lastError = endpointError instanceof Error ? endpointError : new Error('Unknown endpoint error');
         }
       }
       
@@ -669,6 +669,7 @@ export const IntroSection: React.FC<IntroSectionProps> = ({ language }) => {
       
     } catch (error) {
       console.error('❌ Oracle Cloud connection test failed:', error);
+      const errorMessage = error instanceof Error ? error.message : 'UNKNOWN_ERROR';
       setConnectionTest({
         status: 'error',
         message: '❌ Verbindungstest fehlgeschlagen',
@@ -677,7 +678,7 @@ export const IntroSection: React.FC<IntroSectionProps> = ({ language }) => {
           oracle: 'error', 
           rag: 'error',
           ai_systems: 'error',
-          error: error instanceof Error ? error.message : 'UNKNOWN_ERROR'
+          error: errorMessage
         },
         attempts
       });
