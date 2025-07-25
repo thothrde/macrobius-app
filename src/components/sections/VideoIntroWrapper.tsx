@@ -231,9 +231,9 @@ export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }
         })}
       </div>
       
-      {/* 🎬 REAL HTML5 VIDEO PLAYER - ONLY VIDEO MADE LARGER */}
+      {/* 🎬 REAL HTML5 VIDEO PLAYER - LARGE SIZE MAINTAINED */}
       <div style={{
-        height: '50vh', // ✅ RESTORED to original size
+        height: '50vh',
         position: 'relative',
         zIndex: 10,
         display: 'flex',
@@ -244,7 +244,7 @@ export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }
         <div 
           style={{
             width: '100%',
-            maxWidth: '1100px', // 🔍 KEPT LARGER - only video is bigger
+            maxWidth: '1100px', // 🔍 LARGE SIZE MAINTAINED - only video is big
             aspectRatio: '16/9',
             borderRadius: '24px',
             overflow: 'hidden',
@@ -516,7 +516,7 @@ export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }
         </div>
       </div>
       
-      {/* 🏛️ BIG MACROBIUS TITLE - MOVED HERE BELOW VIDEO */}
+      {/* 🏛️ BIG MACROBIUS TITLE - BELOW VIDEO */}
       <div style={{
         position: 'relative',
         zIndex: 10,
@@ -526,7 +526,7 @@ export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }
         padding: '20px 40px'
       }}>
         <h1 style={{
-          fontSize: '5rem',
+          fontSize: '4rem', // 🔍 SMALLER TITLE
           fontWeight: 'bold',
           background: 'linear-gradient(135deg, #d4af37 0%, #ffd700 25%, #ffed4e 50%, #d4af37 75%, #b8860b 100%)',
           WebkitBackgroundClip: 'text',
@@ -542,21 +542,97 @@ export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }
         </h1>
       </div>
       
-      {/* 🏛️ MACROBIUS HISTORICAL TEXT SECTION - BELOW TITLE */}
+      {/* 🎯 ACTION SECTION - MOVED ABOVE TEXT, MADE SMALLER */}
       <div style={{
         position: 'relative',
         zIndex: 10,
-        maxWidth: '1200px',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: '20px', // 🔍 SMALLER PADDING
+        maxWidth: '1000px', // 🔍 SMALLER MAX WIDTH
+        margin: '0 auto'
+      }}>
+        <div style={{
+          display: 'flex',
+          gap: '20px', // 🔍 SMALLER GAP
+          alignItems: 'center',
+          justifyContent: 'center',
+          flexWrap: 'wrap'
+        }}>
+          <button
+            onClick={skipToApp}
+            style={{
+              padding: '16px 32px', // 🔍 SMALLER PADDING
+              backgroundColor: 'rgba(212, 175, 55, 0.95)',
+              border: '3px solid #d4af37',
+              borderRadius: '60px',
+              color: '#1a1a1a',
+              fontSize: '16px', // 🔍 SMALLER FONT
+              fontWeight: 'bold',
+              cursor: 'pointer',
+              transition: 'all 0.4s ease',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '12px', // 🔍 SMALLER GAP
+              boxShadow: '0 8px 20px rgba(212, 175, 55, 0.6)', // 🔍 SMALLER SHADOW
+              textTransform: 'uppercase',
+              letterSpacing: '1px'
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = '#d4af37';
+              e.currentTarget.style.transform = 'scale(1.05) translateY(-2px)'; // 🔍 SMALLER SCALE
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = 'rgba(212, 175, 55, 0.95)';
+              e.currentTarget.style.transform = 'scale(1) translateY(0)';
+            }}
+          >
+            <SkipForward style={{ width: '20px', height: '20px' }} /> {/* 🔍 SMALLER ICON */}
+            App Betreten
+          </button>
+          
+          <div style={{
+            padding: '12px 20px', // 🔍 SMALLER PADDING
+            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+            border: '2px solid rgba(212, 175, 55, 0.5)',
+            borderRadius: '40px',
+            color: '#d4af37',
+            fontSize: '14px', // 🔍 SMALLER FONT
+            fontWeight: '600',
+            backdropFilter: 'blur(15px)',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '10px' // 🔍 SMALLER GAP
+          }}>
+            <div style={{
+              width: '5px', // 🔍 SMALLER DOT
+              height: '5px',
+              borderRadius: '50%',
+              backgroundColor: '#d4af37',
+              animation: 'statusPulse 1.5s ease-in-out infinite'
+            }} />
+            Auto-Start: {countdown}s
+          </div>
+        </div>
+      </div>
+      
+      {/* 🏛️ MACROBIUS HISTORICAL TEXT SECTION - MADE SMALLER */}
+      <div style={{
+        position: 'relative',
+        zIndex: 10,
+        maxWidth: '1000px', // 🔍 REDUCED from 1200px to 1000px
         margin: '0 auto',
-        padding: '40px',
+        padding: '30px', // 🔍 SMALLER PADDING
         width: '100%'
       }}>
         <div style={{
-          padding: '40px',
+          padding: '30px', // 🔍 SMALLER PADDING
           backgroundColor: 'rgba(255, 255, 255, 0.95)',
-          borderRadius: '24px',
-          border: '3px solid rgba(212, 175, 55, 0.6)',
-          boxShadow: '0 30px 60px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.3)',
+          borderRadius: '20px', // 🔍 SMALLER RADIUS
+          border: '2px solid rgba(212, 175, 55, 0.6)', // 🔍 THINNER BORDER
+          boxShadow: '0 20px 40px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.3)', // 🔍 SMALLER SHADOW
           backdropFilter: 'blur(20px)',
           position: 'relative',
           overflow: 'hidden'
@@ -579,21 +655,21 @@ export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }
             {/* Header with icon */}
             <div style={{
               textAlign: 'center',
-              marginBottom: '30px'
+              marginBottom: '25px' // 🔍 SMALLER MARGIN
             }}>
               <div style={{
                 display: 'inline-flex',
                 alignItems: 'center',
-                gap: '16px',
-                padding: '16px 32px',
+                gap: '12px', // 🔍 SMALLER GAP
+                padding: '12px 24px', // 🔍 SMALLER PADDING
                 backgroundColor: 'rgba(212, 175, 55, 0.15)',
                 border: '2px solid rgba(212, 175, 55, 0.4)',
-                borderRadius: '20px',
-                marginBottom: '24px'
+                borderRadius: '16px', // 🔍 SMALLER RADIUS
+                marginBottom: '20px' // 🔍 SMALLER MARGIN
               }}>
-                <Scroll style={{ width: '32px', height: '32px', color: '#d4af37' }} />
+                <Scroll style={{ width: '28px', height: '28px', color: '#d4af37' }} /> {/* 🔍 SMALLER ICON */}
                 <span style={{
-                  fontSize: '20px',
+                  fontSize: '18px', // 🔍 SMALLER FONT
                   fontWeight: 'bold',
                   color: '#92400e',
                   fontFamily: 'Times New Roman, serif'
@@ -605,15 +681,15 @@ export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }
             
             {/* Main German text */}
             <div style={{
-              fontSize: '17px',
-              lineHeight: '1.8',
+              fontSize: '15px', // 🔍 SMALLER FONT
+              lineHeight: '1.7', // 🔍 TIGHTER LINE HEIGHT
               color: '#1f2937',
               textAlign: 'justify',
-              marginBottom: '40px',
+              marginBottom: '30px', // 🔍 SMALLER MARGIN
               fontFamily: 'Georgia, serif',
               textShadow: '0 1px 2px rgba(0, 0, 0, 0.1)'
             }}>
-              <p style={{ margin: '0 0 20px 0', fontWeight: '500' }}>
+              <p style={{ margin: '0 0 15px 0', fontWeight: '500' }}> {/* 🔍 SMALLER MARGIN */}
                 <strong>Vor 1500 Jahren, als das römische Reich dem Untergang entgegensah, 
                 fertigte Macrobius, ein führender Verwaltungsbeamter und Gelehrter im 
                 Norden Italiens, eine Flaschenpost an die Zukunft an. Diese 
@@ -626,7 +702,7 @@ export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }
                 Ermutigung und Materialquelle.</strong>
               </p>
               
-              <p style={{ margin: '0 0 20px 0', fontWeight: '500' }}>
+              <p style={{ margin: '0 0 15px 0', fontWeight: '500' }}> {/* 🔍 SMALLER MARGIN */}
                 <strong>Vor 500 Jahren begann dieser Neuanfang. In Dänemark durch astronomische 
                 Beobachtungen Tycho Brahes, der damit den Grundstein für Keplers Arbeit 
                 und das Entstehen moderner Naturwissenschaften legte. Ein Assistent 
@@ -640,18 +716,18 @@ export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }
               </p>
             </div>
             
-            {/* 🖼️ Two Macrobius Images Side by Side */}
+            {/* 🖼️ Two Macrobius Images Side by Side - SMALLER */}
             <div style={{
               display: 'grid',
               gridTemplateColumns: '1fr 1fr',
-              gap: '30px',
-              marginTop: '40px'
+              gap: '25px', // 🔍 SMALLER GAP
+              marginTop: '30px' // 🔍 SMALLER MARGIN
             }}>
               {/* Macrobius Portrait */}
               <div style={{
-                borderRadius: '16px',
+                borderRadius: '12px', // 🔍 SMALLER RADIUS
                 overflow: 'hidden',
-                boxShadow: '0 20px 40px rgba(0, 0, 0, 0.25), 0 0 0 3px rgba(212, 175, 55, 0.4)',
+                boxShadow: '0 15px 30px rgba(0, 0, 0, 0.2), 0 0 0 2px rgba(212, 175, 55, 0.4)', // 🔍 SMALLER SHADOW
                 border: '2px solid rgba(212, 175, 55, 0.5)',
                 transition: 'all 0.4s ease',
                 backgroundColor: '#ffffff'
@@ -661,36 +737,36 @@ export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }
                   alt="Macrobius Portrait - Der Gelehrte des späten römischen Reiches"
                   style={{
                     width: '100%',
-                    height: '300px',
+                    height: '250px', // 🔍 SMALLER HEIGHT
                     objectFit: 'cover',
                     display: 'block',
                     transition: 'transform 0.4s ease'
                   }}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.transform = 'scale(1.05)';
-                    e.currentTarget.parentElement!.style.boxShadow = '0 30px 60px rgba(0, 0, 0, 0.35), 0 0 0 3px rgba(212, 175, 55, 0.6)';
+                    e.currentTarget.style.transform = 'scale(1.03)'; // 🔍 SMALLER SCALE
+                    e.currentTarget.parentElement!.style.boxShadow = '0 20px 40px rgba(0, 0, 0, 0.3), 0 0 0 2px rgba(212, 175, 55, 0.6)';
                   }}
                   onMouseLeave={(e) => {
                     e.currentTarget.style.transform = 'scale(1)';
-                    e.currentTarget.parentElement!.style.boxShadow = '0 20px 40px rgba(0, 0, 0, 0.25), 0 0 0 3px rgba(212, 175, 55, 0.4)';
+                    e.currentTarget.parentElement!.style.boxShadow = '0 15px 30px rgba(0, 0, 0, 0.2), 0 0 0 2px rgba(212, 175, 55, 0.4)';
                   }}
                 />
                 <div style={{
-                  padding: '20px',
+                  padding: '15px', // 🔍 SMALLER PADDING
                   textAlign: 'center',
                   background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(248, 246, 240, 0.95))'
                 }}>
                   <h3 style={{
-                    fontSize: '18px',
+                    fontSize: '16px', // 🔍 SMALLER FONT
                     fontWeight: 'bold',
                     color: '#92400e',
-                    margin: '0 0 8px 0',
+                    margin: '0 0 6px 0', // 🔍 SMALLER MARGIN
                     fontFamily: 'Times New Roman, serif'
                   }}>
                     Macrobius Ambrosius Theodosius
                   </h3>
                   <p style={{
-                    fontSize: '14px',
+                    fontSize: '12px', // 🔍 SMALLER FONT
                     color: '#6b7280',
                     margin: 0,
                     fontStyle: 'italic'
@@ -702,9 +778,9 @@ export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }
               
               {/* Macrobius Universe */}
               <div style={{
-                borderRadius: '16px',
+                borderRadius: '12px', // 🔍 SMALLER RADIUS
                 overflow: 'hidden',
-                boxShadow: '0 20px 40px rgba(0, 0, 0, 0.25), 0 0 0 3px rgba(212, 175, 55, 0.4)',
+                boxShadow: '0 15px 30px rgba(0, 0, 0, 0.2), 0 0 0 2px rgba(212, 175, 55, 0.4)', // 🔍 SMALLER SHADOW
                 border: '2px solid rgba(212, 175, 55, 0.5)',
                 transition: 'all 0.4s ease',
                 backgroundColor: '#ffffff'
@@ -714,36 +790,36 @@ export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }
                   alt="Macrobius Universum - Kosmologische Darstellung der antiken Welt"
                   style={{
                     width: '100%',
-                    height: '300px',
+                    height: '250px', // 🔍 SMALLER HEIGHT
                     objectFit: 'cover',
                     display: 'block',
                     transition: 'transform 0.4s ease'
                   }}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.transform = 'scale(1.05)';
-                    e.currentTarget.parentElement!.style.boxShadow = '0 30px 60px rgba(0, 0, 0, 0.35), 0 0 0 3px rgba(212, 175, 55, 0.6)';
+                    e.currentTarget.style.transform = 'scale(1.03)'; // 🔍 SMALLER SCALE
+                    e.currentTarget.parentElement!.style.boxShadow = '0 20px 40px rgba(0, 0, 0, 0.3), 0 0 0 2px rgba(212, 175, 55, 0.6)';
                   }}
                   onMouseLeave={(e) => {
                     e.currentTarget.style.transform = 'scale(1)';
-                    e.currentTarget.parentElement!.style.boxShadow = '0 20px 40px rgba(0, 0, 0, 0.25), 0 0 0 3px rgba(212, 175, 55, 0.4)';
+                    e.currentTarget.parentElement!.style.boxShadow = '0 15px 30px rgba(0, 0, 0, 0.2), 0 0 0 2px rgba(212, 175, 55, 0.4)';
                   }}
                 />
                 <div style={{
-                  padding: '20px',
+                  padding: '15px', // 🔍 SMALLER PADDING
                   textAlign: 'center',
                   background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(248, 246, 240, 0.95))'
                 }}>
                   <h3 style={{
-                    fontSize: '18px',
+                    fontSize: '16px', // 🔍 SMALLER FONT
                     fontWeight: 'bold',
                     color: '#92400e',
-                    margin: '0 0 8px 0',
+                    margin: '0 0 6px 0', // 🔍 SMALLER MARGIN
                     fontFamily: 'Times New Roman, serif'
                   }}>
                     Somnium Scipionis
                   </h3>
                   <p style={{
-                    fontSize: '14px',
+                    fontSize: '12px', // 🔍 SMALLER FONT
                     color: '#6b7280',
                     margin: 0,
                     fontStyle: 'italic'
@@ -753,81 +829,6 @@ export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }
                 </div>
               </div>
             </div>
-          </div>
-        </div>
-      </div>
-      
-      {/* 🎯 ACTION SECTION - RESTORED TO ORIGINAL SIZE */}
-      <div style={{
-        height: '30vh', // ✅ RESTORED to original size
-        position: 'relative',
-        zIndex: 10,
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        alignItems: 'center',
-        padding: '40px'
-      }}>
-        <div style={{
-          display: 'flex',
-          gap: '24px',
-          alignItems: 'center',
-          justifyContent: 'center',
-          flexWrap: 'wrap'
-        }}>
-          <button
-            onClick={skipToApp}
-            style={{
-              padding: '20px 40px',
-              backgroundColor: 'rgba(212, 175, 55, 0.95)',
-              border: '3px solid #d4af37',
-              borderRadius: '60px',
-              color: '#1a1a1a',
-              fontSize: '18px',
-              fontWeight: 'bold',
-              cursor: 'pointer',
-              transition: 'all 0.4s ease',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '16px',
-              boxShadow: '0 12px 30px rgba(212, 175, 55, 0.6)',
-              textTransform: 'uppercase',
-              letterSpacing: '1px'
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = '#d4af37';
-              e.currentTarget.style.transform = 'scale(1.08) translateY(-3px)';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.backgroundColor = 'rgba(212, 175, 55, 0.95)';
-              e.currentTarget.style.transform = 'scale(1) translateY(0)';
-            }}
-          >
-            <SkipForward style={{ width: '24px', height: '24px' }} />
-            App Betreten
-          </button>
-          
-          <div style={{
-            padding: '16px 28px',
-            backgroundColor: 'rgba(0, 0, 0, 0.8)',
-            border: '2px solid rgba(212, 175, 55, 0.5)',
-            borderRadius: '40px',
-            color: '#d4af37',
-            fontSize: '16px',
-            fontWeight: '600',
-            backdropFilter: 'blur(15px)',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '12px'
-          }}>
-            <div style={{
-              width: '6px',
-              height: '6px',
-              borderRadius: '50%',
-              backgroundColor: '#d4af37',
-              animation: 'statusPulse 1.5s ease-in-out infinite'
-            }} />
-            Auto-Start: {countdown}s
           </div>
         </div>
       </div>
