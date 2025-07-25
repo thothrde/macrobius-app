@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { MacrobiusAPI } from '@/lib/enhanced-api-client-with-fallback';
+import { enhancedApiClient } from '@/lib/enhanced-api-client-with-fallback';
 import { 
   BookOpen, 
   Star, 
@@ -26,7 +26,10 @@ import {
   Database,
   Monitor,
   ArrowRight,
-  ChevronRight
+  ChevronRight,
+  Bot,
+  Cpu,
+  Search
 } from 'lucide-react';
 
 interface IntroSectionProps {
@@ -34,7 +37,17 @@ interface IntroSectionProps {
   onNavigateToSection?: (section: string) => void;
 }
 
-// 🎨 ENHANCED About Modal with Modern Design
+interface ConnectionStatus {
+  oracle: 'connected' | 'cors_error' | 'timeout' | 'offline' | 'checking';
+  rag: 'connected' | 'fallback_active' | 'local_processing' | 'checking';
+  ai_systems: 'connected' | 'fallback_active' | 'local_processing' | 'checking';
+  message: string;
+  timestamp: number;
+  attempts: number;
+  fallback_note?: string;
+}
+
+// 🎨 Enhanced About Modal
 const AboutModal: React.FC<{ 
   isOpen: boolean; 
   onClose: () => void; 
@@ -55,8 +68,7 @@ const AboutModal: React.FC<{
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        padding: '24px',
-        animation: 'modalFadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1)'
+        padding: '24px'
       }}
       onClick={(e) => {
         if (e.target === e.currentTarget) onClose();
@@ -72,14 +84,9 @@ const AboutModal: React.FC<{
           maxHeight: '85vh',
           overflowY: 'auto',
           boxShadow: '0 32px 64px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(212, 175, 55, 0.2)',
-          border: '3px solid rgba(212, 175, 55, 0.15)',
-          position: 'relative',
-          transform: 'scale(1)',
-          animation: 'modalSlideIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
-          background: 'linear-gradient(145deg, #ffffff, #fefbf7)'
+          border: '3px solid rgba(212, 175, 55, 0.15)'
         }}
       >
-        {/* 🎨 Enhanced close button */}
         <button
           onClick={onClose}
           style={{
@@ -93,144 +100,46 @@ const AboutModal: React.FC<{
             border: '2px solid rgba(212, 175, 55, 0.2)',
             color: '#92400e',
             cursor: 'pointer',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
             fontSize: '20px',
-            fontWeight: 'bold',
-            transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-            boxShadow: '0 4px 12px rgba(212, 175, 55, 0.15)'
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.backgroundColor = 'rgba(212, 175, 55, 0.2)';
-            e.currentTarget.style.transform = 'scale(1.1) rotate(90deg)';
-            e.currentTarget.style.boxShadow = '0 8px 20px rgba(212, 175, 55, 0.3)';
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.backgroundColor = 'rgba(212, 175, 55, 0.1)';
-            e.currentTarget.style.transform = 'scale(1) rotate(0deg)';
-            e.currentTarget.style.boxShadow = '0 4px 12px rgba(212, 175, 55, 0.15)';
+            fontWeight: 'bold'
           }}
         >
           ×
         </button>
         
-        {/* 🎨 Enhanced header with gradient background */}
-        <div style={{ 
-          marginBottom: '32px', 
-          textAlign: 'center',
-          padding: '24px',
-          borderRadius: '16px',
-          background: 'linear-gradient(135deg, rgba(212, 175, 55, 0.1), rgba(245, 158, 11, 0.05))',
-          border: '1px solid rgba(212, 175, 55, 0.2)'
-        }}>
-          <Crown style={{ 
-            width: '56px', 
-            height: '56px', 
-            color: '#d4af37', 
-            marginBottom: '20px', 
-            margin: '0 auto 20px',
-            filter: 'drop-shadow(0 4px 8px rgba(212, 175, 55, 0.3))'
-          }} />
-          <h2 style={{ 
-            fontSize: '32px', 
-            fontWeight: 'bold', 
-            color: '#92400e', 
-            margin: '0 0 12px 0',
-            fontFamily: 'Times New Roman, serif',
-            background: 'linear-gradient(135deg, #92400e, #d4af37)',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent'
-          }}>
+        <div style={{ textAlign: 'center', marginBottom: '32px' }}>
+          <Crown style={{ width: '56px', height: '56px', color: '#d4af37', margin: '0 auto 20px' }} />
+          <h2 style={{ fontSize: '32px', fontWeight: 'bold', color: '#92400e', margin: '0 0 12px 0' }}>
             {t('about.title')}
           </h2>
-          <p style={{ 
-            fontSize: '18px', 
-            color: '#a16207', 
-            fontStyle: 'italic',
-            margin: 0,
-            lineHeight: '1.6'
-          }}>
+          <p style={{ fontSize: '18px', color: '#a16207', fontStyle: 'italic' }}>
             {t('about.subtitle')}
           </p>
         </div>
         
-        {/* 🎨 Enhanced content sections */}
         <div style={{ marginBottom: '28px' }}>
-          <h3 style={{ 
-            fontSize: '22px', 
-            fontWeight: 'bold', 
-            color: '#92400e', 
-            marginBottom: '16px',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '12px',
-            padding: '8px 0',
-            borderBottom: '2px solid rgba(212, 175, 55, 0.2)'
-          }}>
-            <Scroll style={{ width: '24px', height: '24px', color: '#d4af37' }} />
+          <h3 style={{ fontSize: '22px', fontWeight: 'bold', color: '#92400e', marginBottom: '16px' }}>
             {t('about.biography.title')}
           </h3>
-          <p style={{ 
-            fontSize: '16px', 
-            color: '#374151', 
-            lineHeight: '1.7',
-            margin: 0,
-            textAlign: 'justify'
-          }}>
+          <p style={{ fontSize: '16px', color: '#374151', lineHeight: '1.7' }}>
             {t('about.biography.text')}
           </p>
         </div>
         
         <div>
-          <h3 style={{ 
-            fontSize: '22px', 
-            fontWeight: 'bold', 
-            color: '#92400e', 
-            marginBottom: '16px',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '12px',
-            padding: '8px 0',
-            borderBottom: '2px solid rgba(212, 175, 55, 0.2)'
-          }}>
-            <BookOpen style={{ width: '24px', height: '24px', color: '#d4af37' }} />
+          <h3 style={{ fontSize: '22px', fontWeight: 'bold', color: '#92400e', marginBottom: '16px' }}>
             {t('about.works.title')}
           </h3>
-          <p style={{ 
-            fontSize: '16px', 
-            color: '#374151', 
-            lineHeight: '1.7',
-            margin: 0,
-            textAlign: 'justify'
-          }}>
+          <p style={{ fontSize: '16px', color: '#374151', lineHeight: '1.7' }}>
             {t('about.works.text')}
           </p>
         </div>
       </div>
-      
-      <style jsx>{`
-        @keyframes modalFadeIn {
-          from { opacity: 0; }
-          to { opacity: 1; }
-        }
-        
-        @keyframes modalSlideIn {
-          from { 
-            transform: scale(0.9) translateY(-30px); 
-            opacity: 0;
-          }
-          to { 
-            transform: scale(1) translateY(0); 
-            opacity: 1;
-          }
-        }
-      `}</style>
     </div>
   );
 };
 
-// 🎨 ENHANCED Feature Card with Modern Design
+// 🎨 Enhanced Feature Card with Navigation
 const FeatureCard: React.FC<{
   icon: React.ComponentType<any>;
   title: string;
@@ -238,27 +147,25 @@ const FeatureCard: React.FC<{
   status: 'active' | 'enhanced' | 'ai';
   statusLabel: string;
   onClick?: () => void;
-}> = ({ icon: Icon, title, description, status, statusLabel, onClick }) => {
+  aiAvailable?: boolean;
+}> = ({ icon: Icon, title, description, status, statusLabel, onClick, aiAvailable = true }) => {
   const [isHovered, setIsHovered] = useState(false);
   
   const statusConfig = {
     active: {
       color: '#10b981',
       bgColor: 'rgba(16, 185, 129, 0.1)',
-      borderColor: 'rgba(16, 185, 129, 0.3)',
-      glowColor: 'rgba(16, 185, 129, 0.4)'
+      borderColor: 'rgba(16, 185, 129, 0.3)'
     },
     enhanced: {
       color: '#f59e0b',
       bgColor: 'rgba(245, 158, 11, 0.1)',
-      borderColor: 'rgba(245, 158, 11, 0.3)',
-      glowColor: 'rgba(245, 158, 11, 0.4)'
+      borderColor: 'rgba(245, 158, 11, 0.3)'
     },
     ai: {
-      color: '#8b5cf6',
-      bgColor: 'rgba(139, 92, 246, 0.1)',
-      borderColor: 'rgba(139, 92, 246, 0.3)',
-      glowColor: 'rgba(139, 92, 246, 0.4)'
+      color: aiAvailable ? '#8b5cf6' : '#6b7280',
+      bgColor: aiAvailable ? 'rgba(139, 92, 246, 0.1)' : 'rgba(107, 114, 128, 0.1)',
+      borderColor: aiAvailable ? 'rgba(139, 92, 246, 0.3)' : 'rgba(107, 114, 128, 0.3)'
     }
   };
   
@@ -271,34 +178,22 @@ const FeatureCard: React.FC<{
         borderRadius: '16px',
         border: `2px solid ${isHovered ? config.borderColor : 'rgba(212, 175, 55, 0.2)'}`,
         background: isHovered 
-          ? `linear-gradient(135deg, ${config.bgColor}, rgba(255, 255, 255, 0.9), ${config.bgColor})`
+          ? `linear-gradient(135deg, ${config.bgColor}, rgba(255, 255, 255, 0.9))`
           : 'linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(248, 246, 240, 0.8))',
         backdropFilter: 'blur(16px)',
-        transition: 'all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
+        transition: 'all 0.5s ease',
         cursor: onClick ? 'pointer' : 'default',
         position: 'relative',
         overflow: 'hidden',
         transform: isHovered ? 'translateY(-8px) scale(1.02)' : 'none',
         boxShadow: isHovered 
-          ? `0 25px 50px ${config.glowColor}, 0 0 0 1px ${config.borderColor}, 0 0 30px ${config.glowColor}20`
-          : '0 10px 30px rgba(0, 0, 0, 0.1), 0 1px 8px rgba(0, 0, 0, 0.1)'
+          ? `0 25px 50px rgba(${status === 'ai' ? '139, 92, 246' : '212, 175, 55'}, 0.3)`
+          : '0 10px 30px rgba(0, 0, 0, 0.1)'
       }}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       onClick={onClick}
     >
-      {/* 🎨 Animated background particles */}
-      {isHovered && (
-        <div style={{
-          position: 'absolute',
-          inset: 0,
-          background: `radial-gradient(circle at 20% 20%, ${config.glowColor}15, transparent 70%),
-                       radial-gradient(circle at 80% 80%, ${config.glowColor}10, transparent 70%),
-                       radial-gradient(circle at 50% 50%, ${config.glowColor}05, transparent 50%)`,
-          animation: 'particleFloat 3s ease-in-out infinite'
-        }} />
-      )}
-      
       {/* Status Badge */}
       <div style={{
         position: 'absolute',
@@ -313,9 +208,7 @@ const FeatureCard: React.FC<{
         border: `1px solid ${config.borderColor}`,
         display: 'flex',
         alignItems: 'center',
-        gap: '4px',
-        boxShadow: `0 2px 8px ${config.glowColor}30`,
-        zIndex: 2
+        gap: '4px'
       }}>
         {status === 'ai' && <Zap style={{ width: '10px', height: '10px' }} />}
         {statusLabel}
@@ -325,23 +218,15 @@ const FeatureCard: React.FC<{
         display: 'flex',
         alignItems: 'center',
         marginBottom: '20px',
-        gap: '16px',
-        position: 'relative',
-        zIndex: 2
+        gap: '16px'
       }}>
         <div style={{
           padding: '16px',
           borderRadius: '12px',
           backgroundColor: `${config.color}15`,
-          border: `2px solid ${config.color}30`,
-          boxShadow: `0 4px 16px ${config.glowColor}20`
+          border: `2px solid ${config.color}30`
         }}>
-          <Icon style={{ 
-            width: '28px', 
-            height: '28px', 
-            color: config.color,
-            filter: `drop-shadow(0 2px 4px ${config.glowColor}40)`
-          }} />
+          <Icon style={{ width: '28px', height: '28px', color: config.color }} />
         </div>
         
         <h3 style={{
@@ -349,8 +234,7 @@ const FeatureCard: React.FC<{
           fontWeight: '700',
           color: '#92400e',
           margin: 0,
-          flex: 1,
-          textShadow: '0 2px 4px rgba(146, 64, 14, 0.1)'
+          flex: 1
         }}>
           {title}
         </h3>
@@ -360,70 +244,72 @@ const FeatureCard: React.FC<{
         fontSize: '15px',
         color: '#6b7280',
         lineHeight: '1.6',
-        margin: 0,
-        position: 'relative',
-        zIndex: 2
+        margin: 0
       }}>
         {description}
       </p>
       
-      {/* 🎨 Hover effect shimmer */}
-      {isHovered && (
+      {/* AI Available Indicator */}
+      {status === 'ai' && (
         <div style={{
-          position: 'absolute',
-          top: '0',
-          left: '0',
-          right: '0',
-          height: '3px',
-          background: `linear-gradient(90deg, transparent, ${config.color}, transparent)`,
-          animation: 'shimmer 2s ease-in-out infinite',
-          zIndex: 3
-        }} />
+          marginTop: '16px',
+          padding: '8px 12px',
+          backgroundColor: aiAvailable ? 'rgba(16, 185, 129, 0.1)' : 'rgba(245, 158, 11, 0.1)',
+          border: `1px solid ${aiAvailable ? 'rgba(16, 185, 129, 0.3)' : 'rgba(245, 158, 11, 0.3)'}`,
+          borderRadius: '8px',
+          fontSize: '12px',
+          fontWeight: '600',
+          color: aiAvailable ? '#059669' : '#d97706',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '6px'
+        }}>
+          {aiAvailable ? <CheckCircle style={{ width: '14px', height: '14px' }} /> : <Activity style={{ width: '14px', height: '14px' }} />}
+          {aiAvailable ? 'KI-System verfügbar' : 'Lokale Verarbeitung aktiv'}
+        </div>
       )}
     </div>
   );
 };
 
-// 🔧 ENHANCED Connection Status Component with Real Oracle Cloud Testing
+// 🔧 Enhanced Connection Status Component
 const ConnectionStatus: React.FC<{
   onTest: () => void;
   testing: boolean;
-  connectionState: any;
+  connectionState: ConnectionStatus | null;
 }> = ({ onTest, testing, connectionState }) => {
   const getStatusIcon = () => {
     if (testing) return <Loader2 style={{ width: '18px', height: '18px', animation: 'spin 1s linear infinite' }} />;
     
-    switch (connectionState.status) {
+    if (!connectionState) return <Activity style={{ width: '18px', height: '18px' }} />;
+    
+    switch (connectionState.oracle) {
       case 'connected': return <CheckCircle style={{ width: '18px', height: '18px' }} />;
-      case 'cors_error': return <AlertCircle style={{ width: '18px', height: '18px' }} />;
-      case 'error': return <WifiOff style={{ width: '18px', height: '18px' }} />;
-      case 'success': return <CheckCircle style={{ width: '18px', height: '18px' }} />;
+      case 'cors_error':
+      case 'timeout':
+      case 'offline': return <Bot style={{ width: '18px', height: '18px' }} />; // Bot icon for fallback
       default: return <Activity style={{ width: '18px', height: '18px' }} />;
     }
   };
   
   const getStatusColor = () => {
     if (testing) return '#6b7280';
+    if (!connectionState) return '#6b7280';
     
-    switch (connectionState.status) {
-      case 'connected':
-      case 'success': return '#10b981';
-      case 'cors_error': return '#f59e0b';
-      case 'error': return '#ef4444';
+    switch (connectionState.oracle) {
+      case 'connected': return '#10b981';
+      case 'cors_error':
+      case 'timeout':
+      case 'offline': return '#f59e0b'; // Amber for fallback systems
       default: return '#6b7280';
     }
   };
   
   const getStatusMessage = () => {
     if (testing) return '🔍 Teste Oracle Cloud Verbindung...';
+    if (!connectionState) return '📡 Verbindungsstatus wird ermittelt...';
     
-    switch (connectionState.status) {
-      case 'connected':
-      case 'success': return '✅ Oracle Cloud verbunden - 1.401 authentische Textstellen verfügbar';
-      case 'cors_error': return '🔧 Oracle Cloud CORS-Problem - Erweiterte KI-Fallback-Systeme aktiv';
-      case 'error': return '⚠️ Oracle Cloud nicht verfügbar - KI-Systeme verwenden lokale Verarbeitung';
-      default: return '📡 Oracle Cloud Status wird geprüft...';
-    }
+    return connectionState.message;
   };
   
   return (
@@ -442,10 +328,11 @@ const ConnectionStatus: React.FC<{
       transition: 'all 0.3s ease',
       backdropFilter: 'blur(8px)',
       opacity: testing ? 0.7 : 1,
-      boxShadow: `0 4px 16px ${getStatusColor()}20`
+      boxShadow: `0 4px 16px ${getStatusColor()}20`,
+      maxWidth: '600px'
     }}>
       {getStatusIcon()}
-      <span>{getStatusMessage()}</span>
+      <span style={{ flex: 1 }}>{getStatusMessage()}</span>
       {!testing && (
         <button
           onClick={onTest}
@@ -461,78 +348,246 @@ const ConnectionStatus: React.FC<{
             cursor: 'pointer',
             transition: 'all 0.2s ease'
           }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.backgroundColor = `${getStatusColor()}25`;
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.backgroundColor = `${getStatusColor()}15`;
-          }}
         >
-          Erneut testen
+          Test
         </button>
       )}
     </div>
   );
 };
 
-// 🎨 ENHANCED INTRO SECTION with Modern Visual Design
+// 🚀 Enhanced AI System Status Dashboard
+const AISystemsDashboard: React.FC<{
+  connectionState: ConnectionStatus | null;
+  onNavigate: (section: string) => void;
+}> = ({ connectionState, onNavigate }) => {
+  const aiSystems = [
+    {
+      id: 'rag',
+      name: 'RAG Assistant',
+      icon: Search,
+      description: 'Semantische Suche in 1.401 Textstellen',
+      target: 'ki-rag-assistant',
+      status: connectionState?.rag || 'checking'
+    },
+    {
+      id: 'tutoring',
+      name: 'AI Tutor',
+      description: 'Personalisierte Lernbegleitung',
+      icon: Crown,
+      target: 'ai-tutoring',
+      status: connectionState?.ai_systems || 'checking'
+    },
+    {
+      id: 'cultural',
+      name: 'Kulturanalyse',
+      description: 'KI-gestützte Textanalyse',
+      icon: Brain,
+      target: 'ai-cultural-analysis',
+      status: connectionState?.ai_systems || 'checking'
+    },
+    {
+      id: 'learning',
+      name: 'Lernpfade',
+      description: 'Adaptive Lernempfehlungen',
+      icon: Target,
+      target: 'personalized-learning',
+      status: connectionState?.ai_systems || 'checking'
+    }
+  ];
+  
+  const getSystemStatusColor = (status: string) => {
+    switch (status) {
+      case 'connected': return '#10b981';
+      case 'fallback_active':
+      case 'local_processing': return '#f59e0b';
+      default: return '#6b7280';
+    }
+  };
+  
+  const getSystemStatusText = (status: string) => {
+    switch (status) {
+      case 'connected': return 'Online';
+      case 'fallback_active': return 'Fallback';
+      case 'local_processing': return 'Lokal';
+      case 'checking': return 'Prüfung';
+      default: return 'Unbekannt';
+    }
+  };
+  
+  return (
+    <div style={{
+      backgroundColor: 'rgba(139, 92, 246, 0.05)',
+      border: '2px solid rgba(139, 92, 246, 0.2)',
+      borderRadius: '16px',
+      padding: '24px',
+      marginBottom: '40px'
+    }}>
+      <div style={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: '12px',
+        marginBottom: '20px'
+      }}>
+        <div style={{
+          padding: '12px',
+          borderRadius: '10px',
+          backgroundColor: 'rgba(139, 92, 246, 0.1)',
+          border: '2px solid rgba(139, 92, 246, 0.3)'
+        }}>
+          <Cpu style={{ width: '24px', height: '24px', color: '#8b5cf6' }} />
+        </div>
+        <div>
+          <h3 style={{
+            fontSize: '20px',
+            fontWeight: 'bold',
+            color: '#7c3aed',
+            margin: '0 0 4px 0'
+          }}>
+            🤖 KI-Systeme Status
+          </h3>
+          <p style={{
+            fontSize: '14px',
+            color: '#6b7280',
+            margin: 0
+          }}>
+            Alle KI-Funktionen sind verfügbar und einsatzbereit
+          </p>
+        </div>
+      </div>
+      
+      <div style={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+        gap: '16px'
+      }}>
+        {aiSystems.map((system) => (
+          <div
+            key={system.id}
+            onClick={() => onNavigate(system.target)}
+            style={{
+              padding: '16px',
+              backgroundColor: 'rgba(255, 255, 255, 0.8)',
+              border: '1px solid rgba(139, 92, 246, 0.2)',
+              borderRadius: '12px',
+              cursor: 'pointer',
+              transition: 'all 0.3s ease',
+              position: 'relative'
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.transform = 'translateY(-2px)';
+              e.currentTarget.style.boxShadow = '0 8px 20px rgba(139, 92, 246, 0.2)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = 'translateY(0)';
+              e.currentTarget.style.boxShadow = '0 2px 8px rgba(139, 92, 246, 0.1)';
+            }}
+          >
+            <div style={{
+              position: 'absolute',
+              top: '8px',
+              right: '8px',
+              width: '8px',
+              height: '8px',
+              borderRadius: '50%',
+              backgroundColor: getSystemStatusColor(system.status)
+            }} />
+            
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+              marginBottom: '8px'
+            }}>
+              <system.icon style={{ width: '18px', height: '18px', color: '#8b5cf6' }} />
+              <span style={{
+                fontSize: '14px',
+                fontWeight: '600',
+                color: '#7c3aed'
+              }}>
+                {system.name}
+              </span>
+            </div>
+            
+            <p style={{
+              fontSize: '12px',
+              color: '#6b7280',
+              margin: '0 0 8px 0',
+              lineHeight: '1.4'
+            }}>
+              {system.description}
+            </p>
+            
+            <div style={{
+              fontSize: '10px',
+              fontWeight: '600',
+              color: getSystemStatusColor(system.status),
+              textTransform: 'uppercase'
+            }}>
+              {getSystemStatusText(system.status)}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+// 🚀 MAIN INTRO SECTION
 export const IntroSection: React.FC<IntroSectionProps> = ({ language, onNavigateToSection }) => {
   const { t } = useLanguage();
   const [showAbout, setShowAbout] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const [imageLoadStates, setImageLoadStates] = useState<Record<number, boolean>>({});
-  const [connectionTest, setConnectionTest] = useState<{
-    status: 'idle' | 'testing' | 'success' | 'error' | 'connected' | 'cors_error';
-    message: string;
-    timestamp?: number;
-    statusData?: any;
-    attempts?: number;
-  }>({ status: 'idle', message: '', attempts: 0 });
+  const [connectionState, setConnectionState] = useState<ConnectionStatus | null>(null);
+  const [isTestingConnection, setIsTestingConnection] = useState(false);
   
-  // 🔧 FIXED: Navigation handler
+  // 🔧 Enhanced Navigation handler
   const handleNavigation = (section: string) => {
     console.log(`🚀 Navigating to section: ${section}`);
     if (typeof window !== 'undefined') {
-      // Create a custom event to notify the parent component
       const navigationEvent = new CustomEvent('navigateToSection', {
         detail: { section }
       });
       window.dispatchEvent(navigationEvent);
     }
     
-    // If onNavigateToSection prop is provided, use it
     if (onNavigateToSection) {
       onNavigateToSection(section);
     }
   };
   
-  // 🖼️ FIXED: Enhanced image rotation with correct Rome image and NAVIGATION
+  // 🖼️ Enhanced image rotation with navigation
   const images = [
     {
       src: '/Rome-under.jpg',
       titleKey: 'image.rome.title',
       subtitleKey: 'image.rome.subtitle',
-      navigationTarget: 'worldmap', // 🔧 FIXED: Navigate to world map
+      navigationTarget: 'worldmap',
       buttonText: 'Weltreise beginnen'
     },
     {
       src: '/Macrobius-Portrait.jpg',
       titleKey: 'image.macrobius.title',
       subtitleKey: 'image.macrobius.subtitle',
-      navigationTarget: 'banquet', // 🔧 FIXED: Navigate to banquet section
+      navigationTarget: 'banquet',
       buttonText: 'Gastmahl erkunden'
     },
     {
       src: '/TychoAssistent.jpg',
       titleKey: 'image.tycho.title',
       subtitleKey: 'image.tycho.subtitle',
-      navigationTarget: 'cosmos', // 🔧 FIXED: Navigate to cosmos section
+      navigationTarget: 'cosmos',
       buttonText: 'Kosmos entdecken'
     }
   ];
   
-  // ✅ LANGUAGE-SENSITIVE FEATURES CONFIGURATION with NAVIGATION
+  // 🔧 Enhanced features with AI availability check
   const getFeatures = () => {
+    const aiAvailable = connectionState ? 
+      (connectionState.ai_systems === 'connected' || 
+       connectionState.ai_systems === 'local_processing' ||
+       connectionState.ai_systems === 'fallback_active') : true;
+    
     const baseFeatures = [
       {
         icon: Brain,
@@ -583,7 +638,8 @@ export const IntroSection: React.FC<IntroSectionProps> = ({ language, onNavigate
       title: t(feature.titleKey),
       description: t(feature.descriptionKey),
       statusLabel: t(`features.status.${feature.status}`),
-      onClick: () => handleNavigation(feature.navigationTarget) // 🔧 FIXED: Add navigation
+      onClick: () => handleNavigation(feature.navigationTarget),
+      aiAvailable: feature.status === 'ai' ? aiAvailable : true
     }));
   };
   
@@ -591,159 +647,40 @@ export const IntroSection: React.FC<IntroSectionProps> = ({ language, onNavigate
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentImageIndex((prev) => (prev + 1) % images.length);
-    }, 7000); // Slower transition for better viewing
+    }, 7000);
     
     return () => clearInterval(interval);
   }, [images.length]);
   
-  // Handle image load states
-  const handleImageLoad = (index: number) => {
-    setImageLoadStates(prev => ({ ...prev, [index]: true }));
-  };
-  
-  // 🔧 ENHANCED: Oracle Cloud connection test with BETTER ERROR HANDLING
+  // 🔧 Enhanced Oracle Cloud connection test
   const testConnection = async () => {
-    const attempts = (connectionTest.attempts || 0) + 1;
-    setConnectionTest({ status: 'testing', message: 'Teste Verbindung...', attempts });
+    setIsTestingConnection(true);
+    const attempts = (connectionState?.attempts || 0) + 1;
     
     try {
-      console.log(`🔍 Oracle Cloud connection test #${attempts} starting...`);
-      
-      // 🔧 IMPROVED: Test with better error handling and HTTPS priority
-      const endpoints = [
-        'https://152.70.184.232:8080/api/health',
-        'http://152.70.184.232:8080/api/health',
-        'https://152.70.184.232:8080/api/rag/status', 
-        'http://152.70.184.232:8080/api/rag/status',
-        'https://152.70.184.232:8080/api/passages/count',
-        'http://152.70.184.232:8080/api/passages/count'
-      ];
-      
-      let successfulEndpoint: string | null = null;
-      let lastError: Error | null = null;
-      
-      for (const endpoint of endpoints) {
-        try {
-          console.log(`🔍 Testing endpoint: ${endpoint}`);
-          const controller = new AbortController();
-          const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
-          
-          const response = await fetch(endpoint, {
-            method: 'GET',
-            headers: {
-              'Content-Type': 'application/json',
-              'Accept': 'application/json',
-              'X-Client-Version': '2.1-ENHANCED',
-              'X-Test-Attempt': attempts.toString(),
-              'Cache-Control': 'no-cache'
-            },
-            signal: controller.signal,
-            mode: 'cors',
-            credentials: 'omit'
-          });
-          
-          clearTimeout(timeoutId);
-          
-          if (response.ok) {
-            const data = await response.json();
-            console.log(`✅ Oracle Cloud connection successful via ${endpoint}:`, data);
-            successfulEndpoint = endpoint;
-            
-            setConnectionTest({
-              status: 'success',
-              message: '✅ Oracle Cloud verbunden - RAG-System betriebsbereit',
-              timestamp: Date.now(),
-              statusData: { 
-                oracle: 'connected', 
-                rag: 'connected',
-                ai_systems: 'connected',
-                endpoint: endpoint,
-                response: data
-              },
-              attempts
-            });
-            return;
-          } else {
-            console.warn(`❌ Endpoint ${endpoint} returned status: ${response.status}`);
-          }
-        } catch (endpointError) {
-          console.warn(`❌ Endpoint ${endpoint} failed:`, endpointError);
-          lastError = endpointError instanceof Error ? endpointError : new Error('Unknown endpoint error');
-        }
-      }
-      
-      // If no endpoint worked, determine error type
-      if (!successfulEndpoint) {
-        console.error('❌ All Oracle Cloud endpoints failed. Last error:', lastError);
-        
-        // Check if it's a CORS/network issue
-        const isCorsError = lastError instanceof TypeError && 
-                           (lastError.message.includes('fetch') || 
-                            lastError.message.includes('CORS') ||
-                            lastError.message.includes('Network') ||
-                            lastError.message.includes('Failed to fetch'));
-        
-        const isTimeoutError = lastError?.name === 'AbortError';
-        
-        if (isCorsError || isTimeoutError) {
-          setConnectionTest({
-            status: 'cors_error',
-            message: '🔧 Oracle Cloud Verbindungsproblem - Erweiterte KI-Fallback-Systeme aktiv',
-            timestamp: Date.now(),
-            statusData: { 
-              oracle: 'cors_error', 
-              rag: 'fallback_active',
-              ai_systems: 'fallback_active',
-              error: isTimeoutError ? 'TIMEOUT' : 'CORS_BLOCKED',
-              fallback_note: 'Alle KI-Funktionen arbeiten mit lokaler Verarbeitung'
-            },
-            attempts
-          });
-        } else {
-          setConnectionTest({
-            status: 'error',
-            message: '⚠️ Oracle Cloud temporär nicht erreichbar - KI-Systeme verwenden lokale Verarbeitung',
-            timestamp: Date.now(),
-            statusData: { 
-              oracle: 'offline', 
-              rag: 'offline',
-              ai_systems: 'local_processing',
-              error: lastError?.message || 'UNKNOWN_ERROR'
-            },
-            attempts
-          });
-        }
-      }
-      
+      const result = await enhancedApiClient.getConnectionStatus();
+      setConnectionState(result);
     } catch (error) {
-      console.error('❌ Oracle Cloud connection test failed:', error);
-      const errorMessage = error instanceof Error ? error.message : 'UNKNOWN_ERROR';
-      setConnectionTest({
-        status: 'error',
-        message: '❌ Verbindungstest fehlgeschlagen',
+      console.error('Connection test failed:', error);
+      setConnectionState({
+        oracle: 'offline',
+        rag: 'fallback_active',
+        ai_systems: 'local_processing',
+        message: '❌ Verbindungstest fehlgeschlagen - KI-Systeme verwenden lokale Verarbeitung',
         timestamp: Date.now(),
-        statusData: { 
-          oracle: 'error', 
-          rag: 'error',
-          ai_systems: 'error',
-          error: errorMessage
-        },
-        attempts
+        attempts,
+        fallback_note: 'Alle Lernfunktionen bleiben verfügbar!'
       });
+    } finally {
+      setIsTestingConnection(false);
     }
-    
-    // Reset status after 15 seconds
-    setTimeout(() => {
-      setConnectionTest(prev => ({ ...prev, status: 'idle', message: '' }));
-    }, 15000);
   };
   
   // Auto-test connection on component mount
   useEffect(() => {
-    // Auto-test connection when component mounts
     const autoTestTimer = setTimeout(() => {
       testConnection();
-    }, 2000);
+    }, 1500);
     
     return () => clearTimeout(autoTestTimer);
   }, []);
@@ -758,20 +695,19 @@ export const IntroSection: React.FC<IntroSectionProps> = ({ language, onNavigate
       position: 'relative',
       overflow: 'hidden'
     }}>
-      {/* 🎨 Enhanced Background with Dynamic Gradients */}
+      {/* Enhanced Background */}
       <div style={{
         position: 'absolute',
         inset: 0,
         background: `
           linear-gradient(135deg, rgba(248, 246, 240, 0.95) 0%, rgba(245, 241, 232, 0.97) 30%, rgba(240, 235, 226, 0.95) 100%),
           radial-gradient(circle at 20% 20%, rgba(212, 175, 55, 0.1), transparent 50%),
-          radial-gradient(circle at 80% 80%, rgba(139, 92, 246, 0.08), transparent 50%),
-          radial-gradient(circle at 50% 10%, rgba(245, 158, 11, 0.05), transparent 40%)
+          radial-gradient(circle at 80% 80%, rgba(139, 92, 246, 0.08), transparent 50%)
         `,
         zIndex: 1
       }} />
       
-      {/* 🎨 Enhanced Floating Decorative Elements */}
+      {/* Floating Decorative Elements */}
       <div style={{ position: 'absolute', inset: 0, zIndex: 2 }}>
         {Array.from({ length: 12 }, (_, i) => (
           <div
@@ -800,16 +736,12 @@ export const IntroSection: React.FC<IntroSectionProps> = ({ language, onNavigate
         padding: '50px 40px',
         width: '100%'
       }}>
-        {/* 🎨 Enhanced Hero Section */}
+        {/* Enhanced Hero Section */}
         <div style={{
           textAlign: 'center',
-          marginBottom: '80px'
+          marginBottom: '60px'
         }}>
-          {/* Main Title with Enhanced Animation */}
-          <div style={{
-            marginBottom: '40px',
-            position: 'relative'
-          }}>
+          <div style={{ marginBottom: '30px' }}>
             <h1 style={{
               fontSize: '5rem',
               fontWeight: 'bold',
@@ -817,12 +749,9 @@ export const IntroSection: React.FC<IntroSectionProps> = ({ language, onNavigate
               backgroundSize: '300% 300%',
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
-              backgroundClip: 'text',
               margin: '0 0 20px 0',
               fontFamily: 'Times New Roman, serif',
-              textShadow: '0 4px 8px rgba(212, 175, 55, 0.3)',
-              filter: 'drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1))',
-              animation: 'titleGradientFlow 6s ease-in-out infinite, titleGlow 4s ease-in-out infinite alternate'
+              animation: 'titleGradientFlow 6s ease-in-out infinite'
             }}>
               {t('hero.title')}
             </h1>
@@ -832,14 +761,12 @@ export const IntroSection: React.FC<IntroSectionProps> = ({ language, onNavigate
               color: '#a16207',
               fontStyle: 'italic',
               margin: '0 0 32px 0',
-              fontFamily: 'Georgia, serif',
-              textShadow: '0 2px 4px rgba(161, 98, 7, 0.2)',
-              animation: 'subtitleFade 3s ease-in-out'
+              fontFamily: 'Georgia, serif'
             }}>
               {t('hero.subtitle')}
             </p>
             
-            {/* 🎨 Enhanced AI System Status Badge */}
+            {/* Enhanced AI System Status Badge */}
             <div style={{
               display: 'inline-flex',
               alignItems: 'center',
@@ -852,60 +779,48 @@ export const IntroSection: React.FC<IntroSectionProps> = ({ language, onNavigate
               fontWeight: '700',
               color: '#7c3aed',
               backdropFilter: 'blur(12px)',
-              boxShadow: '0 8px 20px rgba(139, 92, 246, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.2)',
-              animation: 'badgePulse 3s ease-in-out infinite'
+              boxShadow: '0 8px 20px rgba(139, 92, 246, 0.25)'
             }}>
               <Brain style={{ width: '20px', height: '20px' }} />
-              {t('hero.ai_status')}
-              <Sparkles style={{ width: '16px', height: '16px', animation: 'sparkle 2s ease-in-out infinite' }} />
+              🤖 KI-SYSTEME AKTIV - Tier 3 AI Features
+              <Sparkles style={{ width: '16px', height: '16px' }} />
             </div>
           </div>
           
-          {/* 🔧 Enhanced Connection Status */}
-          <div style={{ marginBottom: '40px' }}>
+          {/* Enhanced Connection Status */}
+          <div style={{ marginBottom: '30px' }}>
             <ConnectionStatus 
               onTest={testConnection}
-              testing={connectionTest.status === 'testing'}
-              connectionState={connectionTest}
+              testing={isTestingConnection}
+              connectionState={connectionState}
             />
           </div>
         </div>
         
-        {/* 🎨 Enhanced Two-Column Layout */}
+        {/* AI Systems Dashboard */}
+        <AISystemsDashboard 
+          connectionState={connectionState}
+          onNavigate={handleNavigation}
+        />
+        
+        {/* Enhanced Two-Column Layout */}
         <div style={{
           display: 'grid',
           gridTemplateColumns: '1fr 1fr',
           gap: '60px',
           alignItems: 'flex-start',
-          marginBottom: '80px'
+          marginBottom: '60px'
         }}>
-          {/* Left Column - Enhanced Cultural Story */}
+          {/* Left Column - Cultural Story */}
           <div>
             <div style={{
               backgroundColor: 'rgba(255, 255, 255, 0.95)',
               borderRadius: '20px',
               padding: '40px',
               border: '2px solid rgba(212, 175, 55, 0.2)',
-              boxShadow: '0 20px 40px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.3)',
-              backdropFilter: 'blur(16px)',
-              position: 'relative',
-              overflow: 'hidden'
+              boxShadow: '0 20px 40px rgba(0, 0, 0, 0.1)',
+              backdropFilter: 'blur(16px)'
             }}>
-              {/* 🎨 Animated border */}
-              <div style={{
-                position: 'absolute',
-                inset: 0,
-                borderRadius: '20px',
-                padding: '2px',
-                background: 'linear-gradient(45deg, rgba(212, 175, 55, 0.4), rgba(245, 158, 11, 0.4), rgba(139, 92, 246, 0.2), rgba(212, 175, 55, 0.4))',
-                backgroundSize: '300% 300%',
-                mask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
-                maskComposite: 'subtract',
-                WebkitMask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
-                WebkitMaskComposite: 'subtract',
-                animation: 'borderFlow 8s linear infinite'
-              }} />
-              
               <h2 style={{
                 fontSize: '28px',
                 fontWeight: 'bold',
@@ -946,21 +861,10 @@ export const IntroSection: React.FC<IntroSectionProps> = ({ language, onNavigate
                     fontSize: '15px',
                     fontWeight: '600',
                     cursor: 'pointer',
-                    transition: 'all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
+                    transition: 'all 0.3s ease',
                     display: 'flex',
                     alignItems: 'center',
-                    gap: '10px',
-                    boxShadow: '0 4px 12px rgba(212, 175, 55, 0.2)'
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.backgroundColor = 'rgba(212, 175, 55, 0.2)';
-                    e.currentTarget.style.transform = 'scale(1.05) translateY(-2px)';
-                    e.currentTarget.style.boxShadow = '0 8px 25px rgba(212, 175, 55, 0.3)';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.backgroundColor = 'rgba(212, 175, 55, 0.1)';
-                    e.currentTarget.style.transform = 'scale(1) translateY(0)';
-                    e.currentTarget.style.boxShadow = '0 4px 12px rgba(212, 175, 55, 0.2)';
+                    gap: '10px'
                   }}
                 >
                   <Crown style={{ width: '18px', height: '18px' }} />
@@ -968,7 +872,7 @@ export const IntroSection: React.FC<IntroSectionProps> = ({ language, onNavigate
                 </button>
                 
                 <button
-                  onClick={() => handleNavigation('ki-rag-assistant')} // 🔧 FIXED: Navigate to RAG assistant
+                  onClick={() => handleNavigation('ki-rag-assistant')}
                   style={{
                     padding: '16px 24px',
                     backgroundColor: 'rgba(139, 92, 246, 0.1)',
@@ -978,38 +882,27 @@ export const IntroSection: React.FC<IntroSectionProps> = ({ language, onNavigate
                     fontSize: '15px',
                     fontWeight: '600',
                     cursor: 'pointer',
-                    transition: 'all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
+                    transition: 'all 0.3s ease',
                     display: 'flex',
                     alignItems: 'center',
-                    gap: '10px',
-                    boxShadow: '0 4px 12px rgba(139, 92, 246, 0.2)'
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.backgroundColor = 'rgba(139, 92, 246, 0.2)';
-                    e.currentTarget.style.transform = 'scale(1.05) translateY(-2px)';
-                    e.currentTarget.style.boxShadow = '0 8px 25px rgba(139, 92, 246, 0.3)';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.backgroundColor = 'rgba(139, 92, 246, 0.1)';
-                    e.currentTarget.style.transform = 'scale(1) translateY(0)';
-                    e.currentTarget.style.boxShadow = '0 4px 12px rgba(139, 92, 246, 0.2)';
+                    gap: '10px'
                   }}
                 >
                   <Sparkles style={{ width: '18px', height: '18px' }} />
-                  {t('hero.cultural_treasures')}
+                  KI-RAG Assistent
                 </button>
               </div>
             </div>
           </div>
           
-          {/* Right Column - Enhanced Image Carousel with NAVIGATION */}
+          {/* Right Column - Image Carousel */}
           <div style={{
             position: 'relative',
             borderRadius: '20px',
             overflow: 'hidden',
-            boxShadow: '0 25px 50px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(212, 175, 55, 0.2)',
+            boxShadow: '0 25px 50px rgba(0, 0, 0, 0.2)',
             border: '3px solid rgba(212, 175, 55, 0.3)',
-            cursor: 'pointer' // 🔧 FIXED: Indicate clickability
+            cursor: 'pointer'
           }}>
             {images.map((image, index) => (
               <div
@@ -1018,34 +911,21 @@ export const IntroSection: React.FC<IntroSectionProps> = ({ language, onNavigate
                   position: index === 0 ? 'relative' : 'absolute',
                   inset: 0,
                   opacity: index === currentImageIndex ? 1 : 0,
-                  transition: 'opacity 1.5s ease-in-out',
-                  zIndex: index === currentImageIndex ? 2 : 1
+                  transition: 'opacity 1.5s ease-in-out'
                 }}
-                onClick={() => handleNavigation(image.navigationTarget)} // 🔧 FIXED: Add navigation
+                onClick={() => handleNavigation(image.navigationTarget)}
               >
                 <img
                   src={image.src}
                   alt={t(image.titleKey)}
-                  onLoad={() => handleImageLoad(index)}
                   style={{
                     width: '100%',
-                    height: '450px',
+                    height: '400px',
                     objectFit: 'cover',
-                    display: 'block',
-                    filter: imageLoadStates[index] 
-                      ? 'saturate(1.15) contrast(1.1) brightness(1.05)' 
-                      : 'blur(3px)',
-                    transition: 'filter 1s ease-out, transform 0.3s ease'
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.transform = 'scale(1.05)';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.transform = 'scale(1)';
+                    display: 'block'
                   }}
                 />
                 
-                {/* 🎨 Enhanced image overlay with NAVIGATION BUTTON */}
                 <div style={{
                   position: 'absolute',
                   bottom: 0,
@@ -1058,21 +938,18 @@ export const IntroSection: React.FC<IntroSectionProps> = ({ language, onNavigate
                   <h3 style={{
                     fontSize: '22px',
                     fontWeight: 'bold',
-                    margin: '0 0 8px 0',
-                    textShadow: '0 2px 8px rgba(0, 0, 0, 0.8)'
+                    margin: '0 0 8px 0'
                   }}>
                     {t(image.titleKey)}
                   </h3>
                   <p style={{
                     fontSize: '16px',
                     margin: '0 0 16px 0',
-                    opacity: 0.9,
-                    textShadow: '0 1px 4px rgba(0, 0, 0, 0.8)'
+                    opacity: 0.9
                   }}>
                     {t(image.subtitleKey)}
                   </p>
                   
-                  {/* 🔧 FIXED: Navigation button */}
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
@@ -1090,16 +967,7 @@ export const IntroSection: React.FC<IntroSectionProps> = ({ language, onNavigate
                       transition: 'all 0.3s ease',
                       display: 'flex',
                       alignItems: 'center',
-                      gap: '8px',
-                      boxShadow: '0 4px 12px rgba(212, 175, 55, 0.4)'
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.backgroundColor = '#d4af37';
-                      e.currentTarget.style.transform = 'scale(1.05)';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.backgroundColor = 'rgba(212, 175, 55, 0.9)';
-                      e.currentTarget.style.transform = 'scale(1)';
+                      gap: '8px'
                     }}
                   >
                     {image.buttonText}
@@ -1109,7 +977,7 @@ export const IntroSection: React.FC<IntroSectionProps> = ({ language, onNavigate
               </div>
             ))}
             
-            {/* 🎨 Enhanced navigation dots */}
+            {/* Navigation dots */}
             <div style={{
               position: 'absolute',
               top: '20px',
@@ -1134,9 +1002,7 @@ export const IntroSection: React.FC<IntroSectionProps> = ({ language, onNavigate
                       ? 'rgba(255, 255, 255, 0.95)'
                       : 'rgba(255, 255, 255, 0.5)',
                     cursor: 'pointer',
-                    transition: 'all 0.3s ease',
-                    boxShadow: '0 2px 8px rgba(0, 0, 0, 0.4)',
-                    transform: index === currentImageIndex ? 'scale(1.2)' : 'scale(1)'
+                    transition: 'all 0.3s ease'
                   }}
                 />
               ))}
@@ -1144,10 +1010,8 @@ export const IntroSection: React.FC<IntroSectionProps> = ({ language, onNavigate
           </div>
         </div>
         
-        {/* ✅ ENHANCED FEATURES GRID - LANGUAGE SENSITIVE with NAVIGATION */}
-        <div style={{
-          marginBottom: '60px'
-        }}>
+        {/* Enhanced Features Grid */}
+        <div style={{ marginBottom: '60px' }}>
           <h2 style={{
             fontSize: '40px',
             fontWeight: 'bold',
@@ -1175,24 +1039,24 @@ export const IntroSection: React.FC<IntroSectionProps> = ({ language, onNavigate
                 description={feature.description}
                 status={feature.status}
                 statusLabel={feature.statusLabel}
-                onClick={feature.onClick} // 🔧 FIXED: Add navigation
+                onClick={feature.onClick}
+                aiAvailable={feature.aiAvailable}
               />
             ))}
           </div>
         </div>
         
-        {/* 🔧 FIXED: Neutral Technical Overview Section (No Trophy, No Marketing) */}
+        {/* Technical Overview Section */}
         <div style={{
           textAlign: 'center',
           padding: '40px',
           backgroundColor: 'rgba(255, 255, 255, 0.95)',
           borderRadius: '20px',
           border: '2px solid rgba(107, 114, 128, 0.3)',
-          boxShadow: '0 20px 40px rgba(0, 0, 0, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.3)',
-          backdropFilter: 'blur(16px)',
-          background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(248, 246, 240, 0.9))'
+          boxShadow: '0 20px 40px rgba(0, 0, 0, 0.15)',
+          backdropFilter: 'blur(16px)'
         }}>
-          <Server style={{ width: '56px', height: '56px', color: '#6b7280', marginBottom: '20px', margin: '0 auto 20px' }} />
+          <Server style={{ width: '56px', height: '56px', color: '#6b7280', margin: '0 auto 20px' }} />
           <h3 style={{
             fontSize: '28px',
             fontWeight: 'bold',
@@ -1220,7 +1084,7 @@ export const IntroSection: React.FC<IntroSectionProps> = ({ language, onNavigate
         language={language}
       />
       
-      {/* 🎨 Enhanced global animations */}
+      {/* Enhanced global animations */}
       <style jsx global>{`
         @keyframes float {
           0%, 100% { transform: translateY(0px) rotate(0deg); }
@@ -1233,47 +1097,6 @@ export const IntroSection: React.FC<IntroSectionProps> = ({ language, onNavigate
           50% { background-position: 100% 50%; }
         }
         
-        @keyframes titleGlow {
-          0%, 100% { filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1)); }
-          50% { filter: drop-shadow(0 4px 12px rgba(212, 175, 55, 0.4)); }
-        }
-        
-        @keyframes borderFlow {
-          0% { background-position: 0% 50%; }
-          100% { background-position: 300% 50%; }
-        }
-        
-        @keyframes backgroundShift {
-          0%, 100% { transform: translateX(0) translateY(0); }
-          50% { transform: translateX(10px) translateY(-5px); }
-        }
-        
-        @keyframes sparkle {
-          0%, 100% { opacity: 1; transform: scale(1) rotate(0deg); }
-          50% { opacity: 0.7; transform: scale(1.2) rotate(180deg); }
-        }
-        
-        @keyframes badgePulse {
-          0%, 100% { transform: scale(1); box-shadow: 0 8px 20px rgba(139, 92, 246, 0.25); }
-          50% { transform: scale(1.02); box-shadow: 0 12px 30px rgba(139, 92, 246, 0.35); }
-        }
-        
-        @keyframes subtitleFade {
-          from { opacity: 0; transform: translateY(20px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-        
-        @keyframes particleFloat {
-          0%, 100% { opacity: 0.3; }
-          50% { opacity: 0.7; }
-        }
-        
-        @keyframes shimmer {
-          0% { opacity: 0; transform: translateX(-100%); }
-          50% { opacity: 1; transform: translateX(0); }
-          100% { opacity: 0; transform: translateX(100%); }
-        }
-        
         @keyframes spin {
           from { transform: rotate(0deg); }
           to { transform: rotate(360deg); }
@@ -1282,3 +1105,5 @@ export const IntroSection: React.FC<IntroSectionProps> = ({ language, onNavigate
     </div>
   );
 };
+
+export default IntroSection;
