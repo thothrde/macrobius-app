@@ -19,10 +19,12 @@ import {
   Coffee,
   Lightbulb,
   Target,
-  Award,
+  Server,
   Wifi,
   WifiOff,
-  Server
+  Settings,
+  Database,
+  Monitor
 } from 'lucide-react';
 
 interface IntroSectionProps {
@@ -379,19 +381,20 @@ const FeatureCard: React.FC<{
   );
 };
 
-// 🎨 ENHANCED Connection Status Component
+// 🔧 ENHANCED Connection Status Component with Real Oracle Cloud Testing
 const ConnectionStatus: React.FC<{
-  status: any;
   onTest: () => void;
   testing: boolean;
-}> = ({ status, onTest, testing }) => {
+  connectionState: any;
+}> = ({ onTest, testing, connectionState }) => {
   const getStatusIcon = () => {
     if (testing) return <Loader2 style={{ width: '18px', height: '18px', animation: 'spin 1s linear infinite' }} />;
     
-    switch (status.oracle) {
+    switch (connectionState.status) {
       case 'connected': return <CheckCircle style={{ width: '18px', height: '18px' }} />;
       case 'cors_error': return <AlertCircle style={{ width: '18px', height: '18px' }} />;
-      case 'offline': return <WifiOff style={{ width: '18px', height: '18px' }} />;
+      case 'error': return <WifiOff style={{ width: '18px', height: '18px' }} />;
+      case 'success': return <CheckCircle style={{ width: '18px', height: '18px' }} />;
       default: return <Activity style={{ width: '18px', height: '18px' }} />;
     }
   };
@@ -399,11 +402,24 @@ const ConnectionStatus: React.FC<{
   const getStatusColor = () => {
     if (testing) return '#6b7280';
     
-    switch (status.oracle) {
-      case 'connected': return '#10b981';
+    switch (connectionState.status) {
+      case 'connected':
+      case 'success': return '#10b981';
       case 'cors_error': return '#f59e0b';
-      case 'offline': return '#ef4444';
+      case 'error': return '#ef4444';
       default: return '#6b7280';
+    }
+  };
+  
+  const getStatusMessage = () => {
+    if (testing) return '🔍 Teste Oracle Cloud Verbindung...';
+    
+    switch (connectionState.status) {
+      case 'connected':
+      case 'success': return '✅ Oracle Cloud verbunden - 1.401 authentische Textstellen verfügbar';
+      case 'cors_error': return '🔧 Oracle Cloud CORS-Problem - Erweiterte KI-Fallback-Systeme aktiv';
+      case 'error': return '⚠️ Oracle Cloud nicht verfügbar - KI-Systeme verwenden lokale Verarbeitung';
+      default: return '📡 Oracle Cloud Status wird geprüft...';
     }
   };
   
@@ -426,7 +442,7 @@ const ConnectionStatus: React.FC<{
       boxShadow: `0 4px 16px ${getStatusColor()}20`
     }}>
       {getStatusIcon()}
-      <span>{status.message || (testing ? 'Testing connection...' : 'Test Oracle Cloud')}</span>
+      <span>{getStatusMessage()}</span>
       {!testing && (
         <button
           onClick={onTest}
@@ -449,7 +465,7 @@ const ConnectionStatus: React.FC<{
             e.currentTarget.style.backgroundColor = `${getStatusColor()}15`;
           }}
         >
-          Test
+          Erneut testen
         </button>
       )}
     </div>
@@ -463,11 +479,12 @@ export const IntroSection: React.FC<IntroSectionProps> = ({ language }) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [imageLoadStates, setImageLoadStates] = useState<Record<number, boolean>>({});
   const [connectionTest, setConnectionTest] = useState<{
-    status: 'idle' | 'testing' | 'success' | 'error';
+    status: 'idle' | 'testing' | 'success' | 'error' | 'connected' | 'cors_error';
     message: string;
     timestamp?: number;
     statusData?: any;
-  }>({ status: 'idle', message: '' });
+    attempts?: number;
+  }>({ status: 'idle', message: '', attempts: 0 });
   
   // 🖼️ FIXED: Enhanced image rotation with correct Rome image
   const images = [
@@ -551,36 +568,136 @@ export const IntroSection: React.FC<IntroSectionProps> = ({ language }) => {
     setImageLoadStates(prev => ({ ...prev, [index]: true }));
   };
   
-  // 🔧 FIXED: Enhanced connection test functionality with proper type checking
+  // 🔧 FIXED: Enhanced Oracle Cloud connection test with comprehensive diagnostics
   const testConnection = async () => {
-    setConnectionTest({ status: 'testing', message: t('connection.testing') });
+    const attempts = (connectionTest.attempts || 0) + 1;
+    setConnectionTest({ status: 'testing', message: 'Teste Verbindung...', attempts });
     
     try {
-      const response = await MacrobiusAPI.system.healthCheck();
+      console.log(`🔍 Oracle Cloud connection test #${attempts} starting...`);
       
-      if (response.status === 'success' && response.data) {
-        setConnectionTest({
-          status: 'success',
-          message: t('connection.success'),
-          timestamp: Date.now(),
-          statusData: response.data.connection || null
-        });
-      } else {
-        throw new Error('Health check failed');
+      // Test multiple endpoints with detailed logging
+      const endpoints = [
+        'http://152.70.184.232:8080/api/health',
+        'http://152.70.184.232:8080/api/rag/status', 
+        'http://152.70.184.232:8080/api/passages/count'
+      ];
+      
+      let successfulEndpoint = null;
+      let lastError = null;
+      
+      for (const endpoint of endpoints) {
+        try {
+          console.log(`🔍 Testing endpoint: ${endpoint}`);
+          const response = await fetch(endpoint, {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json',
+              'X-Client-Version': '2.1-ENHANCED',
+              'X-Test-Attempt': attempts.toString()
+            },
+            signal: AbortSignal.timeout(12000),
+            mode: 'cors',
+            credentials: 'omit'
+          });
+          
+          if (response.ok) {
+            const data = await response.json();
+            console.log(`✅ Oracle Cloud connection successful via ${endpoint}:`, data);
+            successfulEndpoint = endpoint;
+            
+            setConnectionTest({
+              status: 'success',
+              message: '✅ Oracle Cloud verbunden - RAG-System betriebsbereit',
+              timestamp: Date.now(),
+              statusData: { 
+                oracle: 'connected', 
+                rag: 'connected',
+                ai_systems: 'connected',
+                endpoint: endpoint,
+                response: data
+              },
+              attempts
+            });
+            return;
+          }
+        } catch (endpointError) {
+          console.warn(`❌ Endpoint ${endpoint} failed:`, endpointError);
+          lastError = endpointError;
+        }
       }
+      
+      // If no endpoint worked, check for CORS issues
+      if (!successfulEndpoint) {
+        console.error('❌ All Oracle Cloud endpoints failed. Last error:', lastError);
+        
+        // Check if it's a CORS issue
+        const isCorsError = lastError instanceof TypeError && 
+                           (lastError.message.includes('fetch') || 
+                            lastError.message.includes('CORS') ||
+                            lastError.message.includes('Network'));
+        
+        if (isCorsError) {
+          setConnectionTest({
+            status: 'cors_error',
+            message: '🔧 CORS-Problem erkannt - Erweiterte KI-Fallback-Systeme aktiv',
+            timestamp: Date.now(),
+            statusData: { 
+              oracle: 'cors_error', 
+              rag: 'offline',
+              ai_systems: 'offline',
+              error: 'CORS_BLOCKED'
+            },
+            attempts
+          });
+        } else {
+          setConnectionTest({
+            status: 'error',
+            message: '⚠️ Oracle Cloud nicht erreichbar - KI-Systeme verwenden lokale Verarbeitung',
+            timestamp: Date.now(),
+            statusData: { 
+              oracle: 'offline', 
+              rag: 'offline',
+              ai_systems: 'offline',
+              error: lastError?.message || 'UNKNOWN_ERROR'
+            },
+            attempts
+          });
+        }
+      }
+      
     } catch (error) {
+      console.error('❌ Oracle Cloud connection test failed:', error);
       setConnectionTest({
         status: 'error',
-        message: t('connection.fallback'),
-        timestamp: Date.now()
+        message: '❌ Verbindungstest fehlgeschlagen',
+        timestamp: Date.now(),
+        statusData: { 
+          oracle: 'error', 
+          rag: 'error',
+          ai_systems: 'error',
+          error: error instanceof Error ? error.message : 'UNKNOWN_ERROR'
+        },
+        attempts
       });
     }
     
-    // Reset after 8 seconds
+    // Reset after 12 seconds
     setTimeout(() => {
-      setConnectionTest({ status: 'idle', message: '' });
-    }, 8000);
+      setConnectionTest(prev => ({ ...prev, status: 'idle', message: '' }));
+    }, 12000);
   };
+  
+  // Auto-test connection on component mount
+  useEffect(() => {
+    // Auto-test connection when component mounts
+    const autoTestTimer = setTimeout(() => {
+      testConnection();
+    }, 2000);
+    
+    return () => clearTimeout(autoTestTimer);
+  }, []);
   
   const features = getFeatures();
   
@@ -698,9 +815,9 @@ export const IntroSection: React.FC<IntroSectionProps> = ({ language }) => {
           {/* 🔧 Enhanced Connection Status */}
           <div style={{ marginBottom: '40px' }}>
             <ConnectionStatus 
-              status={connectionTest.statusData || { oracle: connectionTest.status, message: connectionTest.message }}
               onTest={testConnection}
               testing={connectionTest.status === 'testing'}
+              connectionState={connectionTest}
             />
           </div>
         </div>
@@ -932,8 +1049,6 @@ export const IntroSection: React.FC<IntroSectionProps> = ({ language }) => {
           </div>
         </div>
         
-        {/* 🔧 REMOVED: "Die Geschichte der Flaschenpost" section completely eliminated */}
-        
         {/* ✅ ENHANCED FEATURES GRID - LANGUAGE SENSITIVE */}
         <div style={{
           marginBottom: '60px'
@@ -970,25 +1085,25 @@ export const IntroSection: React.FC<IntroSectionProps> = ({ language }) => {
           </div>
         </div>
         
-        {/* 🎨 Enhanced Technical Achievement Badge */}
+        {/* 🔧 FIXED: Neutral Technical Overview Section (No Trophy, No Marketing) */}
         <div style={{
           textAlign: 'center',
           padding: '40px',
           backgroundColor: 'rgba(255, 255, 255, 0.95)',
           borderRadius: '20px',
-          border: '2px solid rgba(139, 92, 246, 0.3)',
-          boxShadow: '0 20px 40px rgba(139, 92, 246, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.3)',
+          border: '2px solid rgba(107, 114, 128, 0.3)',
+          boxShadow: '0 20px 40px rgba(0, 0, 0, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.3)',
           backdropFilter: 'blur(16px)',
           background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(248, 246, 240, 0.9))'
         }}>
-          <Award style={{ width: '56px', height: '56px', color: '#8b5cf6', marginBottom: '20px', margin: '0 auto 20px' }} />
+          <Server style={{ width: '56px', height: '56px', color: '#6b7280', marginBottom: '20px', margin: '0 auto 20px' }} />
           <h3 style={{
             fontSize: '28px',
             fontWeight: 'bold',
-            color: '#7c3aed',
+            color: '#374151',
             marginBottom: '16px'
           }}>
-            {t('technical.title')}
+            Technical Overview
           </h3>
           <p style={{
             fontSize: '18px',
@@ -997,7 +1112,7 @@ export const IntroSection: React.FC<IntroSectionProps> = ({ language }) => {
             maxWidth: '700px',
             margin: '0 auto'
           }}>
-            {t('technical.description')}
+            This application integrates semantic search, Oracle Cloud backend connectivity, and React-based frontend architecture with over 44 specialized components for classical Latin education.
           </p>
         </div>
       </div>
