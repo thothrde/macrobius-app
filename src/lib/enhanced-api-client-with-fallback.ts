@@ -4,6 +4,7 @@
 // ✅ FIXED: Connection status handling + Better error messages
 // ✅ ENHANCED: Graceful fallback mechanisms for production deployment
 // 🚀 IMPROVED: Better Oracle Cloud connectivity with enhanced error recovery
+// 🔧 BUILD FIX: ES5 compatibility for Set operations
 
 import { fallbackApiClient } from './fallback-api-client';
 
@@ -330,8 +331,8 @@ export class EnhancedMacrobiusApiClient {
       // Priority 4: Proxy fallback
       urls.push(`${this.proxyBaseURL}${endpoint}`);
       
-      // Remove duplicates and return
-      return [...new Set(urls)];
+      // 🔧 BUILD FIX: Replace Set spread with Array.from for ES5 compatibility
+      return Array.from(new Set(urls));
     };
 
     const urlsToTry = getUrlsToTry();
