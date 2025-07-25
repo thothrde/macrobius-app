@@ -11,6 +11,7 @@ interface VideoIntroWrapperProps {
  * 🎬 REAL HTML5 VIDEO PLAYER - Uses Your AppIntro.mov File With Sound!
  * 🔍 SIGNIFICANTLY ENLARGED - Much more prominent video frame
  * 🎯 COMPACT SPACING - Reduced distance between video and content below
+ * 🎯 SUPER TIGHT - Minimal gap between video and MACROBIUS title
  * Plays your actual video file with guaranteed audio support
  */
 export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }) => {
@@ -568,14 +569,14 @@ export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }
         </div>
       </div>
       
-      {/* 🏛️ BIG MACROBIUS TITLE - BELOW VIDEO - 🎯 COMPACT SPACING */}
+      {/* 🏛️ BIG MACROBIUS TITLE - BELOW VIDEO - 🎯 SUPER TIGHT VIDEO-TITLE GAP */}
       <div style={{
         position: 'relative',
         zIndex: 10,
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        padding: '10px 40px' // 🎯 COMPACT: Reduced from 25px to 10px (60% reduction)
+        padding: '2px 40px 10px 40px' // 🎯 SUPER TIGHT: Reduced top padding from 10px to 2px (80% reduction!)
       }}>
         <h1 style={{
           fontSize: '4.5rem', // 🚀 LARGER title
@@ -595,7 +596,7 @@ export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }
         </h1>
       </div>
       
-      {/* 🎯 ACTION SECTION - 🎯 COMPACT SPACING */}
+      {/* 🎯 ACTION SECTION - 🎯 COMPACT SPACING - UNCHANGED */}
       <div style={{
         position: 'relative',
         zIndex: 10,
@@ -679,7 +680,7 @@ export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }
         </div>
       </div>
       
-      {/* 🏛️ MACROBIUS HISTORICAL TEXT SECTION - 🎯 COMPACT SPACING */}
+      {/* 🏛️ MACROBIUS HISTORICAL TEXT SECTION - 🎯 COMPACT SPACING - UNCHANGED */}
       <div style={{
         position: 'relative',
         zIndex: 10,
