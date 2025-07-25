@@ -231,9 +231,9 @@ export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }
         })}
       </div>
       
-      {/* 🎬 REAL HTML5 VIDEO PLAYER */}
+      {/* 🎬 REAL HTML5 VIDEO PLAYER - LARGER SIZE */}
       <div style={{
-        height: '50vh',
+        height: '55vh',
         position: 'relative',
         zIndex: 10,
         display: 'flex',
@@ -244,7 +244,7 @@ export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }
         <div 
           style={{
             width: '100%',
-            maxWidth: '900px',
+            maxWidth: '1100px', // 🔍 INCREASED from 900px to 1100px
             aspectRatio: '16/9',
             borderRadius: '24px',
             overflow: 'hidden',
@@ -516,7 +516,7 @@ export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }
         </div>
       </div>
       
-      {/* 🏛️ NEW: MACROBIUS HISTORICAL TEXT SECTION - BELOW VIDEO */}
+      {/* 🏛️ MACROBIUS HISTORICAL TEXT SECTION - BELOW VIDEO */}
       <div style={{
         position: 'relative',
         zIndex: 10,
@@ -614,7 +614,7 @@ export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }
               </p>
             </div>
             
-            {/* 🖼️ NEW: Two Macrobius Images Side by Side */}
+            {/* 🖼️ Two Macrobius Images Side by Side */}
             <div style={{
               display: 'grid',
               gridTemplateColumns: '1fr 1fr',
@@ -733,7 +733,7 @@ export const VideoIntroWrapper: React.FC<VideoIntroWrapperProps> = ({ language }
       
       {/* 🎯 ACTION SECTION */}
       <div style={{
-        height: '30vh',
+        height: '25vh',
         position: 'relative',
         zIndex: 10,
         display: 'flex',
