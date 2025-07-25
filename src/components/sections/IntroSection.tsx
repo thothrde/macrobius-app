@@ -24,11 +24,14 @@ import {
   WifiOff,
   Settings,
   Database,
-  Monitor
+  Monitor,
+  ArrowRight,
+  ChevronRight
 } from 'lucide-react';
 
 interface IntroSectionProps {
   language: 'DE' | 'EN' | 'LA';
+  onNavigateToSection?: (section: string) => void;
 }
 
 // 🎨 ENHANCED About Modal with Modern Design
@@ -473,7 +476,7 @@ const ConnectionStatus: React.FC<{
 };
 
 // 🎨 ENHANCED INTRO SECTION with Modern Visual Design
-export const IntroSection: React.FC<IntroSectionProps> = ({ language }) => {
+export const IntroSection: React.FC<IntroSectionProps> = ({ language, onNavigateToSection }) => {
   const { t } = useLanguage();
   const [showAbout, setShowAbout] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
@@ -486,63 +489,92 @@ export const IntroSection: React.FC<IntroSectionProps> = ({ language }) => {
     attempts?: number;
   }>({ status: 'idle', message: '', attempts: 0 });
   
-  // 🖼️ FIXED: Enhanced image rotation with correct Rome image
+  // 🔧 FIXED: Navigation handler
+  const handleNavigation = (section: string) => {
+    console.log(`🚀 Navigating to section: ${section}`);
+    if (typeof window !== 'undefined') {
+      // Create a custom event to notify the parent component
+      const navigationEvent = new CustomEvent('navigateToSection', {
+        detail: { section }
+      });
+      window.dispatchEvent(navigationEvent);
+    }
+    
+    // If onNavigateToSection prop is provided, use it
+    if (onNavigateToSection) {
+      onNavigateToSection(section);
+    }
+  };
+  
+  // 🖼️ FIXED: Enhanced image rotation with correct Rome image and NAVIGATION
   const images = [
     {
       src: '/Rome-under.jpg',
       titleKey: 'image.rome.title',
-      subtitleKey: 'image.rome.subtitle'
+      subtitleKey: 'image.rome.subtitle',
+      navigationTarget: 'worldmap', // 🔧 FIXED: Navigate to world map
+      buttonText: 'Weltreise beginnen'
     },
     {
       src: '/Macrobius-Portrait.jpg',
       titleKey: 'image.macrobius.title',
-      subtitleKey: 'image.macrobius.subtitle'
+      subtitleKey: 'image.macrobius.subtitle',
+      navigationTarget: 'banquet', // 🔧 FIXED: Navigate to banquet section
+      buttonText: 'Gastmahl erkunden'
     },
     {
       src: '/TychoAssistent.jpg',
       titleKey: 'image.tycho.title',
-      subtitleKey: 'image.tycho.subtitle'
+      subtitleKey: 'image.tycho.subtitle',
+      navigationTarget: 'cosmos', // 🔧 FIXED: Navigate to cosmos section
+      buttonText: 'Kosmos entdecken'
     }
   ];
   
-  // ✅ LANGUAGE-SENSITIVE FEATURES CONFIGURATION
+  // ✅ LANGUAGE-SENSITIVE FEATURES CONFIGURATION with NAVIGATION
   const getFeatures = () => {
     const baseFeatures = [
       {
         icon: Brain,
         titleKey: 'features.ai_cultural_analysis.title',
         descriptionKey: 'features.ai_cultural_analysis.description',
-        status: 'ai' as const
+        status: 'ai' as const,
+        navigationTarget: 'ai-cultural-analysis'
       },
       {
         icon: Target,
         titleKey: 'features.learning_paths.title',
         descriptionKey: 'features.learning_paths.description',
-        status: 'ai' as const
+        status: 'ai' as const,
+        navigationTarget: 'personalized-learning'
       },
       {
         icon: Crown,
         titleKey: 'features.ai_tutor.title',
         descriptionKey: 'features.ai_tutor.description',
-        status: 'ai' as const
+        status: 'ai' as const,
+        navigationTarget: 'ai-tutoring'
       },
       {
         icon: BookOpen,
         titleKey: 'features.vocabulary_trainer.title',
         descriptionKey: 'features.vocabulary_trainer.description',
-        status: 'enhanced' as const
+        status: 'enhanced' as const,
+        navigationTarget: 'learning'
       },
       {
         icon: Globe,
         titleKey: 'features.visualizations.title',
         descriptionKey: 'features.visualizations.description',
-        status: 'enhanced' as const
+        status: 'enhanced' as const,
+        navigationTarget: 'visualizations'
       },
       {
         icon: Coffee,
         titleKey: 'features.banquet.title',
         descriptionKey: 'features.banquet.description',
-        status: 'active' as const
+        status: 'active' as const,
+        navigationTarget: 'banquet'
       }
     ];
     
@@ -550,7 +582,8 @@ export const IntroSection: React.FC<IntroSectionProps> = ({ language }) => {
       ...feature,
       title: t(feature.titleKey),
       description: t(feature.descriptionKey),
-      statusLabel: t(`features.status.${feature.status}`)
+      statusLabel: t(`features.status.${feature.status}`),
+      onClick: () => handleNavigation(feature.navigationTarget) // 🔧 FIXED: Add navigation
     }));
   };
   
@@ -568,7 +601,7 @@ export const IntroSection: React.FC<IntroSectionProps> = ({ language }) => {
     setImageLoadStates(prev => ({ ...prev, [index]: true }));
   };
   
-  // 🔧 FIXED: Enhanced Oracle Cloud connection test with proper TypeScript typing
+  // 🔧 ENHANCED: Oracle Cloud connection test with BETTER ERROR HANDLING
   const testConnection = async () => {
     const attempts = (connectionTest.attempts || 0) + 1;
     setConnectionTest({ status: 'testing', message: 'Teste Verbindung...', attempts });
@@ -576,10 +609,13 @@ export const IntroSection: React.FC<IntroSectionProps> = ({ language }) => {
     try {
       console.log(`🔍 Oracle Cloud connection test #${attempts} starting...`);
       
-      // Test multiple endpoints with detailed logging
+      // 🔧 IMPROVED: Test with better error handling and HTTPS priority
       const endpoints = [
+        'https://152.70.184.232:8080/api/health',
         'http://152.70.184.232:8080/api/health',
-        'http://152.70.184.232:8080/api/rag/status', 
+        'https://152.70.184.232:8080/api/rag/status', 
+        'http://152.70.184.232:8080/api/rag/status',
+        'https://152.70.184.232:8080/api/passages/count',
         'http://152.70.184.232:8080/api/passages/count'
       ];
       
@@ -589,18 +625,24 @@ export const IntroSection: React.FC<IntroSectionProps> = ({ language }) => {
       for (const endpoint of endpoints) {
         try {
           console.log(`🔍 Testing endpoint: ${endpoint}`);
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+          
           const response = await fetch(endpoint, {
             method: 'GET',
             headers: {
               'Content-Type': 'application/json',
               'Accept': 'application/json',
               'X-Client-Version': '2.1-ENHANCED',
-              'X-Test-Attempt': attempts.toString()
+              'X-Test-Attempt': attempts.toString(),
+              'Cache-Control': 'no-cache'
             },
-            signal: AbortSignal.timeout(12000),
+            signal: controller.signal,
             mode: 'cors',
             credentials: 'omit'
           });
+          
+          clearTimeout(timeoutId);
           
           if (response.ok) {
             const data = await response.json();
@@ -621,6 +663,8 @@ export const IntroSection: React.FC<IntroSectionProps> = ({ language }) => {
               attempts
             });
             return;
+          } else {
+            console.warn(`❌ Endpoint ${endpoint} returned status: ${response.status}`);
           }
         } catch (endpointError) {
           console.warn(`❌ Endpoint ${endpoint} failed:`, endpointError);
@@ -628,38 +672,42 @@ export const IntroSection: React.FC<IntroSectionProps> = ({ language }) => {
         }
       }
       
-      // If no endpoint worked, check for CORS issues
+      // If no endpoint worked, determine error type
       if (!successfulEndpoint) {
         console.error('❌ All Oracle Cloud endpoints failed. Last error:', lastError);
         
-        // Check if it's a CORS issue
+        // Check if it's a CORS/network issue
         const isCorsError = lastError instanceof TypeError && 
                            (lastError.message.includes('fetch') || 
                             lastError.message.includes('CORS') ||
-                            lastError.message.includes('Network'));
+                            lastError.message.includes('Network') ||
+                            lastError.message.includes('Failed to fetch'));
         
-        if (isCorsError) {
+        const isTimeoutError = lastError?.name === 'AbortError';
+        
+        if (isCorsError || isTimeoutError) {
           setConnectionTest({
             status: 'cors_error',
-            message: '🔧 CORS-Problem erkannt - Erweiterte KI-Fallback-Systeme aktiv',
+            message: '🔧 Oracle Cloud Verbindungsproblem - Erweiterte KI-Fallback-Systeme aktiv',
             timestamp: Date.now(),
             statusData: { 
               oracle: 'cors_error', 
-              rag: 'offline',
-              ai_systems: 'offline',
-              error: 'CORS_BLOCKED'
+              rag: 'fallback_active',
+              ai_systems: 'fallback_active',
+              error: isTimeoutError ? 'TIMEOUT' : 'CORS_BLOCKED',
+              fallback_note: 'Alle KI-Funktionen arbeiten mit lokaler Verarbeitung'
             },
             attempts
           });
         } else {
           setConnectionTest({
             status: 'error',
-            message: '⚠️ Oracle Cloud nicht erreichbar - KI-Systeme verwenden lokale Verarbeitung',
+            message: '⚠️ Oracle Cloud temporär nicht erreichbar - KI-Systeme verwenden lokale Verarbeitung',
             timestamp: Date.now(),
             statusData: { 
               oracle: 'offline', 
               rag: 'offline',
-              ai_systems: 'offline',
+              ai_systems: 'local_processing',
               error: lastError?.message || 'UNKNOWN_ERROR'
             },
             attempts
@@ -684,10 +732,10 @@ export const IntroSection: React.FC<IntroSectionProps> = ({ language }) => {
       });
     }
     
-    // Reset after 12 seconds
+    // Reset status after 15 seconds
     setTimeout(() => {
       setConnectionTest(prev => ({ ...prev, status: 'idle', message: '' }));
-    }, 12000);
+    }, 15000);
   };
   
   // Auto-test connection on component mount
@@ -920,6 +968,7 @@ export const IntroSection: React.FC<IntroSectionProps> = ({ language }) => {
                 </button>
                 
                 <button
+                  onClick={() => handleNavigation('ki-rag-assistant')} // 🔧 FIXED: Navigate to RAG assistant
                   style={{
                     padding: '16px 24px',
                     backgroundColor: 'rgba(139, 92, 246, 0.1)',
@@ -953,13 +1002,14 @@ export const IntroSection: React.FC<IntroSectionProps> = ({ language }) => {
             </div>
           </div>
           
-          {/* Right Column - Enhanced Image Carousel */}
+          {/* Right Column - Enhanced Image Carousel with NAVIGATION */}
           <div style={{
             position: 'relative',
             borderRadius: '20px',
             overflow: 'hidden',
             boxShadow: '0 25px 50px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(212, 175, 55, 0.2)',
-            border: '3px solid rgba(212, 175, 55, 0.3)'
+            border: '3px solid rgba(212, 175, 55, 0.3)',
+            cursor: 'pointer' // 🔧 FIXED: Indicate clickability
           }}>
             {images.map((image, index) => (
               <div
@@ -971,6 +1021,7 @@ export const IntroSection: React.FC<IntroSectionProps> = ({ language }) => {
                   transition: 'opacity 1.5s ease-in-out',
                   zIndex: index === currentImageIndex ? 2 : 1
                 }}
+                onClick={() => handleNavigation(image.navigationTarget)} // 🔧 FIXED: Add navigation
               >
                 <img
                   src={image.src}
@@ -984,11 +1035,17 @@ export const IntroSection: React.FC<IntroSectionProps> = ({ language }) => {
                     filter: imageLoadStates[index] 
                       ? 'saturate(1.15) contrast(1.1) brightness(1.05)' 
                       : 'blur(3px)',
-                    transition: 'filter 1s ease-out'
+                    transition: 'filter 1s ease-out, transform 0.3s ease'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.transform = 'scale(1.05)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = 'scale(1)';
                   }}
                 />
                 
-                {/* 🎨 Enhanced image overlay */}
+                {/* 🎨 Enhanced image overlay with NAVIGATION BUTTON */}
                 <div style={{
                   position: 'absolute',
                   bottom: 0,
@@ -1008,12 +1065,46 @@ export const IntroSection: React.FC<IntroSectionProps> = ({ language }) => {
                   </h3>
                   <p style={{
                     fontSize: '16px',
-                    margin: 0,
+                    margin: '0 0 16px 0',
                     opacity: 0.9,
                     textShadow: '0 1px 4px rgba(0, 0, 0, 0.8)'
                   }}>
                     {t(image.subtitleKey)}
                   </p>
+                  
+                  {/* 🔧 FIXED: Navigation button */}
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleNavigation(image.navigationTarget);
+                    }}
+                    style={{
+                      padding: '8px 16px',
+                      backgroundColor: 'rgba(212, 175, 55, 0.9)',
+                      border: '2px solid #d4af37',
+                      borderRadius: '20px',
+                      color: '#1a1a1a',
+                      fontSize: '14px',
+                      fontWeight: '600',
+                      cursor: 'pointer',
+                      transition: 'all 0.3s ease',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '8px',
+                      boxShadow: '0 4px 12px rgba(212, 175, 55, 0.4)'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.backgroundColor = '#d4af37';
+                      e.currentTarget.style.transform = 'scale(1.05)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.backgroundColor = 'rgba(212, 175, 55, 0.9)';
+                      e.currentTarget.style.transform = 'scale(1)';
+                    }}
+                  >
+                    {image.buttonText}
+                    <ChevronRight style={{ width: '16px', height: '16px' }} />
+                  </button>
                 </div>
               </div>
             ))}
@@ -1030,7 +1121,10 @@ export const IntroSection: React.FC<IntroSectionProps> = ({ language }) => {
               {images.map((_, index) => (
                 <button
                   key={index}
-                  onClick={() => setCurrentImageIndex(index)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setCurrentImageIndex(index);
+                  }}
                   style={{
                     width: '12px',
                     height: '12px',
@@ -1050,7 +1144,7 @@ export const IntroSection: React.FC<IntroSectionProps> = ({ language }) => {
           </div>
         </div>
         
-        {/* ✅ ENHANCED FEATURES GRID - LANGUAGE SENSITIVE */}
+        {/* ✅ ENHANCED FEATURES GRID - LANGUAGE SENSITIVE with NAVIGATION */}
         <div style={{
           marginBottom: '60px'
         }}>
@@ -1081,6 +1175,7 @@ export const IntroSection: React.FC<IntroSectionProps> = ({ language }) => {
                 description={feature.description}
                 status={feature.status}
                 statusLabel={feature.statusLabel}
+                onClick={feature.onClick} // 🔧 FIXED: Add navigation
               />
             ))}
           </div>
